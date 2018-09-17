@@ -1,14 +1,20 @@
+
+#include <cstdio>
 #include <iostream>
 #include <string>
 
+#include <World.h>
 #include "Game.h"
+#include "Player/Player.h"
 
 using namespace std;
 
-int main()
+int main(int, char**)
 {
 	cout << "*** GAME ***" << endl;
-	Game game{};
+
+	World world{};
+	world.Start();
 
 	string a;
 	cin >> a;

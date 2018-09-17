@@ -1,9 +1,10 @@
 using System.IO; // for Path.Combine
 using Sharpmake; // contains the entire Sharpmake object library.
 
-[module: Sharpmake.Include("Source/Engine.Project.cs")]
-[module: Sharpmake.Include("Source/Game.Project.cs")]
-[module: Sharpmake.Include("Source/Editor.Project.cs")]
+[module: Sharpmake.Include("Properties/Base.Project.cs")]
+[module: Sharpmake.Include("Source/Engine/Engine.Project.cs")]
+[module: Sharpmake.Include("Source/Game/Game.Project.cs")]
+[module: Sharpmake.Include("Source/Editor/Editor.Project.cs")]
 [module: Sharpmake.Include("Source/ThirdParty/SDL2/SDL2.Library.cs")]
 
 [Generate]
@@ -24,14 +25,9 @@ class FecoEngineSolution : Solution
         ));
     }
 
-    // Configure for all 4 generated targets. Note that the type of the
-    // configuration object is of type Solution.Configuration this time.
-    // (Instead of Project.Configuration.)
-    [Configure]
+    [Configure()]
     public void ConfigureAll(Solution.Configuration conf, Target target)
-    {
-        conf.SolutionFileName = "[solution.Name]_[target.DevEnv]_[target.Platform]";
-        
+    {   
         // Puts the generated solution in the /generated folder too.
         conf.SolutionPath = @"[solution.SharpmakeCsPath]";
 
@@ -40,6 +36,7 @@ class FecoEngineSolution : Solution
         conf.AddProject<EditorProject>(target);
         conf.AddProject<SDL2Library>(target);
     }
+
 
     [Main]
     public static void SharpmakeMain(Arguments sharpmakeArgs)

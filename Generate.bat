@@ -1,6 +1,7 @@
 @echo off
-call "Sharpmake/Sharpmake.Application.exe" /sources(@"FecoEngine.Solution.cs")
-if errorlevel 1  (
-    pause
+call "Source/ThirdParty/Sharpmake/Sharpmake.Application.exe" /sources(@"FecoEngine.Solution.cs")
+if errorlevel 0  (
+    exit
 )
+pause
 exit
