@@ -2,13 +2,15 @@
 #include <iostream>
 #include <SDL.h>
 
+#include "EngineTypes.h"
 #include "Reflection/Reflection.h"
+
 
 class World {
 	CLASS(World)
 
-	PROP(std::string, name)
-	std::string name;
+	PROP(int16, name, "Save")
+	int16 name;
 
 public:
 	bool Start() {
@@ -18,10 +20,12 @@ public:
 		}
 		std::cout << "SDL Okay!" << std::endl;
 
-		auto Property = World::StaticClass()->FindPropertyHandle<std::string>(*this, "name");
-		Property.SetValue("Meeh");
+		auto Property = World::StaticClass()->FindPropertyHandle<int16>(*this, "name");
+		Property.SetValue(160);
 
 		std::cout << name << std::endl;
+
+		std::cout << (Property.HasTag("Save")? "true" : "false") << std::endl;
 
 		SDL_Quit();
 		return true;

@@ -4,7 +4,6 @@
 #include <string>
 
 #include <World/World.h>
-#include <Editor.h>
 
 using namespace std;
 

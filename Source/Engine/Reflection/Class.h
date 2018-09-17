@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 
+#include "EngineTypes.h"
 #include "Property.h"
 
 
@@ -9,7 +10,7 @@
 // the metadata for that type.
 template <typename T>
 struct Class {
-	typedef std::unordered_map<std::string, std::unique_ptr<PropertyBase>> PropertyMap;
+	typedef std::unordered_map<String, std::unique_ptr<PropertyBase>> PropertyMap;
 
 	static Class* GetStatic() { return &_class; }
 
@@ -21,7 +22,7 @@ struct Class {
 	const PropertyMap& GetAllProperties() { return properties; }
 
 	template<typename VarType>
-	const Property<T, VarType>* FindProperty(const std::string& name) const
+	const Property<T, VarType>* FindProperty(const String& name) const
 	{
 		const auto propIt = properties.find(name);
 		if (propIt == properties.end())
@@ -31,7 +32,7 @@ struct Class {
 	}
 
 	template<typename VarType>
-	PropertyHandle<T, VarType> FindPropertyHandle(T& instance, const std::string& name) const
+	PropertyHandle<T, VarType> FindPropertyHandle(T& instance, const String& name) const
 	{
 		const Property<T, VarType>* prop{ FindProperty<VarType>(name) };
 		if (prop)
@@ -44,10 +45,15 @@ struct Class {
 public:
 	/** GENERATION */
 	template<typename VarType>
-	void RegistryProperty(std::string&& name, std::function<VarType*(T&)>&& access, std::vector<std::string>&& tags)
+	void RegistryProperty(String&& name, std::function<VarType*(T&)>&& access, std::vector<String>&& tags)
 	{
-		//TODO: Support Tags
-		properties.emplace(name, std::unique_ptr<PropertyBase>(new Property<T, VarType>(std::move(name), std::move(access))));
+		properties.emplace(name, std::unique_ptr<PropertyBase>(
+			new Property<T, VarType>(
+				std::move(name),
+				std::move(access),
+				std::move(tags)
+			)
+		));
 	}
 
 private:

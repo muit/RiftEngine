@@ -11,6 +11,23 @@ class EngineModule : BaseModule
         base.ConfigureAll(conf, target);
         conf.SolutionFolder = "FecoEngine";
 
+        switch(target.Platform) {
+            case Platform.win32:
+                conf.Defines.Add("PLATFORM_WINDOWS");
+                conf.Defines.Add("_WIN32");
+                conf.ExportDefines.Add("PLATFORM_WINDOWS");
+                conf.ExportDefines.Add("_WIN32");
+                break;
+            case Platform.win64:
+                conf.Defines.Add("PLATFORM_WINDOWS");
+                conf.Defines.Add("_WIN64");
+                conf.ExportDefines.Add("PLATFORM_WINDOWS");
+                conf.ExportDefines.Add("_WIN64");
+                break;
+            default:
+                break;
+        }
+
         conf.AddPublicDependency<SDL2Library>(target);
     }
 }

@@ -4,14 +4,16 @@
 #include <vector>
 #include <functional>
 
+#include "EngineTypes.h"
+
 /**
 * Static information about a property
 */
 class PropertyBase {
 private:
 
-	std::string name;
-	std::vector<std::string> tags;
+	String name;
+	std::vector<String> tags;
 
 
 	PropertyBase() = delete;
@@ -20,13 +22,19 @@ private:
 
 protected:
 
-	PropertyBase(std::string&& name) : name(name) {}
+	PropertyBase(String&& name, std::vector<String>&& tags)
+		: name(name), tags(tags)
+	{}
 
 public:
 
+	bool HasTag(String tag) const {
+		return std::find(tags.begin(), tags.end(), std::move(tag)) != tags.end();
+	}
+
 	virtual ~PropertyBase() = default;
 
-	std::string GetName() { return name; }
+	String GetName() { return name; }
 };
 
 /**
@@ -41,8 +49,8 @@ private:
 
 public:
 
-	Property(std::string&& name, std::function<VarType*(ClassType&)>&& access)
-		: PropertyBase(std::move(name)), access(access)
+	Property(String&& name, std::function<VarType*(ClassType&)>&& access, std::vector<String>&& tags)
+		: PropertyBase(std::move(name), std::move(tags)), access(access)
 	{}
 
 	void GetValue(ClassType& instance, VarType& value) const
@@ -91,6 +99,10 @@ public:
 			return true;
 		}
 		return false;
+	}
+
+	bool HasTag(String tag) const {
+		return prop? prop->HasTag(std::move(tag)) : false;
 	}
 
 	bool IsValid() const { return instance != nullptr && prop != nullptr; }
