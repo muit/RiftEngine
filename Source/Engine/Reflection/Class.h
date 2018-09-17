@@ -46,7 +46,7 @@ public:
 	template<typename VarType>
 	void RegistryProperty(std::string&& name, std::function<VarType*(T&)>&& access, std::vector<std::string>&& tags)
 	{
-		std::vector<std::string> tagss{ tags };
+		//TODO: Support Tags
 		properties.emplace(name, std::unique_ptr<PropertyBase>(new Property<T, VarType>(std::move(name), std::move(access))));
 	}
 
