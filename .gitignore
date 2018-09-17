@@ -1,3 +1,8 @@
+
+!Source/**/*.exe
+!Source/**/*.dll
+!Source/**/*.lib
+
 *.sln
 *.vcxproj
 *.vcxproj.filters
