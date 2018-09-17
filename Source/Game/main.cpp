@@ -3,9 +3,7 @@
 #include <iostream>
 #include <string>
 
-#include <World.h>
-#include "Game.h"
-#include "Player/Player.h"
+#include <World/World.h>
 
 using namespace std;
 

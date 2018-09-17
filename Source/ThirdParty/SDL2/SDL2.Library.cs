@@ -1,6 +1,6 @@
 using Sharpmake;
 
-[Sharpmake.Generate]
+[Generate]
 public class SDL2Library : Project
 {
     public string BasePath = @"[project.SharpmakeCsPath]/include";
