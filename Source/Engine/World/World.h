@@ -16,12 +16,12 @@ public:
 			std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
 			return false;
 		}
-		std::cout << "SDL Okay!";
+		std::cout << "SDL Okay!" << std::endl;
 
 		auto Property = World::StaticClass()->FindPropertyHandle<std::string>(*this, "name");
 		Property.SetValue("Meeh");
 
-		std::cout << name;
+		std::cout << name << std::endl;
 
 		SDL_Quit();
 		return true;

@@ -3,6 +3,7 @@ using Sharpmake; // contains the entire Sharpmake object library.
 
 class BaseProject : Project
 {
+    public BaseProject() {}
     public BaseProject(string CustomName)
     {
         Name = CustomName;
@@ -19,6 +20,15 @@ class BaseProject : Project
     [Configure()]
     public virtual void ConfigureAll(Configuration conf, Target target)
     {
-        conf.ProjectPath = @"[project.SharpmakeCsPath]\..\..\Projects\[project.Name]";
+        conf.ProjectPath = @"[project.SharpmakeCsPath]\..\..\Projects\[project.Name]";conf.Options.Add(Sharpmake.Options.Vc.Compiler.CppLanguageStandard.CPP14);
+        
+        conf.Options.Add(Sharpmake.Options.Vc.Compiler.CppLanguageStandard.CPP14);
+        conf.Options.Add(Sharpmake.Options.Vc.Compiler.RTTI.Enable);
+
+        if(target.Optimization == Optimization.Release)
+        {
+            conf.Options.Add(Sharpmake.Options.Vc.General.TreatWarningsAsErrors.Enable);
+        }
+    
     }
 }
