@@ -1,12 +1,14 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include <ThirdParty/TSL/array_set.h>
-#include <ThirdParty/tsl/array_hash.h>
+#include <tsl/array_set.h>
+#include <tsl/array_hash.h>
 
 #include "Platform/Platform.h"
 #include "String.h"
 
+#ifndef NAME_H
+#define NAME_H
 
 struct Name;
 
@@ -140,3 +142,5 @@ NameTable::ConstIterator NameTable::Init(const std::basic_string<ANSICHAR>& stri
 
 const Name::Id Name::NoneId{ NameTable::GetGlobal().None() };
 const Name Name::None{};
+
+#endif

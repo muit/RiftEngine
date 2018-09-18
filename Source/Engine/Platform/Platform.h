@@ -41,7 +41,7 @@ typedef FPlatformTypes::ANSICHAR    ANSICHAR;
 /// A wide character. Normally a signed type.
 typedef FPlatformTypes::WIDECHAR    WIDECHAR;
 /// Either ANSICHAR or WIDECHAR, depending on whether the platform supports wide characters or the requirements of the licensee.
-typedef FPlatformTypes::TCHAR       TCHAR;
+//typedef FPlatformTypes::TCHAR       TCHAR;
 /// An 8-bit character containing a UTF8 (Unicode, 8-bit, variable-width) code unit.
 typedef FPlatformTypes::CHAR8       UTF8CHAR;
 /// A 16-bit character containing a UCS2 (Unicode, 16-bit, fixed-width) code unit, used for compatibility with 'Windows TCHAR' across multiple platforms.

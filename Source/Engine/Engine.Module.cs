@@ -9,7 +9,13 @@ class EngineModule : BaseModule
     public override void ConfigureAll(Configuration conf, Target target)
     {
         base.ConfigureAll(conf, target);
+
+        conf.AddPublicDependency<SDL2Library>(target);
+
         conf.SolutionFolder = "FecoEngine";
+        conf.IncludePaths.Add(@"[project.SharpmakeCsPath]/ThirdParty");
+        
+        conf.Options.Add(new Sharpmake.Options.Vc.Compiler.DisableSpecificWarnings("4152"));
 
         switch(target.Platform) {
             case Platform.win32:
@@ -27,7 +33,5 @@ class EngineModule : BaseModule
             default:
                 break;
         }
-
-        conf.AddPublicDependency<SDL2Library>(target);
     }
 }
