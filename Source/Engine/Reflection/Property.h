@@ -5,6 +5,8 @@
 #include <functional>
 
 #include "EngineTypes.h"
+#include "Serialization/Archive.h"
+
 
 /**
 * Static information about a property
@@ -12,7 +14,7 @@
 class PropertyBase {
 private:
 
-	String name;
+	Name name;
 	std::vector<Name> tags;
 
 
@@ -22,19 +24,18 @@ private:
 
 protected:
 
-	PropertyBase(String&& name, std::vector<Name>&& tags)
+	PropertyBase(Name&& name, std::vector<Name>&& tags)
 		: name(name), tags(tags)
 	{}
 
 public:
 
-	bool HasTag(Name tag) const {
-		return std::find(tags.begin(), tags.end(), std::move(tag)) != tags.end();
-	}
-
 	virtual ~PropertyBase() = default;
 
-	String GetName() { return name; }
+//	virtual void Serialize(void* instance, Archive& archive) const {}
+
+	String GetName() { return name.ToString(); }
+	bool HasTag(Name tag) const { return std::find(tags.begin(), tags.end(), std::move(tag)) != tags.end(); }
 };
 
 /**
@@ -47,9 +48,10 @@ private:
 
 	std::function<VarType*(ClassType&)> access;
 
+
 public:
 
-	Property(String&& name, std::function<VarType*(ClassType&)>&& access, std::vector<Name>&& tags)
+	Property(Name&& name, std::function<VarType*(ClassType&)>&& access, std::vector<Name>&& tags)
 		: PropertyBase(std::move(name), std::move(tags)), access(access)
 	{}
 
@@ -62,6 +64,14 @@ public:
 	{
 		*access(instance) = value;
 	}
+
+private:
+
+//	virtual void Serialize(void* instance, Archive& archive) const override {
+		// Instance will Always be a "ClassType" and valid
+		// Serialize value
+		//archive & *access(*static_cast<ClassType*>(instance));
+//	}
 };
 
 /**

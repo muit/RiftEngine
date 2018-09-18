@@ -2,6 +2,7 @@
 #pragma once
 
 #include <ThirdParty/TSL/array_set.h>
+#include <ThirdParty/tsl/array_hash.h>
 
 #include "Platform/Platform.h"
 #include "String.h"
@@ -11,7 +12,7 @@ struct Name;
 
 class NameTable {
 	friend Name;
-	using Iterator = tsl::array_set<ANSICHAR>::iterator;
+	using Iterator      = tsl::array_set<ANSICHAR>::iterator;
 	using ConstIterator = tsl::array_set<ANSICHAR>::const_iterator;
 
 	tsl::array_set<ANSICHAR> table;
@@ -25,7 +26,10 @@ class NameTable {
 
 	ConstIterator None() const { return table.end(); }
 
-	static NameTable global;
+	static NameTable& GetGlobal() {
+		static NameTable global {};
+		return global;
+	}
 };
 
 
@@ -35,10 +39,10 @@ class NameTable {
  */
 struct Name {
 	friend NameTable;
-
+	using Id = NameTable::ConstIterator;
 private:
 
-	NameTable::ConstIterator id;
+	Id id;
 
 
 public:
@@ -47,11 +51,11 @@ public:
 
 	Name(const ANSICHAR* key) {
 		// Index this name
-		id = NameTable::global.Init(key);
+		id = NameTable::GetGlobal().Init(key);
 	}
 	Name(const std::basic_string<ANSICHAR>& key) {
 		// Index this name
-		id = NameTable::global.Init(key);
+		id = NameTable::GetGlobal().Init(key);
 	}
 	Name(const Name& other) : id(other.id) {}
 	Name(Name&& other) : id(std::move(other.id)) {}
@@ -77,10 +81,64 @@ public:
 		return id == NoneId;
 	}
 
+	const Id& GetId() const { return id; }
+
 
 	static const Name Name::None;
 
 private:
 
-	static const NameTable::ConstIterator Name::NoneId;
+	static const Id Name::NoneId;
 };
+
+namespace std
+{
+	template <>
+	struct hash<Name>
+	{
+		size_t operator()(const Name& k) const
+		{
+			//static const tsl::ah::str_hash<ANSICHAR> hasher{};
+
+			// Return the hash of the string
+			const Name::Id& id = k.GetId();
+			return tsl::ah::str_hash<ANSICHAR>{}(id.key(), id.key_size());
+		}
+	};
+}
+
+
+/** DEFINITIONS
+ * We won't a cpp to have data initialized from start
+ */
+
+NameTable::ConstIterator NameTable::Init(const ANSICHAR* string)
+{
+	if (std::strlen(string) == 0)
+		return None();
+
+	ConstIterator FoundIt = table.find(string);
+	if (FoundIt != None())
+		return FoundIt;
+	else
+	{
+		return table.insert(string).first;
+	}
+}
+
+NameTable::ConstIterator NameTable::Init(const std::basic_string<ANSICHAR>& string)
+{
+	if (string.size() == 0)
+		return None();
+
+	ConstIterator FoundIt = table.find(string);
+	if (FoundIt != None())
+		return FoundIt;
+	else
+	{
+		return table.insert(string).first;
+	}
+}
+
+const Name::Id Name::NoneId{ NameTable::GetGlobal().None() };
+const Name Name::None{};
