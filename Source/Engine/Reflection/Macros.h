@@ -1,3 +1,4 @@
+// Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
 //https://github.com/pfultz2/Cloak/wiki/C-Preprocessor-tricks,-tips,-and-idioms

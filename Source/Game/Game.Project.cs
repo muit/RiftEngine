@@ -13,6 +13,8 @@ class GameProject : BaseProject
 
         conf.IncludePaths.Add(@"[project.SharpmakeCsPath]");
     
+        conf.Options.Add(Sharpmake.Options.Vc.Linker.SubSystem.Application);
+
         conf.AddPublicDependency<EngineModule>(target);
     }
 }

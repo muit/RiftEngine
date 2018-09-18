@@ -10,6 +10,7 @@
 
 struct Name;
 
+/** Global table storing all names */
 class NameTable {
 	friend Name;
 	using Iterator      = tsl::array_set<ANSICHAR>::iterator;
@@ -69,8 +70,8 @@ public:
 		return *this;
 	}
 
-	String ToString() const {
-		return IsNone() ? String{id.key(), id.key_size()} : "None";
+	std::basic_string<ANSICHAR> ToString() const {
+		return IsNone() ? std::basic_string<ANSICHAR>{id.key(), id.key_size()} : "None";
 	}
 
 	bool operator==(const Name& other) const {
@@ -91,11 +92,9 @@ private:
 	static const Id Name::NoneId;
 };
 
-namespace std
-{
+namespace std {
 	template <>
-	struct hash<Name>
-	{
+	struct hash<Name> {
 		size_t operator()(const Name& k) const
 		{
 			static const tsl::ah::str_hash<ANSICHAR> hasher{};
