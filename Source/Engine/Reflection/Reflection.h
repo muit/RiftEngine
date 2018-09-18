@@ -14,10 +14,12 @@ template<> struct MetaInt<0> { static constexpr int value = 0; };
 
 
 #define CLASS(type, parent) \
+public:\
 using Super = parent;\
 ORPHAN_CLASS(type)
 
 #define ORPHAN_CLASS(type) \
+private:\
 using __meta_type = type; \
 friend Class<__meta_type>; \
 \

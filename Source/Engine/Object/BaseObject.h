@@ -6,6 +6,10 @@
 
 class Object;
 
-class BaseObject {
+class BaseObject : public std::enable_shared_from_this<BaseObject> {
 	ORPHAN_CLASS(BaseObject)
+
+public:
+
+	virtual ~BaseObject() {}
 };

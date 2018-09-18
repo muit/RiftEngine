@@ -7,6 +7,7 @@
 #include "EngineTypes.h"
 #include "Object.h"
 #include "Reflection/Reflection.h"
+#include "Scene.h"
 
 
 class World : public Object {
@@ -14,6 +15,9 @@ class World : public Object {
 
 public:
 
-	PROP(Name, name, "Save")
-	Name name;
+	GlobalPtr<Object> scene;
+
+	void Start() {
+		scene = Object::Create<Scene>(ThisPtr());
+	}
 };

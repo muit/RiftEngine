@@ -1,110 +1,174 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include "Object.h"
+#include "Object/BaseObject.h"
 
 
-template<typename ObjectType>
+template<typename Type>
 class Ptr;
 
-template<typename ObjectType>
+template<typename Type>
 class GlobalPtr
 {
-	static_assert(std::is_convertible< ObjectType, Object >::value, "Type is not an Object!");
+	static_assert(std::is_convertible< Type, BaseObject >::value, "Type is not an Object!");
+
+	friend class GlobalPtr;
+	friend GlobalPtr<Type> GlobalPtr<Type>::PostCreate(std::shared_ptr<Type>&&);
+
 
 public:
 
-	template<typename... Args>
-	GlobalPtr(Args&&... args) :
-		ptr { std::make_unique<ObjectType>(std::forward<Args>(args)...) }
-	{}
+	GlobalPtr() : ptr{} {}
 
 	GlobalPtr(const GlobalPtr&) = delete;
-	GlobalPtr(GlobalPtr&&) = default;
+	GlobalPtr(GlobalPtr&& other) {
+		ptr = std::move(other.ptr);
+	}
 	GlobalPtr& operator=(const GlobalPtr&) = delete;
-	GlobalPtr& operator=(GlobalPtr&&) = default;
-	~GlobalPtr() {
-		if()
+	GlobalPtr& operator=(GlobalPtr&& other) {
+		ptr = std::move(other.ptr);
+		return *this;
 	}
 
-	operator Ptr<ObjectType>() const {
+
+	template<typename Type2>
+	GlobalPtr(GlobalPtr<Type2>&& other) { operator<Type2>(other); }
+
+	template<typename Type2>
+	GlobalPtr& operator=(GlobalPtr<Type2>&& other) {
+		static_assert(std::is_convertible< Type2, Type >::value, "Type is not compatible!");
+
+		if (!other)
+			ptr = nullptr;
+		else
+		{
+			ptr = other.Cast<Type>().ptr;
+			other.Destroy();
+		}
+		return *this;
+	}
+
+	~GlobalPtr() {}
+
+	operator Ptr<Type>() const {
 		return { *this };
 	}
-	Ptr<ObjectType> GetPtr() const { return { *this }; }
-	Ptr<ObjectType> operator->() const {
+	Ptr<Type> GetPtr() const { return { *this }; }
+	Ptr<Type> operator->() const {
 		return {*this};
 	}
 
 	template<typename T>
-	Ptr<T> Cast() const {
-		return { std::dynamic_pointer_cast<T>(ptr) };
-	}
+	GlobalPtr<T> Cast() const { return { std::dynamic_pointer_cast<T>(ptr) }; }
 
-	operator bool() const {
-		return !ptr.expired();
-	};
+	/** Manual destruction */
+	void Destroy() { ptr = nullptr; }
+
+	bool IsValid() const { return !!ptr.get(); }
+	operator bool() const { return IsValid(); };
+
+
+	/** Internal usage only */
+	static GlobalPtr<Type> PostCreate(std::shared_ptr<Type>&& inPtr)
+	{ return { std::move(inPtr) }; }
 
 private:
 
-	const std::shared_ptr<ObjectType> ptr;
+	GlobalPtr(std::shared_ptr<Type>&& inPtr) { ptr = inPtr; }
+
+	std::shared_ptr<Type> ptr;
 };
 
 
-template<typename ObjectType>
+template<typename Type>
 class Ptr
 {
-	friend GlobalPtr<ObjectType>;
+	static_assert(std::is_convertible< Type, BaseObject >::value, "Type is not an Object!");
+
+	friend GlobalPtr<Type>;
+	friend class Ptr;
+
 
 private:
 
-	Ptr() = default;
-	Ptr(std::weak_ptr<ObjectType>&& ptr) : ptr(ptr) {}
+	Ptr(std::weak_ptr<Type>&& ptr) : ptr(ptr) {}
 
 public:
 
-	template<typename ObjectType2>
-	Ptr(const GlobalPtr<ObjectType2>& newPtr) : Ptr(newPtr.GetPtr())
+	Ptr() = default;
+
+	template<typename Type2>
+	Ptr(const GlobalPtr<Type2>& newPtr) : Ptr(newPtr.GetPtr())
 	{}
 
-	template<typename ObjectType2>
-	Ptr(const Ptr<ObjectType2>& newPtr) : ptr(newPtr.ptr)
-	{
-		static_assert(std::is_convertible< ObjectType2, ObjectType >::value, "Type is not compatible!");
-	}
+	template<typename Type2>
+	Ptr(const Ptr<Type2>& other) { operator=(other); }
+	template<typename Type2>
+	Ptr(Ptr<Type2>&& other) { operator=(other); }
 
-	template<typename ObjectType2>
-	Ptr(Ptr<ObjectType2>&& newPtr) : ptr(std::move(newPtr.ptr))
-	{
-		static_assert(std::is_convertible< ObjectType2, ObjectType >::value, "Type is not compatible!");
+	template<typename Type2>
+	Ptr(Type2* other) {
+		static_assert(std::is_convertible< Type2, Type >::value, "Type is not compatible!");
+		if (!other) {
+			ptr = {};
+			return;
+		}
+		Ptr(std::weak_ptr<Type>{ std::dynamic_pointer_cast<Type>(other->shared_from_this()) });
 	}
 
 	Ptr& operator=(const Ptr& other) {
 		ptr = other.ptr;
 		return *this;
 	};
+
 	Ptr& operator=(Ptr&& other) {
-		ptr = std::move(other.ptr);
+		ptr = other.ptr;
+		other.Invalidate();
 		return *this;
 	}
-	Ptr& operator=(const GlobalPtr<ObjectType>& other) {
-		ptr = { other };
+
+	/** We use templates for down-casting */
+	template<typename Type2>
+	Ptr& operator=(const Ptr<Type2>& other) {
+		static_assert(std::is_convertible< Type2, Type >::value, "Type is not compatible!");
+		ptr = other.Cast<Type>().ptr;
 	};
 
-	ObjectType* operator->() {
+	template<typename Type2>
+	Ptr& operator=(Ptr<Type2>&& other) {
+		static_assert(std::is_convertible< Type2, Type >::value, "Type is not compatible!");
+		ptr = other.Cast<Type>().ptr;
+		other.Invalidate();
+		return *this;
+	}
+
+
+	template<typename Type2>
+	Ptr& operator=(const GlobalPtr<Type2>& other) {
+		*this = std::move(other.GetPtr());
+		return *this;
+	};
+	Ptr& operator=(TYPE_OF_NULLPTR) {
+		ptr = {};
+		return *this;
+	};
+
+	Type* operator->() const {
 		return ptr.expired()? nullptr : ptr.lock().get();
 	}
 
-	operator bool() {
-		return !ptr.expired();
-	};
+	bool IsValid() const { return !ptr.expired(); }
+	operator bool() const {	return IsValid(); };
 
 	template<typename T>
 	Ptr<T> Cast() const {
 		return { std::dynamic_pointer_cast<T>(ptr.lock()) };
 	}
 
+	void Invalidate() { ptr = {}; }
+
 private:
 
-	const std::weak_ptr<ObjectType> ptr;
+	std::weak_ptr<Type> ptr;
 };
 
