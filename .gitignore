@@ -7,5 +7,6 @@
 *.vcxproj
 *.vcxproj.filters
 /projects/**/*.*
+/enc_temp_folder/**/*.*
 
 .vs

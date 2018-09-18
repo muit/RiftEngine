@@ -12,7 +12,12 @@
 template<int N> struct MetaInt : MetaInt<N - 1> { static constexpr int value = N; };
 template<> struct MetaInt<0> { static constexpr int value = 0; };
 
-#define CLASS(type) \
+
+#define CLASS(type, parent) \
+using Super = parent;\
+ORPHAN_CLASS(type)
+
+#define ORPHAN_CLASS(type) \
 using __meta_type = type; \
 friend Class<__meta_type>; \
 \

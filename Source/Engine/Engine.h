@@ -11,7 +11,7 @@
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
 
-class Viewport {
+class Engine {
 
 	SDL_Window* window;
 	SDL_GLContext gl_context;
@@ -19,7 +19,7 @@ class Viewport {
 
 public:
 
-	Viewport() {}
+	Engine() {}
 
 	bool Start() {
 		// Setup SDL

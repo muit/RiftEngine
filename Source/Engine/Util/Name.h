@@ -50,7 +50,7 @@ private:
 
 public:
 
-	Name() : id(NoneId) {}
+	Name() : id(NoneId()) {}
 
 	Name(const ANSICHAR* key) {
 		// Index this name
@@ -81,17 +81,19 @@ public:
 	}
 
 	bool IsNone() const {
-		return id == NoneId;
+		return id == NoneId();
 	}
 
 	const Id& GetId() const { return id; }
 
 
-	static const Name Name::None;
+	static const Name None() { return { NoneId() }; };
+	static const Id NoneId() { return NameTable::GetGlobal().None(); };
+
 
 private:
 
-	static const Id Name::NoneId;
+	Name(const Id& id) : id(id) {}
 };
 
 namespace std {
@@ -106,41 +108,5 @@ namespace std {
 		}
 	};
 }
-
-
-/** DEFINITIONS
- * We won't a cpp to have data initialized from start
- */
-
-NameTable::ConstIterator NameTable::Init(const ANSICHAR* string)
-{
-	if (std::strlen(string) == 0)
-		return None();
-
-	ConstIterator FoundIt = table.find(string);
-	if (FoundIt != None())
-		return FoundIt;
-	else
-	{
-		return table.insert(string).first;
-	}
-}
-
-NameTable::ConstIterator NameTable::Init(const std::basic_string<ANSICHAR>& string)
-{
-	if (string.size() == 0)
-		return None();
-
-	ConstIterator FoundIt = table.find(string);
-	if (FoundIt != None())
-		return FoundIt;
-	else
-	{
-		return table.insert(string).first;
-	}
-}
-
-const Name::Id Name::NoneId{ NameTable::GetGlobal().None() };
-const Name Name::None{};
 
 #endif
