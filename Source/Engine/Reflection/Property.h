@@ -13,7 +13,7 @@ class PropertyBase {
 private:
 
 	String name;
-	std::vector<String> tags;
+	std::vector<Name> tags;
 
 
 	PropertyBase() = delete;
@@ -22,13 +22,13 @@ private:
 
 protected:
 
-	PropertyBase(String&& name, std::vector<String>&& tags)
+	PropertyBase(String&& name, std::vector<Name>&& tags)
 		: name(name), tags(tags)
 	{}
 
 public:
 
-	bool HasTag(String tag) const {
+	bool HasTag(Name tag) const {
 		return std::find(tags.begin(), tags.end(), std::move(tag)) != tags.end();
 	}
 
@@ -49,7 +49,7 @@ private:
 
 public:
 
-	Property(String&& name, std::function<VarType*(ClassType&)>&& access, std::vector<String>&& tags)
+	Property(String&& name, std::function<VarType*(ClassType&)>&& access, std::vector<Name>&& tags)
 		: PropertyBase(std::move(name), std::move(tags)), access(access)
 	{}
 
@@ -101,7 +101,7 @@ public:
 		return false;
 	}
 
-	bool HasTag(String tag) const {
+	bool HasTag(Name tag) const {
 		return prop? prop->HasTag(std::move(tag)) : false;
 	}
 

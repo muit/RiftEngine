@@ -45,7 +45,7 @@ struct Class {
 public:
 	/** GENERATION */
 	template<typename VarType>
-	void RegistryProperty(String&& name, std::function<VarType*(T&)>&& access, std::vector<String>&& tags)
+	void RegistryProperty(String&& name, std::function<VarType*(T&)>&& access, std::vector<Name>&& tags)
 	{
 		properties.emplace(name, std::unique_ptr<PropertyBase>(
 			new Property<T, VarType>(
