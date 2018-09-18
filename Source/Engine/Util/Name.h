@@ -98,11 +98,10 @@ namespace std
 	{
 		size_t operator()(const Name& k) const
 		{
-			//static const tsl::ah::str_hash<ANSICHAR> hasher{};
-
+			static const tsl::ah::str_hash<ANSICHAR> hasher{};
 			// Return the hash of the string
 			const Name::Id& id = k.GetId();
-			return tsl::ah::str_hash<ANSICHAR>{}(id.key(), id.key_size());
+			return hasher(id.key(), id.key_size());
 		}
 	};
 }
