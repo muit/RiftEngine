@@ -22,7 +22,7 @@ public class SDL2Library : Project
     }
 
     [Configure()]
-    public void Configure(Configuration conf, Target target)
+    public void ConfigureAll(Configuration conf, Target target)
     {
         conf.SolutionFolder = "FecoEngine/ThirdParty";
         conf.IncludePaths.Add("[project.BasePath]");

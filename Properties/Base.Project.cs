@@ -24,6 +24,7 @@ class BaseProject : Project
         
         conf.Options.Add(Sharpmake.Options.Vc.Compiler.CppLanguageStandard.CPP14);
         conf.Options.Add(Sharpmake.Options.Vc.Compiler.RTTI.Enable);
+        conf.Options.Add(Sharpmake.Options.Vc.Compiler.Exceptions.Enable);
 
         if(target.Optimization == Optimization.Release)
         {
