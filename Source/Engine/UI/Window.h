@@ -6,5 +6,5 @@
 
 
 class Window : public Object {
-    CLASS(Window, Object)
-}
+	CLASS(Window, Object)
+};

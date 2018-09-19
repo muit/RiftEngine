@@ -1,12 +1,9 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
+#include <GL/gl3w.h>
 #include <SDL.h>
 #include <imgui/imgui.h>
-#include <GL/gl3w.h>
-#include <imgui/imgui_impl_opengl3.h>
-#include <imgui/imgui_impl_sdl.h>
-#include <SDL_opengl.h>
 
 #include "EngineTypes.h"
 #include "Object.h"
@@ -30,10 +27,6 @@ class Renderer : public Object {
 	const char* glslVersion;
 
 
-	bool showDemoWindow = true;
-	bool showAnotherWindow = false;
-	ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
 public:
 
 	Renderer();
@@ -44,11 +37,11 @@ public:
 
 	void PreTick();
 
-	void TickUI(float deltaTime);
-
 	void Render();
 
 	ERendererState GetState() const { return state; }
+
+	SDL_Window* GetWindow() { return window; }
 
 	uint32 GetWindowId() const {
 		return window ? SDL_GetWindowID(window) : 0;

@@ -7,6 +7,11 @@
 template<typename Type>
 class Ptr;
 
+/**
+ * Pointer to an Object that keeps it from being removed.
+ * If a GlobalPtr goes out of scope or destroyed the object will be too.
+ * GlobalPtrs are Unique. An object can't be referenced by more than one global ptr.
+ */
 template<typename Type>
 class GlobalPtr
 {
@@ -53,13 +58,9 @@ public:
 		return *this;
 	}
 
-	operator Ptr<Type>() const {
-		return { *this };
-	}
 	Ptr<Type> GetPtr() const { return { ptr }; }
-	Ptr<Type> operator->() const {
-		return GetPtr();
-	}
+	operator Ptr<Type>() const { return GetPtr(); }
+	Ptr<Type> operator->() const { return GetPtr(); }
 
 	template<typename Type2>
 	bool operator==(const GlobalPtr<Type2>& other) const { return ptr == other.ptr; }
@@ -88,6 +89,10 @@ private:
 };
 
 
+/**
+* Weak Object Pointers
+* Objects will be removed if their global ptr is destroyed. In this case all Ptrs will be invalidated.
+*/
 template<typename Type>
 class Ptr
 {

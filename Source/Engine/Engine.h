@@ -4,10 +4,14 @@
 #include <SDL.h>
 
 #include "Renderer.h"
+#include "UI/UIManager.h"
 
 
 class Engine : public Object {
+	CLASS(Engine, Object)
 
+
+	GlobalPtr<UIManager> ui;
 	GlobalPtr<Renderer> renderer;
 
 public:
@@ -22,6 +26,9 @@ public:
 		renderer = Create<Renderer>();
 		if(renderer->GetState() == ERendererState::Failed)
 			return false;
+
+		ui = Create<UIManager>(ThisPtr());
+		ui->Prepare();
 
 		bool bFinish = false;
 		while (!bFinish)
@@ -41,15 +48,27 @@ public:
 			renderer->PreTick();
 
 			// Tick
-			renderer->TickUI(0.0f);
+			ui->Tick(0.f);
 
 			// Rendering
 			renderer->Render();
 		}
+
 		return true;
 	}
 
 	~Engine() {
 		SDL_Quit();
 	}
+
+
+	static void StartEngine()
+	{
+		GEngine->Start();
+	}
+
+	static const GlobalPtr<Engine> GEngine;
 };
+
+const GlobalPtr<Engine> Engine::GEngine{ Create<Engine>() };
+#define GEngine Engine::GEngine;

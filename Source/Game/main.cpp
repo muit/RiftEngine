@@ -13,8 +13,7 @@ using namespace std;
 
 int main(int, char**)
 {
-	Engine engine{};
-	engine.Start();
+	Engine::StartEngine();
 
 	return 0;
 }
