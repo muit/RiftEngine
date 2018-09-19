@@ -5,6 +5,7 @@
 #include "Object.h"
 #include "EditorWindow.h"
 
+#if WITH_EDITOR
 
 class Editor : public Object {
     CLASS(Editor, Object)
@@ -12,3 +13,4 @@ class Editor : public Object {
     std::vector<GlobalPtr<EditorWindow>> Windows;
 };
 
+#endif

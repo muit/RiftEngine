@@ -38,8 +38,6 @@ public:
 
 	Renderer();
 
-	void Construct() {}
-
 	void PrepareUI();
 
 	virtual void BeforeDestroy() override;

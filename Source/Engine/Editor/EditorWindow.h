@@ -4,7 +4,10 @@
 
 #include "UI/Window.h"
 
+#if WITH_EDITOR
 
 class EditorWindow : public Window {
 	CLASS(EditorWindow, Window)
 };
+
+#endif

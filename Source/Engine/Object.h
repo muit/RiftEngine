@@ -26,13 +26,13 @@ public:
 	Ptr<Object> ThisPtr() { return { this }; }
 };
 
-template<typename ObjectType, typename... Args>
-static GlobalPtr<ObjectType> Create(const Ptr<Object> parent = {}, Args&&... args) {
+template<typename ObjectType>
+static GlobalPtr<ObjectType> Create(const Ptr<Object> parent = {}) {
 	static_assert(std::is_convertible< ObjectType, Object >::value, "Type is not an Object!");
 
 	std::shared_ptr<ObjectType> ptr = std::make_shared<ObjectType>();
 	ptr->SetParent(parent);
-	ptr->Construct(std::forward<Args>(args)...);
+	ptr->Construct();
 
 	return GlobalPtr<ObjectType>::PostCreate(std::move(ptr));
 }

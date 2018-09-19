@@ -5,6 +5,7 @@
 #include "Object.h"
 #include "Editor.h"
 
+#if WITH_EDITOR
 
 class EditorManager : public Object {
 	CLASS(EditorManager, Object)
@@ -21,3 +22,4 @@ public:
 	}
 };
 
+#endif

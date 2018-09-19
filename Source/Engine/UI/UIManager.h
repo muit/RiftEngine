@@ -3,14 +3,18 @@
 #pragma once
 
 #include "Object.h"
+#include "Object/ObjectPtr.h"
+#include "Editor/EditorManager.h"
 
 
 class UIManager : public Object {
 	CLASS(UIManager, Object)
 
+	GlobalPtr<EditorManager> editor;
+
 public:
 
-	void Tick(float DeltaTime) {
+	void Tick(float deltaTime) {
 
 	}
 
