@@ -11,8 +11,13 @@ void EditorManager::Tick(float deltaTime)
 	{
 		if (ImGui::BeginMenu("File"))
 		{
+			if (ImGui::MenuItem("Open Scene")) {}
+			if (ImGui::MenuItem("Save Scene", "CTRL+S", false, false)) {}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Exit")) {}
 			ImGui::EndMenu();
 		}
+
 		if (ImGui::BeginMenu("Edit"))
 		{
 			if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
@@ -25,6 +30,8 @@ void EditorManager::Tick(float deltaTime)
 		}
 		ImGui::EndMainMenuBar();
 	}
+
+	details->OnTick();
 
 
 	// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).

@@ -7,12 +7,17 @@
 
 #if WITH_EDITOR
 #include <imgui/imgui.h>
+#include "UI/Widget.h"
+#include "Widgets/Details.h"
 
 
 class EditorManager : public Object {
 	CLASS(EditorManager, Object)
 
+
 	std::vector<GlobalPtr<Editor>> activeEditors;
+
+	GlobalPtr<Details> details;
 
 	bool showDemoWindow = true;
 	bool showAnotherWindow = false;
@@ -20,6 +25,10 @@ class EditorManager : public Object {
 
 
 public:
+
+	EditorManager() : Super() {
+		details = Widget::CreateStandalone<Details>();
+	}
 
 	template<typename EditorType>
 	Ptr<Editor> CreateEditor()

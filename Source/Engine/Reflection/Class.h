@@ -23,7 +23,7 @@ struct Class {
 	const PropertyMap& GetAllProperties() { return properties; }
 
 	template<typename VarType>
-	const Property<T, VarType>* FindProperty(const Name& name) const
+	const Property<VarType>* FindProperty(const Name& name) const
 	{
 		const auto propIt = properties.find(name);
 		if (propIt == properties.end())
@@ -35,7 +35,7 @@ struct Class {
 	template<typename VarType>
 	PropertyHandle<T, VarType> FindPropertyHandle(T& instance, const String& name) const
 	{
-		const Property<T, VarType>* prop{ FindProperty<VarType>(name) };
+		const Property<VarType>* prop{ FindProperty<VarType>(name) };
 		if (prop)
 		{
 			return { instance, prop };
@@ -55,10 +55,10 @@ struct Class {
 public:
 	/** GENERATION */
 	template<typename VarType>
-	void RegistryProperty(Name&& name, std::function<VarType*(T&)>&& access, std::vector<Name>&& tags)
+	void RegistryProperty(Name&& name, std::function<VarType*(void*)>&& access, std::vector<Name>&& tags)
 	{
 		properties.emplace(name, std::unique_ptr<PropertyBase>(
-			new Property<T, VarType>(
+			new Property<VarType>(
 				std::move(name),
 				std::move(access),
 				std::move(tags)

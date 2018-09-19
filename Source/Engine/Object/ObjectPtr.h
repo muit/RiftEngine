@@ -42,7 +42,7 @@ public:
 
 
 	template<typename Type2>
-	GlobalPtr(GlobalPtr<Type2>&& other) { operator<Type2>(other); }
+	GlobalPtr(GlobalPtr<Type2>&& other) { operator=<Type2>(std::move(other)); }
 
 	template<typename Type2>
 	GlobalPtr& operator=(GlobalPtr<Type2>&& other) {

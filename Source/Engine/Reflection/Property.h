@@ -42,28 +42,31 @@ public:
 /**
  * Static information about a property
  */
-template <typename ClassType, typename VarType>
+template <typename VarType>
 class Property : public PropertyBase {
 
 private:
 
-	std::function<VarType*(ClassType&)> access;
+	std::function<VarType*(void*)> access;
 
 
 public:
 
-	Property(Name&& name, std::function<VarType*(ClassType&)>&& access, std::vector<Name>&& tags)
+	Property(Name&& name, std::function<VarType*(void*)>&& access, std::vector<Name>&& tags)
 		: PropertyBase(std::move(name), std::move(tags)), access(access)
 	{}
 
+	// TODO: Ensure class is correct or create object handle
+	template<typename ClassType>
 	void GetValue(ClassType& instance, VarType& value) const
 	{
-		value = *access(instance);
+		value = *access(&instance);
 	}
 
+	template<typename ClassType>
 	void SetValue(ClassType& instance, const VarType& value) const
 	{
-		*access(instance) = value;
+		*access(&instance) = value;
 	}
 
 private:
@@ -81,16 +84,16 @@ private:
 template<typename ClassType, typename VarType>
 struct PropertyHandle
 {
-	friend Property<ClassType, VarType>;
+	friend Property<VarType>;
 
 private:
 
 	ClassType* const instance;
-	const Property<ClassType, VarType>* const prop;
+	const Property<VarType>* const prop;
 
 public:
 	PropertyHandle() : instance(nullptr), prop(nullptr) {}
-	PropertyHandle(ClassType& instance, const Property<ClassType, VarType>* prop) : instance(&instance), prop(prop) {}
+	PropertyHandle(ClassType& instance, const Property<VarType>* prop) : instance(&instance), prop(prop) {}
 
 	bool GetValue(VarType& value) const
 	{

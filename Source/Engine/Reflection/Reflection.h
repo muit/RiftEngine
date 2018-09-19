@@ -43,9 +43,10 @@ static constexpr int id_name = decltype(__meta_Counter(MetaInt<255>{}))::value; 
 static constexpr MetaInt<id_name + 1> __meta_Counter(MetaInt<id_name + 1>); \
 static void __meta_RegistrySpecifier(MetaInt<id_name>) { \
 \
-	StaticClass()->RegistryProperty<type>(#name, [](__meta_type& instance)\
+	StaticClass()->RegistryProperty<type>(#name, [](void* instance)\
 	{\
-		return &instance.name;\
+		/** Instance is always of the same class */\
+		return &reinterpret_cast<__meta_type*>(instance)->name;\
 	}, { __VA_ARGS__ }); \
 \
 	__meta_RegistrySpecifier(MetaInt<id_name + 1>{}); \
