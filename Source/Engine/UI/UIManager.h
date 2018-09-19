@@ -5,6 +5,13 @@
 #include "Object.h"
 
 
-class Window : public Object {
-    CLASS(Window, Object)
-}
+class UIManager : public Object {
+	CLASS(UIManager, Object)
+
+public:
+
+	void Tick(float DeltaTime) {
+
+	}
+
+};

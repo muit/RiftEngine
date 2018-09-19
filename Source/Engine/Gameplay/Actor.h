@@ -12,7 +12,4 @@ public:
 
 	PROP(Name, name)
 	Name name;
-
-
-	void Construct() {}
 };

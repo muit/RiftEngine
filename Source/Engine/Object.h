@@ -18,15 +18,16 @@ private:
 
 public:
 
-	void Construct() {}
+	virtual void Construct() {}
 
 	void SetParent(const Ptr<Object>& newParent) { parent = newParent; }
+	Ptr<Object> GetParent() const { return parent.Cast<Object>(); }
 
-	Ptr<Object> ThisPtr() { return {this}; }
+	Ptr<Object> ThisPtr() { return { this }; }
 };
 
 template<typename ObjectType, typename... Args>
-static GlobalPtr<ObjectType> Create(const Ptr<Object>& parent, Args&&... args) {
+static GlobalPtr<ObjectType> Create(const Ptr<Object> parent = {}, Args&&... args) {
 	static_assert(std::is_convertible< ObjectType, Object >::value, "Type is not an Object!");
 
 	std::shared_ptr<ObjectType> ptr = std::make_shared<ObjectType>();

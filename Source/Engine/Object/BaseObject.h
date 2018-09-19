@@ -11,5 +11,9 @@ class BaseObject : public std::enable_shared_from_this<BaseObject> {
 
 public:
 
+	BaseObject() = default;
+
+	virtual void BeforeDestroy() {}
+
 	virtual ~BaseObject() {}
 };

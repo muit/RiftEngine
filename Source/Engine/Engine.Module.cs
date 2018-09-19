@@ -15,7 +15,7 @@ class EngineModule : BaseModule
         conf.SolutionFolder = "FecoEngine";
         conf.IncludePaths.Add(@"[project.SharpmakeCsPath]/ThirdParty");
         
-        conf.Options.Add(new Sharpmake.Options.Vc.Compiler.DisableSpecificWarnings("4152"));
+        conf.Options.Add(new Sharpmake.Options.Vc.Compiler.DisableSpecificWarnings("4152", "4100"));
 
         switch(target.Platform) {
             case Platform.win32:

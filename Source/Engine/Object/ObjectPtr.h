@@ -18,8 +18,7 @@ class GlobalPtr
 
 public:
 
-	GlobalPtr() : ptr{} {}
-
+	GlobalPtr() = default;
 	GlobalPtr(const GlobalPtr&) = delete;
 	GlobalPtr(GlobalPtr&& other) {
 		ptr = std::move(other.ptr);
@@ -28,6 +27,12 @@ public:
 	GlobalPtr& operator=(GlobalPtr&& other) {
 		ptr = std::move(other.ptr);
 		return *this;
+	}
+	~GlobalPtr() {
+		// Force memory deallocation
+		if (IsValid())
+			ptr->BeforeDestroy();
+		ptr.reset();
 	}
 
 
@@ -48,14 +53,12 @@ public:
 		return *this;
 	}
 
-	~GlobalPtr() {}
-
 	operator Ptr<Type>() const {
 		return { *this };
 	}
 	Ptr<Type> GetPtr() const { return { ptr }; }
 	Ptr<Type> operator->() const {
-		return {*this};
+		return GetPtr();
 	}
 
 	template<typename Type2>
@@ -133,6 +136,7 @@ public:
 	Ptr& operator=(const Ptr<Type2>& other) {
 		static_assert(std::is_convertible< Type2, Type >::value, "Type is not compatible!");
 		ptr = other.Cast<Type>().ptr;
+		return *this;
 	};
 
 	template<typename Type2>

@@ -16,16 +16,5 @@ int main(int, char**)
 	Engine engine{};
 	engine.Start();
 
-	auto a = GlobalPtr<Actor>();
-	Ptr<Object> b = a.GetPtr();
-	auto c = a.GetPtr();
-
-	if (a == c)
-	{
-		cout << "true";
-	} else {
-		cout << "false";
-	}
-
 	return 0;
 }
