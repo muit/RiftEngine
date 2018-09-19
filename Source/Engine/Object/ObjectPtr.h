@@ -53,10 +53,15 @@ public:
 	operator Ptr<Type>() const {
 		return { *this };
 	}
-	Ptr<Type> GetPtr() const { return { *this }; }
+	Ptr<Type> GetPtr() const { return { ptr }; }
 	Ptr<Type> operator->() const {
 		return {*this};
 	}
+
+	template<typename Type2>
+	bool operator==(const GlobalPtr<Type2>& other) const { return ptr == other.ptr; }
+	template<typename Type2>
+	bool operator==(const Ptr<Type2>& other) const { return ptr == other.ptr.lock(); }
 
 	template<typename T>
 	GlobalPtr<T> Cast() const { return { std::dynamic_pointer_cast<T>(ptr) }; }
@@ -98,13 +103,9 @@ public:
 	Ptr() = default;
 
 	template<typename Type2>
-	Ptr(const GlobalPtr<Type2>& newPtr) : Ptr(newPtr.GetPtr())
-	{}
-
-	template<typename Type2>
 	Ptr(const Ptr<Type2>& other) { operator=(other); }
 	template<typename Type2>
-	Ptr(Ptr<Type2>&& other) { operator=(other); }
+	Ptr(Ptr<Type2>&& other) { operator=(std::move(other)); }
 
 	template<typename Type2>
 	Ptr(Type2* other) {
@@ -152,6 +153,14 @@ public:
 		ptr = {};
 		return *this;
 	};
+
+	template<typename Type2>
+	bool operator==(const Ptr<Type2>& other) const {
+		return this->ptr.lock() == other.ptr.lock();
+	}
+
+	template<typename Type2>
+	bool operator==(const GlobalPtr<Type2>& other) const { return other == *this; }
 
 	Type* operator->() const {
 		return ptr.expired()? nullptr : ptr.lock().get();

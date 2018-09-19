@@ -5,13 +5,13 @@
 #include "Object.h"
 
 
-class Actor : Object {
-    CLASS(Actor, Object)
+class Actor : public Object {
+	CLASS(Actor, Object)
 
 public:
 
-    PROP(Name, name)
-    Name name;
+	PROP(Name, name)
+	Name name;
 
 
 	void Construct() {}

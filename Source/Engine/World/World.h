@@ -18,6 +18,6 @@ public:
 	GlobalPtr<Object> scene;
 
 	void Start() {
-		scene = Object::Create<Scene>(ThisPtr());
+		scene = Create<Scene>(ThisPtr());
 	}
 };
