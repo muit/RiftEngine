@@ -5,14 +5,12 @@ public class SDL2Library : Project
 {
     public string BasePath = @"[project.SharpmakeCsPath]/include";
 
-    public SDL2Library()
+    public SDL2Library() : base(typeof(FecoTarget))
     {
         Name = "SDL2";
 
-        AddTargets(new Target(
-            Platform.win32 | Platform.win64,
-            DevEnv.vs2017,
-            Optimization.Debug | Optimization.Release,
+        AddTargets(new FecoTarget(
+            Editor.Editor | Editor.Game,
             OutputType.Dll | OutputType.Lib
         ));
 

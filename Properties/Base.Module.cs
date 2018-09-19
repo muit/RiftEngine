@@ -9,15 +9,10 @@ class BaseModule : BaseProject
         SourceRootPath = @"[project.SharpmakeCsPath]";
         IsFileNameToLower = false;
 
-        AddTargets(new Target(
-            Platform.win32 | Platform.win64,
-            DevEnv.vs2017,
-            Optimization.Debug | Optimization.Release,
-            OutputType.Lib
-        ));
+        AddTargets(new FecoTarget( Editor.Editor | Editor.Game ));
     }
 
-    public override void ConfigureAll(Configuration conf, Target target)
+    public override void ConfigureAll(Configuration conf, FecoTarget target)
     {
         base.ConfigureAll(conf, target);
         

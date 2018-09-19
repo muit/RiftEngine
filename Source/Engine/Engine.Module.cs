@@ -6,7 +6,7 @@ class EngineModule : BaseModule
 {
     public EngineModule() : base("Engine") {}
 
-    public override void ConfigureAll(Configuration conf, Target target)
+    public override void ConfigureAll(Configuration conf, FecoTarget target)
     {
         base.ConfigureAll(conf, target);
 

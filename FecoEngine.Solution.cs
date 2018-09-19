@@ -11,7 +11,7 @@ using Sharpmake; // contains the entire Sharpmake object library.
 [Generate]
 class FecoEngineSolution : Solution
 {
-    public FecoEngineSolution()
+    public FecoEngineSolution() : base(typeof(FecoTarget))
     {
         // The name of the solution.
         Name = "FecoEngine";
@@ -19,15 +19,11 @@ class FecoEngineSolution : Solution
 
         // As with the project, define which target this solution builds for.
         // It's usually the same thing.
-        AddTargets(new Target(
-            Platform.win32 | Platform.win64,
-            DevEnv.vs2017,
-            Optimization.Debug | Optimization.Release
-        ));
+        AddTargets(new FecoTarget( Editor.Editor | Editor.Game ));
     }
 
     [Configure()]
-    public void ConfigureAll(Solution.Configuration conf, Target target)
+    public void ConfigureAll(Solution.Configuration conf, FecoTarget target)
     {   
         // Puts the generated solution in the /generated folder too.
         conf.SolutionPath = @"[solution.SharpmakeCsPath]";
@@ -42,5 +38,37 @@ class FecoEngineSolution : Solution
     public static void SharpmakeMain(Arguments sharpmakeArgs)
     {
         sharpmakeArgs.Generate<FecoEngineSolution>();
+    }
+}
+
+
+[Fragment, Flags]
+public enum Editor
+{
+    Editor = 0x01,
+    Game = 0x02
+}
+
+class FecoTarget : Target {
+    public Editor Editor;
+
+    public override string Name
+    {
+        get {
+            if(Optimization == Optimization.Release)
+                return Optimization.ToString();
+            return Optimization.ToString() + " " + Editor.ToString();
+        }
+    }
+
+    public FecoTarget() : base() { }
+
+    public FecoTarget(Editor editor, OutputType outputType = OutputType.Lib) : base(
+        Platform.win32 | Platform.win64,
+        DevEnv.vs2017,
+        Optimization.Debug | Optimization.Release,
+        outputType)
+    {
+        Editor = editor;
     }
 }
