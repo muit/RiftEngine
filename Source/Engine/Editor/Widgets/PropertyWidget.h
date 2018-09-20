@@ -2,6 +2,8 @@
 
 #pragma once
 
+#if WITH_EDITOR
+
 #include <imgui/imgui.h>
 #include "UI/Widget.h"
 
@@ -10,3 +12,5 @@ class PropertyWidget : public Widget {
 		if (ImGui::Button("My Property")) {}
 	}
 };
+
+#endif

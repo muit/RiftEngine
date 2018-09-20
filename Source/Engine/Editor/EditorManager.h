@@ -2,10 +2,11 @@
 
 #pragma once
 
+#if WITH_EDITOR
+
 #include "Object.h"
 #include "Editor.h"
 
-#if WITH_EDITOR
 #include <imgui/imgui.h>
 #include "UI/Widget.h"
 #include "Widgets/Details.h"

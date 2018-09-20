@@ -2,6 +2,8 @@
 
 #pragma once
 
+#if WITH_EDITOR
+
 #include "UI/Widget.h"
 #include "PropertyWidget.h"
 
@@ -44,3 +46,5 @@ public:
 		}
 	}
 };
+
+#endif

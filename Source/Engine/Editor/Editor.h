@@ -5,6 +5,7 @@
 #include "Object.h"
 #include "EditorWindow.h"
 
+
 #if WITH_EDITOR
 
 class Editor : public Object {

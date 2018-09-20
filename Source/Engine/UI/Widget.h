@@ -1,13 +1,12 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #pragma once
-#include <vector>
 
+#include <vector>
 #include "Object.h"
 
 
 #define W(Widget, ...) __Add<Widget>(__VA_ARGS__)
-
 
 class Widget : public Object {
 	CLASS(Widget, Object)

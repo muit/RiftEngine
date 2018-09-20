@@ -2,8 +2,8 @@
 
 #include "EditorManager.h"
 
-#if WITH_EDITOR
 
+#if WITH_EDITOR
 
 void EditorManager::Tick(float deltaTime)
 {
