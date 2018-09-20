@@ -7,20 +7,41 @@
 #include "Property.h"
 
 
-// Class will be specialized for each type at compile time and store
-// the metadata for that type.
-template <typename T>
-struct Class {
+class Class {
+protected:
+
+	Name name;
+	Class* parent;
+	std::vector<Class*> children;
+
 	typedef std::unordered_map<Name, std::unique_ptr<PropertyBase>> PropertyMap;
 
-	static Class* GetStatic() { return &_class; }
+	PropertyMap properties;
 
-	Class() {
-		T::__meta_InitPropChain();
-	}
+public:
+
+	Class() {}
 	Class(const Class&) = delete;
+	Class& operator=(const Class&) = delete;
+	virtual ~Class() {}
 
-	const PropertyMap& GetAllProperties() { return properties; }
+	Name GetName() const { return name; }
+	Class* GetParentClass() const { return parent; }
+
+	template<bool bIncludeSelf = false, bool bIsFirstCall = true>
+	void GetAllChildClasses(std::vector<Class*>& outChildren) {
+		if(bIsFirstCall)
+			outChildren.clear();
+
+		if (bIncludeSelf)
+			outChildren.push_back(this);
+
+		for (auto* child : children)
+		{
+			outChildren.push_back(child);
+			child->GetAllChildClasses<false, false>(outChildren);
+		}
+	}
 
 	template<typename VarType>
 	const Property<VarType>* FindProperty(const Name& name) const
@@ -29,8 +50,38 @@ struct Class {
 		if (propIt == properties.end())
 			return nullptr;
 		else
-			return dynamic_cast<const Property<T, VarType>*>((*propIt).second.get());
+			return dynamic_cast<const Property<VarType>*>((*propIt).second.get());
 	}
+
+	const PropertyMap& GetAllProperties() { return properties; }
+
+public:
+
+	/** GENERATION */
+	void RegistryChildren(Class* child)
+	{
+		children.push_back(child);
+	}
+};
+
+// Class will be specialized for each type at compile time and store
+// the metadata for that type.
+template <typename T>
+class TClass : public Class {
+private:
+
+	static TClass _class;
+
+
+public:
+
+	TClass() : Class() {
+		// Registry inside parent
+		T::__meta_RegistryClass();
+
+		T::__meta_InitPropChain();
+	}
+
 
 	template<typename VarType>
 	PropertyHandle<T, VarType> FindPropertyHandle(T& instance, const String& name) const
@@ -53,7 +104,25 @@ struct Class {
 	}
 
 public:
+
 	/** GENERATION */
+
+	/** Registry a class
+	*/
+	void RegistryClass(const Name& inName)
+	{
+		name = inName;
+	}
+
+	/** Registry a class with a parent */
+	template<typename Super>
+	void RegistryClass(const Name& inName)
+	{
+		parent = Super::StaticClass();
+		parent->RegistryChildren(this);
+		RegistryClass(inName);
+	}
+
 	template<typename VarType>
 	void RegistryProperty(Name&& name, std::function<VarType*(void*)>&& access, std::vector<Name>&& tags)
 	{
@@ -66,12 +135,8 @@ public:
 		));
 	}
 
-private:
-
-	PropertyMap properties;
-
-	static Class _class;
+	static TClass* GetStatic() { return &_class; }
 };
 
 template <typename T>
-Class<T> Class<T>::_class {};
+TClass<T> TClass<T>::_class {};

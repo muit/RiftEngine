@@ -6,6 +6,7 @@
 
 #include "UI/Widget.h"
 #include "PropertyWidget.h"
+#include "Reflection/Class.h"
 
 
 class Details : public Widget {
@@ -15,36 +16,13 @@ class Details : public Widget {
 
 protected:
 
-	virtual void Build() override {
-		W(PropertyWidget);
-	}
+	virtual void Build() override;
 
-	virtual void Tick() {
-		//if (object.IsValid())
-		{
-			ImGui::Begin("Details");
-			{
-				ImGui::Text("Name  ");
-				ImGui::SameLine();
-				static char str0[128] = "Object!";
-				static int i0 = 123;
-				ImGui::InputText("", str0, IM_ARRAYSIZE(str0));
-				ImGui::Separator();
-				TickChilds();
-			}
-			ImGui::End();
-		}
-	}
+	virtual void Tick() override;
 
 public:
 
-	void SetObject(Ptr<Object> inObject) {
-		if (inObject != object)
-		{
-			object = inObject;
-			ForceRebuild();
-		}
-	}
+	void SetObject(Ptr<Object> inObject);
 };
 
 #endif

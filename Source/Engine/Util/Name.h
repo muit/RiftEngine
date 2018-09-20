@@ -65,7 +65,7 @@ public:
 	}
 
 	std::basic_string<ANSICHAR> ToString() const {
-		return IsNone() ? *id : "None";
+		return IsNone() ? "None" : *id;
 	}
 
 	bool operator==(const Name& other) const {

@@ -16,16 +16,25 @@ template<> struct MetaInt<0> { static constexpr int value = 0; };
 #define CLASS(type, parent) \
 public:\
 using Super = parent;\
-ORPHAN_CLASS(type)
+static void __meta_RegistryClass() {\
+	StaticClass()->RegistryClass<Super>(#type);\
+}\
+BASECLASS(type)
 
 #define ORPHAN_CLASS(type) \
+static void __meta_RegistryClass() {\
+	StaticClass()->RegistryClass(#type);\
+}\
+BASECLASS(type)
+
+#define BASECLASS(type) \
 private:\
 using __meta_type = type; \
-friend Class<__meta_type>; \
+friend TClass<__meta_type>; \
 \
 public:\
-static Class<__meta_type>* StaticClass() {\
-	return Class<__meta_type>::GetStatic();\
+static TClass<__meta_type>* StaticClass() {\
+	return TClass<__meta_type>::GetStatic();\
 }\
 static constexpr MetaInt<0> __meta_Counter(MetaInt<0>);\
 template<int N> static void __meta_RegistrySpecifier(MetaInt<N>) {}\
