@@ -46,6 +46,7 @@ public:
 		if (!bBuilding)
 		{
 			bBuilt = false;
+			UndoBuild();
 			childs.clear();
 			OnBuild();
 		}
@@ -66,9 +67,17 @@ public:
 	}
 
 protected:
-	virtual void Build() { /** Create child widgets here with W() */ }
+	/** Create child widgets here with W() */
+	virtual void Build() {}
+	/** Called before rebuilding or when the widget gets destroyed */
+	virtual void UndoBuild() {}
+
 	virtual void Tick() { TickChilds(); }
 
+	virtual void BeforeDestroy() override {
+		Super::BeforeDestroy();
+		UndoBuild();
+	}
 
 	template<typename WidgetType, typename... Args>
 	Ptr<WidgetType> __Add(Args&&... args) {

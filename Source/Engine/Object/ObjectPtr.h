@@ -36,7 +36,7 @@ public:
 	~GlobalPtr() {
 		// Force memory deallocation
 		if (IsValid())
-			ptr->BeforeDestroy();
+			ptr->Destroy();
 		ptr.reset();
 	}
 
