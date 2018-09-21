@@ -10,9 +10,9 @@
 class Engine : public Object {
 	CLASS(Engine, Object)
 
-
 	GlobalPtr<UIManager> ui;
 	GlobalPtr<Renderer> renderer;
+
 
 public:
 
@@ -57,9 +57,11 @@ public:
 		return true;
 	}
 
-	~Engine() {
+	void Shutdown() {
 		SDL_Quit();
 	}
+
+	//virtual void BeforeDestroy() override { Shutdown(); }
 
 
 	static void StartEngine()
