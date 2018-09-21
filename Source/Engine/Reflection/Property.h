@@ -39,6 +39,7 @@ public:
 	bool HasTag(Name tag) const { return std::find(tags.begin(), tags.end(), std::move(tag)) != tags.end(); }
 };
 
+
 /**
  * Static information about a property
  */
@@ -68,57 +69,4 @@ public:
 	{
 		*access(&instance) = value;
 	}
-
-private:
-
-//	virtual void Serialize(void* instance, Archive& archive) const override {
-		// Instance will Always be a "ClassType" and valid
-		// Serialize value
-		//archive & *access(*static_cast<ClassType*>(instance));
-//	}
-};
-
-/**
- * Points towards an existing reflected property in runtime
- */
-template<typename ClassType, typename VarType>
-struct PropertyHandle
-{
-	friend Property<VarType>;
-
-private:
-
-	ClassType* const instance;
-	const Property<VarType>* const prop;
-
-public:
-	PropertyHandle() : instance(nullptr), prop(nullptr) {}
-	PropertyHandle(ClassType& instance, const Property<VarType>* prop) : instance(&instance), prop(prop) {}
-
-	bool GetValue(VarType& value) const
-	{
-		if (IsValid())
-		{
-			prop->GetValue(*instance, value);
-			return true;
-		}
-		return false;
-	}
-
-	bool SetValue(const VarType& value) const
-	{
-		if (IsValid())
-		{
-			prop->SetValue(*instance, value);
-			return true;
-		}
-		return false;
-	}
-
-	bool HasTag(Name tag) const {
-		return prop? prop->HasTag(std::move(tag)) : false;
-	}
-
-	bool IsValid() const { return instance != nullptr && prop != nullptr; }
-	operator bool() const { return IsValid(); }
 };

@@ -6,6 +6,15 @@
 
 void Details::Build()
 {
+	if (object && object->GetClass())
+	{
+		Class* objectClass = object->GetClass();
+
+		//for () {
+			//W(PropertyWidget, child);
+		//}
+	}
+
 	std::vector<Class*> children{};
 	Object::StaticClass()->GetAllChildClasses(children);
 

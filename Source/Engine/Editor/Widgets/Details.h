@@ -13,7 +13,6 @@ class Details : public Widget {
 
 	Ptr<Object> object;
 
-
 protected:
 
 	virtual void Build() override;

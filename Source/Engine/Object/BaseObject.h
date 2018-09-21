@@ -6,8 +6,8 @@
 
 class Object;
 
+
 class BaseObject : public std::enable_shared_from_this<BaseObject> {
-	ORPHAN_CLASS(BaseObject)
 
 public:
 

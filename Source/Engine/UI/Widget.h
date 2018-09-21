@@ -75,8 +75,8 @@ protected:
 	virtual void Tick() { TickChilds(); }
 
 	virtual void BeforeDestroy() override {
-		Super::BeforeDestroy();
 		UndoBuild();
+		Super::BeforeDestroy();
 	}
 
 	template<typename WidgetType, typename... Args>
