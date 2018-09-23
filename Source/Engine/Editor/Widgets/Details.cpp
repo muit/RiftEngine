@@ -1,6 +1,8 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "Details.h"
+#include "Reflection/Runtime/HandleHelper.h"
+
 
 #if WITH_EDITOR
 
@@ -8,9 +10,11 @@ void Details::Build()
 {
 	if (object && object->GetClass())
 	{
+
 		Class* objectClass = object->GetClass();
 		for (const auto& property : objectClass->GetAllProperties())
 		{
+			HandleHelper::CreatePropertyHandle(object, property.second.get());
 		}
 	}
 

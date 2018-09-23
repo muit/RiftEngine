@@ -6,7 +6,7 @@
 
 #include "EngineTypes.h"
 #include "PropertyHandle.h"
-#include "Reflection/TProperty.h"
+#include "Reflection/Property.h"
 
 #if WITH_EDITOR
 #include "Editor/Widgets/PropertyWidget.h"

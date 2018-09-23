@@ -10,22 +10,22 @@
 
 
 class HandleHelper {
+public:
 
 	static std::shared_ptr<ClassHandle> CreateClassHandle(const Ptr<BaseObject>& instance)
 	{
-		Class* instanceClass = instance->GetClass();
-		return std::make_shared<ClassHandle>(instanceClass);
+		return std::make_shared<ClassHandle>(instance);
 	}
 
-	static std::shared_ptr<ClassHandle> CreateClassHandle(const Class* instanceClass)
+	template<typename VarType>
+	static std::shared_ptr<PropertyHandle> CreatePropertyHandle(const Ptr<BaseObject>& instance, const TProperty<VarType>* property)
 	{
-		return std::make_shared<ClassHandle>(instanceClass);
+		if (property && instance->GetClass() == property->GetClass())
+		{
+			return std::shared_ptr<PropertyHandle>(new TPropertyHandle<VarType>(instance, property));
+		}
+		return {};
 	}
 
-
-	template<typename ObjectType, typename VarType>
-	static std::shared_ptr<PropertyHandle> CreatePropertyHandle(const Ptr<ObjectType>& instance, const TProperty<ObjectType, VarType>& property)
-	{
-		return std::shared_ptr<PropertyHandle>(new TPropertyHandle<ObjectType, VarType>(castedInstance, property));
-	}
+	static std::shared_ptr<PropertyHandle> CreatePropertyHandle(const Ptr<BaseObject>& instance, const Property* property);
 };

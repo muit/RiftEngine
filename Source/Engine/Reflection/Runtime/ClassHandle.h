@@ -8,17 +8,16 @@
 
 class ClassHandle {
 
-	Class* bindedClass;
+	const Ptr<BaseObject> instance;
 
 public:
 
-	ClassHandle() = default;
+	ClassHandle() = delete;
 	ClassHandle(ClassHandle&&) = default;
 	ClassHandle(const ClassHandle&) = default;
 	ClassHandle& operator=(ClassHandle&&) = default;
 	ClassHandle& operator=(const ClassHandle&) = default;
 	virtual ~ClassHandle() = default;
 
-	ClassHandle(Class* inClass) : bindedClass(inClass) {}
-
+	ClassHandle(const Ptr<BaseObject>& instance) : instance(instance) {}
 };

@@ -3,7 +3,7 @@
 
 #include "Class.h"
 #include "Object/BaseObject.h"
-#include "TProperty.h"
+#include "Property.h"
 
 
 // Class will be specialized for each type at compile time and store
@@ -57,6 +57,8 @@ public:
 	{
 		properties.emplace(name, std::unique_ptr<Property>(
 			new TProperty<VarType>(
+				this,
+				ReflectionTypeTraits<VarType>::name,
 				std::move(name),
 				std::move(access),
 				std::move(tags)

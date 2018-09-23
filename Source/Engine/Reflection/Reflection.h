@@ -52,6 +52,7 @@ static constexpr int id_name = decltype(__meta_Counter(MetaInt<255>{}))::value; 
 static constexpr MetaInt<id_name + 1> __meta_Counter(MetaInt<id_name + 1>); \
 static void __meta_RegistryProperty(MetaInt<id_name>) { \
 \
+	static_assert(ReflectionTypeTraits<type>::valid, "Use allowed types for reflection only (uint8, int32, Name or String)");\
 	StaticClass()->RegistryProperty<type>(#name, [](BaseObject* baseInstance)\
 	{\
 		if(__meta_type* instance = dynamic_cast<__meta_type*>(baseInstance))\

@@ -14,6 +14,5 @@ public:
 	PROP(String, displayName)
 	String displayName;
 
-	PROP(std::vector<Ptr<Actor>>, actors)
 	std::vector<Ptr<Actor>> actors;
 };

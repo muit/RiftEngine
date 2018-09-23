@@ -114,6 +114,11 @@ public:
 	Ptr(Ptr<Type>&& other) { operator=(std::move(other)); }
 
 	template<typename Type2>
+	Ptr(const Ptr<Type2>& other) { operator=(other); }
+	template<typename Type2>
+	Ptr(Ptr<Type2>&& other) { operator=(std::move(other)); }
+
+	template<typename Type2>
 	Ptr(Type2* other) {
 		static_assert(std::is_convertible< Type2, Type >::value, "Type is not compatible!");
 		if (!other) {
