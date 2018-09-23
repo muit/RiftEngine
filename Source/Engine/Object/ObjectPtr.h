@@ -110,10 +110,8 @@ public:
 
 	Ptr() = default;
 
-	template<typename Type2>
-	Ptr(const Ptr<Type2>& other) { operator=(other); }
-	template<typename Type2>
-	Ptr(Ptr<Type2>&& other) { operator=(std::move(other)); }
+	Ptr(const Ptr<Type>& other) { operator=(other); }
+	Ptr(Ptr<Type>&& other) { operator=(std::move(other)); }
 
 	template<typename Type2>
 	Ptr(Type2* other) {
@@ -171,12 +169,13 @@ public:
 	template<typename Type2>
 	bool operator==(const GlobalPtr<Type2>& other) const { return other == *this; }
 
-	Type* operator->() const {
-		return ptr.expired()? nullptr : ptr.lock().get();
-	}
-
 	bool IsValid() const { return !ptr.expired(); }
-	operator bool() const {	return IsValid(); };
+	operator bool() const { return IsValid(); };
+
+	Type* operator*() const {
+		return IsValid() ? ptr.lock().get() : nullptr;
+	}
+	Type* operator->() const { return operator*(); }
 
 	template<typename T>
 	Ptr<T> Cast() const {

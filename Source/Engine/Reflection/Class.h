@@ -6,7 +6,6 @@
 #include "EngineTypes.h"
 #include "Property.h"
 
-
 class Class {
 protected:
 
@@ -14,7 +13,7 @@ protected:
 	Class* parent;
 	std::vector<Class*> children;
 
-	typedef std::unordered_map<Name, std::unique_ptr<PropertyBase>> PropertyMap;
+	typedef std::unordered_map<Name, std::unique_ptr<Property>> PropertyMap;
 
 	PropertyMap properties;
 
@@ -43,14 +42,13 @@ public:
 		}
 	}
 
-	template<typename VarType>
-	const Property<VarType>* FindProperty(const Name& name) const
+	const Property* FindProperty(const Name& propertyName) const
 	{
-		const auto propIt = properties.find(name);
+		const auto propIt = properties.find(propertyName);
 		if (propIt == properties.end())
 			return nullptr;
 		else
-			return dynamic_cast<const Property<VarType>*>((*propIt).second.get());
+			return dynamic_cast<const Property*>((*propIt).second.get());
 	}
 
 	const PropertyMap& GetAllProperties() { return properties; }

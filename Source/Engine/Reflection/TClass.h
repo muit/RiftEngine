@@ -3,7 +3,7 @@
 
 #include "Class.h"
 #include "Object/BaseObject.h"
-#include "Runtime/PropertyHandle.h"
+#include "TProperty.h"
 
 
 // Class will be specialized for each type at compile time and store
@@ -21,17 +21,6 @@ public:
 	TClass() : Class() {
 		ObjectType::__meta_RegistryClass();
 		ObjectType::__meta_RegistryProperties();
-	}
-
-	template<typename VarType>
-	PropertyHandle<ObjectType, VarType> FindPropertyHandle(const Ptr<ObjectType>& instance, const String& name) const
-	{
-		const Property<VarType>* prop{ FindProperty<VarType>(name) };
-		if (prop)
-		{
-			return { instance, prop };
-		}
-		return {};
 	}
 
 	/*void Serialize(T& instance, Archive& archive)
@@ -64,10 +53,10 @@ public:
 	}
 
 	template<typename VarType>
-	void RegistryProperty(Name&& name, std::function<VarType*(void*)>&& access, std::vector<Name>&& tags)
+	void RegistryProperty(Name&& name, std::function<VarType*(BaseObject*)>&& access, std::vector<Name>&& tags)
 	{
-		properties.emplace(name, std::unique_ptr<PropertyBase>(
-			new Property<VarType>(
+		properties.emplace(name, std::unique_ptr<Property>(
+			new TProperty<VarType>(
 				std::move(name),
 				std::move(access),
 				std::move(tags)

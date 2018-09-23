@@ -9,18 +9,17 @@ void Details::Build()
 	if (object && object->GetClass())
 	{
 		Class* objectClass = object->GetClass();
-
-		//for () {
-			//W(PropertyWidget, child);
-		//}
+		for (const auto& property : objectClass->GetAllProperties())
+		{
+		}
 	}
 
 	std::vector<Class*> children{};
 	Object::StaticClass()->GetAllChildClasses(children);
 
-	for (auto* child : children) {
+	/*for (auto* child : children) {
 		W(PropertyWidget, child);
-	}
+	}*/
 }
 
 void Details::Tick()

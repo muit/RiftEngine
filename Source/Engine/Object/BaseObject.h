@@ -4,6 +4,7 @@
 #include "EngineTypes.h"
 #include "Reflection/Reflection.h"
 
+class Class;
 class Object;
 
 
@@ -16,7 +17,10 @@ public:
 
 	void Destroy() { BeforeDestroy(); }
 
+	Class* GetClass();
+
 protected:
 
 	virtual void BeforeDestroy() {}
+
 };

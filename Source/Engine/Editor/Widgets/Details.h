@@ -6,10 +6,10 @@
 
 #include "UI/Widget.h"
 #include "PropertyWidget.h"
-#include "Reflection/Class.h"
 
 
 class Details : public Widget {
+	CLASS(Details, Widget)
 
 	Ptr<Object> object;
 

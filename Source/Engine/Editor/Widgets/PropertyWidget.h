@@ -6,18 +6,18 @@
 
 #include <imgui/imgui.h>
 #include "UI/Widget.h"
-#include "Reflection/Class.h"
 
 
 class PropertyWidget : public Widget {
+	CLASS(PropertyWidget, Widget)
 
 	String propertyName;
 
 public:
 
-	void Configure(const Class* inClass)
+	void Configure(/*const Class* inClass*/)
 	{
-		propertyName = inClass->GetName().ToString();
+		//propertyName = inClass->GetName().ToString();
 	}
 
 protected:
