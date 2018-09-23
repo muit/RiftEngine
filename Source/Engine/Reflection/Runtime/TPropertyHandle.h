@@ -18,7 +18,7 @@
  * Use TPropertyHandle instead
  */
 template<typename VarType>
-struct TBasePropertyHandle : public PropertyHandle
+struct TPropertyHandle : public PropertyHandle
 {
 	friend TProperty<VarType>;
 
@@ -28,24 +28,41 @@ private:
 	const TProperty<VarType>* const prop;
 
 public:
-	TBasePropertyHandle() : instance{}, prop(nullptr) {}
-	TBasePropertyHandle(const Ptr<BaseObject>& instance, const TProperty<VarType>* prop) : instance(instance), prop(prop) {}
+	TPropertyHandle() : instance{}, prop(nullptr) {}
+	TPropertyHandle(const Ptr<BaseObject>& instance, const TProperty<VarType>* prop) : instance(instance), prop(prop) {}
+
+
+	String GetName() const
+	{
+		if (prop)
+			return prop->GetName();
+		return "Invalid";
+	}
 
 	bool GetValue(VarType& value) const
 	{
 		if (IsValid())
 		{
-			prop->GetValue(*instance, value);
+			value = *prop->GetValuePtr(*instance);
 			return true;
 		}
 		return false;
+	}
+
+	VarType* GetValuePtr() const
+	{
+		if (IsValid())
+		{
+			return prop->GetValuePtr(*instance);
+		}
+		return nullptr;
 	}
 
 	bool SetValue(const VarType& value) const
 	{
 		if (IsValid())
 		{
-			prop->SetValue(*instance, value);
+			*prop->GetValuePtr(*instance) = value;
 			return true;
 		}
 		return false;
@@ -60,66 +77,9 @@ public:
 
 
 #if WITH_EDITOR
-	virtual GlobalPtr<PropertyWidget> CreateWidget() { return {}; }
-#endif
-};
-
-
-/**
-* Points towards an existing reflected property in runtime
-* Default type version
-*/
-template<typename VarType>
-struct TPropertyHandle : public TBasePropertyHandle<VarType>
-{
-	TPropertyHandle(const Ptr<BaseObject>& instance, const TProperty<VarType>* prop) : TBasePropertyHandle(instance, prop) {}
-
-#if WITH_EDITOR
-	virtual GlobalPtr<PropertyWidget> CreateWidget() override { return {}; }
-#endif
-};
-
-
-/**
-* Points towards an existing reflected property in runtime
-* uint8 type version
-*/
-template<>
-struct TPropertyHandle<uint8> : public TBasePropertyHandle<uint8>
-{
-	TPropertyHandle(const Ptr<BaseObject>& instance, const TProperty<uint8>* prop) : TBasePropertyHandle(instance, prop) {}
-
-#if WITH_EDITOR
-	virtual GlobalPtr<PropertyWidget> CreateWidget() override { return {}; }
-#endif
-};
-
-
-/**
-* Points towards an existing reflected property in runtime
-* uint8 type version
-*/
-template<>
-struct TPropertyHandle<int32> : public TBasePropertyHandle<int32>
-{
-	TPropertyHandle(const Ptr<BaseObject>& instance, const TProperty<int32>* prop) : TBasePropertyHandle(instance, prop) {}
-
-#if WITH_EDITOR
-	virtual GlobalPtr<PropertyWidget> CreateWidget() override { return {}; }
-#endif
-};
-
-
-/**
-* Points towards an existing reflected property in runtime
-* Name type version
-*/
-template<>
-struct TPropertyHandle<Name> : public TBasePropertyHandle<Name>
-{
-	TPropertyHandle(const Ptr<BaseObject>& instance, const TProperty<Name>* prop) : TBasePropertyHandle(instance, prop) {}
-
-#if WITH_EDITOR
-	virtual GlobalPtr<PropertyWidget> CreateWidget() override { return {}; }
+	virtual GlobalPtr<PropertyWidget> CreateWidget()
+	{
+		return {};
+	}
 #endif
 };

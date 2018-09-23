@@ -6,7 +6,7 @@
 #include "Object.h"
 
 
-#define W(Widget, ...) __Add<Widget>(__VA_ARGS__)
+#define W(Widget, ...) AddNew<Widget>(__VA_ARGS__)
 
 class Widget : public Object {
 	CLASS(Widget, Object)
@@ -79,22 +79,34 @@ protected:
 		Super::BeforeDestroy();
 	}
 
-	template<typename WidgetType, typename... Args>
-	Ptr<WidgetType> __Add(Args&&... args) {
-		if (bBuilding)
-		{
-			// Create the widget
-			GlobalPtr<WidgetType> widget = Create<WidgetType>();
 
+	template<typename WidgetType, typename... Args>
+	static GlobalPtr<WidgetType> New(Args&&... args) {
+		// Create the widget
+		GlobalPtr<WidgetType> widget = Create<WidgetType>();
+
+		// Configure it
+		widget->Configure(std::forward<Args>(args)...);
+
+		return widget;
+	}
+
+	template<typename WidgetType>
+	Ptr<WidgetType> Add(GlobalPtr<WidgetType>&& widget) {
+		if (bBuilding && widget)
+		{
 			// Registry the widget
 			Ptr<WidgetType> ptr = widget.GetPtr();
 			childs.push_back(std::move(widget));
 
-			// Configure it
-			ptr->Configure(std::forward<Args>(args)...);
 			return ptr;
 		}
 		return {};
+	}
+
+	template<typename WidgetType, typename... Args>
+	Ptr<WidgetType> AddNew(Args&&... args) {
+		return Add(New<Widget>(std::forward<Args>(args)...));
 	}
 
 public:

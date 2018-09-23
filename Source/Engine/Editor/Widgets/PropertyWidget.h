@@ -6,25 +6,19 @@
 
 #include <imgui/imgui.h>
 #include "UI/Widget.h"
+#include "Reflection/Runtime/PropertyHandle.h"
 
 
 class PropertyWidget : public Widget {
 	CLASS(PropertyWidget, Widget)
 
-	String propertyName;
-
-public:
-
-	void Configure(/*const Class* inClass*/)
-	{
-		//propertyName = inClass->GetName().ToString();
-	}
-
 protected:
 
-	virtual void Tick() override {
-		ImGui::Text(propertyName.c_str());
-	}
+	virtual void Tick() override {}
+
+public:
+	
+	static GlobalPtr<PropertyWidget> NewPropertyWidget(PropertyHandle* prop);
 };
 
 #endif

@@ -40,7 +40,7 @@ public:
 
 	//	virtual void Serialize(void* instance, Archive& archive) const {}
 
-	String GetName() { return name.ToString(); }
+	String GetName() const { return name.ToString(); }
 	bool HasTag(Name tag) const { return std::find(tags.begin(), tags.end(), std::move(tag)) != tags.end(); }
 
 	Class* GetClass() const { return classPtr; }
@@ -65,14 +65,9 @@ public:
 		: Property(classPtr, typeName, std::move(name), std::move(tags)), access(access)
 	{}
 
-	// TODO: Ensure class is correct or create object handle
-	void GetValue(const Ptr<BaseObject>& instance, VarType& value) const
+	// Will be nullptr if class is not correct
+	VarType* GetValuePtr(const Ptr<BaseObject>& instance) const
 	{
-		value = *access(instance);
-	}
-
-	void SetValue(const Ptr<BaseObject>& instance, const VarType& value) const
-	{
-		*access(&instance) = value;
+		return access(*instance);
 	}
 };
