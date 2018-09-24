@@ -3,10 +3,13 @@
 #pragma once
 
 #include "EngineTypes.h"
+#include <cmath>
 
 
 namespace Math
 {
+	constexpr float PI { 3.14159265358979323846f };
+
 	template<typename Type>
 	Type Min(Type a, Type min) { return a < min ? a : min; }
 	template<typename Type>
