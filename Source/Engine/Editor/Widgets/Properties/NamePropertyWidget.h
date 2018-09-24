@@ -25,9 +25,6 @@ public:
 		prop = inProperty;
 		idName = prop->GetName();
 		StringUtils::ToSentenceCase(idName, displayName);
-
-		// Avoid event being called on first tick:
-		lastValue = prop->GetValuePtr()->ToString();
 	}
 
 	void OnValueChanged();

@@ -13,5 +13,5 @@ namespace Math
 	Type Max(Type a, Type max) { return a > max ? a : max; }
 
 	template<typename Type>
-	float Clamp(Type a, Type min, Type max) { return Max(min, Min(a, max)); }
+	Type Clamp(Type a, Type min, Type max) { return Max(min, Min(a, max)); }
 };
