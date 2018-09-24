@@ -43,7 +43,7 @@ public:
 	{
 		if (IsValid())
 		{
-			VarType* ptr = prop->GetValuePtr(*instance);
+			VarType* ptr = prop->GetValuePtr(instance);
 			if (ptr)
 			{
 				value = *ptr;
@@ -66,7 +66,7 @@ public:
 	{
 		if (IsValid())
 		{
-			VarType* ptr = prop->GetValuePtr(*instance);
+			VarType* ptr = prop->GetValuePtr(instance);
 			if (ptr)
 			{
 				*ptr = value;

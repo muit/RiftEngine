@@ -12,8 +12,4 @@ void StringPropertyWidget::Tick()
 	ImGui::PopID();
 }
 
-void StringPropertyWidget::GetValue()
-{
-}
-
 #endif

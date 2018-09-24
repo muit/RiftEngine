@@ -4,16 +4,20 @@
 
 #if WITH_EDITOR
 
-
-#endif
-
 void UInt8PropertyWidget::Tick()
 {
 	ImGui::PushID(idName.c_str());
 
-	ImGui::Text(displayName.c_str());
+	//ImGui::Text(displayName.c_str());
 	//ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 200, 10);
-	//ImGui::InputInt("", prop->GetValuePtr());
+	int32 value = *prop->GetValuePtr();
+	ImGui::InputInt(displayName.c_str(), &value);
+	if (value != *prop->GetValuePtr())
+	{
+		prop->SetValue((uint8)value);
+	}
 
 	ImGui::PopID();
 }
+
+#endif

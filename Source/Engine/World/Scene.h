@@ -19,6 +19,9 @@ public:
 	PROP(int32, aNumber)
 	int32 aNumber;
 
+	PROP(uint8, anotherNumber)
+	uint8 anotherNumber;
+
 	//std::vector<GlobalPtr<Actor>> actors;
 
 	void Tick(float deltaTime) {

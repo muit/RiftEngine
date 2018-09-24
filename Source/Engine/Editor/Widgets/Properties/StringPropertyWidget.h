@@ -25,9 +25,6 @@ public:
 protected:
 
 	virtual void Tick() override;
-
-private:
-	void GetValue();
 };
 
 #endif
