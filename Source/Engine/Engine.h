@@ -1,15 +1,20 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
+#include "Renderer.h"
 #include <SDL.h>
 
-#include "Renderer.h"
+#include "Object.h"
+#include "Util/Time.h"
+#include "World/World.h"
 #include "UI/UIManager.h"
 
 
 class Engine : public Object {
 	CLASS(Engine, Object)
 
+	FrameTime frameTime;
+	GlobalPtr<World> world;
 	GlobalPtr<UIManager> ui;
 	GlobalPtr<Renderer> renderer;
 
@@ -17,6 +22,15 @@ class Engine : public Object {
 public:
 
 	Engine() {}
+
+
+	/** Begin Object interface */
+protected:
+	virtual void BeforeDestroy() override { Shutdown(); }
+public:
+	virtual Ptr<World> GetWorld() const override { return world; }
+	/** End Object interface */
+
 
 	bool Start() {
 		// Setup SDL
@@ -27,12 +41,17 @@ public:
 		if(renderer->GetState() == ERendererState::Failed)
 			return false;
 
+		world = Create<World>(ThisPtr());
+
 		ui = Create<UIManager>(ThisPtr());
 		ui->Prepare();
 
+		frameTime = {};
 		bool bFinish = false;
 		while (!bFinish)
 		{
+			frameTime.Tick();
+
 			// Process window and input events
 			SDL_PumpEvents();
 			SDL_Event event;
@@ -44,11 +63,10 @@ public:
 					bFinish = true;
 			}
 
-			// Start the Dear ImGui frame
 			renderer->PreTick();
 
-			// Tick
-			ui->Tick(0.f);
+			world->Tick(frameTime.deltaTime);
+			ui->Tick(frameTime.deltaTime);
 
 			// Rendering
 			renderer->Render();
@@ -61,8 +79,6 @@ public:
 		SDL_Quit();
 	}
 
-	//virtual void BeforeDestroy() override { Shutdown(); }
-
 
 	static void StartEngine()
 	{
@@ -72,5 +88,4 @@ public:
 	static const GlobalPtr<Engine> GEngine;
 };
 
-const GlobalPtr<Engine> Engine::GEngine{ Create<Engine>() };
-#define GEngine Engine::GEngine;
+#define GEngine Engine::GEngine

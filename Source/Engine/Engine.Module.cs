@@ -16,6 +16,7 @@ class EngineModule : BaseModule
         conf.IncludePaths.Add(@"[project.SharpmakeCsPath]/ThirdParty");
         
         conf.Options.Add(new Sharpmake.Options.Vc.Compiler.DisableSpecificWarnings("4152", "4100"));
+        //conf.Options.Add(Sharpmake.Options.Vc.Compiler.ShowIncludes.Enable);
 
         switch(target.Platform) {
             case Platform.win32:

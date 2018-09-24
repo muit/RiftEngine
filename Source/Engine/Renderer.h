@@ -1,11 +1,10 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include <GL/gl3w.h>
+#include "EngineTypes.h"
 #include <SDL.h>
 #include <imgui/imgui.h>
 
-#include "EngineTypes.h"
 #include "Object.h"
 
 #define SCREEN_WIDTH 1280

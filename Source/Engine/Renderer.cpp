@@ -1,6 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "Renderer.h"
+
 #include <SDL_opengl.h>
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_sdl.h>

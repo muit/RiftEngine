@@ -1,13 +1,14 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include "EngineTypes.h"
 #include "Object/BaseObject.h"
+#include "EngineTypes.h"
 #include "Object/ObjectPtr.h"
 #include "Reflection/TClass.h"
 
 
 class Object;
+class World;
 
 template<typename ObjectType>
 static GlobalPtr<ObjectType> Create(const Ptr<Object> parent = {}) {
@@ -44,4 +45,6 @@ public:
 	Ptr<Object> ThisPtr() { return { this }; }
 
 	Class* GetClass() const { return ownClass; }
+
+	virtual Ptr<World> GetWorld() const;
 };
