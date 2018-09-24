@@ -12,16 +12,17 @@ class StringPropertyWidget : public PropertyWidget {
 	CLASS(StringPropertyWidget, PropertyWidget)
 
 	std::shared_ptr<TPropertyHandle<String>> prop;
-	String name;
+
+	String idName;
+	String displayName;
 
 public:
 
 	void Configure(const std::shared_ptr<TPropertyHandle<String>>& inProperty)
 	{
 		prop = inProperty;
-		name = "Display Name";
-		// FIX ME (GetName
-		//name = prop->GetName();
+		idName = prop->GetName();
+		StringUtils::ToSentenceCase(idName, displayName);
 	}
 
 protected:
