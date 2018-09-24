@@ -13,6 +13,11 @@ public:
 	PROP(String, displayName)
 	String displayName;
 
+	PROP(Name, someName)
+	Name someName;
+
+	PROP(int32, aNumber)
+	int32 aNumber;
 
 	//std::vector<GlobalPtr<Actor>> actors;
 

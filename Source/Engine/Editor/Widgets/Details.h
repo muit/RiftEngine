@@ -11,6 +11,7 @@
 class Details : public Widget {
 	CLASS(Details, Widget)
 
+	bool bOpen;
 	Ptr<Object> object;
 
 protected:

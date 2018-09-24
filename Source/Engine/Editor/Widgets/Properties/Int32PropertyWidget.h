@@ -19,13 +19,13 @@ public:
 	void Configure(const std::shared_ptr<TPropertyHandle<int32>>&  inProperty)
 	{
 		prop = inProperty;
+		idName = prop->GetName();
+		StringUtils::ToSentenceCase(idName, displayName);
 	}
 
 protected:
 
-	virtual void Tick() override {
-		ImGui::InputInt(prop->GetName().c_str(), prop->GetValuePtr());
-	}
+	virtual void Tick() override;
 };
 
 #endif

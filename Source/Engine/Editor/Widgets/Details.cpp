@@ -8,6 +8,8 @@
 
 void Details::Build()
 {
+	bOpen = true;
+
 	if (object && object->GetClass())
 	{
 
@@ -29,20 +31,12 @@ void Details::Build()
 
 void Details::Tick()
 {
-	//if (object.IsValid())
+	ImGui::Begin("Details", &bOpen, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
+	if (object.IsValid())
 	{
-		ImGui::Begin("Details");
-		{
-			ImGui::Text("Name  ");
-			ImGui::SameLine();
-			static char str0[128] = "Object!";
-			static int i0 = 123;
-			ImGui::InputText("", str0, IM_ARRAYSIZE(str0));
-			ImGui::Separator();
-			TickChilds();
-		}
-		ImGui::End();
+		TickChilds();
 	}
+	ImGui::End();
 }
 
 void Details::SetObject(Ptr<Object> inObject)

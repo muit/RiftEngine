@@ -13,9 +13,6 @@ class StringPropertyWidget : public PropertyWidget {
 
 	std::shared_ptr<TPropertyHandle<String>> prop;
 
-	String idName;
-	String displayName;
-
 public:
 
 	void Configure(const std::shared_ptr<TPropertyHandle<String>>& inProperty)

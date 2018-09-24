@@ -14,6 +14,10 @@ class PropertyWidget : public Widget {
 
 protected:
 
+	String idName;
+	String displayName;
+
+
 	virtual void Tick() override {}
 
 public:
