@@ -18,7 +18,7 @@ protected:
 
 public:
 	
-	static GlobalPtr<PropertyWidget> NewPropertyWidget(PropertyHandle* prop);
+	static GlobalPtr<PropertyWidget> NewPropertyWidget(const std::shared_ptr<PropertyHandle>& prop);
 };
 
 #endif

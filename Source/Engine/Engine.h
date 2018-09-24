@@ -42,6 +42,7 @@ public:
 			return false;
 
 		world = Create<World>(ThisPtr());
+		world->Start();
 
 		ui = Create<UIManager>(ThisPtr());
 		ui->Prepare();
@@ -57,6 +58,7 @@ public:
 			SDL_Event event;
 			while (SDL_PollEvent(&event))
 			{
+				ui->OnSDLEvent(&event);
 				if (event.type == SDL_QUIT)
 					bFinish = true;
 				else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == renderer->GetWindowId())

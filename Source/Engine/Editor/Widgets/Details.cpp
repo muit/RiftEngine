@@ -14,7 +14,8 @@ void Details::Build()
 		Class* objectClass = object->GetClass();
 		for (const auto& property : objectClass->GetAllProperties())
 		{
-			HandleHelper::CreatePropertyHandle(object, property.second.get());
+			auto handle = HandleHelper::CreatePropertyHandle(object, property.second.get());
+			Add(PropertyWidget::NewPropertyWidget(handle));
 		}
 	}
 

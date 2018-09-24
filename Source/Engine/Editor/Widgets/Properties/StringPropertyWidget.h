@@ -5,26 +5,31 @@
 #if WITH_EDITOR
 
 #include "Editor/Widgets/PropertyWidget.h"
-#include <imgui/imgui.h>
 #include "Reflection/Runtime/TPropertyHandle.h"
 
 
 class StringPropertyWidget : public PropertyWidget {
 	CLASS(StringPropertyWidget, PropertyWidget)
 
-	TPropertyHandle<String>* prop;
+	std::shared_ptr<TPropertyHandle<String>> prop;
+	String name;
 
 public:
 
-	void Configure(TPropertyHandle<String>* inProperty)
+	void Configure(const std::shared_ptr<TPropertyHandle<String>>& inProperty)
 	{
 		prop = inProperty;
+		name = "Display Name";
+		// FIX ME (GetName
+		//name = prop->GetName();
 	}
 
 protected:
 
-	virtual void Tick() override {
-	}
+	virtual void Tick() override;
+
+private:
+	void GetValue();
 };
 
 #endif

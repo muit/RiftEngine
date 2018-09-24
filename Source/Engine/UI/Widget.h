@@ -91,12 +91,11 @@ protected:
 		return widget;
 	}
 
-	template<typename WidgetType>
-	Ptr<WidgetType> Add(GlobalPtr<WidgetType>&& widget) {
+	Ptr<Widget> Add(GlobalPtr<Widget>&& widget) {
 		if (bBuilding && widget)
 		{
 			// Registry the widget
-			Ptr<WidgetType> ptr = widget.GetPtr();
+			Ptr<Widget> ptr = widget.GetPtr();
 			childs.push_back(std::move(widget));
 
 			return ptr;
@@ -106,7 +105,7 @@ protected:
 
 	template<typename WidgetType, typename... Args>
 	Ptr<WidgetType> AddNew(Args&&... args) {
-		return Add(New<Widget>(std::forward<Args>(args)...));
+		return Add(New<Widget>(std::forward<Args>(args)...)).Cast<WidgetType>();
 	}
 
 public:

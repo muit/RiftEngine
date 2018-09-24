@@ -8,6 +8,7 @@
 #include "Editor.h"
 
 #include <imgui/imgui.h>
+#include "World/World.h"
 #include "UI/Widget.h"
 #include "Widgets/Details.h"
 
@@ -29,6 +30,7 @@ public:
 
 	EditorManager() : Super() {
 		details = Widget::CreateStandalone<Details>();
+		details->SetObject(GetWorld()->GetScene());
 	}
 
 	template<typename EditorType>

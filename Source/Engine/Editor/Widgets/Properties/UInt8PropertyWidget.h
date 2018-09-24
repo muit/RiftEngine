@@ -12,11 +12,11 @@
 class UInt8PropertyWidget : public PropertyWidget {
 	CLASS(UInt8PropertyWidget, PropertyWidget)
 
-	TPropertyHandle<uint8>* prop;
+	std::shared_ptr<TPropertyHandle<uint8>> prop;
 
 public:
 
-	void Configure(TPropertyHandle<uint8>* inProperty)
+	void Configure(const std::shared_ptr<TPropertyHandle<uint8>>& inProperty)
 	{
 		prop = inProperty;
 	}

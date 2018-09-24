@@ -12,11 +12,11 @@
 class Int32PropertyWidget : public PropertyWidget {
 	CLASS(Int32PropertyWidget, PropertyWidget)
 
-	TPropertyHandle<int32>* prop;
+	std::shared_ptr<TPropertyHandle<int32>> prop;
 
 public:
 
-	void Configure(TPropertyHandle<int32>* inProperty)
+	void Configure(const std::shared_ptr<TPropertyHandle<int32>>&  inProperty)
 	{
 		prop = inProperty;
 	}

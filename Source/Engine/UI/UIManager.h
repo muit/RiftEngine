@@ -3,6 +3,7 @@
 #pragma once
 
 #include <imgui/imgui.h>
+#include <SDL_events.h>
 
 #include "Object.h"
 #include "Object/ObjectPtr.h"
@@ -19,6 +20,8 @@ class UIManager : public Object {
 public:
 
 	void Prepare();
+
+	void OnSDLEvent(SDL_Event* ev);
 
 	void Tick(float deltaTime);
 };

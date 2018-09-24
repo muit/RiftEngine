@@ -1,6 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "UIManager.h"
+#include "imgui/imgui_impl_sdl.h"
 
 
 void UIManager::Prepare()
@@ -11,6 +12,11 @@ void UIManager::Prepare()
 #if WITH_EDITOR
 	editor = Create<EditorManager>(ThisPtr());
 #endif
+}
+
+void UIManager::OnSDLEvent(SDL_Event* ev)
+{
+	ImGui_ImplSDL2_ProcessEvent(ev);
 }
 
 void UIManager::Tick(float deltaTime)

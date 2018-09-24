@@ -43,8 +43,12 @@ public:
 	{
 		if (IsValid())
 		{
-			value = *prop->GetValuePtr(*instance);
-			return true;
+			VarType* ptr = prop->GetValuePtr(*instance);
+			if (ptr)
+			{
+				value = *ptr;
+				return true;
+			}
 		}
 		return false;
 	}
@@ -53,7 +57,7 @@ public:
 	{
 		if (IsValid())
 		{
-			return prop->GetValuePtr(*instance);
+			return prop->GetValuePtr(instance);
 		}
 		return nullptr;
 	}
@@ -62,8 +66,12 @@ public:
 	{
 		if (IsValid())
 		{
-			*prop->GetValuePtr(*instance) = value;
-			return true;
+			VarType* ptr = prop->GetValuePtr(*instance);
+			if (ptr)
+			{
+				*ptr = value;
+				return true;
+			}
 		}
 		return false;
 	}
