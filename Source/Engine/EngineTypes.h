@@ -3,6 +3,7 @@
 
 #include "GL/gl3w.h"
 #include "Platform/Platform.h"
+#include "Util/Array.h"
 #include "Util/String.h"
 #include "Util/Name.h"
 
