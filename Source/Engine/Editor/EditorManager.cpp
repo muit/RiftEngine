@@ -1,6 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "EditorManager.h"
+#include "EASTL/fixed_string.h"
 
 
 #if WITH_EDITOR
@@ -32,6 +33,11 @@ void EditorManager::Tick(float deltaTime)
 	}
 
 	details->OnTick();
+
+
+	ImGui::Begin("Memory"); {                        // Create a window called "Hello, world!" and append into it.
+		ImGui::Text("Size: %s", eastl::GetDefaultAllocator()->get_name());
+	} ImGui::End();
 
 
 	// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).

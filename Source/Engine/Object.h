@@ -12,14 +12,14 @@ class World;
 
 template<typename ObjectType>
 static GlobalPtr<ObjectType> Create(const Ptr<Object> parent = {}) {
-	static_assert(std::is_convertible< ObjectType, Object >::value, "Type is not an Object!");
+	static_assert(eastl::is_convertible< ObjectType, Object >::value, "Type is not an Object!");
 
-	std::shared_ptr<ObjectType> ptr = std::make_shared<ObjectType>();
+	eastl::shared_ptr<ObjectType> ptr = eastl::make_shared<ObjectType>();
 	ptr->ownClass = ObjectType::StaticClass();
 	ptr->SetOwner(parent);
 	ptr->Construct();
 
-	return GlobalPtr<ObjectType>::PostCreate(std::move(ptr));
+	return GlobalPtr<ObjectType>::PostCreate(eastl::move(ptr));
 }
 
 

@@ -14,6 +14,15 @@ class EngineModule : BaseModule
 
         conf.SolutionFolder = "FecoEngine";
         conf.IncludePaths.Add(@"[project.SharpmakeCsPath]/ThirdParty");
+
+        // EA STL
+        conf.IncludePaths.Add(@"[project.SharpmakeCsPath]/ThirdParty/EASTL/include");
+        conf.IncludePaths.Add(@"[project.SharpmakeCsPath]/ThirdParty/EASTL/test/packages/EAAssert/include");
+        conf.IncludePaths.Add(@"[project.SharpmakeCsPath]/ThirdParty/EASTL/test/packages/EABase/include/Common");
+        conf.IncludePaths.Add(@"[project.SharpmakeCsPath]/ThirdParty/EASTL/test/packages/EAMain/include");
+        conf.IncludePaths.Add(@"[project.SharpmakeCsPath]/ThirdParty/EASTL/test/packages/EAStdC/include");
+        conf.IncludePaths.Add(@"[project.SharpmakeCsPath]/ThirdParty/EASTL/test/packages/EAThread/include");
+
         
         conf.Options.Add(new Sharpmake.Options.Vc.Compiler.DisableSpecificWarnings("4152", "4100"));
         //conf.Options.Add(Sharpmake.Options.Vc.Compiler.ShowIncludes.Enable);

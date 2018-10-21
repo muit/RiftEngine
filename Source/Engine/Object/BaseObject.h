@@ -1,6 +1,9 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
+#include <EASTL/type_traits.h>
+#include <EASTL/shared_ptr.h>
+
 #include "EngineTypes.h"
 #include "Reflection/Reflection.h"
 
@@ -8,7 +11,7 @@ class Class;
 class Object;
 
 
-class BaseObject : public std::enable_shared_from_this<BaseObject> {
+class BaseObject : public eastl::enable_shared_from_this<BaseObject> {
 
 public:
 
