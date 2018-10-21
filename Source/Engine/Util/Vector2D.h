@@ -1,4 +1,4 @@
-// Copyright 2017/2018 - Miguel Fernández Arce
+// Copyright 2015-2019 Piperift - All rights reserved
 
 #pragma once
 

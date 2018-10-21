@@ -3,10 +3,7 @@
 #include <cstdio>
 #include <iostream>
 
-#include <EngineTypes.h>
 #include <Engine.h>
-#include "World/World.h"
-#include "Gameplay/Actor.h"
 
 
 using namespace std;
