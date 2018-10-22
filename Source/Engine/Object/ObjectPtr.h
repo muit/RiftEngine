@@ -10,7 +10,7 @@
 class BaseWeakPtr;
 
 
-/** Non templated version of Ptr that points to its owner GlobalPtr */
+/** Non templated version of GlobalPtr that points to all weaks */
 class BaseGlobalPtr {
 	friend BaseWeakPtr;
 
@@ -265,12 +265,11 @@ public:
 
 	template<typename T>
 	Ptr<T> Cast() const {
-
 		if (!IsValid() || dynamic_cast<Type*>(**this) == nullptr)
 			return {};
 		else
 		{
-			Ptr<T> ptr {};
+			Ptr<T> ptr{};
 			ptr.Set(GetOwner());
 			return ptr;
 		}

@@ -9,7 +9,7 @@ void BaseGlobalPtr::MoveFrom(BaseGlobalPtr&& other)
 	ptr = std::move(other.ptr);
 	weaks = std::move(other.weaks);
 
-	// Update owner pointers to owner
+	// Update owned pointers to owner
 	for (BaseWeakPtr* const weak : weaks)
 	{
 		weak->owner = this;
