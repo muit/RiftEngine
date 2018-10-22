@@ -95,7 +95,7 @@ protected:
 		if (bBuilding && widget)
 		{
 			// Registry the widget
-			Ptr<Widget> ptr = widget.GetPtr();
+			Ptr<Widget> ptr = widget;
 			childs.push_back(std::move(widget));
 
 			return ptr;

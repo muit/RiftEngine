@@ -41,10 +41,10 @@ public:
 		if(renderer->GetState() == ERendererState::Failed)
 			return false;
 
-		world = Create<World>(ThisPtr());
+		world = Create<World>(GetSelf());
 		world->Start();
 
-		ui = Create<UIManager>(ThisPtr());
+		ui = Create<UIManager>(GetSelf());
 		ui->Prepare();
 
 		frameTime = {};

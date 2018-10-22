@@ -20,8 +20,4 @@ public:
 	virtual ~PropertyHandle() {}
 
 	virtual bool IsValid() const = 0;
-
-#if WITH_EDITOR
-	virtual GlobalPtr<PropertyWidget> CreateWidget() = 0;
-#endif
 };

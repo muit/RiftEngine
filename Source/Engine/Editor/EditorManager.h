@@ -37,7 +37,7 @@ public:
 	Ptr<Editor> CreateEditor()
 	{
 		activeEditors.push_back(Create<EditorType>(ThisPtr()));
-		return activeEditors.back().GetPtr();
+		return activeEditors.back();
 	}
 
 	void Tick(float deltaTime);

@@ -1,7 +1,8 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include "GL/gl3w.h"
+#include <GL/gl3w.h>
+
 #include "Platform/Platform.h"
 #include "Util/Array.h"
 #include "Util/String.h"
@@ -25,4 +26,3 @@ DECLARE_REFLECTION_TYPE(uint8);
 DECLARE_REFLECTION_TYPE(int32);
 DECLARE_REFLECTION_TYPE(Name);
 DECLARE_REFLECTION_TYPE(String);
-

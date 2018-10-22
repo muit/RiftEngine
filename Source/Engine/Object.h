@@ -14,12 +14,13 @@ template<typename ObjectType>
 static GlobalPtr<ObjectType> Create(const Ptr<Object> parent = {}) {
 	static_assert(eastl::is_convertible< ObjectType, Object >::value, "Type is not an Object!");
 
-	eastl::shared_ptr<ObjectType> ptr = eastl::make_shared<ObjectType>();
+	GlobalPtr<ObjectType> ptr = GlobalPtr<ObjectType>::Create();
 	ptr->ownClass = ObjectType::StaticClass();
-	ptr->SetOwner(parent);
+	ptr->self = ptr;
+	ptr->owner = parent;
 	ptr->Construct();
 
-	return GlobalPtr<ObjectType>::PostCreate(eastl::move(ptr));
+	return eastl::move(ptr);
 }
 
 
@@ -31,6 +32,7 @@ class Object : public BaseObject {
 
 private:
 
+	Ptr<BaseObject> self;
 	Class* ownClass;
 	Ptr<BaseObject> owner;
 
@@ -39,10 +41,9 @@ public:
 
 	virtual void Construct() {}
 
-	void SetOwner(const Ptr<Object>& newOwner) { owner = newOwner; }
 	Ptr<Object> GetOwner() const { return owner.Cast<Object>(); }
 
-	Ptr<Object> ThisPtr() { return { this }; }
+	Ptr<Object> GetSelf() const { return self.Cast<Object>(); }
 
 	Class* GetClass() const { return ownClass; }
 

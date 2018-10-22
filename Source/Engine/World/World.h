@@ -13,7 +13,7 @@ class World : public Object {
 public:
 
 	void Start() {
-		scene = Create<Scene>(ThisPtr());
+		scene = Create<Scene>(GetSelf());
 	}
 
 	void Tick(float deltaTime) {

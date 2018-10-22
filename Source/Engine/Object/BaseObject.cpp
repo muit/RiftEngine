@@ -4,10 +4,18 @@
 #include "Reflection/TClass.h"
 #include "Object.h"
 
-Class* BaseObject::GetClass()
+Class* BaseObject::GetClass() const
 {
-	Object* thisObj = dynamic_cast<Object*>(this);
+	const Object* thisObj = dynamic_cast<const Object*>(this);
 	if (thisObj)
 		return thisObj->GetClass();
 	return nullptr;
+}
+
+Ptr<Object> BaseObject::GetSelf() const
+{
+	const Object* thisObj = dynamic_cast<const Object*>(this);
+	if (thisObj)
+		return thisObj->GetSelf();
+	return {};
 }

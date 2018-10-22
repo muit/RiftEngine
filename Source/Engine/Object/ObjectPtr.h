@@ -2,12 +2,66 @@
 #pragma once
 
 #include <EASTL/weak_ptr.h>
+#include <EASTL/hash_set.h>
 
 #include "Object/BaseObject.h"
 
 
+class BaseWeakPtr;
+
+
+/** Non templated version of Ptr that points to its owner GlobalPtr */
+class BaseGlobalPtr {
+	friend BaseWeakPtr;
+
+	/** MEMBERS */
+	mutable eastl::hash_set<BaseWeakPtr*> weaks;
+
+protected:
+
+	eastl::unique_ptr<BaseObject> ptr;
+
+
+	/** METHODS */
+
+	BaseGlobalPtr() = default;
+	BaseGlobalPtr(eastl::unique_ptr<BaseObject>&& inPtr) : BaseGlobalPtr() {
+		ptr = eastl::move(inPtr);
+	}
+
+	BaseGlobalPtr(BaseGlobalPtr&& other) {
+		MoveFrom(eastl::move(other));
+	}
+
+	BaseGlobalPtr& operator=(BaseGlobalPtr&& other) {
+		MoveFrom(eastl::move(other));
+		return *this;
+	}
+
+	~BaseGlobalPtr();
+
+	void MoveFrom(BaseGlobalPtr&& other);
+
+public:
+
+	BaseObject* operator*()  const { return ptr.get(); }
+	BaseObject* operator->() const { return ptr.get(); }
+
+	bool IsValid() const { return ptr.get() != nullptr; }
+	operator bool() const { return IsValid(); };
+
+	void Reset() {
+		if (IsValid())
+		{
+			ptr->Destroy();
+			ptr.release();
+		}
+	}
+};
+
 template<typename Type>
 class Ptr;
+
 
 /**
  * Pointer to an Object that keeps it from being removed.
@@ -15,32 +69,22 @@ class Ptr;
  * GlobalPtrs are Unique. An object can't be referenced by more than one global ptr.
  */
 template<typename Type>
-class GlobalPtr
+class GlobalPtr : public BaseGlobalPtr
 {
 	static_assert(eastl::is_convertible< Type, BaseObject >::value, "Type is not an Object!");
 
 	friend class GlobalPtr;
-	friend GlobalPtr<Type> GlobalPtr<Type>::PostCreate(eastl::shared_ptr<Type>&&);
 
+	
+	/** METHODS */
+
+	GlobalPtr(eastl::unique_ptr<Type>&& inPtr) : BaseGlobalPtr() { ptr = std::move(inPtr); }
 
 public:
 
 	GlobalPtr() = default;
-	GlobalPtr(const GlobalPtr&) = delete;
-	GlobalPtr(GlobalPtr&& other) {
-		ptr = eastl::move(other.ptr);
-	}
-	GlobalPtr& operator=(const GlobalPtr&) = delete;
-	GlobalPtr& operator=(GlobalPtr&& other) {
-		ptr = eastl::move(other.ptr);
-		return *this;
-	}
-	~GlobalPtr() {
-		// Force memory deallocation
-		if (IsValid())
-			ptr->Destroy();
-		ptr.reset();
-	}
+
+	~GlobalPtr() { Reset(); }
 
 
 	template<typename Type2>
@@ -50,44 +94,98 @@ public:
 	GlobalPtr& operator=(GlobalPtr<Type2>&& other) {
 		static_assert(eastl::is_convertible< Type2, Type >::value, "Type is not compatible!");
 
-		if (!other)
-			ptr = nullptr;
+		if (!other.IsValid())
+			Reset();
 		else
-		{
-			ptr = other.Cast<Type>().ptr;
-			other.Destroy();
-		}
+			BaseGlobalPtr::operator=(eastl::move(other));
 		return *this;
 	}
 
-	Ptr<Type> GetPtr() const { return { ptr }; }
-	operator Ptr<Type>() const { return GetPtr(); }
-	Ptr<Type> operator->() const { return GetPtr(); }
+	Ptr<Type> AsPtr() const { return Ptr<Type>(*this); }
+	operator Ptr<Type>() const { return AsPtr(); }
+
+	Type* operator*()  const { return static_cast<Type*>(BaseGlobalPtr::operator*());  }
+	Type* operator->() const { return static_cast<Type*>(BaseGlobalPtr::operator->()); }
 
 	template<typename Type2>
-	bool operator==(const GlobalPtr<Type2>& other) const { return ptr == other.ptr; }
+	bool operator==(const GlobalPtr<Type2>& other) const { return **this == *other; }
 	template<typename Type2>
-	bool operator==(const Ptr<Type2>& other) const { return ptr == other.ptr.lock(); }
+	bool operator==(const Ptr<Type2>& other) const { return **this == *other; }
 
+	/** Cast a global pointer into another type. Will invalidate previous target when success */
 	template<typename T>
-	GlobalPtr<T> Cast() const { return { eastl::dynamic_pointer_cast<T>(ptr) }; }
+	GlobalPtr<T> Cast() const {
+		if (!IsValid() || dynamic_cast<Type*>(**this) == nullptr)
+			return {};
+		else
+		{
+			GlobalPtr<T> ptr{};
+			ptr.MoveFrom(std::move(*this));
+			return ptr;
+		}
+	}
 
-	/** Manual destruction */
-	void Destroy() { ptr = nullptr; }
+	operator bool() const { return IsValid(); }
 
-	bool IsValid() const { return !!ptr.get(); }
+	/** INTERNAL USAGE ONLY. Use "YourObject::Create" instead */
+	static GlobalPtr<Type> Create() { return { eastl::make_unique<Type>() }; }
+};
+
+
+/** Non templated version of GlobalPtr that points to all weak ptrs */
+class BaseWeakPtr {
+	friend BaseGlobalPtr;
+
+	const BaseGlobalPtr* owner;
+	//eastl::hash_set<BaseWeakPtr*>::iterator id;
+
+
+protected:
+
+	BaseWeakPtr() = default;
+	BaseWeakPtr(const BaseGlobalPtr& inOwner) { Set(&inOwner); }
+
+	BaseWeakPtr(BaseWeakPtr&& other) { operator=(eastl::move(other)); }
+	BaseWeakPtr& operator=(BaseWeakPtr&& other) {
+		owner = other.owner;
+		other.owner = nullptr;
+
+		if (owner)
+		{
+			owner->weaks.erase(&other);
+			owner->weaks.insert(this);
+		}
+
+		return *this;
+	}
+
+
+	BaseWeakPtr(const BaseWeakPtr& other) { operator=(eastl::move(other)); }
+	BaseWeakPtr& operator=(const BaseWeakPtr& other) {
+		Set(other.owner);
+		return *this;
+	}
+
+	~BaseWeakPtr() {
+		if (IsValid())
+			owner->weaks.erase(this);
+	}
+
+	void Set(const BaseGlobalPtr* inOwner)
+	{
+		owner = inOwner;
+		if (owner)
+			owner->weaks.insert(this);
+	}
+
+	const BaseGlobalPtr* GetOwner() const { return owner; }
+
+public:
+
+	bool IsValid() const { return owner != nullptr && owner->IsValid(); }
 	operator bool() const { return IsValid(); };
 
-
-	/** Internal usage only */
-	static GlobalPtr<Type> PostCreate(eastl::shared_ptr<Type>&& inPtr)
-	{ return { eastl::move(inPtr) }; }
-
-private:
-
-	GlobalPtr(eastl::shared_ptr<Type>&& inPtr) { ptr = inPtr; }
-
-	eastl::shared_ptr<Type> ptr;
+	void Reset() { owner = nullptr; }
 };
 
 
@@ -96,17 +194,15 @@ private:
 * Objects will be removed if their global ptr is destroyed. In this case all pointers will be invalidated.
 */
 template<typename Type>
-class Ptr
+class Ptr : public BaseWeakPtr
 {
-	static_assert(eastl::is_convertible< Type, BaseObject >::value, "Type is not an Object!");
+	static_assert(eastl::is_convertible<Type, BaseObject>::value, "Type is not an Object!");
 
 	friend GlobalPtr<Type>;
 	friend class Ptr;
 
 
-private:
-
-	Ptr(eastl::weak_ptr<Type>&& ptr) : ptr(ptr) {}
+	/** METHODS */
 
 public:
 
@@ -121,23 +217,27 @@ public:
 	Ptr(Ptr<Type2>&& other) { operator=(eastl::move(other)); }
 
 	template<typename Type2>
+	Ptr(const GlobalPtr<Type2>& other) { operator=(other); }
+
+
+	template<typename Type2>
 	Ptr(Type2* other) {
 		static_assert(eastl::is_convertible< Type2, Type >::value, "Type is not compatible!");
+
 		if (!other) {
-			ptr = {};
+			Set(nullptr);
 			return;
 		}
-		Ptr(eastl::weak_ptr<Type>{ eastl::dynamic_pointer_cast<Type>(other->shared_from_this()) });
+		Ptr(other->GetSelf());
 	}
 
 	Ptr& operator=(const Ptr& other) {
-		ptr = other.ptr;
+		BaseWeakPtr::operator=(other);
 		return *this;
 	};
 
 	Ptr& operator=(Ptr&& other) {
-		ptr = other.ptr;
-		other.Invalidate();
+		BaseWeakPtr::operator=(eastl::move(other));
 		return *this;
 	}
 
@@ -145,54 +245,70 @@ public:
 	template<typename Type2>
 	Ptr& operator=(const Ptr<Type2>& other) {
 		static_assert(eastl::is_convertible< Type2, Type >::value, "Type is not compatible!");
-		ptr = other.Cast<Type>().ptr;
+
+		if (!other.IsValid())
+			Reset();
+		else
+			BaseWeakPtr::operator=(other);
 		return *this;
 	};
 
 	template<typename Type2>
 	Ptr& operator=(Ptr<Type2>&& other) {
-		static_assert(eastl::is_convertible< Type2, Type >::value, "Type is not compatible!");
-		ptr = other.Cast<Type>().ptr;
-		other.Invalidate();
+		static_assert(eastl::is_convertible<Type2, Type>::value, "Type is not compatible!");
+		
+		if (!other.IsValid())
+			Reset();
+		else
+			BaseWeakPtr::operator=(eastl::move(other));
 		return *this;
 	}
 
+	Ptr& operator=(const GlobalPtr<Type>& other) {
+		Set(&other);
+		return *this;
+	};
 
 	template<typename Type2>
 	Ptr& operator=(const GlobalPtr<Type2>& other) {
-		*this = eastl::move(other.GetPtr());
-		return *this;
-	};
-	Ptr& operator=(TYPE_OF_NULLPTR) {
-		ptr = {};
+		Set(&other);
 		return *this;
 	};
 
+	Ptr& operator=(TYPE_OF_NULLPTR) {
+		Set(nullptr);
+		return *this;
+	};
+
+
 	template<typename Type2>
 	bool operator==(const Ptr<Type2>& other) const {
-		return this->ptr.lock() == other.ptr.lock();
+		return GetOwner() == other.GetOwner();
 	}
 
 	template<typename Type2>
 	bool operator==(const GlobalPtr<Type2>& other) const { return other == *this; }
 
-	bool IsValid() const { return !ptr.expired(); }
-	operator bool() const { return IsValid(); };
-
 	Type* operator*() const {
-		return IsValid() ? ptr.lock().get() : nullptr;
+		// Static cast since types are always cast-able or invalid
+		return IsValid() ? static_cast<Type*>(GetOwner()->operator*()) : nullptr;
 	}
-	Type* operator->() const { return operator*(); }
+	Type* operator->() const {
+		// Static cast since types are always cast-able or invalid
+		return IsValid() ? static_cast<Type*>(GetOwner()->operator->()) : nullptr;
+	}
 
 	template<typename T>
 	Ptr<T> Cast() const {
-		return { eastl::dynamic_pointer_cast<T>(ptr.lock()) };
+
+		if (!IsValid() || dynamic_cast<Type*>(**this) == nullptr)
+			return {};
+		else
+		{
+			Ptr<T> ptr {};
+			ptr.Set(GetOwner());
+			return ptr;
+		}
 	}
-
-	void Invalidate() { ptr = {}; }
-
-private:
-
-	eastl::weak_ptr<Type> ptr;
 };
 

@@ -3,10 +3,11 @@
 #include <cstdio>
 #include <iostream>
 
+#include <EABase/eabase.h>
+#include <new>
+
 #include <Engine.h>
 
-
-using namespace std;
 
 int main(int, char**)
 {

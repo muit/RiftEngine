@@ -82,12 +82,4 @@ public:
 
 	virtual bool IsValid() const override { return instance && prop != nullptr; }
 	operator bool() const { return IsValid(); }
-
-
-#if WITH_EDITOR
-	virtual GlobalPtr<PropertyWidget> CreateWidget()
-	{
-		return {};
-	}
-#endif
 };
