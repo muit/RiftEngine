@@ -55,8 +55,8 @@ class FecoTarget : Target {
     public override string Name
     {
         get {
-            if(Optimization == Optimization.Release)
-                return Optimization.ToString();
+            //if(Optimization == Optimization.Release)
+            //    return Optimization.ToString();
             return Optimization.ToString() + " " + Editor.ToString();
         }
     }

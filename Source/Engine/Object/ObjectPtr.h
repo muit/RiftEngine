@@ -137,46 +137,19 @@ class BaseWeakPtr {
 	friend BaseGlobalPtr;
 
 	const BaseGlobalPtr* owner;
-	//eastl::hash_set<BaseWeakPtr*>::iterator id;
-
 
 protected:
 
 	BaseWeakPtr() = default;
-	BaseWeakPtr(const BaseGlobalPtr& inOwner) { Set(&inOwner); }
-
-	BaseWeakPtr(BaseWeakPtr&& other) { operator=(eastl::move(other)); }
-	BaseWeakPtr& operator=(BaseWeakPtr&& other) {
-		owner = other.owner;
-		other.owner = nullptr;
-
-		if (owner)
-		{
-			owner->weaks.erase(&other);
-			owner->weaks.insert(this);
-		}
-
-		return *this;
-	}
-
-
-	BaseWeakPtr(const BaseWeakPtr& other) { operator=(eastl::move(other)); }
-	BaseWeakPtr& operator=(const BaseWeakPtr& other) {
-		Set(other.owner);
-		return *this;
-	}
 
 	~BaseWeakPtr() {
 		if (IsValid())
 			owner->weaks.erase(this);
 	}
 
-	void Set(const BaseGlobalPtr* inOwner)
-	{
-		owner = inOwner;
-		if (owner)
-			owner->weaks.insert(this);
-	}
+	void Set(const BaseGlobalPtr* inOwner);
+
+	void MoveFrom(BaseWeakPtr&& other);
 
 	const BaseGlobalPtr* GetOwner() const { return owner; }
 
@@ -185,7 +158,18 @@ public:
 	bool IsValid() const { return owner != nullptr && owner->IsValid(); }
 	operator bool() const { return IsValid(); };
 
-	void Reset() { owner = nullptr; }
+	void Reset() {
+		// Remove old weak ptr
+		if(owner)
+			owner->weaks.erase(this);
+		CleanOwner();
+	}
+
+private:
+
+	void CleanOwner() {
+		owner = nullptr;
+	}
 };
 
 
@@ -208,66 +192,47 @@ public:
 
 	Ptr() = default;
 
-	Ptr(const Ptr<Type>& other) { operator=(other); }
-	Ptr(Ptr<Type>&& other) { operator=(eastl::move(other)); }
-
+	/** Templates for down-casting */
 	template<typename Type2>
-	Ptr(const Ptr<Type2>& other) { operator=(other); }
-	template<typename Type2>
-	Ptr(Ptr<Type2>&& other) { operator=(eastl::move(other)); }
-
-	template<typename Type2>
-	Ptr(const GlobalPtr<Type2>& other) { operator=(other); }
-
-
-	template<typename Type2>
-	Ptr(Type2* other) {
+	Ptr(const Ptr<Type2>& other) : BaseWeakPtr{} {
 		static_assert(eastl::is_convertible< Type2, Type >::value, "Type is not compatible!");
-
-		if (!other) {
-			Set(nullptr);
-			return;
-		}
-		Ptr(other->GetSelf());
+		Set(other.GetOwner());
 	}
-
-	Ptr& operator=(const Ptr& other) {
-		BaseWeakPtr::operator=(other);
-		return *this;
-	};
-
-	Ptr& operator=(Ptr&& other) {
-		BaseWeakPtr::operator=(eastl::move(other));
-		return *this;
-	}
-
-	/** We use templates for down-casting */
 	template<typename Type2>
 	Ptr& operator=(const Ptr<Type2>& other) {
 		static_assert(eastl::is_convertible< Type2, Type >::value, "Type is not compatible!");
-
-		if (!other.IsValid())
-			Reset();
-		else
-			BaseWeakPtr::operator=(other);
+		Set(other.GetOwner());
 		return *this;
 	};
 
 	template<typename Type2>
+	Ptr(Ptr<Type2>&& other) : BaseWeakPtr{} {
+		static_assert(eastl::is_convertible< Type2, Type >::value, "Type is not compatible!");
+		MoveFrom(eastl::move(other));
+	}
+	template<typename Type2>
 	Ptr& operator=(Ptr<Type2>&& other) {
 		static_assert(eastl::is_convertible<Type2, Type>::value, "Type is not compatible!");
-		
-		if (!other.IsValid())
-			Reset();
-		else
-			BaseWeakPtr::operator=(eastl::move(other));
+		MoveFrom(eastl::move(other));
 		return *this;
 	}
 
-	Ptr& operator=(const GlobalPtr<Type>& other) {
+	template<typename Type2>
+	Ptr(const GlobalPtr<Type2>& other) : BaseWeakPtr{} {
+		static_assert(eastl::is_convertible< Type2, Type >::value, "Type is not compatible!");
 		Set(&other);
-		return *this;
-	};
+	}
+
+	template<typename Type2>
+	Ptr(Type2* other) : BaseWeakPtr{} {
+		static_assert(eastl::is_convertible< Type2, Type >::value, "Type is not compatible!");
+		if (!other) {
+			Reset();
+			return;
+		}
+		Ptr<Type2>(other->GetSelf());
+	}
+
 
 	template<typename Type2>
 	Ptr& operator=(const GlobalPtr<Type2>& other) {
@@ -276,7 +241,7 @@ public:
 	};
 
 	Ptr& operator=(TYPE_OF_NULLPTR) {
-		Set(nullptr);
+		Reset();
 		return *this;
 	};
 

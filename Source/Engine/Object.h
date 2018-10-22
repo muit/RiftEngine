@@ -39,6 +39,8 @@ private:
 
 public:
 
+	Object() : BaseObject(), self{}, ownClass{ nullptr }, owner{} {};
+
 	virtual void Construct() {}
 
 	Ptr<Object> GetOwner() const { return owner.Cast<Object>(); }

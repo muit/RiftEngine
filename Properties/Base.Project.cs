@@ -22,12 +22,20 @@ class BaseProject : Project
         conf.Options.Add(Sharpmake.Options.Vc.Compiler.RTTI.Enable);
         conf.Options.Add(Sharpmake.Options.Vc.Compiler.Exceptions.Enable);
 
+
+        conf.Options.Add(Sharpmake.Options.Vc.Compiler.Exceptions.Enable);
+
         if(target.Optimization == Optimization.Release)
         {
             conf.Options.Add(Sharpmake.Options.Vc.General.TreatWarningsAsErrors.Enable);
         }
+        else if(target.Optimization == Optimization.Debug)
+        {
+            conf.Options.Add(Sharpmake.Options.Vc.Compiler.Optimization.Disable);
+            conf.Options.Add(Sharpmake.Options.Vc.Compiler.Inline.OnlyInline);
+        }
     
-        if(target.Editor == Editor.Editor && target.Optimization != Optimization.Release)
+        if(target.Editor == Editor.Editor)
         {
             conf.Defines.Add("WITH_EDITOR");
         }

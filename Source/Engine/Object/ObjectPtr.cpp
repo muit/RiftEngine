@@ -20,6 +20,30 @@ BaseGlobalPtr::~BaseGlobalPtr()
 {
 	for (BaseWeakPtr* const weak : weaks)
 	{
-		weak->Reset();
+		weak->CleanOwner();
+	}
+}
+
+
+void BaseWeakPtr::Set(const BaseGlobalPtr* inOwner)
+{
+	if (owner && owner != inOwner)
+		Reset();
+
+	owner = inOwner;
+
+	// Bind into new owner
+	if (owner)
+		owner->weaks.insert(this);
+}
+
+void BaseWeakPtr::MoveFrom(BaseWeakPtr&& other)
+{
+	owner = other.owner;
+	other.owner = nullptr;
+	if (owner)
+	{
+		owner->weaks.erase(&other);
+		owner->weaks.insert(this);
 	}
 }
