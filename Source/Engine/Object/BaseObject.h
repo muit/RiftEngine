@@ -5,6 +5,8 @@
 
 #include "EngineTypes.h"
 #include "Reflection/Reflection.h"
+#include "Memory/Allocator.h"
+
 
 class Class;
 class Object;
@@ -25,8 +27,11 @@ public:
 	Class* GetClass() const;
 	Ptr<Object> GetSelf() const;
 
+
+	void* operator new(size_t size) { return FecoEngine::GetObjectsAllocator()->Allocate(size); }
+	void operator delete(void* p, std::size_t size) { FecoEngine::GetObjectsAllocator()->Deallocate(p, size); }
+
 protected:
 
 	virtual void BeforeDestroy() {}
-
 };

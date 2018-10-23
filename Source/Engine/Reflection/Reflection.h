@@ -27,10 +27,10 @@ static void __meta_RegistryClass() {\
 }\
 BASECLASS(type)
 
-#define BASECLASS(type) \
+#define BASECLASS(type)\
 private:\
-using __meta_type = type; \
-friend TClass<__meta_type>; \
+using __meta_type = type;\
+friend TClass<__meta_type>;\
 \
 public:\
 static TClass<__meta_type>* StaticClass() {\
@@ -40,7 +40,7 @@ static constexpr MetaInt<0> __meta_Counter(MetaInt<0>);\
 template<int N> static void __meta_RegistryProperty(MetaInt<N>) {}\
 \
 static inline void __meta_RegistryProperties() {\
-	__meta_RegistryProperty(MetaInt<0>{}); \
+	__meta_RegistryProperty(MetaInt<0>{});\
 }\
 private:
 

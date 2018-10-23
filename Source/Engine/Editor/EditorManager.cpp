@@ -1,7 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "EditorManager.h"
-#include "EASTL/fixed_string.h"
+#include "Memory/Allocator.h"
 
 
 #if WITH_EDITOR
@@ -36,7 +36,21 @@ void EditorManager::Tick(float deltaTime)
 
 
 	ImGui::Begin("Memory"); {                        // Create a window called "Hello, world!" and append into it.
-		ImGui::Text("Size: %s", eastl::GetDefaultAllocator()->get_name());
+		ImGui::Text("%s", FecoEngine::GetAllocator()->GetName().ToString().c_str());
+		ImGui::SameLine();
+		ImGui::Text(" -- %i kb", (FecoEngine::GetAllocator()->GetSize() / 1024));
+		ImGui::Separator();
+		ImGui::Text("%s", FecoEngine::GetObjectsAllocator()->GetName().ToString().c_str());
+		ImGui::SameLine();
+		ImGui::Text("-- %i kb", (FecoEngine::GetObjectsAllocator()->GetSize() / 1024));
+		ImGui::Separator();
+		ImGui::Text("%s", FecoEngine::GetAssetsAllocator()->GetName().ToString().c_str());
+		ImGui::SameLine();
+		ImGui::Text(" -- %i kb", (FecoEngine::GetAssetsAllocator()->GetSize() / 1024));
+		ImGui::Separator();
+		ImGui::Text("%s", FecoEngine::GetFrameAllocator()->GetName().ToString().c_str());
+		ImGui::SameLine();
+		ImGui::Text("  -- %i kb", (FecoEngine::GetFrameAllocator()->GetSize() / 1024));
 	} ImGui::End();
 
 

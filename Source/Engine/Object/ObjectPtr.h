@@ -75,7 +75,7 @@ class GlobalPtr : public BaseGlobalPtr
 
 	friend class GlobalPtr;
 
-	
+
 	/** METHODS */
 
 	GlobalPtr(eastl::unique_ptr<Type>&& inPtr) : BaseGlobalPtr() { ptr = std::move(inPtr); }
