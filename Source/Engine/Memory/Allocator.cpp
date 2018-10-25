@@ -2,7 +2,7 @@
 
 #include "Allocator.h"
 
-namespace FecoEngine {
+namespace Memory {
 	/// gAllocator
 	/// Default engine allocator instance.
 	EASTL_API Allocator   gAllocator {};
@@ -49,36 +49,36 @@ namespace FecoEngine {
 void* operator new[](size_t size, const char* /*name*/, int flags,
 	unsigned /*debugFlags*/, const char* /*file*/, int /*line*/)
 {
-	return FecoEngine::GetAllocator()->Allocate(size, flags);
+	return Memory::GetAllocator()->Allocate(size, flags);
 }
 
 void* operator new[](size_t size, size_t alignment, size_t alignmentOffset, const char* /*name*/,
 	int flags, unsigned /*debugFlags*/, const char* /*file*/, int /*line*/)
 {
-	return FecoEngine::GetAllocator()->Allocate(size, alignment, alignmentOffset, flags);
+	return Memory::GetAllocator()->Allocate(size, alignment, alignmentOffset, flags);
 }
 
 
 // Native News
 void* operator new(size_t size)
 {
-	return FecoEngine::GetAllocator()->Allocate(size);
+	return Memory::GetAllocator()->Allocate(size);
 }
 
 void* operator new[](size_t size)
 {
-	return FecoEngine::GetAllocator()->Allocate(size);
+	return Memory::GetAllocator()->Allocate(size);
 }
 
 
 // Deletes
 void operator delete(void* p, std::size_t size)
 {
-	FecoEngine::GetAllocator()->Deallocate(p, size);
+	Memory::GetAllocator()->Deallocate(p, size);
 }
 
 void operator delete[](void* p, std::size_t size)
 {
-	FecoEngine::GetAllocator()->Deallocate(p, size);
+	Memory::GetAllocator()->Deallocate(p, size);
 }
 

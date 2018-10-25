@@ -36,21 +36,21 @@ void EditorManager::Tick(float deltaTime)
 
 
 	ImGui::Begin("Memory"); {                        // Create a window called "Hello, world!" and append into it.
-		ImGui::Text("%s", FecoEngine::GetAllocator()->GetName().ToString().c_str());
+		ImGui::Text("%s", Memory::GetAllocator()->GetName().ToString().c_str());
 		ImGui::SameLine();
-		ImGui::Text(" -- %i kb", (FecoEngine::GetAllocator()->GetSize() / 1024));
+		ImGui::Text(" -- %i kb", (Memory::GetAllocator()->GetSize() / 1024));
 		ImGui::Separator();
-		ImGui::Text("%s", FecoEngine::GetObjectsAllocator()->GetName().ToString().c_str());
+		ImGui::Text("%s", Memory::GetObjectsAllocator()->GetName().ToString().c_str());
 		ImGui::SameLine();
-		ImGui::Text("-- %i kb", (FecoEngine::GetObjectsAllocator()->GetSize() / 1024));
+		ImGui::Text("-- %i kb", (Memory::GetObjectsAllocator()->GetSize() / 1024));
 		ImGui::Separator();
-		ImGui::Text("%s", FecoEngine::GetAssetsAllocator()->GetName().ToString().c_str());
+		ImGui::Text("%s", Memory::GetAssetsAllocator()->GetName().ToString().c_str());
 		ImGui::SameLine();
-		ImGui::Text(" -- %i kb", (FecoEngine::GetAssetsAllocator()->GetSize() / 1024));
+		ImGui::Text(" -- %i kb", (Memory::GetAssetsAllocator()->GetSize() / 1024));
 		ImGui::Separator();
-		ImGui::Text("%s", FecoEngine::GetFrameAllocator()->GetName().ToString().c_str());
+		ImGui::Text("%s", Memory::GetFrameAllocator()->GetName().ToString().c_str());
 		ImGui::SameLine();
-		ImGui::Text("  -- %i kb", (FecoEngine::GetFrameAllocator()->GetSize() / 1024));
+		ImGui::Text("  -- %i kb", (Memory::GetFrameAllocator()->GetSize() / 1024));
 	} ImGui::End();
 
 

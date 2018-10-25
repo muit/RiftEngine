@@ -61,7 +61,7 @@ public:
 };
 
 
-namespace FecoEngine {
+namespace Memory {
 	EASTL_API Allocator* GetAllocator();
 
 	EASTL_API Allocator* GetObjectsAllocator();

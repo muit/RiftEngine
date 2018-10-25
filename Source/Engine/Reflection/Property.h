@@ -21,7 +21,7 @@ private:
 	Class* classPtr;
 	Name typeName;
 	Name name;
-	std::vector<Name> tags;
+	ReflectionTags tags;
 
 
 	Property() = delete;
@@ -30,7 +30,7 @@ private:
 
 protected:
 
-	Property(Class* classPtr, const Name& typeName, Name&& name, std::vector<Name>&& tags)
+	Property(Class* classPtr, const Name& typeName, Name&& name, ReflectionTags tags)
 		: typeName(typeName), classPtr(classPtr), name(name), tags(tags)
 	{}
 
@@ -41,7 +41,7 @@ public:
 	//	virtual void Serialize(void* instance, Archive& archive) const {}
 
 	String GetName() const { return name.ToString(); }
-	bool HasTag(Name tag) const { return std::find(tags.begin(), tags.end(), std::move(tag)) != tags.end(); }
+	bool HasTag(ReflectionTags tag) const { return (tags | tag) > 0; }
 
 	Class* GetClass() const { return classPtr; }
 	Name GetTypeName() const { return typeName; }
@@ -61,8 +61,8 @@ private:
 
 public:
 
-	TProperty(Class* classPtr, const Name& typeName, Name&& name, std::function<VarType*(BaseObject*)>&& access, std::vector<Name>&& tags)
-		: Property(classPtr, typeName, std::move(name), std::move(tags)), access(access)
+	TProperty(Class* classPtr, const Name& typeName, Name&& name, std::function<VarType*(BaseObject*)>&& access, ReflectionTags tags)
+		: Property(classPtr, typeName, std::move(name), tags), access(access)
 	{}
 
 	// Will be nullptr if class is not correct

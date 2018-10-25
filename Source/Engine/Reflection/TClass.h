@@ -52,8 +52,14 @@ public:
 		RegistryClass(inName);
 	}
 
+	/** Registry a class's tags */
+	void RegistryClassTags(ReflectionTags inTags)
+	{
+		tags = inTags;
+	}
+
 	template<typename VarType>
-	void RegistryProperty(Name&& name, std::function<VarType*(BaseObject*)>&& access, std::vector<Name>&& tags)
+	void RegistryProperty(Name&& name, std::function<VarType*(BaseObject*)>&& access, ReflectionTags tags)
 	{
 		properties.emplace(name, std::unique_ptr<Property>(
 			new TProperty<VarType>(
@@ -61,7 +67,7 @@ public:
 				ReflectionTypeTraits<VarType>::name,
 				std::move(name),
 				std::move(access),
-				std::move(tags)
+				tags
 			)
 		));
 	}

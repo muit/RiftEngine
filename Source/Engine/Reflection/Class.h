@@ -10,6 +10,7 @@ class Class {
 protected:
 
 	Name name;
+	ReflectionTags tags;
 	Class* parent;
 	std::vector<Class*> children;
 

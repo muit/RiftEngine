@@ -10,6 +10,6 @@ class Actor : public Object {
 
 public:
 
-	PROP(Name, name)
+	PROP(Name, name, Transient | SaveGame)
 	Name name;
 };

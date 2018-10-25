@@ -19,7 +19,7 @@ public:
 	PROP(int32, aNumber)
 	int32 aNumber;
 
-	PROP(uint8, anotherNumber)
+	PROP(uint8, anotherNumber, Transient)
 	uint8 anotherNumber;
 
 	std::vector<GlobalPtr<Actor>> actors;
