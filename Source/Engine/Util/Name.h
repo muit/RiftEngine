@@ -47,6 +47,7 @@ public:
 
 	Name() : id(NoneId()) {}
 
+	Name(const StringView&& key) : Name(String{ key }) {}
 	Name(const ANSICHAR* key) : Name(String{ key }) {}
 	Name(const String& key) {
 		// Index this name
@@ -64,8 +65,12 @@ public:
 		return *this;
 	}
 
-	std::basic_string<ANSICHAR> ToString() const {
-		return IsNone() ? "" : *id;
+	String ToString() const {
+		if (IsNone())
+		{
+			return "";
+		}
+		return *id;
 	}
 
 	bool operator==(const Name& other) const {
@@ -94,7 +99,7 @@ namespace std {
 		size_t operator()(const Name& k) const
 		{
 			// Return the hash of the string
-			static const std::hash<String>hasher{};
+			static const eastl::hash<String>hasher{};
 			const Name::Id& id = k.GetId();
 			return hasher(*id);
 		}

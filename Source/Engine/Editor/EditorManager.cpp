@@ -2,6 +2,7 @@
 
 #include "EditorManager.h"
 #include "Memory/Allocator.h"
+#include "imgui/imgui_stl.h"
 
 
 #if WITH_EDITOR
@@ -36,19 +37,19 @@ void EditorManager::Tick(float deltaTime)
 
 
 	ImGui::Begin("Memory"); {                        // Create a window called "Hello, world!" and append into it.
-		ImGui::Text("%s", Memory::GetAllocator()->GetName().ToString().c_str());
+		ImGui::Text(Memory::GetAllocator()->GetName().ToString());
 		ImGui::SameLine();
 		ImGui::Text(" -- %i kb", (Memory::GetAllocator()->GetSize() / 1024));
 		ImGui::Separator();
-		ImGui::Text("%s", Memory::GetObjectsAllocator()->GetName().ToString().c_str());
+		ImGui::Text(Memory::GetObjectsAllocator()->GetName().ToString());
 		ImGui::SameLine();
 		ImGui::Text("-- %i kb", (Memory::GetObjectsAllocator()->GetSize() / 1024));
 		ImGui::Separator();
-		ImGui::Text("%s", Memory::GetAssetsAllocator()->GetName().ToString().c_str());
+		ImGui::Text(Memory::GetAssetsAllocator()->GetName().ToString());
 		ImGui::SameLine();
 		ImGui::Text(" -- %i kb", (Memory::GetAssetsAllocator()->GetSize() / 1024));
 		ImGui::Separator();
-		ImGui::Text("%s", Memory::GetFrameAllocator()->GetName().ToString().c_str());
+		ImGui::Text(Memory::GetFrameAllocator()->GetName().ToString());
 		ImGui::SameLine();
 		ImGui::Text("  -- %i kb", (Memory::GetFrameAllocator()->GetSize() / 1024));
 	} ImGui::End();

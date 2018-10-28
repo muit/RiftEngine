@@ -17,7 +17,7 @@ void NamePropertyWidget::Tick()
 	{
 		lastValue = currentValue;
 		currentValue = prop->GetValuePtr()->ToString();
-		ImGui::InputText(displayName.c_str(), &currentValue);
+		ImGui::InputText(displayName.c_str(), currentValue);
 	}
 	ImGui::PopID();
 

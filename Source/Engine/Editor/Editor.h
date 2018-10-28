@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <EASTL/vector.h>
+
 #include "Object.h"
 #include "EditorWindow.h"
 
@@ -11,7 +13,7 @@
 class Editor : public Object {
     CLASS(Editor, Object)
 
-    std::vector<GlobalPtr<EditorWindow>> Windows;
+    eastl::vector<GlobalPtr<EditorWindow>> Windows;
 };
 
 #endif

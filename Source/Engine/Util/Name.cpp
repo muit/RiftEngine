@@ -2,6 +2,7 @@
 
 #include "Name.h"
 
+
 NameTable::ConstIterator NameTable::Init(const String& string)
 {
 	if (string.size() == 0)

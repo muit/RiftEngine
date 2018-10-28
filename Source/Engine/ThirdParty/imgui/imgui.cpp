@@ -853,6 +853,7 @@ CODE
 #else
 #include <stdint.h>     // intptr_t
 #endif
+#include "EASTL/fixed_string.h"
 
 #define IMGUI_DEBUG_NAV_SCORING     0
 #define IMGUI_DEBUG_NAV_RECTS       0
@@ -1261,8 +1262,8 @@ void ImStrTrimBlanks(char* buf)
 // B) When buf==NULL vsnprintf() will return the output size.
 #ifndef IMGUI_DISABLE_FORMAT_STRING_FUNCTIONS
 
-#if defined(_MSC_VER) && !defined(vsnprintf)
-#define vsnprintf _vsnprintf
+#if !defined(vsnprintf)
+#define vsnprintf eastl::Vsnprintf
 #endif
 
 int ImFormatString(char* buf, size_t buf_size, const char* fmt, ...)

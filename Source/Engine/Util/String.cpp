@@ -9,7 +9,7 @@ void StringUtils::ToSentenceCase(const String& str, String& result)
 		//static const std::regex wordToCapital("\b[a-z]");
 		static const std::regex spaceCamelCase("([a-zA-Z])(?=[A-Z])");
 
-		result = std::regex_replace(str, spaceCamelCase, "$& ");
+		result = String{ std::regex_replace(str.c_str(), spaceCamelCase, "$& ").c_str() };
 		result[0] = (char)::toupper(result[0]);
 	}
 	else
