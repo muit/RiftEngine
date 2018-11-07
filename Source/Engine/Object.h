@@ -32,6 +32,9 @@ class Object : public BaseObject {
 
 private:
 
+	PROP(Name, name)
+	Name name;
+
 	Ptr<BaseObject> self;
 	Class* ownClass;
 	Ptr<BaseObject> owner;
@@ -43,7 +46,10 @@ public:
 
 	virtual void Construct() {}
 
-	virtual bool Serialize(Archive& archive) { return true; }
+	virtual bool Serialize(Archive& ar) {
+		SerializeReflection(ar);
+		return true;
+	}
 
 
 	Ptr<Object> GetOwner() const { return owner.Cast<Object>(); }
@@ -51,6 +57,8 @@ public:
 	Ptr<Object> GetSelf() const { return self.Cast<Object>(); }
 
 	Class* GetClass() const { return ownClass; }
+
+	Name GetName() { return name; }
 
 	virtual Ptr<World> GetWorld() const;
 };

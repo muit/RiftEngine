@@ -24,6 +24,6 @@ public:
 
 	std::vector<GlobalPtr<Actor>> actors;
 
-	void Tick(float deltaTime) {
+	void Tick(float /*deltaTime*/) {
 	}
 };

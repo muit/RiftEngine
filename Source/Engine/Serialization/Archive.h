@@ -1,9 +1,14 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
+#include <EASTL/stack.h>
 #include <nlohmann/json.hpp>
 
+#include "EngineTypes.h"
 #include "Util/TypeTraits.h"
+#include "Util/Name.h"
+
+#include "Object/ObjectPtr.h"
 
 #include "MemoryReader.h"
 #include "MemoryWriter.h"
@@ -22,41 +27,119 @@ public:
 	virtual ~Archive() = default;
 
 
-
-
-	template<typename T, EnableIfPassByValue> // Select a << function based on if T is 8 byte or smaller and copyable
-	Archive& operator<<(T val) {
-		Serialize(*this, val);	return *this;
+	/*template<typename T, EnableIfPassByValue> // Select a << function based on if T is 8 byte or smaller and copyable
+	inline Archive& operator<<(Pair<const char*, const T> val) {
+		Serialize(*this, val.first, val.second);
+		return *this;
 	}
 
 	template<typename T, EnableIfNotPassByValue>
-	Archive& operator<<(const T& val) {
-		Serialize(*this, val);	return *this;
+	FORCEINLINE Archive& operator<<(Pair<const char*, const T&> val) {
+		Serialize(*this, val.first, val.second);
+		return *this;
+	}*/
+
+	template<typename T>
+	FORCEINLINE Archive& operator()(const char* name, T& val) {
+		Serialize(*this, name, val);
+		return *this;
 	}
 
-	bool IsLoading() { return bReads; }
-	bool IsSaving() { return !bReads; }
+
+	virtual void BeginObject(const char* name) = 0;
+	virtual void EndObject() = 0;
+
+	virtual void Serialize(Archive& ar, const char* name, uint8& val) = 0;
+
+	virtual void Serialize(Archive& ar, const char* name, int32& val) = 0;
+
+	virtual void Serialize(Archive& ar, const char* name, float& val) = 0;
+
+	virtual void Serialize(Archive& ar, const char* name, Name& val) = 0;
+
+	virtual void Serialize(Archive& ar, const char* name, String& val) = 0;
+
+
+	template<typename T>
+	void Serialize(Archive& ar, const char* name, GlobalPtr<T>& val) {
+		if (val)
+		{
+			BeginObject(name);
+			val->Serialize(ar);
+			EndObject();
+		}
+	}
+
+	template<typename T>
+	void Serialize(Archive& ar, const char* name, Ptr<T>& val) {
+		if (val)
+		{
+			ar(name, val->GetName());
+		}
+	}
+
+	FORCEINLINE bool IsLoading() { return bReads; }
+	FORCEINLINE bool IsSaving() { return !bReads; }
 };
 
-/* Serialize functions of any type can be defined globally or from custom archives
-   It avoids any kind of virtual table
-void Serialize(const float val) {
 
-}*/
+class JsonArchive : public Archive {
 
-
-class JsonArchive {
-
-	json data;
+	json baseData;
+	eastl::stack<json*> depthData;
 
 
-	JsonArchive() = default;
+public:
 
-	void Serialize(const GlobalPtr<Object>& p) {
-		data = json{};
+	JsonArchive() : Archive(), baseData{}, depthData{ &baseData } {}
+
+	String GetDataString() { return baseData.dump(); }
+
+private:
+
+	virtual void BeginObject(const char* name) override {
+		depthData.push(&Data()[name]);
 	}
 
-	void Deserialize(GlobalPtr<Object>& p) {
-
+	virtual void EndObject() override {
+		if(depthData.size() > 1)
+			depthData.pop();
 	}
+
+	virtual void Serialize(Archive&, const char* name, uint8& val) override {
+		if (IsLoading())
+			val = Data()[name].get<uint8>();
+		else
+			Data()[name] = val;
+	}
+
+	virtual void Serialize(Archive&, const char* name, int32& val) override {
+		if (IsLoading())
+			val = Data()[name].get<int32>();
+		else
+			Data()[name] = val;
+	}
+
+	virtual void Serialize(Archive&, const char* name, float& val) override {
+		if (IsLoading())
+			val = Data()[name].get<float>();
+		else
+			Data()[name] = val;
+	}
+
+	virtual void Serialize(Archive& ar, const char* name, Name& val) override {
+		String str = val.ToString();
+		ar(name, str);
+		if (IsLoading())
+			val = str;
+	}
+
+	virtual void Serialize(Archive&, const char* name, String& val) override {
+		if (IsLoading())
+			val = Data()[name].get<String>();
+		else
+			Data()[name] = val;
+	}
+
+	json& Data() { return *depthData.top(); }
 };

@@ -3,10 +3,16 @@
 
 #include <GL/gl3w.h>
 
+#include "EASTL/utility.h"
+
 #include "Platform/Platform.h"
 #include "Util/Array.h"
 #include "Util/String.h"
 #include "Util/Name.h"
+
+
+template <typename T1, typename T2>
+using Pair = eastl::pair<T1, T2>;
 
 
 template<typename Type>

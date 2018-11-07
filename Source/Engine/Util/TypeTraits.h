@@ -4,7 +4,7 @@
 #include "EASTL/type_traits.h"
 
 
-template < class T, size_t size > 
+template < class T, size_t size >
 struct IsSmallerType : eastl::integral_constant< bool, (sizeof(T) <= size) > {};
 
 template < class T, size_t size >

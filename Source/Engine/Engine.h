@@ -18,10 +18,12 @@ class Engine : public Object {
 	GlobalPtr<UIManager> ui;
 	GlobalPtr<Renderer> renderer;
 
+	PROP(uint8, time)
+	uint8 time;
 
 public:
 
-	Engine() {}
+	Engine() { time = 3; }
 
 
 	/** Begin Object interface */
