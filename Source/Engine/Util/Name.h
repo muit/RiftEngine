@@ -1,10 +1,12 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include <set>
+//#include <set>
 
 #include "Platform/Platform.h"
 #include "String.h"
+#include "EASTL/functional.h"
+#include "EASTL/unordered_set.h"
 
 
 struct Name;
@@ -12,10 +14,11 @@ struct Name;
 /** Global table storing all names */
 class NameTable {
 	friend Name;
-	using Iterator      = std::set<String>::iterator;
-	using ConstIterator = std::set<String>::const_iterator;
+	using Container = eastl::unordered_set<String>;
+	using Iterator      = Container::iterator;
+	using ConstIterator = Container::const_iterator;
 
-	std::set<String> table;
+	Container table;
 
 
 	NameTable() : table{} {}
@@ -93,7 +96,7 @@ private:
 	Name(const Id& id) : id(id) {}
 };
 
-namespace std {
+namespace eastl {
 	template <>
 	struct hash<Name> {
 		size_t operator()(const Name& k) const

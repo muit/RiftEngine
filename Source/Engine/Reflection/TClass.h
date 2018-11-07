@@ -59,14 +59,14 @@ public:
 	}
 
 	template<typename VarType>
-	void RegistryProperty(Name&& name, std::function<VarType*(BaseObject*)>&& access, ReflectionTags tags)
+	void RegistryProperty(Name&& name, eastl::function<VarType*(BaseObject*)>&& access, ReflectionTags tags)
 	{
-		properties.emplace(name, std::unique_ptr<Property>(
+		properties.emplace(name, eastl::unique_ptr<Property>(
 			new TProperty<VarType>(
 				this,
 				ReflectionTypeTraits<VarType>::name,
-				std::move(name),
-				std::move(access),
+				eastl::move(name),
+				eastl::move(access),
 				tags
 			)
 		));

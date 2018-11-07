@@ -1,10 +1,13 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include <unordered_map>
+#include "EASTL/vector.h"
+#include "EASTL/unordered_map.h"
+#include "EASTL/unique_ptr.h"
 
 #include "EngineTypes.h"
 #include "Property.h"
+
 
 class Class {
 protected:
@@ -12,9 +15,9 @@ protected:
 	Name name;
 	ReflectionTags tags;
 	Class* parent;
-	std::vector<Class*> children;
+	eastl::vector<Class*> children;
 
-	typedef std::unordered_map<Name, std::unique_ptr<Property>> PropertyMap;
+	typedef eastl::unordered_map<Name, eastl::unique_ptr<Property>> PropertyMap;
 
 	PropertyMap properties;
 

@@ -43,6 +43,9 @@ public:
 
 	virtual void Construct() {}
 
+	virtual bool Serialize(Archive& archive) { return true; }
+
+
 	Ptr<Object> GetOwner() const { return owner.Cast<Object>(); }
 
 	Ptr<Object> GetSelf() const { return self.Cast<Object>(); }
