@@ -74,6 +74,14 @@ public:
 
 			// Rendering
 			renderer->Render();
+
+
+			JsonArchive ar{};
+
+			// FIX ME: Memory leak
+			GEngine->GetWorld();
+			ar.GetDataString();
+			//SDL_Log(ar.GetDataString().c_str());
 		}
 
 		return true;

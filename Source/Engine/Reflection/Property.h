@@ -38,8 +38,6 @@ public:
 
 	virtual ~Property() = default;
 
-	//	virtual void Serialize(void* instance, Archive& archive) const {}
-
 	String GetName() const { return name.ToString(); }
 	bool HasTag(ReflectionTags tag) const { return (tags | tag) > 0; }
 

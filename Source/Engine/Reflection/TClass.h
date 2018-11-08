@@ -23,15 +23,6 @@ public:
 		ObjectType::__meta_RegistryProperties();
 	}
 
-	/*void Serialize(T& instance, Archive& archive)
-	{
-		//TODO: Iterate properties and serialize them
-		for(const PropertyBase& property : properties)
-		{
-			property.Serialize(instance, archive);
-		}
-	}*/
-
 public:
 
 	/** GENERATION */

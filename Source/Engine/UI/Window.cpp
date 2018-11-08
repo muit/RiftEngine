@@ -7,7 +7,7 @@ void Window::Build()
 {
 	bOpen = true;
 	windowName = "";
-	windowFlags = ImGuiWindowFlags_None;
+	windowFlags = 0;
 }
 
 void Window::Tick()

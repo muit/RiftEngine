@@ -20,7 +20,7 @@ using Super = parent;\
 \
 virtual inline void SerializeReflection(Archive& ar) override {\
 	Super::SerializeReflection(ar);\
-	__meta_SerializeProperty(ar, MetaInt<0>{}); \
+	__meta_SerializeProperty(ar, MetaInt<0>{});\
 }\
 static void __meta_RegistryClass() {\
 	StaticClass()->RegistryClass<Super>(#type);\

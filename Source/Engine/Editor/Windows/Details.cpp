@@ -10,7 +10,6 @@ void Details::Build()
 {
 	Super::Build();
 	windowName = "Details";
-	windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize;
 
 	if (object && object->GetClass())
 	{

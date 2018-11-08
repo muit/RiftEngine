@@ -10,8 +10,9 @@
 void MemoryDebugger::Build()
 {
 	Super::Build();
-	bOpen = false;
+	bOpen = true;
 	windowName = "Memory";
+	windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize;
 }
 
 void MemoryDebugger::Tick()

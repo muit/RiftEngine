@@ -91,7 +91,8 @@ class JsonArchive : public Archive {
 
 public:
 
-	JsonArchive() : Archive(), baseData{}, depthData{ &baseData } {}
+	JsonArchive() : Archive(), baseData{}, depthData{} {}
+	virtual ~JsonArchive() = default;
 
 	String GetDataString() { return baseData.dump(); }
 
@@ -102,8 +103,7 @@ private:
 	}
 
 	virtual void EndObject() override {
-		if(depthData.size() > 1)
-			depthData.pop();
+		depthData.pop();
 	}
 
 	virtual void Serialize(Archive&, const char* name, uint8& val) override {
@@ -141,5 +141,9 @@ private:
 			Data()[name] = val;
 	}
 
-	json& Data() { return *depthData.top(); }
+	json& Data() {
+		if(depthData.size() > 0)
+			return *depthData.top();
+		return baseData;
+	}
 };
