@@ -32,7 +32,7 @@ public:
 	Class* GetParentClass() const { return parent; }
 
 	template<bool bIncludeSelf = false, bool bIsFirstCall = true>
-	void GetAllChildClasses(std::vector<Class*>& outChildren) {
+	void GetAllChildClasses(eastl::vector<Class*>& outChildren) {
 		if(bIsFirstCall)
 			outChildren.clear();
 

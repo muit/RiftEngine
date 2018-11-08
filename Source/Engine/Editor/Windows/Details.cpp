@@ -8,10 +8,13 @@
 
 void Details::Build()
 {
-	bOpen = true;
+	Super::Build();
+	windowName = "Details";
+	windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize;
 
 	if (object && object->GetClass())
 	{
+		windowName = String("Details: ").append(object->GetName().ToString());
 
 		Class* objectClass = object->GetClass();
 		for (const auto& property : objectClass->GetAllProperties())
@@ -21,7 +24,7 @@ void Details::Build()
 		}
 	}
 
-	std::vector<Class*> children{};
+	eastl::vector<Class*> children{};
 	Object::StaticClass()->GetAllChildClasses(children);
 
 	/*for (auto* child : children) {
@@ -31,12 +34,15 @@ void Details::Build()
 
 void Details::Tick()
 {
-	ImGui::Begin("Details", &bOpen, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-	if (object.IsValid())
+	if (bOpen)
 	{
-		TickChilds();
+		BeginWindow();
+		if (object.IsValid())
+		{
+			TickChilds();
+		}
+		EndWindow();
 	}
-	ImGui::End();
 }
 
 void Details::SetObject(Ptr<Object> inObject)

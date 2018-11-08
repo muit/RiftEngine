@@ -10,16 +10,19 @@
 #include <imgui/imgui.h>
 #include "World/World.h"
 #include "UI/Widget.h"
-#include "Widgets/Details.h"
+#include "Windows/Details.h"
+#include "Windows/MemoryDebugger.h"
 
 
 class EditorManager : public Object {
 	CLASS(EditorManager, Object)
 
 
-	std::vector<GlobalPtr<Editor>> activeEditors;
+	eastl::vector<GlobalPtr<Editor>> activeEditors;
 
 	GlobalPtr<Details> details;
+	GlobalPtr<MemoryDebugger> memory;
+
 
 	bool showDemoWindow = true;
 	bool showAnotherWindow = false;
@@ -31,12 +34,14 @@ public:
 	EditorManager() : Super() {
 		details = Widget::CreateStandalone<Details>();
 		details->SetObject(GetWorld()->GetScene());
+
+		memory = Widget::CreateStandalone<MemoryDebugger>();
 	}
 
 	template<typename EditorType>
 	Ptr<Editor> CreateEditor()
 	{
-		activeEditors.push_back(Create<EditorType>(ThisPtr()));
+		activeEditors.push_back(Create<EditorType>(GetSelf()));
 		return activeEditors.back();
 	}
 

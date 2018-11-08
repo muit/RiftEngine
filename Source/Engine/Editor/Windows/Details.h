@@ -4,14 +4,13 @@
 
 #if WITH_EDITOR
 
-#include "UI/Widget.h"
-#include "PropertyWidget.h"
+#include "Editor/EditorWindow.h"
+#include "../Widgets/PropertyWidget.h"
 
 
-class Details : public Widget {
-	CLASS(Details, Widget)
+class Details : public EditorWindow {
+	CLASS(Details, EditorWindow)
 
-	bool bOpen;
 	Ptr<Object> object;
 
 protected:
