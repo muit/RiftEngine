@@ -36,11 +36,17 @@ Renderer::Renderer() : Super()
 	SDL_GetCurrentDisplayMode(0, &current);
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+#if WITH_EDITOR
+	uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED;
+#else
+	uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED;
+#endif
 	window = SDL_CreateWindow(
 		"FecoEngine",
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 		SCREEN_WIDTH, SCREEN_HEIGHT,
-		SDL_WINDOW_OPENGL
+		windowFlags
 	);
 
 	if (!window) {

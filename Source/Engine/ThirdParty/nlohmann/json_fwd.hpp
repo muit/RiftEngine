@@ -1,12 +1,11 @@
 #ifndef NLOHMANN_JSON_FWD_HPP
 #define NLOHMANN_JSON_FWD_HPP
 
-#include "Platform/Platform.h" // int64_t, uint64_t
+#include <cstdint> // int64_t, uint64_t
 #include <map> // map
 #include <memory> // allocator
 #include "Util/String.h" // string
 #include <vector> // vector
-
 
 /*!
 @brief namespace for Niels Lohmann
@@ -25,15 +24,16 @@ for serialization.
 template<typename T = void, typename SFINAE = void>
 struct adl_serializer;
 
-template<
-	template<typename U, typename V, typename... Args> class ObjectType = std::map,
-	template<typename U, typename... Args> class ArrayType = std::vector,
-	class StringType = String, class BooleanType = bool,
-	class NumberIntegerType = int64,
-	class NumberUnsignedType = uint64,
-	class NumberFloatType = float,
-	template<typename U> class AllocatorType = std::allocator,
-	template<typename T, typename SFINAE = void> class JSONSerializer = adl_serializer>
+template<template<typename U, typename V, typename... Args> class ObjectType =
+         std::map,
+         template<typename U, typename... Args> class ArrayType = std::vector,
+         class StringType = String, class BooleanType = bool,
+         class NumberIntegerType = std::int64_t,
+         class NumberUnsignedType = std::uint64_t,
+         class NumberFloatType = double,
+         template<typename U> class AllocatorType = std::allocator,
+         template<typename T, typename SFINAE = void> class JSONSerializer =
+         adl_serializer>
 class basic_json;
 
 /*!

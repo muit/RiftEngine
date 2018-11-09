@@ -77,12 +77,14 @@ public:
 			world->Tick(frameTime.deltaTime);
 			ui->Tick(frameTime.deltaTime);
 
-
-			JsonArchive ar{};
-			//GEngine->GetWorld();
-			// FIX ME: Memory leak
-			//ar.GetDataString();
-			//SDL_Log(ar.GetDataString().c_str());
+			{
+				//JsonArchive ar{};
+				//GEngine->GetWorld()->GetScene()->Serialize(ar);
+				// FIX ME: Memory leak
+				//String s = String(512, 'c');
+				//ar.GetDataString();
+				//SDL_Log(ar.GetDataString().c_str());
+			}
 
 			// Rendering
 			renderer->Render();
