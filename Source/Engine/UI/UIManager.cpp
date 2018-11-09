@@ -21,6 +21,7 @@ void UIManager::OnSDLEvent(SDL_Event* ev)
 
 void UIManager::Tick(float deltaTime)
 {
+	ZoneScopedN("UI Tick");
 	ImGui::NewFrame();
 
 #if WITH_EDITOR

@@ -3,6 +3,7 @@
 
 #include "Renderer.h"
 #include <SDL.h>
+#include <tracy/Tracy.hpp>
 
 #include "Object.h"
 #include "Util/Time.h"
@@ -43,6 +44,7 @@ public:
 		if(renderer->GetState() == ERendererState::Failed)
 			return false;
 
+		GetSelf();
 		world = Create<World>(GetSelf());
 		world->Start();
 
@@ -53,6 +55,9 @@ public:
 		bool bFinish = false;
 		while (!bFinish)
 		{
+			TracyMessageL("Tick");
+			ZoneScopedN("Tick");
+
 			frameTime.Tick();
 
 			// Process window and input events
@@ -72,16 +77,15 @@ public:
 			world->Tick(frameTime.deltaTime);
 			ui->Tick(frameTime.deltaTime);
 
-			// Rendering
-			renderer->Render();
-
 
 			JsonArchive ar{};
-
+			//GEngine->GetWorld();
 			// FIX ME: Memory leak
-			GEngine->GetWorld();
-			ar.GetDataString();
+			//ar.GetDataString();
 			//SDL_Log(ar.GetDataString().c_str());
+
+			// Rendering
+			renderer->Render();
 		}
 
 		return true;

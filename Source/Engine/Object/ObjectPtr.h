@@ -2,7 +2,7 @@
 #pragma once
 
 #include <EASTL/weak_ptr.h>
-#include <EASTL/hash_set.h>
+#include <EASTL/vector.h>
 
 #include "Object/BaseObject.h"
 
@@ -15,7 +15,7 @@ class BaseGlobalPtr {
 	friend BaseWeakPtr;
 
 	/** MEMBERS */
-	mutable eastl::hash_set<BaseWeakPtr*> weaks;
+	mutable eastl::vector<BaseWeakPtr*> weaks;
 
 protected:
 
@@ -137,14 +137,14 @@ class BaseWeakPtr {
 	friend BaseGlobalPtr;
 
 	const BaseGlobalPtr* owner;
+	eastl_size_t id;
 
 protected:
 
-	BaseWeakPtr() = default;
+	BaseWeakPtr() : owner{ nullptr }, id{ 0 } {}
 
-	~BaseWeakPtr() {
-		if (IsValid())
-			owner->weaks.erase(this);
+	NOINLINE ~BaseWeakPtr() {
+		Reset();
 	}
 
 	void Set(const BaseGlobalPtr* inOwner);
@@ -160,9 +160,13 @@ public:
 
 	void Reset() {
 		// Remove old weak ptr
-		if(owner)
-			owner->weaks.erase(this);
-		CleanOwner();
+		if (IsValid())
+		{
+			const auto it = owner->weaks.begin() + id;
+			if(it < owner->weaks.end())
+				owner->weaks.erase(it);
+			CleanOwner();
+		}
 	}
 
 private:

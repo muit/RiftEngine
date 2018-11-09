@@ -18,3 +18,4 @@ struct FWindowsPlatformTypes : public FGenericPlatformTypes
 typedef FWindowsPlatformTypes FPlatformTypes;
 
 #define FORCEINLINE __forceinline /* Force code to be inline */
+#define NOINLINE __declspec(noinline) /* Force code to not be inlined */

@@ -17,6 +17,7 @@ public:
 	}
 
 	void Tick(float deltaTime) {
+		ZoneScopedN("World Tick");
 		scene->Tick(deltaTime);
 	}
 

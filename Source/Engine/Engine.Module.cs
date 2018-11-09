@@ -27,6 +27,11 @@ class EngineModule : BaseModule
         conf.Options.Add(new Sharpmake.Options.Vc.Compiler.DisableSpecificWarnings("4152", "4100"));
         //conf.Options.Add(Sharpmake.Options.Vc.Compiler.ShowIncludes.Enable);
 
+        if(target.Optimization == Optimization.Debug)
+        {
+            conf.Defines.Add("TRACY_ENABLE");
+        }
+
         switch(target.Platform) {
             case Platform.win32:
                 conf.Defines.Add("PLATFORM_WINDOWS");

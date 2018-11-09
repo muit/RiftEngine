@@ -8,6 +8,7 @@
 
 void EditorManager::Tick(float deltaTime)
 {
+	ZoneScopedN("Editor Tick");
 	TickMainNavBar();
 	//TickDocking();
 

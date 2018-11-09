@@ -94,7 +94,7 @@ public:
 	JsonArchive() : Archive(), baseData{}, depthData{} {}
 	virtual ~JsonArchive() = default;
 
-	String GetDataString() { return baseData.dump(); }
+	void GetDataString() { baseData.dump(); }
 
 private:
 

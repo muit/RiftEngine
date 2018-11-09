@@ -6,8 +6,8 @@
 
 void BaseGlobalPtr::MoveFrom(BaseGlobalPtr&& other)
 {
-	ptr = std::move(other.ptr);
-	weaks = std::move(other.weaks);
+	ptr = eastl::move(other.ptr);
+	weaks = eastl::move(other.weaks);
 
 	// Update owned pointers to owner
 	for (BaseWeakPtr* const weak : weaks)
@@ -25,16 +25,24 @@ BaseGlobalPtr::~BaseGlobalPtr()
 }
 
 
+//BaseWeakPtr::~BaseWeakPtr()
+
 void BaseWeakPtr::Set(const BaseGlobalPtr* inOwner)
 {
-	if (owner && owner != inOwner)
+	if (owner == inOwner)
+		return;
+
+	if (owner)
 		Reset();
 
 	owner = inOwner;
 
 	// Bind into new owner
-	if (owner)
-		owner->weaks.insert(this);
+	if (owner) {
+		owner->weaks.push_back(this);
+		id = owner->weaks.size() - 1;
+		//owner->weaks.insert(this);
+	}
 }
 
 void BaseWeakPtr::MoveFrom(BaseWeakPtr&& other)
@@ -43,7 +51,8 @@ void BaseWeakPtr::MoveFrom(BaseWeakPtr&& other)
 	other.owner = nullptr;
 	if (owner)
 	{
-		owner->weaks.erase(&other);
-		owner->weaks.insert(this);
+		owner->weaks[id] = this;
+		//owner->weaks.erase(&other);
+		//owner->weaks.insert(this);
 	}
 }

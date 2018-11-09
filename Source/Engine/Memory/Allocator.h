@@ -4,7 +4,9 @@
 #include <EABase/eabase.h>
 #include <EASTL/allocator_malloc.h>
 #include <EASTL/string_view.h>
+#include <tracy/Tracy.hpp>
 #include <new>
+
 
 #include "Util/Name.h"
 
@@ -32,19 +34,24 @@ public:
 	void* Allocate(size_t n, int flags = 0)
 	{
 		size += n;
-		return malloc_alloc.allocate(n, flags);
+		void* const ptr = malloc_alloc.allocate(n, flags);
+		TracyAllocS(ptr, n, 10);
+		return ptr;
 	}
 
 	void* Allocate(size_t n, size_t alignment, size_t alignmentOffset, int flags = 0)
 	{
 		size += n;
-		return malloc_alloc.allocate(n, alignment, alignmentOffset, flags);
+		void* const ptr = malloc_alloc.allocate(n, alignment, alignmentOffset, flags);
+		TracyAllocS(ptr, n, 10);
+		return ptr;
 	}
 
-	void Deallocate(void* p, size_t n)
+	void Deallocate(void* const ptr, size_t n)
 	{
 		size -= n;
-		malloc_alloc.deallocate(p, n);
+		TracyFreeS(ptr, 10);
+		malloc_alloc.deallocate(ptr, n);
 	}
 
 	Name GetName() const

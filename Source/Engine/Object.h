@@ -14,7 +14,7 @@ template<typename ObjectType>
 static GlobalPtr<ObjectType> Create(const Ptr<Object> parent = {}) {
 	static_assert(eastl::is_convertible< ObjectType, Object >::value, "Type is not an Object!");
 
-	GlobalPtr<ObjectType> ptr = GlobalPtr<ObjectType>::Create();
+	GlobalPtr<ObjectType> ptr{ GlobalPtr<ObjectType>::Create() };
 	ptr->ownClass = ObjectType::StaticClass();
 	ptr->self = ptr;
 	ptr->owner = parent;
