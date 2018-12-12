@@ -8,5 +8,7 @@
 class System : public Object {
 	CLASS(System, Object)
 
-    virtual void Tick(float /*deltaTime*/) override {}
-}
+public:
+
+    virtual void Tick(float /*deltaTime*/) {}
+};

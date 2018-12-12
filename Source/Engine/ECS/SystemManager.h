@@ -3,20 +3,24 @@
 #pragma once
 
 #include "Object.h"
+#include "System.h"
 
 
 class SystemsManager : public Object {
 	CLASS(SystemsManager, Object)
 
-    eastl::vector<GlobalPtr<System>> systems;
+	eastl::vector<GlobalPtr<System>> systems;
 
-    virtual void Tick(float deltaTime) override {
-        for(const GlobalPtr<System>& system : systems)
-        {
-            if(system)
-            {
-                system->Tick(deltaTime);
-            }
-        }
-    }
-}
+
+public:
+
+	virtual void Tick(float deltaTime) {
+		for (const GlobalPtr<System>& system : systems)
+		{
+			if (system)
+			{
+				system->Tick(deltaTime);
+			}
+		}
+	}
+};
