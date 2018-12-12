@@ -10,3 +10,5 @@
 /enc_temp_folder/**/*.*
 
 .vs
+
+!Programs/**/*
