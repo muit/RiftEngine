@@ -1,6 +1,28 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "Allocator.h"
+#include "Util/Name.h"
+
+
+Allocator::Allocator(const char* name /*= "Global"*/) : name{ name }, size{ 0 }, malloc_alloc{ name }
+{}
+
+Allocator::Allocator(const Allocator&) : name{}, size{ 0 }, malloc_alloc{}
+{}
+
+Allocator::Allocator(const Allocator&, const char* name) : name{ name }, size{ 0 }, malloc_alloc{ name }
+{}
+
+Name Allocator::GetName() const
+{
+	return { name };
+}
+
+void Allocator::SetName(const char* newName)
+{
+	name = newName;
+}
+
 
 namespace Memory {
 	/// gAllocator
@@ -81,4 +103,3 @@ void operator delete[](void* p, std::size_t size)
 {
 	Memory::GetAllocator()->Deallocate(p, size);
 }
-

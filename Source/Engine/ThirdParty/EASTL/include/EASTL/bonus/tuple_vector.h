@@ -34,6 +34,7 @@
 	#pragma once // Some compilers (e.g. VC++) benefit significantly from using this. We've measured 3-4% build speed improvements in apps as a result.
 #endif
 
+EA_DISABLE_VC_WARNING(4244) // warning C4244: 'conversion from '___' to '___', possible loss of data
 EA_DISABLE_VC_WARNING(4623) // warning C4623: default constructor was implicitly defined as deleted
 EA_DISABLE_VC_WARNING(4625) // warning C4625: copy constructor was implicitly defined as deleted
 EA_DISABLE_VC_WARNING(4510) // warning C4510: default constructor could not be generated
@@ -165,10 +166,10 @@ struct TupleRecurser<>
 		// If n is zero, then we allocate no memory and just return NULL. 
 		// This is fine, as our default ctor initializes with NULL pointers. 
 		size_type alignment = TupleRecurser<VecTypes...>::GetTotalAlignment();
-		void* ptr = capacity ? allocate_memory(vec.internalAllocator(), offset, alignment, 0) : nullptr;
+		void* ptr = capacity ? allocate_memory(vec.get_allocator(), offset, alignment, 0) : nullptr;
 
 	#if EASTL_ASSERT_ENABLED
-		if (EASTL_UNLIKELY((size_type)ptr & (alignment - 1)) != 0)
+		if (EASTL_UNLIKELY((size_t)ptr & (alignment - 1)) != 0)
 		{
 			EASTL_FAIL_MSG("tuple_vector::DoAllocate -- memory not alignment at requested alignment");
 		}
@@ -189,7 +190,7 @@ struct TupleRecurser<T, Ts...> : TupleRecurser<Ts...>
 	
 	static EA_CONSTEXPR size_type GetTotalAlignment()
 	{
-		return max(alignof(T), TupleRecurser<Ts...>::GetTotalAlignment());
+		return max(static_cast<size_type>(alignof(T)), TupleRecurser<Ts...>::GetTotalAlignment());
 	}
 
 	static EA_CONSTEXPR size_type GetTotalAllocationSize(size_type capacity, size_type offset)
@@ -226,7 +227,7 @@ private:
 	static EA_CONSTEXPR size_type CalculatAllocationOffset(size_type offset) { return (offset + alignof(T) - 1) & (~alignof(T) + 1); }
 };
 
-template <size_t I, typename T>
+template <eastl_size_t I, typename T>
 struct TupleVecLeaf
 {
 	typedef eastl_size_t size_type;
@@ -477,7 +478,7 @@ public:
 	{}
 
 	TupleVecImpl(this_type&& x)
-		: mDataSizeAndAllocator(0, eastl::move(x.internalAllocator()))
+		: mDataSizeAndAllocator(0, eastl::move(x.get_allocator()))
 	{
 		swap(x);
 	}
@@ -485,7 +486,7 @@ public:
 	TupleVecImpl(this_type&& x, const Allocator& allocator) 
 		: mDataSizeAndAllocator(0, allocator)
 	{
-		if (internalAllocator() == x.internalAllocator()) // If allocators are equivalent, then we can safely swap member-by-member
+		if (get_allocator() == x.get_allocator()) // If allocators are equivalent, then we can safely swap member-by-member
 		{
 			swap(x);
 		}
@@ -497,7 +498,7 @@ public:
 	}
 
 	TupleVecImpl(const this_type& x) 
-		: mDataSizeAndAllocator(0, x.internalAllocator())
+		: mDataSizeAndAllocator(0, x.get_allocator())
 	{
 		DoInitFromIterator(x.begin(), x.end());
 	}
@@ -571,14 +572,14 @@ public:
 	{ 
 		swallow((eastl::destruct(TupleVecLeaf<Indices, Ts>::mpData, TupleVecLeaf<Indices, Ts>::mpData + mNumElements), 0)...);
 		if (mpData)
-			EASTLFree(internalAllocator(), mpData, internalDataSize()); 
+			EASTLFree(get_allocator(), mpData, internalDataSize()); 
 	}
 
 	void assign(size_type n, const Ts&... args)
 	{
 		if (n > mNumCapacity)
 		{
-			this_type temp(n, args..., internalAllocator()); // We have little choice but to reallocate with new memory.
+			this_type temp(n, args..., get_allocator()); // We have little choice but to reallocate with new memory.
 			swap(temp);
 		}
 		else if (n > mNumElements) // If n > mNumElements ...
@@ -605,7 +606,7 @@ public:
 		size_type newNumElements = last - first;
 		if (newNumElements > mNumCapacity)
 		{
-			this_type temp(first, last, internalAllocator());
+			this_type temp(first, last, get_allocator());
 			swap(temp);
 		}
 		else
@@ -642,7 +643,7 @@ public:
 		size_type newNumElements = last - first;
 		if (newNumElements > mNumCapacity)
 		{
-			this_type temp(first, last, internalAllocator());
+			this_type temp(first, last, get_allocator());
 			swap(temp);
 		}
 		else
@@ -732,7 +733,7 @@ public:
 				swallow(::new ((Ts*)ppNewLeaf[Indices] + firstIdx) Ts(eastl::forward<Ts>(args))...);
 				swallow(TupleVecLeaf<Indices, Ts>::mpData = (Ts*)ppNewLeaf[Indices]...);
 
-				EASTLFree(internalAllocator(), mpData, internalDataSize());
+				EASTLFree(get_allocator(), mpData, internalDataSize());
 				mpData = allocation.first;
 				mNumCapacity = newCapacity;
 				internalDataSize() = allocation.second;
@@ -778,7 +779,7 @@ public:
 				swallow((eastl::uninitialized_fill_ptr((Ts*)ppNewLeaf[Indices] + firstIdx, (Ts*)ppNewLeaf[Indices] + lastIdx, args), 0)...);
 				swallow(TupleVecLeaf<Indices, Ts>::mpData = (Ts*)ppNewLeaf[Indices]...);
 		
-				EASTLFree(internalAllocator(), mpData, internalDataSize());
+				EASTLFree(get_allocator(), mpData, internalDataSize());
 				mpData = allocation.first;
 				mNumCapacity = newCapacity;
 				internalDataSize() = allocation.second;
@@ -832,7 +833,7 @@ public:
 						                       (Ts*)ppNewLeaf[Indices] + posIdx), 0)...);
 				swallow(TupleVecLeaf<Indices, Ts>::mpData = (Ts*)ppNewLeaf[Indices]...);
 				
-				EASTLFree(internalAllocator(), mpData, internalDataSize());
+				EASTLFree(get_allocator(), mpData, internalDataSize());
 				mpData = allocation.first;
 				mNumCapacity = newCapacity;
 				internalDataSize() = allocation.second;
@@ -887,7 +888,7 @@ public:
 				// Do this after mpData is updated so that we can use new iterators
 				DoUninitializedCopyFromTupleArray(begin() + posIdx, begin() + posIdx + numToInsert, first);
 
-				EASTLFree(internalAllocator(), mpData, internalDataSize());
+				EASTLFree(get_allocator(), mpData, internalDataSize());
 				mpData = allocation.first;
 				mNumCapacity = newCapacity;
 				internalDataSize() = allocation.second;
@@ -1014,7 +1015,7 @@ public:
 
 	void shrink_to_fit()
 	{
-		this_type temp(move_iterator<iterator>(begin()), move_iterator<iterator>(end()), internalAllocator());
+		this_type temp(move_iterator<iterator>(begin()), move_iterator<iterator>(end()), get_allocator());
 		swap(temp);
 	}
 
@@ -1042,7 +1043,7 @@ public:
 		eastl::swap(mpData, x.mpData);
 		eastl::swap(mNumElements, x.mNumElements);
 		eastl::swap(mNumCapacity, x.mNumCapacity);
-		eastl::swap(internalAllocator(), x.internalAllocator());
+		eastl::swap(get_allocator(), x.get_allocator());
 		eastl::swap(internalDataSize(), x.internalDataSize());
 	}
 
@@ -1249,6 +1250,11 @@ public:
 	template <typename Iterator, typename = typename enable_if<is_iterator_wrapper<Iterator>::value, bool>::type>
 	static bool validate_iterator_pair(Iterator first, Iterator last) EA_NOEXCEPT { return validate_iterator_pair(unwrap_iterator(first), unwrap_iterator(last)); }
 
+	allocator_type& get_allocator() EA_NOEXCEPT { return mDataSizeAndAllocator.second(); }
+	const allocator_type& get_allocator() const EA_NOEXCEPT { return mDataSizeAndAllocator.second(); }
+
+	void set_allocator(const allocator_type& alloc) { mDataSizeAndAllocator.second() = alloc; }
+
 protected:
 
 	void* mpData = nullptr;
@@ -1259,8 +1265,6 @@ protected:
 
 	size_type& internalDataSize() EA_NOEXCEPT { return mDataSizeAndAllocator.first(); }
 	size_type const& internalDataSize() const EA_NOEXCEPT { return mDataSizeAndAllocator.first(); }
-	allocator_type& internalAllocator() EA_NOEXCEPT { return mDataSizeAndAllocator.second(); }
-	const allocator_type& internalAllocator() const EA_NOEXCEPT { return mDataSizeAndAllocator.second(); }
 
 	friend struct TupleRecurser<>;
 	template<typename... Us>
@@ -1373,7 +1377,7 @@ protected:
 		swallow((TupleVecLeaf<Indices, Ts>::DoUninitializedMoveAndDestruct(0, oldNumElements, (Ts*)ppNewLeaf[Indices]), 0)...);
 		swallow(TupleVecLeaf<Indices, Ts>::mpData = (Ts*)ppNewLeaf[Indices]...);
 
-		EASTLFree(internalAllocator(), mpData, internalDataSize());
+		EASTLFree(get_allocator(), mpData, internalDataSize());
 		mpData = allocation.first;
 		mNumCapacity = requiredCapacity;
 		internalDataSize() = allocation.second;
@@ -1541,7 +1545,6 @@ class tuple_vector : public TupleVecInternal::TupleVecImpl<EASTLAllocatorType, m
 	using base_type::base_type;
 
 public:
-
 	this_type& operator=(std::initializer_list<typename base_type::value_tuple> iList) 
 	{
 		base_type::operator=(iList);
@@ -1569,6 +1572,7 @@ public:
 
 }  // namespace eastl
 
+EA_RESTORE_VC_WARNING()
 EA_RESTORE_VC_WARNING()
 EA_RESTORE_VC_WARNING()
 EA_RESTORE_VC_WARNING()

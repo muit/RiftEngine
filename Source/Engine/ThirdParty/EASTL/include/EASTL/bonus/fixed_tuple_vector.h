@@ -39,7 +39,7 @@ class fixed_tuple_vector : public TupleVecInternal::TupleVecImpl<fixed_vector_al
 	TupleVecInternal::TupleRecurser<Ts...>::GetTotalAlignment(), 0,
 	bEnableOverflow, EASTLAllocatorType>, make_index_sequence<sizeof...(Ts)>, Ts...>
 {
-private:
+public:
 	typedef fixed_vector_allocator<
 		TupleVecInternal::TupleRecurser<Ts...>::GetTotalAllocationSize(nodeCount, 0), 1,
 		TupleVecInternal::TupleRecurser<Ts...>::GetTotalAlignment(), 0,
@@ -51,6 +51,7 @@ private:
 	typedef TupleVecInternal::TupleVecImpl<fixed_allocator_type, make_index_sequence<sizeof...(Ts)>, Ts...> base_type;
 	typedef typename base_type::size_type size_type;
 
+private:
 	aligned_buffer_type mBuffer;
 
 public:
@@ -65,7 +66,7 @@ public:
 	fixed_tuple_vector(this_type&& x)
 		: base_type(fixed_allocator_type(mBuffer.buffer), mBuffer.buffer, nodeCount, fixed_allocator_type::kNodeSize)
 	{ 
-		base_type::internalAllocator().copy_overflow_allocator(x.internalAllocator());
+		base_type::get_allocator().copy_overflow_allocator(x.get_allocator());
 		base_type::DoInitFromIterator(make_move_iterator(x.begin()), make_move_iterator(x.end()));
 		x.clear();
 	}
@@ -80,7 +81,7 @@ public:
 	fixed_tuple_vector(const this_type& x)
 		: base_type(fixed_allocator_type(mBuffer.buffer), mBuffer.buffer, nodeCount, fixed_allocator_type::kNodeSize)
 	{ 
-		base_type::internalAllocator().copy_overflow_allocator(x.internalAllocator());
+		base_type::get_allocator().copy_overflow_allocator(x.get_allocator());
 		base_type::DoInitFromIterator(x.begin(), x.end());
 	}
 
@@ -192,7 +193,7 @@ public:
 	// Returns the value of the bEnableOverflow template parameter.
 	bool can_overflow() const { return bEnableOverflow; }
 
-	const overflow_allocator_type& get_overflow_allocator() const { return base_type::internalAllocator().get_overflow_allocator(); }
+	const overflow_allocator_type& get_overflow_allocator() const { return base_type::get_allocator().get_overflow_allocator(); }
 };
 
 

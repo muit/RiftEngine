@@ -8,22 +8,19 @@
 #include <new>
 
 
-#include "Util/Name.h"
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // Allocator
 //
 class Allocator
 {
-	Name name;
+	const char* name;
 	size_t size;
 	eastl::allocator_malloc malloc_alloc;
 
 public:
-	Allocator(const char* name = "Global")        : name{ name }, size{0}, malloc_alloc{ name } {}
-	Allocator(const Allocator&)                   : name{},       size{0}, malloc_alloc{}       {}
-	Allocator(const Allocator&, const char* name) : name{ name }, size{0}, malloc_alloc{ name } {}
+	Allocator(const char* name = "Global");
+	Allocator(const Allocator&);
+	Allocator(const Allocator&, const char* name);
 
 	Allocator& operator=(const Allocator&) { return *this; }
 
@@ -54,12 +51,9 @@ public:
 		malloc_alloc.deallocate(ptr, n);
 	}
 
-	Name GetName() const
-	{
-		return name;
-	}
+	struct Name GetName() const;
 
-	void SetName(const char* inName) { name = inName; }
+	void SetName(const char* Name);
 
 	size_t GetSize() const
 	{
@@ -77,3 +71,30 @@ namespace Memory {
 
 	EASTL_API Allocator* GetFrameAllocator();
 }
+
+
+class StringAllocator : public eastl::allocator
+{
+public:
+	using Super = eastl::allocator;
+
+	EASTL_ALLOCATOR_EXPLICIT StringAllocator(const char* pName = EASTL_NAME_VAL(EASTL_ALLOCATOR_DEFAULT_NAME)) : Super(pName) {}
+
+	void* allocate(size_t n, int flags = 0)
+	{
+		return Memory::GetAllocator()->Allocate(n, flags);
+	}
+
+	void* allocate(size_t n, size_t alignment, size_t offset, int flags = 0)
+	{
+		return Memory::GetAllocator()->Allocate(n, alignment, offset, flags);
+	}
+
+	void deallocate(void* p, size_t n)
+	{
+		Memory::GetAllocator()->Deallocate(p, n);
+	}
+
+	const char* GetName() const { return Super::get_name(); }
+	void SetName(const char* pName) { Super::set_name(pName); }
+};
