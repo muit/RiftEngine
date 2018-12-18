@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Object.h"
+#include "CoreObject.h"
 
 
 class System : public Object {
@@ -10,5 +10,7 @@ class System : public Object {
 
 public:
 
-    virtual void Tick(float /*deltaTime*/) {}
+	virtual void BeginPlay() {}
+	virtual void Tick(float /*deltaTime*/) {}
+	virtual void EndPlay() {}
 };

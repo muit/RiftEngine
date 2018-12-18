@@ -1,34 +1,21 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include "EASTL/vector.h"
-#include "EASTL/unordered_map.h"
-#include "EASTL/unique_ptr.h"
+#include "CoreEngine.h"
 
-#include "EngineTypes.h"
-#include "Property.h"
+#include <EASTL/vector.h>
+
+#include "BaseType.h"
 
 
-class Class {
+class Class : public BaseType {
 protected:
 
-	Name name;
-	ReflectionTags tags;
 	Class* parent;
 	eastl::vector<Class*> children;
 
-	typedef eastl::unordered_map<Name, eastl::unique_ptr<Property>> PropertyMap;
-
-	PropertyMap properties;
-
 public:
 
-	Class() {}
-	Class(const Class&) = delete;
-	Class& operator=(const Class&) = delete;
-	virtual ~Class() {}
-
-	Name GetName() const { return name; }
 	Class* GetParentClass() const { return parent; }
 
 	template<bool bIncludeSelf = false, bool bIsFirstCall = true>
@@ -45,17 +32,6 @@ public:
 			child->GetAllChildClasses<false, false>(outChildren);
 		}
 	}
-
-	const Property* FindProperty(const Name& propertyName) const
-	{
-		const auto propIt = properties.find(propertyName);
-		if (propIt == properties.end())
-			return nullptr;
-		else
-			return dynamic_cast<const Property*>((*propIt).second.get());
-	}
-
-	const PropertyMap& GetAllProperties() { return properties; }
 
 public:
 

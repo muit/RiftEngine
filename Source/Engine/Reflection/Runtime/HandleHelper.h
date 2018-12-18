@@ -20,7 +20,7 @@ public:
 	template<typename VarType>
 	static std::shared_ptr<PropertyHandle> CreatePropertyHandle(const Ptr<BaseObject>& instance, const TProperty<VarType>* property)
 	{
-		if (property && instance->GetClass() == property->GetClass())
+		if (property && instance->GetClass() == property->GetType())
 		{
 			return std::shared_ptr<PropertyHandle>(new TPropertyHandle<VarType>(instance, property));
 		}

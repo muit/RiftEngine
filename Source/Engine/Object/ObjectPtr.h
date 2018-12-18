@@ -1,6 +1,8 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
+#include "CoreEngine.h"
+
 #include <EASTL/weak_ptr.h>
 #include <EASTL/vector.h>
 

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Object.h"
+#include "CoreObject.h"
 #include "System.h"
 
 
@@ -14,12 +14,30 @@ class SystemsManager : public Object {
 
 public:
 
-	virtual void Tick(float deltaTime) {
+	void BeginPlay() {
+		IterateSystems([](Ptr<System> system) {
+			system->BeginPlay();
+		});
+	}
+
+	void Tick(float deltaTime) {
+		IterateSystems([deltaTime](Ptr<System> system) {
+			system->Tick(deltaTime);
+		});
+	}
+
+	void EndPlay() {
+		IterateSystems([](Ptr<System> system) {
+			system->BeginPlay();
+		});
+	}
+
+	void IterateSystems(eastl::function<void(Ptr<System>)> callback) const {
 		for (const GlobalPtr<System>& system : systems)
 		{
 			if (system)
 			{
-				system->Tick(deltaTime);
+				callback(system);
 			}
 		}
 	}

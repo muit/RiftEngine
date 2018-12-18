@@ -1,6 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
+#include "CoreEngine.h"
 #include "Renderer.h"
 #include <SDL.h>
 #include <tracy/Tracy.hpp>

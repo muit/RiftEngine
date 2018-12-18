@@ -1,8 +1,6 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include <GL/gl3w.h>
-
 #include "EASTL/utility.h"
 
 #include "Platform/Platform.h"

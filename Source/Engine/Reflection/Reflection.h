@@ -1,8 +1,9 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include <string>
-#include <vector>
+#include "CoreEngine.h"
+
+#include <EASTL/type_traits.h>
 
 //#include "Property.h"
 #include "Macros.h"
@@ -60,11 +61,55 @@ template<int N> static void __meta_RegistryProperty(MetaInt<N>) {}\
 template<int N> FORCEINLINE void __meta_SerializeProperty(Archive&, MetaInt<N>) {}
 
 
+// #TODO: Struct reflection
+
+// #TODO: Rename to POD
+#define STRUCT(type, inTags) \
+private:\
+using __meta_type = type;\
+friend TStruct<__meta_type>;\
+\
+\
+public:\
+	inline void SerializeReflection(Archive& ar) {\
+		__meta_SerializeProperty(ar, MetaInt<0>{});\
+	}\
+static void __meta_RegistryStruct() {\
+	static_assert(eastl::is_convertible<__meta_type, Pod >::value, "Type does not inherit Pod!");\
+\
+	StaticStruct()->Registry(#type);\
+	constexpr ReflectionTags tags = ReflectionTagsInitializer<inTags>::value;\
+	static_assert(!(tags & DetailsEdit), "Structs can't use DetailsEdit"); \
+	static_assert(!(tags & DetailsView), "Structs can't use DetailsView"); \
+	StaticStruct()->RegistryTags(tags);\
+}\
+private:\
+static inline TStruct<__meta_type>* StaticClass() {\
+	return StaticStruct();\
+}\
+public:\
+static TStruct<__meta_type>* StaticStruct() {\
+	return TStruct<__meta_type>::GetStatic();\
+}\
+\
+public:\
+static inline void __meta_RegistryProperties() {\
+	__meta_RegistryProperty(MetaInt<0>{});\
+}\
+\
+private:\
+static constexpr MetaInt<0> __meta_Counter(MetaInt<0>);\
+template<int N> static void __meta_RegistryProperty(MetaInt<N>) {}\
+template<int N> FORCEINLINE void __meta_SerializeProperty(Archive&, MetaInt<N>) {}
+
+
+
 #define PROP(type, name, tags) __PROPERTY_IMPL(type, name, CAT(__meta_id_, name), tags)
 
 #define __PROPERTY_IMPL(type, name, id_name, inTags)\
 static constexpr int id_name = decltype(__meta_Counter(MetaInt<255>{}))::value;\
 static constexpr MetaInt<id_name + 1> __meta_Counter(MetaInt<id_name + 1>);\
+\
 static void __meta_RegistryProperty(MetaInt<id_name>) {\
 	static_assert(ReflectionTypeTraits<type>::valid, "Only reflectable types are allowed (uint8, int32, Name or String)");\
 \

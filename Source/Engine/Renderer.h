@@ -1,6 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
+#include "CoreEngine.h"
 #include "EngineTypes.h"
 #include <SDL.h>
 #include <imgui/imgui.h>

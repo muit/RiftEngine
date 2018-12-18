@@ -2,14 +2,14 @@
 
 #pragma once
 
-#include "Object.h"
+#include "CoreStruct.h"
 
 /**
  * Components hold Variables, Getters and Setters. They never have logic
- * #TODO: Implement as serialized, inheritable structs
  */
-class Component : public Object {
-	CLASS(Component, Object)
+class Component : public Pod {
+	STRUCT(Component)
 
-	// #TODO: implement component API here
+	PROP(uint8, time)
+	uint8 time;
 };

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Object.h"
+#include "CoreEngine.h"
 #include <entt/entity/registry.hpp>
 
 
@@ -32,5 +32,7 @@ public:
 		return registry.valid(entity);
 	}
 
-	void Serialize() {}
+	void SerializeEntity(EntityId entity) {
+
+	}
 };

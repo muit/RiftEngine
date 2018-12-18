@@ -1,6 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
+#include "CoreEngine.h"
 #include "Object/BaseObject.h"
 #include "EngineTypes.h"
 #include "Object/ObjectPtr.h"

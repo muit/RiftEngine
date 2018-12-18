@@ -5,7 +5,7 @@
 
 std::shared_ptr<PropertyHandle> HandleHelper::CreatePropertyHandle(const Ptr<BaseObject>& instance, const Property* property)
 {
-	if (property && instance->GetClass() == property->GetClass())
+	if (property && instance->GetClass() == property->GetType())
 	{
 		if (const auto* propUInt8 = dynamic_cast<const TProperty<uint8>*>(property)) {
 			return CreatePropertyHandle(instance, propUInt8);

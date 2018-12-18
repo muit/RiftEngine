@@ -10,6 +10,7 @@
 #include "Object/BaseObject.h"
 #include "Object/ObjectPtr.h"
 #include "Serialization/Archive.h"
+#include "BaseType.h"
 
 
 /**
@@ -18,7 +19,7 @@
 class Property {
 private:
 
-	Class* classPtr;
+	BaseType* typePtr;
 	Name typeName;
 	Name name;
 	ReflectionTags tags;
@@ -30,8 +31,8 @@ private:
 
 protected:
 
-	Property(Class* classPtr, const Name& typeName, Name&& name, ReflectionTags tags)
-		: typeName(typeName), classPtr(classPtr), name(name), tags(tags)
+	Property(BaseType* typePtr, const Name& typeName, Name&& name, ReflectionTags tags)
+		: typeName(typeName), typePtr(typePtr), name(name), tags(tags)
 	{}
 
 public:
@@ -41,7 +42,7 @@ public:
 	String GetName() const { return name.ToString(); }
 	bool HasTag(ReflectionTags tag) const { return (tags | tag) > 0; }
 
-	Class* GetClass() const { return classPtr; }
+	BaseType* GetType() const { return typePtr; }
 	Name GetTypeName() const { return typeName; }
 };
 
@@ -59,8 +60,8 @@ private:
 
 public:
 
-	TProperty(Class* classPtr, const Name& typeName, Name&& name, std::function<VarType*(BaseObject*)>&& access, ReflectionTags tags)
-		: Property(classPtr, typeName, std::move(name), tags), access(access)
+	TProperty(BaseType* typePtr, const Name& typeName, Name&& name, std::function<VarType*(BaseObject*)>&& access, ReflectionTags tags)
+		: Property(typePtr, typeName, std::move(name), tags), access(access)
 	{}
 
 	// Will be nullptr if class is not correct
