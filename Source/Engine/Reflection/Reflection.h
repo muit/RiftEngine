@@ -61,8 +61,6 @@ template<int N> static void __meta_RegistryProperty(MetaInt<N>) {}\
 template<int N> FORCEINLINE void __meta_SerializeProperty(Archive&, MetaInt<N>) {}
 
 
-// #TODO: Struct reflection
-
 // #TODO: Rename to POD
 #define STRUCT(type, inTags) \
 private:\

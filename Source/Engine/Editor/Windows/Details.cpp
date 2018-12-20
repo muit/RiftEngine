@@ -2,6 +2,7 @@
 
 #include "Details.h"
 #include "Reflection/Runtime/HandleHelper.h"
+#include "Reflection/ReflectionTags.h"
 
 
 #if WITH_EDITOR
@@ -18,8 +19,11 @@ void Details::Build()
 		Class* objectClass = object->GetClass();
 		for (const auto& property : objectClass->GetAllProperties())
 		{
-			auto handle = HandleHelper::CreatePropertyHandle(object, property.second.get());
-			Add(PropertyWidget::NewPropertyWidget(handle));
+			if (property.second->HasTag(DetailsEdit) || property.second->HasTag(DetailsView))
+			{
+				auto handle = HandleHelper::CreatePropertyHandle(object, property.second.get());
+				Add(PropertyWidget::NewPropertyWidget(handle));
+			}
 		}
 	}
 

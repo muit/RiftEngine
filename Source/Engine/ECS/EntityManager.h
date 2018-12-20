@@ -2,11 +2,13 @@
 
 #pragma once
 
-#include "CoreEngine.h"
+#include "CoreObject.h"
 #include <entt/entity/registry.hpp>
 
 
 using EntityId = uint32;
+class Archive;
+
 
 class EntityManager : public Object {
 	CLASS(EntityManager, Object)
@@ -32,7 +34,9 @@ public:
 		return registry.valid(entity);
 	}
 
-	void SerializeEntity(EntityId entity) {
+private:
 
-	}
+	virtual bool Serialize(Archive& ar) override;
+
+	void SerializeEntity(Archive& ar, const EntityId& entity);
 };

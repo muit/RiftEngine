@@ -27,27 +27,12 @@ public:
 	virtual ~Archive() = default;
 
 
-	/*template<typename T, EnableIfPassByValue> // Select a << function based on if T is 8 byte or smaller and copyable
-	inline Archive& operator<<(Pair<const char*, const T> val) {
-		Serialize(*this, val.first, val.second);
-		return *this;
-	}
-
-	template<typename T, EnableIfNotPassByValue>
-	FORCEINLINE Archive& operator<<(Pair<const char*, const T&> val) {
-		Serialize(*this, val.first, val.second);
-		return *this;
-	}*/
-
 	template<typename T>
 	FORCEINLINE Archive& operator()(const char* name, T& val) {
 		Serialize(*this, name, val);
 		return *this;
 	}
 
-
-	virtual void BeginObject(const char* name) = 0;
-	virtual void EndObject() = 0;
 
 	virtual void Serialize(Archive& ar, const char* name, uint8& val) = 0;
 
@@ -59,24 +44,54 @@ public:
 
 	virtual void Serialize(Archive& ar, const char* name, String& val) = 0;
 
-
 	template<typename T>
 	void Serialize(Archive& ar, const char* name, GlobalPtr<T>& val) {
+		BeginObject(name);
+		
+		if (ar.IsLoading())
+		{
+			// #TODO: Create Object
+		}
+
 		if (val)
 		{
-			BeginObject(name);
 			val->Serialize(ar);
-			EndObject();
 		}
+		EndObject();
 	}
 
 	template<typename T>
 	void Serialize(Archive& ar, const char* name, Ptr<T>& val) {
-		if (val)
+		if (ar.IsSaving())
 		{
-			ar(name, val->GetName());
+			ar(name, val? val->GetName() : nullptr);
+		}
+		else
+		{
+			// #TODO: Load pointer. Find object and assign it
+			// ar(name, ...);
 		}
 	}
+
+	template<typename T>
+	void Serialize(Archive& ar, const char* name, eastl::vector<T>& val)
+	{
+		BeginObject(name);
+		if (ar.IsLoading())
+		{
+			// Read Amount
+			// Read each Item
+		}
+		else
+		{
+			// Save Amount
+			// Save Items
+		}
+		EndObject();
+	}
+
+	virtual void BeginObject(const char* name) = 0;
+	virtual void EndObject() = 0;
 
 	FORCEINLINE bool IsLoading() { return bReads; }
 	FORCEINLINE bool IsSaving() { return !bReads; }
@@ -105,6 +120,7 @@ private:
 	virtual void EndObject() override {
 		depthData.pop();
 	}
+
 
 	virtual void Serialize(Archive&, const char* name, uint8& val) override {
 		if (IsLoading())
