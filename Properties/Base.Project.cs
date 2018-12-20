@@ -16,7 +16,7 @@ class BaseProject : Project
     [Configure()]
     public virtual void ConfigureAll(Configuration conf, FecoTarget target)
     {
-        conf.ProjectPath = @"[project.SharpmakeCsPath]\..\..\Projects\[project.Name]";conf.Options.Add(Sharpmake.Options.Vc.Compiler.CppLanguageStandard.CPP14);
+        conf.ProjectPath = @"[project.SharpmakeCsPath]\..\..\Binaries\[project.Name]";
         
         conf.Options.Add(Sharpmake.Options.Vc.Compiler.CppLanguageStandard.CPP14);
         conf.Options.Add(Sharpmake.Options.Vc.Compiler.RTTI.Enable);

@@ -27,6 +27,7 @@ class FecoEngineSolution : Solution
     {   
         // Puts the generated solution in the /generated folder too.
         conf.SolutionPath = @"[solution.SharpmakeCsPath]";
+        //conf.ProjectPath = @"[solution.SharpmakeCsPath]/Binaries";
 
         conf.AddProject<GameProject>(target);
         conf.AddProject<EngineModule>(target);

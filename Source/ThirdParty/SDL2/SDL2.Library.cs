@@ -24,7 +24,7 @@ public class SDL2Library : Project
     {
         conf.SolutionFolder = "FecoEngine/ThirdParty";
         conf.IncludePaths.Add("[project.BasePath]");
-        conf.ProjectPath = "[project.SharpmakeCsPath]/../../../Projects/SDL2";
+        conf.ProjectPath = "[project.SharpmakeCsPath]/../../../Binaries/SDL2";
         conf.PrecompHeader = "SDL.h";
 
         conf.TargetLibraryPath = "[project.SharpmakeCsPath]/lib/[target.Platform]";

@@ -6,7 +6,7 @@
 *.sln
 *.vcxproj
 *.vcxproj.filters
-/projects/**/*.*
+/binaries/**/*.*
 /enc_temp_folder/**/*.*
 
 .vs
