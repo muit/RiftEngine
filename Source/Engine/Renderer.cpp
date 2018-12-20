@@ -43,7 +43,7 @@ Renderer::Renderer() : Super()
 	uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED;
 #endif
 	window = SDL_CreateWindow(
-		"FecoEngine",
+		"Rift Engine",
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 		SCREEN_WIDTH, SCREEN_HEIGHT,
 		windowFlags

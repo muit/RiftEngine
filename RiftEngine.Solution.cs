@@ -9,21 +9,21 @@ using Sharpmake; // contains the entire Sharpmake object library.
 [module: Sharpmake.Include("Source/ThirdParty/SDL2/SDL2.Library.cs")]
 
 [Generate]
-class FecoEngineSolution : Solution
+class RiftEngineSolution : Solution
 {
-    public FecoEngineSolution() : base(typeof(FecoTarget))
+    public RiftEngineSolution() : base(typeof(RiftTarget))
     {
         // The name of the solution.
-        Name = "FecoEngine";
+        Name = "RiftEngine";
         IsFileNameToLower = false;
 
         // As with the project, define which target this solution builds for.
         // It's usually the same thing.
-        AddTargets(new FecoTarget( Editor.Editor | Editor.Game ));
+        AddTargets(new RiftTarget( Editor.Editor | Editor.Game ));
     }
 
     [Configure()]
-    public void ConfigureAll(Solution.Configuration conf, FecoTarget target)
+    public void ConfigureAll(Solution.Configuration conf, RiftTarget target)
     {   
         // Puts the generated solution in the /generated folder too.
         conf.SolutionPath = @"[solution.SharpmakeCsPath]";
@@ -38,7 +38,7 @@ class FecoEngineSolution : Solution
     [Main]
     public static void SharpmakeMain(Arguments sharpmakeArgs)
     {
-        sharpmakeArgs.Generate<FecoEngineSolution>();
+        sharpmakeArgs.Generate<RiftEngineSolution>();
     }
 }
 
@@ -50,7 +50,7 @@ public enum Editor
     Game = 0x02
 }
 
-class FecoTarget : Target {
+class RiftTarget : Target {
     public Editor Editor;
 
     public override string Name
@@ -62,9 +62,9 @@ class FecoTarget : Target {
         }
     }
 
-    public FecoTarget() : base() { }
+    public RiftTarget() : base() { }
 
-    public FecoTarget(Editor editor, OutputType outputType = OutputType.Lib) : base(
+    public RiftTarget(Editor editor, OutputType outputType = OutputType.Lib) : base(
         Platform.win32 | Platform.win64,
         DevEnv.vs2017,
         Optimization.Debug | Optimization.Release,

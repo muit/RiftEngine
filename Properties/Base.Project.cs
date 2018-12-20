@@ -3,18 +3,18 @@ using Sharpmake; // contains the entire Sharpmake object library
 
 class BaseProject : Project
 {
-    public BaseProject() : base(typeof(FecoTarget)) {}
-    public BaseProject(string CustomName) : base(typeof(FecoTarget))
+    public BaseProject() : base(typeof(RiftTarget)) {}
+    public BaseProject(string CustomName) : base(typeof(RiftTarget))
     {
         Name = CustomName;
         SourceRootPath = @"[project.SharpmakeCsPath]";
         IsFileNameToLower = false;
 
-        AddTargets(new FecoTarget( Editor.Editor | Editor.Game ));
+        AddTargets(new RiftTarget( Editor.Editor | Editor.Game ));
     }
 
     [Configure()]
-    public virtual void ConfigureAll(Configuration conf, FecoTarget target)
+    public virtual void ConfigureAll(Configuration conf, RiftTarget target)
     {
         conf.ProjectPath = @"[project.SharpmakeCsPath]\..\..\Binaries\[project.Name]";
         

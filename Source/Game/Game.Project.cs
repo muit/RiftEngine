@@ -6,7 +6,7 @@ class GameProject : BaseProject
 {
     public GameProject() : base("Game") {}
 
-    public override void ConfigureAll(Configuration conf, FecoTarget target)
+    public override void ConfigureAll(Configuration conf, RiftTarget target)
     {
         base.ConfigureAll(conf, target);
         conf.SolutionFolder = "Game";

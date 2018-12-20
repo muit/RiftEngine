@@ -5,11 +5,11 @@ public class SDL2Library : Project
 {
     public string BasePath = @"[project.SharpmakeCsPath]/include";
 
-    public SDL2Library() : base(typeof(FecoTarget))
+    public SDL2Library() : base(typeof(RiftTarget))
     {
         Name = "SDL2";
 
-        AddTargets(new FecoTarget(
+        AddTargets(new RiftTarget(
             Editor.Editor | Editor.Game,
             OutputType.Dll | OutputType.Lib
         ));
@@ -22,7 +22,7 @@ public class SDL2Library : Project
     [Configure()]
     public void ConfigureAll(Configuration conf, Target target)
     {
-        conf.SolutionFolder = "FecoEngine/ThirdParty";
+        conf.SolutionFolder = "RiftEngine/ThirdParty";
         conf.IncludePaths.Add("[project.BasePath]");
         conf.ProjectPath = "[project.SharpmakeCsPath]/../../../Binaries/SDL2";
         conf.PrecompHeader = "SDL.h";

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("FecoEngine")]
+[assembly: AssemblyTitle("RiftEngine")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Piperift")]
-[assembly: AssemblyProduct("FecoEngine")]
-[assembly: AssemblyCopyright("Copyright \u00A9 Piperift 2018")]
+[assembly: AssemblyProduct("RiftEngine")]
+[assembly: AssemblyCopyright("Copyright \u00A9 Piperift 2018-2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -6,13 +6,13 @@ class EngineModule : BaseModule
 {
     public EngineModule() : base("Engine") {}
 
-    public override void ConfigureAll(Configuration conf, FecoTarget target)
+    public override void ConfigureAll(Configuration conf, RiftTarget target)
     {
         base.ConfigureAll(conf, target);
 
         conf.AddPublicDependency<SDL2Library>(target);
 
-        conf.SolutionFolder = "FecoEngine";
+        conf.SolutionFolder = "RiftEngine";
         conf.IncludePaths.Add(@"[project.SharpmakeCsPath]/ThirdParty");
 
         // EA STL
