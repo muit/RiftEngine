@@ -60,7 +60,7 @@ class serializer
 		, thousands_sep(loc->thousands_sep == nullptr ? '\0' : * (loc->thousands_sep))
 		, decimal_point(loc->decimal_point == nullptr ? '\0' : * (loc->decimal_point))
 		, indent_char(ichar)
-		//, indent_string(512, indent_char) //Temporal fix for EASTL's string size constructor memory leak
+		, indent_string(512, indent_char)
 		, error_handler(error_handler_)
 	{}
 
@@ -88,7 +88,7 @@ class serializer
 	@param[in] indent_step     the indent level
 	@param[in] current_indent  the current indent level (only used internally)
 	*/
-	void dump(const BasicJsonType& val, const bool/* pretty_print*/,
+	void dump(const BasicJsonType& val, const bool pretty_print,
 			  const bool ensure_ascii,
 			  const unsigned int indent_step,
 			  const unsigned int current_indent = 0)
@@ -103,7 +103,7 @@ class serializer
 					return;
 				}
 
-				/*if (pretty_print) Disabled due to EASTL memory leak
+				if (pretty_print)
 				{
 					o->write_characters("{\n", 2);
 
@@ -139,7 +139,7 @@ class serializer
 					o->write_characters(indent_string.c_str(), current_indent);
 					o->write_character('}');
 				}
-				else*/
+				else
 				{
 					o->write_character('{');
 
@@ -176,7 +176,7 @@ class serializer
 					return;
 				}
 
-				/*if (pretty_print) Disabled due to EASTL memory leak
+				if (pretty_print)
 				{
 					o->write_characters("[\n", 2);
 
@@ -205,7 +205,7 @@ class serializer
 					o->write_characters(indent_string.c_str(), current_indent);
 					o->write_character(']');
 				}
-				else*/
+				else
 				{
 					o->write_character('[');
 
@@ -732,7 +732,7 @@ class serializer
 	/// the indentation character
 	const char indent_char;
 	/// the indentation string
-	//string_t indent_string; Disabled due to EASTL memory leak
+	string_t indent_string;
 
 	/// error_handler how to react on decoding errors
 	const error_handler_t error_handler;
