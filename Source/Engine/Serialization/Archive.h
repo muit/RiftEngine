@@ -47,7 +47,7 @@ public:
 	template<typename T>
 	void Serialize(Archive& ar, const char* name, GlobalPtr<T>& val) {
 		BeginObject(name);
-		
+
 		if (ar.IsLoading())
 		{
 			// #TODO: Create Object

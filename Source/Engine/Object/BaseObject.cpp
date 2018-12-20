@@ -6,7 +6,7 @@
 
 Class* BaseObject::GetClass() const
 {
-	const Object* thisObj = dynamic_cast<const Object*>(this);
+	const Object* thisObj = static_cast<const Object*>(this);
 	if (thisObj)
 		return thisObj->GetClass();
 	return nullptr;
@@ -14,7 +14,7 @@ Class* BaseObject::GetClass() const
 
 Ptr<Object> BaseObject::GetSelf() const
 {
-	const Object* thisObj = dynamic_cast<const Object*>(this);
+	const Object* thisObj = static_cast<const Object*>(this);
 	if (thisObj)
 		return thisObj->GetSelf();
 	return {};

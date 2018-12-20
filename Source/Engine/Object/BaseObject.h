@@ -18,6 +18,8 @@ class Ptr;
 
 
 class BaseObject : public Pod {
+protected:
+	BaseObject() : Pod() {}
 
 public:
 

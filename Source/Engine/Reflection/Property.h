@@ -10,7 +10,8 @@
 #include "Object/BaseObject.h"
 #include "Object/ObjectPtr.h"
 #include "Serialization/Archive.h"
-#include "BaseType.h"
+
+class BaseType;
 
 
 /**

@@ -13,3 +13,11 @@ class Component : public Pod {
 	PROP(uint8, time)
 	uint8 time;
 };
+
+
+class Transform : public Component {
+	STRUCT(Transform)
+
+	PROP(float, time)
+	float time;
+};

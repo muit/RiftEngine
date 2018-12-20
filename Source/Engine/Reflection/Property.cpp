@@ -2,3 +2,5 @@
 
 #include "Property.h"
 #include "Runtime/TPropertyHandle.h"
+
+#include "BaseType.h"

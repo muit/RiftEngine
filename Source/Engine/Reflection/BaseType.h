@@ -3,14 +3,12 @@
 
 #include "CoreEngine.h"
 
-#include <EASTL/vector.h>
 #include <EASTL/unordered_map.h>
 #include <EASTL/unique_ptr.h>
 
 #include "EngineTypes.h"
 #include "ReflectionTags.h"
-
-class Property;
+#include "Property.h"
 
 
 class BaseType {

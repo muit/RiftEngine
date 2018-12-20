@@ -28,5 +28,6 @@ static const Name name;\
 /** Registry new editor-supported types here and on "EngineTypes.cpp" */
 DECLARE_REFLECTION_TYPE(uint8);
 DECLARE_REFLECTION_TYPE(int32);
+DECLARE_REFLECTION_TYPE(float);
 DECLARE_REFLECTION_TYPE(Name);
 DECLARE_REFLECTION_TYPE(String);
