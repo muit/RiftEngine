@@ -1,0 +1,18 @@
+
+version: 1.0.{build}
+branches:
+  # whitelist
+  only:
+    - master
+    - develop
+skip_tags: true
+image: Visual Studio 2017
+cache:
+  - binaries
+install:
+  - "Source/ThirdParty/Sharpmake/Sharpmake.Application.exe" /sources(@"RiftEngine.Solution.cs")
+configuration: Release
+platform: x64
+build:
+  project: RiftEngine.sln
+  verbosity: detailed
