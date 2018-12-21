@@ -5,7 +5,7 @@
 #include "CoreObject.h"
 #include "System.h"
 
-#include "Gameplay/SRenderCamera.h"
+#include "Gameplay/Systems/SRenderCamera.h"
 
 
 class SystemManager : public Object {

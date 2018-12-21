@@ -2,8 +2,8 @@
 #pragma once
 
 #include "EngineTypes.h"
-#include "Object/BaseObject.h"
-#include "Object/ObjectPtr.h"
+#include "Core/Object/BaseObject.h"
+#include "Core/Object/ObjectPtr.h"
 
 
 #if WITH_EDITOR

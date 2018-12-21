@@ -2,7 +2,7 @@
 #pragma once
 
 #include "EngineTypes.h"
-#include "Reflection/Class.h"
+#include "Core/Reflection/Class.h"
 #include "TPropertyHandle.h"
 
 

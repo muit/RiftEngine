@@ -3,10 +3,10 @@
 
 #include "EASTL/utility.h"
 
-#include "Platform/Platform.h"
-#include "Containers/Array.h"
-#include "Strings/String.h"
-#include "Strings/Name.h"
+#include "Core/Platform/Platform.h"
+#include "Core/Containers/Array.h"
+#include "Core/Strings/String.h"
+#include "Core/Strings/Name.h"
 
 
 template <typename T1, typename T2>

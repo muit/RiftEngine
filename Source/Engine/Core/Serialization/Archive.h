@@ -5,10 +5,10 @@
 #include <nlohmann/json.hpp>
 
 #include "EngineTypes.h"
-#include "TypeTraits.h"
-#include "Strings/Name.h"
+#include "Core/TypeTraits.h"
+#include "Core/Strings/Name.h"
 
-#include "Object/ObjectPtr.h"
+#include "Core/Object/ObjectPtr.h"
 
 #include "MemoryReader.h"
 #include "MemoryWriter.h"

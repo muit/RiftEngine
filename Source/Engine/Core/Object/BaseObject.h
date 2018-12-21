@@ -6,8 +6,8 @@
 
 #include "Pod.h"
 #include "EngineTypes.h"
-#include "Reflection/Reflection.h"
-#include "Memory/Allocator.h"
+#include "Core/Reflection/Reflection.h"
+#include "Core/Memory/Allocator.h"
 
 
 class Class;

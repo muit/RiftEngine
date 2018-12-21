@@ -6,7 +6,7 @@
 #include <EASTL/vector.h>
 
 #include "BaseType.h"
-#include "Object/BaseObject.h"
+#include "Core/Object/BaseObject.h"
 
 
 class Class : public BaseType {

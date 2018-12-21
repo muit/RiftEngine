@@ -4,7 +4,7 @@
 
 #if WITH_EDITOR
 
-#include "Reflection/Runtime/TPropertyHandle.h"
+#include "Core/Reflection/Runtime/TPropertyHandle.h"
 #include "Properties/UInt8PropertyWidget.h"
 #include "Properties/Int32PropertyWidget.h"
 #include "Properties/FloatPropertyWidget.h"
@@ -29,7 +29,7 @@ GlobalPtr<PropertyWidget> PropertyWidget::NewPropertyWidget(const eastl::shared_
 		else if (auto propName = eastl::dynamic_pointer_cast<TPropertyHandle<Name>>(prop)) {
 			return New<NamePropertyWidget>(propName);
 		}
-		else if (auto propString = std::dynamic_pointer_cast<TPropertyHandle<String>>(prop)) {
+		else if (auto propString = eastl::dynamic_pointer_cast<TPropertyHandle<String>>(prop)) {
 			return New<StringPropertyWidget>(propString);
 		}
 	}

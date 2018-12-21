@@ -4,7 +4,7 @@
 #include <cstdint> // int64_t, uint64_t
 #include <map> // map
 #include <memory> // allocator
-#include "Util/String.h" // string
+#include "Core/Strings/String.h" // string
 #include <vector> // vector
 
 /*!

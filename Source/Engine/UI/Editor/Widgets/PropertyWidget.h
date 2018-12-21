@@ -8,8 +8,8 @@
 
 #include <imgui/imgui.h>
 
-#include "Strings/String.h"
-#include "Reflection/Runtime/PropertyHandle.h"
+#include "Core/Strings/String.h"
+#include "Core/Reflection/Runtime/PropertyHandle.h"
 
 
 class PropertyWidget : public Widget {

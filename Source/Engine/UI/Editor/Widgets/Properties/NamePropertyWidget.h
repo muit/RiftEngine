@@ -6,7 +6,7 @@
 
 #include "../PropertyWidget.h"
 
-#include "Reflection/Runtime/TPropertyHandle.h"
+#include "Core/Reflection/Runtime/TPropertyHandle.h"
 
 
 class NamePropertyWidget : public PropertyWidget {

@@ -3,7 +3,7 @@
 #include "HandleHelper.h"
 
 
-std::shared_ptr<PropertyHandle> HandleHelper::CreatePropertyHandle(const Ptr<BaseObject>& instance, const Property* property)
+eastl::shared_ptr<PropertyHandle> HandleHelper::CreatePropertyHandle(const Ptr<BaseObject>& instance, const Property* property)
 {
 	if (property && instance->GetClass() == property->GetType())
 	{

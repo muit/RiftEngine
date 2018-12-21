@@ -2,10 +2,10 @@
 #pragma once
 
 #include "CoreEngine.h"
-#include "Object/BaseObject.h"
+#include "BaseObject.h"
 #include "EngineTypes.h"
-#include "Object/ObjectPtr.h"
-#include "Reflection/TClass.h"
+#include "ObjectPtr.h"
+#include "../Reflection/TClass.h"
 
 
 class Object;

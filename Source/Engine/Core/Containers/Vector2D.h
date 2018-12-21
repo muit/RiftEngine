@@ -3,7 +3,7 @@
 #pragma once
 
 #include "EngineTypes.h"
-#include "Math.h"
+#include "Core/Math.h"
 
 using namespace std;
 

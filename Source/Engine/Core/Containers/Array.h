@@ -4,7 +4,7 @@
 
 #include <EASTL/vector.h>
 #include <EASTL/functional.h>
-#include "Platform/Platform.h"
+#include "../Platform/Platform.h"
 
 
 template<typename Type>

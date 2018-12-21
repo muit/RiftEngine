@@ -1,7 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "UInt8PropertyWidget.h"
-#include "Util/Math.h"
+#include "Core/Math.h"
 
 #if WITH_EDITOR
 

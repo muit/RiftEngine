@@ -7,7 +7,7 @@
 #include "../PropertyWidget.h"
 
 #include <imgui/imgui.h>
-#include "Reflection/Runtime/TPropertyHandle.h"
+#include "Core/Reflection/Runtime/TPropertyHandle.h"
 
 
 class Int32PropertyWidget : public PropertyWidget {

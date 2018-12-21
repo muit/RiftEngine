@@ -2,8 +2,8 @@
 #pragma once
 
 #include "CoreObject.h"
-#include "Strings/String.h"
-#include "Strings/Name.h"
+#include "Core/Strings/String.h"
+#include "Core/Strings/Name.h"
 
 
 class Scene : public Object {

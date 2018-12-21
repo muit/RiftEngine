@@ -6,8 +6,8 @@
 #include <EASTL/weak_ptr.h>
 #include <EASTL/vector.h>
 
-#include "Platform/Platform.h"
-#include "Object/BaseObject.h"
+#include "Core/Platform/Platform.h"
+#include "Core/Object/BaseObject.h"
 
 
 class BaseWeakPtr;

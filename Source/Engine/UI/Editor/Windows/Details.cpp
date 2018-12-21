@@ -1,8 +1,8 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "Details.h"
-#include "Reflection/Runtime/HandleHelper.h"
-#include "Reflection/ReflectionTags.h"
+#include "Core/Reflection/Runtime/HandleHelper.h"
+#include "Core/Reflection/ReflectionTags.h"
 
 
 #if WITH_EDITOR

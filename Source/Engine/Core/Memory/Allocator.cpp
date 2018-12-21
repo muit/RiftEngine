@@ -1,7 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "Allocator.h"
-#include "Util/Name.h"
+#include "Core/Strings/Name.h"
 
 
 Allocator::Allocator(const char* name /*= "Global"*/) : name{ name }, size{ 0 }, malloc_alloc{ name }

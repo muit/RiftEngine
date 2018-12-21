@@ -5,8 +5,8 @@
 #include <EASTL/string_view.h>
 #include <regex>
 
-#include "Memory/Allocator.h"
-#include "Platform/Platform.h"
+#include "../Memory/Allocator.h"
+#include "../Platform/Platform.h"
 
 using String = eastl::basic_string<ANSICHAR, StringAllocator>;
 using StringView = eastl::string_view;
