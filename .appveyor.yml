@@ -10,7 +10,7 @@ image: Visual Studio 2017
 cache:
   - binaries
 install:
-  - "Source/ThirdParty/Sharpmake/Sharpmake.Application.exe" /sources(@"RiftEngine.Solution.cs")
+  - call "Source/ThirdParty/Sharpmake/Sharpmake.Application.exe" /sources(@"RiftEngine.Solution.cs")
 configuration: Release
 platform: x64
 build:
