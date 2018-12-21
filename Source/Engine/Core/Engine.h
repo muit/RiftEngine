@@ -3,7 +3,6 @@
 
 #include "CoreObject.h"
 #include "Rendering/Renderer.h"
-#include <SDL.h>
 #include <tracy/Tracy.hpp>
 
 #include "Time.h"

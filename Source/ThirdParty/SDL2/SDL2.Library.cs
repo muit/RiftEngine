@@ -33,6 +33,9 @@ public class SDL2Library : Project
 		conf.LibraryFiles.Add(@"SDL2.lib");
 		conf.LibraryFiles.Add(@"SDL2main.lib");
 
+        // To use /DEBUG:FULL
+        conf.Options.Add(Sharpmake.Options.Vc.Linker.GenerateDebugInformation.Enable);
+        conf.Options.Add(Sharpmake.Options.Vc.Linker.GenerateFullProgramDatabaseFile.Enable);
 
         if (target.OutputType == OutputType.Dll)
         {

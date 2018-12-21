@@ -20,10 +20,10 @@
 #define COMPL_ 0
 
 #define CHECK_N(x, n, ...) n
-#define CHECK(...) CHECK_N(__VA_ARGS__, 0,)
+#define CHECK_1(...) CHECK_N(__VA_ARGS__, 0,)
 #define PROBE(x) x, 1,
 
-#define NOT(x) CHECK(PRIMITIVE_CAT(NOT_, x))
+#define NOT(x) CHECK_1(PRIMITIVE_CAT(NOT_, x))
 #define NOT_0 PROBE(~)
 
 #define BOOL(x) COMPL(NOT(x))

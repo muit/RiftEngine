@@ -6,7 +6,9 @@ using Sharpmake; // contains the entire Sharpmake object library.
 [module: Sharpmake.Include("Properties/Base.Module.cs")]
 [module: Sharpmake.Include("Source/Engine/Engine.Module.cs")]
 [module: Sharpmake.Include("Source/Game/Game.Project.cs")]
+[module: Sharpmake.Include("Source/Test/Test.Project.cs")]
 [module: Sharpmake.Include("Source/ThirdParty/SDL2/SDL2.Library.cs")]
+[module: Sharpmake.Include("Source/ThirdParty/GoogleTest/GoogleTest.Library.cs")]
 
 [Generate]
 class RiftEngineSolution : Solution
@@ -30,6 +32,7 @@ class RiftEngineSolution : Solution
         //conf.ProjectPath = @"[solution.SharpmakeCsPath]/Binaries";
 
         conf.AddProject<GameProject>(target);
+        conf.AddProject<TestProject>(target);
         conf.AddProject<EngineModule>(target);
         conf.AddProject<SDL2Library>(target);
     }

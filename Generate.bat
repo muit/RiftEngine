@@ -1,6 +1,7 @@
 @echo off
-call "Source/ThirdParty/Sharpmake/Sharpmake.Application.exe" /sources(@"RiftEngine.Solution.cs")
+call "Programs/Sharpmake/Sharpmake.Application.exe" /sources(@"RiftEngine.Solution.cs")
 if errorlevel 0  (
+    pause
     exit
 )
 pause
