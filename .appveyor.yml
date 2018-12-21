@@ -11,7 +11,7 @@ cache:
   - binaries
 install:
   - call "Source/ThirdParty/Sharpmake/Sharpmake.Application.exe" /sources(@"RiftEngine.Solution.cs")
-configuration: Release Editor
+configuration: Debug Editor
 platform: x64
 build:
   project: RiftEngine.sln
