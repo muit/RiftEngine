@@ -1,8 +1,9 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include "Object.h"
-#include "Gameplay/Actor.h"
+#include "CoreObject.h"
+#include "Strings/String.h"
+#include "Strings/Name.h"
 
 
 class Scene : public Object {
@@ -21,8 +22,6 @@ public:
 
 	PROP(uint8, anotherNumber, Transient)
 	uint8 anotherNumber;
-
-	std::vector<GlobalPtr<Actor>> actors;
 
 	void Tick(float /*deltaTime*/) {
 	}

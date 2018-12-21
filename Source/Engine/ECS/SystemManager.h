@@ -5,16 +5,25 @@
 #include "CoreObject.h"
 #include "System.h"
 
+#include "Gameplay/SRenderCamera.h"
 
-class SystemsManager : public Object {
-	CLASS(SystemsManager, Object)
+
+class SystemManager : public Object {
+	CLASS(SystemManager, Object)
 
 	eastl::vector<GlobalPtr<System>> systems;
 
 
+	void RegistrySystems() {
+		// #TODO: Externalize system registry
+		RegistrySystem<SRenderCamera>();
+	}
+
 public:
 
 	void BeginPlay() {
+
+		RegistrySystems();
 		IterateSystems([](Ptr<System> system) {
 			system->BeginPlay();
 		});
@@ -40,5 +49,12 @@ public:
 				callback(system);
 			}
 		}
+	}
+
+private:
+
+	template <typename T>
+	void RegistrySystem() {
+		systems.push_back(Create<T>(GetSelf()));
 	}
 };

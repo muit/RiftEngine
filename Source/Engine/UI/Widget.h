@@ -2,8 +2,9 @@
 
 #pragma once
 
+#include "CoreObject.h"
+
 #include <vector>
-#include "Object.h"
 
 
 #define W(Widget, ...) AddNew<Widget>(__VA_ARGS__)

@@ -4,9 +4,9 @@
 #include "EASTL/utility.h"
 
 #include "Platform/Platform.h"
-#include "Util/Array.h"
-#include "Util/String.h"
-#include "Util/Name.h"
+#include "Containers/Array.h"
+#include "Strings/String.h"
+#include "Strings/Name.h"
 
 
 template <typename T1, typename T2>
@@ -23,7 +23,7 @@ template <>\
 struct ReflectionTypeTraits<Type> {\
 static constexpr bool valid = true;\
 static const Name name;\
-};
+}
 
 /** Registry new editor-supported types here and on "EngineTypes.cpp" */
 DECLARE_REFLECTION_TYPE(uint8);
