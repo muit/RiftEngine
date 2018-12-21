@@ -9,7 +9,7 @@ class TestProject : BaseProject
     public override void ConfigureAll(Configuration conf, RiftTarget target)
     {
         base.ConfigureAll(conf, target);
-        conf.SolutionFolder = "Test";
+        conf.SolutionFolder = "RiftEngine";
 
         conf.IncludePaths.Add(@"[project.SharpmakeCsPath]");
     

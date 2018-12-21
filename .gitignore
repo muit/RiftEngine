@@ -2,6 +2,7 @@
 !Source/**/*.exe
 !Source/**/*.dll
 !Source/**/*.lib
+!Source/**/*.pdb
 
 *.sln
 *.vcxproj
