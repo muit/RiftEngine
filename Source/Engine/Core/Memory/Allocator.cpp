@@ -1,0 +1,105 @@
+// Copyright 2015-2019 Piperift - All rights reserved
+
+#include "Allocator.h"
+#include "Core/Strings/Name.h"
+
+
+Allocator::Allocator(const char* name /*= "Global"*/) : name{ name }, size{ 0 }, malloc_alloc{ name }
+{}
+
+Allocator::Allocator(const Allocator&) : name{}, size{ 0 }, malloc_alloc{}
+{}
+
+Allocator::Allocator(const Allocator&, const char* name) : name{ name }, size{ 0 }, malloc_alloc{ name }
+{}
+
+Name Allocator::GetName() const
+{
+	return { name };
+}
+
+void Allocator::SetName(const char* newName)
+{
+	name = newName;
+}
+
+
+namespace Memory {
+	/// gAllocator
+	/// Default engine allocator instance.
+	EASTL_API Allocator   gAllocator {};
+	EASTL_API Allocator* gpAllocator = &gAllocator;
+
+	EASTL_API Allocator* GetAllocator()
+	{
+		return gpAllocator;
+	}
+
+	/// gAllocator
+	/// Default engine allocator instance.
+	EASTL_API Allocator   gObjectsAllocator{ "Objects" };
+	EASTL_API Allocator* gpObjectsAllocator = &gObjectsAllocator;
+
+	EASTL_API Allocator* GetObjectsAllocator()
+	{
+		return gpObjectsAllocator;
+	}
+
+	/// gAllocator
+	/// Default engine allocator instance.
+	EASTL_API Allocator   gAssetsAllocator{"Assets"};
+	EASTL_API Allocator* gpAssetsAllocator = &gAssetsAllocator;
+
+	EASTL_API Allocator* GetAssetsAllocator()
+	{
+		return gpAssetsAllocator;
+	}
+
+	/// gAllocator
+	/// Default engine allocator instance.
+	EASTL_API Allocator   gFrameAllocator{"Frame"};
+	EASTL_API Allocator* gpFrameAllocator = &gFrameAllocator;
+
+	EASTL_API Allocator* GetFrameAllocator()
+	{
+		return gpFrameAllocator;
+	}
+};
+
+
+// EASTL News
+void* operator new[](size_t size, const char* /*name*/, int flags,
+	unsigned /*debugFlags*/, const char* /*file*/, int /*line*/)
+{
+	return Memory::GetAllocator()->Allocate(size, flags);
+}
+
+void* operator new[](size_t size, size_t alignment, size_t alignmentOffset, const char* /*name*/,
+	int flags, unsigned /*debugFlags*/, const char* /*file*/, int /*line*/)
+{
+	return Memory::GetAllocator()->Allocate(size, alignment, alignmentOffset, flags);
+}
+
+
+// Native News
+void* operator new(size_t size)
+{
+	return Memory::GetAllocator()->Allocate(size);
+}
+
+void* operator new[](size_t size)
+{
+	return Memory::GetAllocator()->Allocate(size);
+}
+
+
+// Deletes
+void operator delete(void* p, std::size_t size)
+{
+	Memory::GetAllocator()->Deallocate(p, size);
+}
+
+void operator delete[](void* p, std::size_t size)
+{
+	Memory::GetAllocator()->Deallocate(p, size);
+}

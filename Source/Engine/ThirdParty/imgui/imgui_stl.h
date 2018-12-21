@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "Util/String.h"
+#include "Core/Strings/String.h"
 
 namespace ImGui
 {

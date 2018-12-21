@@ -2,3 +2,5 @@
 #pragma once
 
 #include <GL/gl3w.h>
+
+#include "Core/Platform/Platform.h"

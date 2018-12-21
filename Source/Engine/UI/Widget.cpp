@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Object.h"
+#include "CoreObject.h"
 
 
 class Window : public Object {
