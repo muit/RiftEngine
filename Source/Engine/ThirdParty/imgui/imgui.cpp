@@ -10282,7 +10282,7 @@ void ImGui::DockContextProcessDock(ImGuiContext* ctx, ImGuiDockRequest* req)
     IM_ASSERT((req->Type == ImGuiDockRequestType_Dock && req->DockPayload != NULL) || (req->Type == ImGuiDockRequestType_Split && req->DockPayload == NULL));
     IM_ASSERT(req->DockTargetWindow != NULL || req->DockTargetNode != NULL);
 
-    ImGuiContext& g = *ctx;
+    //ImGuiContext& g = *ctx;
     ImGuiWindow* payload_window = req->DockPayload;     // Optional
     ImGuiWindow* target_window = req->DockTargetWindow;
     ImGuiDockNode* target_node = req->DockTargetNode;
