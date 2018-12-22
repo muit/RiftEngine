@@ -12,6 +12,7 @@ void BaseGlobalPtr::MoveFrom(BaseGlobalPtr&& other)
 	// Update owned pointers to owner
 	for (BaseWeakPtr* const weak : weaks)
 	{
+		// Not using set because objects have already been "rebinded"
 		weak->globalPtr = this;
 	}
 }
@@ -32,8 +33,8 @@ void BaseWeakPtr::Set(const BaseGlobalPtr* inGlobal)
 	if (globalPtr == inGlobal)
 		return;
 
-	if (globalPtr)
-		Reset();
+	// Unbind from old global (if any)
+	UnBind();
 
 	globalPtr = inGlobal;
 
@@ -46,13 +47,17 @@ void BaseWeakPtr::Set(const BaseGlobalPtr* inGlobal)
 
 void BaseWeakPtr::MoveFrom(BaseWeakPtr&& other)
 {
-	id = eastl::move(other.id);
+	if (globalPtr == other.globalPtr)
+		return;
+
+	// Unbind from old global (if any)
+	UnBind();
+
 	globalPtr = other.globalPtr;
 	other.globalPtr = nullptr;
 	if (globalPtr)
 	{
+		id = other.id;
 		globalPtr->weaks[id] = this;
-		//owner->weaks.erase(&other);
-		//owner->weaks.insert(this);
 	}
 }

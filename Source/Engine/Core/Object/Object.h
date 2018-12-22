@@ -27,8 +27,7 @@ template<typename ObjectType>
 static GlobalPtr<ObjectType> Create(const Ptr<BaseObject> owner = {}) {
 	static_assert(eastl::is_convertible< ObjectType, Object >::value, "Type is not an Object!");
 
-	GlobalPtr<ObjectType> ptr = GlobalPtr<ObjectType>::Create(owner);
-	return ptr;
+	return GlobalPtr<ObjectType>::Create(owner);
 }
 
 
@@ -50,8 +49,10 @@ public:
 	NOINLINE Object() : BaseObject(), self{}, ownClass{ nullptr }, owner{} {
 	};
 
-	NOINLINE void PreConstruct(Ptr<BaseObject>&& inSelf, Class* inClass, const Ptr<BaseObject>& inOwner) {
-		ownClass = inClass; self = eastl::move(inSelf); owner = inOwner;
+	NOINLINE void PreConstruct(const Ptr<BaseObject>& inSelf, Class* inClass, const Ptr<BaseObject>& inOwner) {
+		ownClass = inClass;
+		self = inSelf; // #FIX: Templated Copy constructor not being called!
+		owner = inOwner;
 	}
 	virtual void Construct() {}
 
