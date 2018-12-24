@@ -19,7 +19,7 @@ class EntityManager : public Object {
 
 public:
 
-	EntityId CreateEntity(json data)
+	EntityId CreateEntity(json data = {})
 	{
 		return registry.create();
 	}

@@ -1,6 +1,8 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
+#include "CoreEngine.h"
+
 #include <EABase/eabase.h>
 #include <EASTL/allocator_malloc.h>
 #include <EASTL/string_view.h>
@@ -13,14 +15,14 @@
 //
 class Allocator
 {
-	const char* name;
+	const TCHAR* name;
 	size_t size;
 	eastl::allocator_malloc malloc_alloc;
 
 public:
-	Allocator(const char* name = "Global");
+	Allocator(const TCHAR* name = TX("Global"));
 	Allocator(const Allocator&);
-	Allocator(const Allocator&, const char* name);
+	Allocator(const Allocator&, const TCHAR* name);
 
 	Allocator& operator=(const Allocator&) { return *this; }
 
@@ -53,7 +55,7 @@ public:
 
 	struct Name GetName() const;
 
-	void SetName(const char* Name);
+	void SetName(const TCHAR* Name);
 
 	size_t GetSize() const
 	{
@@ -75,8 +77,11 @@ namespace Memory {
 
 class StringAllocator : public eastl::allocator
 {
-public:
 	using Super = eastl::allocator;
+
+	const TCHAR* name;
+
+public:
 
 	EASTL_ALLOCATOR_EXPLICIT StringAllocator(const char* pName = EASTL_NAME_VAL(EASTL_ALLOCATOR_DEFAULT_NAME)) : Super(pName) {}
 
@@ -95,6 +100,6 @@ public:
 		Memory::GetAllocator()->Deallocate(p, n);
 	}
 
-	const char* GetName() const { return Super::get_name(); }
-	void SetName(const char* pName) { Super::set_name(pName); }
+	const TCHAR* GetName() const { return name; }
+	void SetName(const TCHAR* inName) { name = inName; }
 };

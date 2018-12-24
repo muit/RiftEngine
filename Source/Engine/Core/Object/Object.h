@@ -46,12 +46,11 @@ private:
 
 public:
 
-	NOINLINE Object() : BaseObject(), self{}, ownClass{ nullptr }, owner{} {
-	};
+	Object() : BaseObject(), self{}, ownClass{ nullptr }, owner{} {};
 
-	NOINLINE void PreConstruct(const Ptr<BaseObject>& inSelf, Class* inClass, const Ptr<BaseObject>& inOwner) {
+	void PreConstruct(Ptr<BaseObject>&& inSelf, Class* inClass, const Ptr<BaseObject>& inOwner) {
 		ownClass = inClass;
-		self = inSelf; // #FIX: Templated Copy constructor not being called!
+		self = inSelf;
 		owner = inOwner;
 	}
 	virtual void Construct() {}

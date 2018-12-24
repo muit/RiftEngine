@@ -1,7 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include "../Platform/Platform.h"
+#include "Core/Platform/Platform.h"
 #include "String.h"
 #include <EASTL/functional.h>
 #include <EASTL/unordered_set.h>
@@ -12,7 +12,7 @@ struct Name;
 /** Global table storing all names */
 class NameTable {
 	friend Name;
-	using Container = eastl::unordered_set<String>;
+	using Container     = eastl::unordered_set<String>;
 	using Iterator      = Container::iterator;
 	using ConstIterator = Container::const_iterator;
 
@@ -49,7 +49,8 @@ public:
 	Name() : id(NoneId()) {}
 
 	Name(const StringView&& key) : Name(String{ key }) {}
-	Name(const ANSICHAR* key) : Name(String{ key }) {}
+	Name(const TCHAR* key) : Name(String{ key }) {}
+	Name(const TCHAR* key, String::size_type size) : Name(String{ key, size }) {}
 	Name(const String& key) {
 		// Index this name
 		id = NameTable::GetGlobal().Init(key);
@@ -69,7 +70,7 @@ public:
 	String ToString() const {
 		if (IsNone())
 		{
-			return "";
+			return TX("");
 		}
 		return *id;
 	}
@@ -105,4 +106,25 @@ namespace eastl {
 			return hasher(*id);
 		}
 	};
-}
+
+	/// user defined literals
+	///
+	/// Converts a character array literal to a basic_string.
+	///
+	/// Example:
+	///   Name s = "abcdef"n;
+	///
+	/// http://en.cppreference.com/w/cpp/String/basic_String/operator%22%22s
+	///
+#if EASTL_USER_LITERALS_ENABLED && EASTL_INLINE_NAMESPACES_ENABLED
+	EA_DISABLE_VC_WARNING(4455) // disable warning C4455: literal suffix identifiers that do not start with an underscore are reserved
+		inline namespace literals
+	{
+		inline namespace String_literals
+		{
+			inline Name   operator"" n(const TCHAR* str, size_t len) EA_NOEXCEPT { return Name{ str, String::size_type(len) }; }
+		}
+	}
+	EA_RESTORE_VC_WARNING()  // warning: 4455
+#endif
+} // namespace eastl

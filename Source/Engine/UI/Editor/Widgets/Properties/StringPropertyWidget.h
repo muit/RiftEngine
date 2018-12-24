@@ -20,7 +20,7 @@ public:
 	{
 		prop = inProperty;
 		idName = prop->GetName();
-		StringUtils::ToSentenceCase(idName, displayName);
+		CString::ToSentenceCase(idName, displayName);
 	}
 
 protected:

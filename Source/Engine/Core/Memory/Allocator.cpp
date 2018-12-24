@@ -4,13 +4,13 @@
 #include "Core/Strings/Name.h"
 
 
-Allocator::Allocator(const char* name /*= "Global"*/) : name{ name }, size{ 0 }, malloc_alloc{ name }
+Allocator::Allocator(const TCHAR* name /*= "Global"*/) : name{ name }, size{ 0 }, malloc_alloc{ "" }
 {}
 
 Allocator::Allocator(const Allocator&) : name{}, size{ 0 }, malloc_alloc{}
 {}
 
-Allocator::Allocator(const Allocator&, const char* name) : name{ name }, size{ 0 }, malloc_alloc{ name }
+Allocator::Allocator(const Allocator&, const TCHAR* name) : name{ name }, size{ 0 }, malloc_alloc{ "" }
 {}
 
 Name Allocator::GetName() const
@@ -18,7 +18,7 @@ Name Allocator::GetName() const
 	return { name };
 }
 
-void Allocator::SetName(const char* newName)
+void Allocator::SetName(const TCHAR* newName)
 {
 	name = newName;
 }
@@ -37,7 +37,7 @@ namespace Memory {
 
 	/// gAllocator
 	/// Default engine allocator instance.
-	EASTL_API Allocator   gObjectsAllocator{ "Objects" };
+	EASTL_API Allocator   gObjectsAllocator{ TX("Objects") };
 	EASTL_API Allocator* gpObjectsAllocator = &gObjectsAllocator;
 
 	EASTL_API Allocator* GetObjectsAllocator()
@@ -47,7 +47,7 @@ namespace Memory {
 
 	/// gAllocator
 	/// Default engine allocator instance.
-	EASTL_API Allocator   gAssetsAllocator{"Assets"};
+	EASTL_API Allocator   gAssetsAllocator{ TX("Assets") };
 	EASTL_API Allocator* gpAssetsAllocator = &gAssetsAllocator;
 
 	EASTL_API Allocator* GetAssetsAllocator()
@@ -57,7 +57,7 @@ namespace Memory {
 
 	/// gAllocator
 	/// Default engine allocator instance.
-	EASTL_API Allocator   gFrameAllocator{"Frame"};
+	EASTL_API Allocator   gFrameAllocator{ TX("Frame") };
 	EASTL_API Allocator* gpFrameAllocator = &gFrameAllocator;
 
 	EASTL_API Allocator* GetFrameAllocator()

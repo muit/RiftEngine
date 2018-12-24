@@ -35,8 +35,8 @@ protected:
 	BaseGlobalPtr(BaseGlobalPtr&& other) {
 		MoveFrom(eastl::move(other));
 	}
-	// #TODO: Remove NoInline
-	NOINLINE BaseGlobalPtr& operator=(BaseGlobalPtr&& other) {
+
+	BaseGlobalPtr& operator=(BaseGlobalPtr&& other) {
 		MoveFrom(eastl::move(other));
 		return *this;
 	}
@@ -202,20 +202,28 @@ public:
 
 	Ptr() : BaseWeakPtr() {}
 
-	
-
-	/** Templates for down-casting */
-	template<typename Type2>
-	NOINLINE Ptr(const Ptr<Type2>& other) : BaseWeakPtr() {
-		static_assert(eastl::is_convertible< Type2, Type >::value, "Type is not compatible!");
+	Ptr(const Ptr<Type>& other) : BaseWeakPtr() {
 		Set(other.GetGlobal());
 	}
-
 	Ptr& operator=(const Ptr<Type>& other) {
 		Set(other.GetGlobal());
 		return *this;
-	};
+	}
 
+	Ptr(Ptr<Type>&& other) : BaseWeakPtr() {
+		MoveFrom(eastl::move(other));
+	}
+	Ptr& operator=(Ptr<Type>&& other) {
+		MoveFrom(eastl::move(other));
+		return *this;
+	}
+
+	/** Templates for down-casting */
+	template<typename Type2>
+	Ptr(const Ptr<Type2>& other) : BaseWeakPtr() {
+		static_assert(eastl::is_convertible< Type2, Type >::value, "Type is not compatible!");
+		Set(other.GetGlobal());
+	}
 	template<typename Type2>
 	Ptr& operator=(const Ptr<Type2>& other) {
 		static_assert(eastl::is_convertible< Type2, Type >::value, "Type is not compatible!");
@@ -224,12 +232,12 @@ public:
 	};
 
 	template<typename Type2>
-	NOINLINE Ptr(Ptr<Type2>&& other) : BaseWeakPtr() {
+	Ptr(Ptr<Type2>&& other) : BaseWeakPtr() {
 		static_assert(eastl::is_convertible< Type2, Type >::value, "Type is not compatible!");
 		MoveFrom(eastl::move(other));
 	}
 	template<typename Type2>
-	NOINLINE Ptr& operator=(Ptr<Type2>&& other) {
+	Ptr& operator=(Ptr<Type2>&& other) {
 		static_assert(eastl::is_convertible<Type2, Type>::value, "Type is not compatible!");
 		MoveFrom(eastl::move(other));
 		return *this;

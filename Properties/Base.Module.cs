@@ -19,6 +19,9 @@ class BaseModule : BaseProject
         conf.IncludePaths.Add(@"[project.SharpmakeCsPath]");
         //conf.TargetLibraryPath = "[project.SharpmakeCsPath]/Lib/[target.Optimization]_[target.Platform]";
 
+        conf.Defines.Add("NOMINMAX");
+        conf.Defines.Add("_TCHAR_DEFINED");
+
         conf.Output = Configuration.OutputType.Lib;
     }
 }

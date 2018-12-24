@@ -1,8 +1,21 @@
 // Copyright 2015-2019 Piperift - All rights reserved
+
 #pragma once
 
+#ifndef PLATFORM_TCHAR_IS_1_BYTE
+	#define PLATFORM_TCHAR_IS_1_BYTE			0
+#endif
+#ifndef PLATFORM_TCHAR_IS_4_BYTES
+	#define PLATFORM_TCHAR_IS_4_BYTES			0
+#endif
+#ifndef PLATFORM_TCHAR_IS_CHAR16
+	#define PLATFORM_TCHAR_IS_CHAR16			0
+#endif
 
 #include "GenericPlatform.h"
+
+// #TODO: Remove me when TCHAR is no longer defined by windows
+//#include <wtypes.h>
 
 #if PLATFORM_WINDOWS
 	#include "Windows/WindowsPlatform.h"
@@ -41,7 +54,7 @@ typedef FPlatformTypes::ANSICHAR    ANSICHAR;
 /// A wide character. Normally a signed type.
 typedef FPlatformTypes::WIDECHAR    WIDECHAR;
 /// Either ANSICHAR or WIDECHAR, depending on whether the platform supports wide characters or the requirements of the licensee.
-//typedef FPlatformTypes::TCHAR       TCHAR;
+typedef FPlatformTypes::TCHAR       TCHAR;
 /// An 8-bit character containing a UTF8 (Unicode, 8-bit, variable-width) code unit.
 typedef FPlatformTypes::CHAR8       UTF8CHAR;
 /// A 16-bit character containing a UCS2 (Unicode, 16-bit, fixed-width) code unit, used for compatibility with 'Windows TCHAR' across multiple platforms.
@@ -64,3 +77,13 @@ typedef FPlatformTypes::SSIZE_T     SSIZE_T;
 typedef FPlatformTypes::TYPE_OF_NULL    TYPE_OF_NULL;
 /// The type of the C++ nullptr keyword.
 typedef FPlatformTypes::TYPE_OF_NULLPTR	TYPE_OF_NULLPTR;
+
+
+#if !defined(TX)
+	#if PLATFORM_TCHAR_IS_CHAR16
+		#define TEXT_PASTE(x) u ## x
+	#else
+		#define TEXT_PASTE(x) L ## x
+	#endif
+	#define TX(x) TEXT_PASTE(x)
+#endif

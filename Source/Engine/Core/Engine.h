@@ -1,13 +1,14 @@
 // Copyright 2015-2019 Piperift - All rights reserved
+
 #pragma once
 
 #include "CoreObject.h"
 #include "Rendering/Renderer.h"
 #include <tracy/Tracy.hpp>
 
-#include "Time.h"
 #include "World/World.h"
 #include "UI/UIManager.h"
+#include "Misc/Time.h"
 
 
 class Engine : public Object {

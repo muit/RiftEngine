@@ -58,3 +58,7 @@ struct FGenericPlatformTypes
 	typedef int32					TYPE_OF_NULL;
 	typedef decltype(nullptr)		TYPE_OF_NULLPTR;
 };
+
+
+#define PLATFORM_TCHAR_IS_CHAR16 0
+

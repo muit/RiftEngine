@@ -11,9 +11,10 @@ bool EntityManager::Serialize(Archive& ar)
 
 	if (ar.IsSaving())
 	{
-		/*registry.each([this, ar](EntityId entity) {
-			SerializeEntity(ar, entity);
-		});*/
+		Archive* arPtr = &ar;
+		registry.each([this, arPtr](EntityId entity) {
+			SerializeEntity(*arPtr, entity);
+		});
 	}
 	else
 	{

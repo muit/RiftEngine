@@ -12,6 +12,7 @@
 
 #include "MemoryReader.h"
 #include "MemoryWriter.h"
+#include "Core/Strings/String.h"
 
 using json = nlohmann::json;
 
@@ -28,24 +29,24 @@ public:
 
 
 	template<typename T>
-	FORCEINLINE Archive& operator()(const char* name, T& val) {
+	FORCEINLINE Archive& operator()(const TCHAR* name, T& val) {
 		Serialize(*this, name, val);
 		return *this;
 	}
 
 
-	virtual void Serialize(Archive& ar, const char* name, uint8& val) = 0;
+	virtual void Serialize(Archive& ar, const TCHAR* name, uint8& val) = 0;
 
-	virtual void Serialize(Archive& ar, const char* name, int32& val) = 0;
+	virtual void Serialize(Archive& ar, const TCHAR* name, int32& val) = 0;
 
-	virtual void Serialize(Archive& ar, const char* name, float& val) = 0;
+	virtual void Serialize(Archive& ar, const TCHAR* name, float& val) = 0;
 
-	virtual void Serialize(Archive& ar, const char* name, Name& val) = 0;
+	virtual void Serialize(Archive& ar, const TCHAR* name, Name& val) = 0;
 
-	virtual void Serialize(Archive& ar, const char* name, String& val) = 0;
+	virtual void Serialize(Archive& ar, const TCHAR* name, String& val) = 0;
 
 	template<typename T>
-	void Serialize(Archive& ar, const char* name, GlobalPtr<T>& val) {
+	void Serialize(Archive& ar, const TCHAR* name, GlobalPtr<T>& val) {
 		BeginObject(name);
 
 		if (ar.IsLoading())
@@ -61,7 +62,7 @@ public:
 	}
 
 	template<typename T>
-	void Serialize(Archive& ar, const char* name, Ptr<T>& val) {
+	void Serialize(Archive& ar, const TCHAR* name, Ptr<T>& val) {
 		if (ar.IsSaving())
 		{
 			ar(name, val? val->GetName() : nullptr);
@@ -74,7 +75,7 @@ public:
 	}
 
 	template<typename T>
-	void Serialize(Archive& ar, const char* name, eastl::vector<T>& val)
+	void Serialize(Archive& ar, const TCHAR* name, eastl::vector<T>& val)
 	{
 		BeginObject(name);
 		if (ar.IsLoading())
@@ -90,7 +91,7 @@ public:
 		EndObject();
 	}
 
-	virtual void BeginObject(const char* name) = 0;
+	virtual void BeginObject(const TCHAR* name) = 0;
 	virtual void EndObject() = 0;
 
 	FORCEINLINE bool IsLoading() { return bReads; }
@@ -109,11 +110,11 @@ public:
 	JsonArchive() : Archive(), baseData{}, depthData{} {}
 	virtual ~JsonArchive() = default;
 
-	String GetDataString() { return baseData.dump(); }
+	String GetDataString() { return CString::ToString(baseData.dump()); }
 
 private:
 
-	virtual void BeginObject(const char* name) override {
+	virtual void BeginObject(const TCHAR* name) override {
 		depthData.push(&Data()[name]);
 	}
 
@@ -122,35 +123,35 @@ private:
 	}
 
 
-	virtual void Serialize(Archive&, const char* name, uint8& val) override {
+	virtual void Serialize(Archive&, const TCHAR* name, uint8& val) override {
 		if (IsLoading())
 			val = Data()[name].get<uint8>();
 		else
 			Data()[name] = val;
 	}
 
-	virtual void Serialize(Archive&, const char* name, int32& val) override {
+	virtual void Serialize(Archive&, const TCHAR* name, int32& val) override {
 		if (IsLoading())
 			val = Data()[name].get<int32>();
 		else
 			Data()[name] = val;
 	}
 
-	virtual void Serialize(Archive&, const char* name, float& val) override {
+	virtual void Serialize(Archive&, const TCHAR* name, float& val) override {
 		if (IsLoading())
 			val = Data()[name].get<float>();
 		else
 			Data()[name] = val;
 	}
 
-	virtual void Serialize(Archive& ar, const char* name, Name& val) override {
+	virtual void Serialize(Archive& ar, const TCHAR* name, Name& val) override {
 		String str = val.ToString();
 		ar(name, str);
 		if (IsLoading())
 			val = str;
 	}
 
-	virtual void Serialize(Archive&, const char* name, String& val) override {
+	virtual void Serialize(Archive&, const TCHAR* name, String& val) override {
 		if (IsLoading())
 			val = Data()[name].get<String>();
 		else

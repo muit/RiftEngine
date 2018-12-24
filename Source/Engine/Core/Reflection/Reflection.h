@@ -24,7 +24,7 @@ virtual inline void SerializeReflection(Archive& ar) override {\
 	__meta_SerializeProperty(ar, MetaInt<0>{});\
 }\
 static void __meta_RegistryClass() {\
-	StaticClass()->RegistryClass<Super>(#type);\
+	StaticClass()->RegistryClass<Super>(TX(#type));\
 BASECLASS(type, tags)
 
 #define ORPHAN_CLASS(type, tags) \
@@ -33,7 +33,7 @@ virtual inline void SerializeReflection(Archive& ar) {\
 	__meta_SerializeProperty(ar, MetaInt<0>{});\
 }\
 static void __meta_RegistryClass() {\
-	StaticClass()->RegistryClass(#type);\
+	StaticClass()->RegistryClass(TX(#type));\
 BASECLASS(type, tags)
 
 #define BASECLASS(type, inTags)\
@@ -114,7 +114,7 @@ static void __meta_RegistryProperty(MetaInt<id_name>) {\
 	constexpr ReflectionTags tags = ReflectionTagsInitializer<inTags>::value;\
 	static_assert(!(tags & Abstract), "Properties can't be Abstract");\
 \
-	StaticClass()->RegistryProperty<type>(#name, [](BaseObject* baseInstance)\
+	StaticClass()->RegistryProperty<type>(TX(#name), [](BaseObject* baseInstance)\
 	{\
 		if(__meta_type* instance = dynamic_cast<__meta_type*>(baseInstance))\
 			return &instance->name;\
@@ -131,7 +131,7 @@ FORCEINLINE void __meta_SerializeProperty(Archive& ar, MetaInt<id_name>) {\
 	\
 	if(!(tags & Transient))\
 	{/* If prop is not transient (Compile time) */\
-		ar(#name , name);\
+		ar(TX(#name) , name);\
 	}\
 	/* Serialize next property if any */\
 	__meta_SerializeProperty(ar, MetaInt<id_name + 1>{});\
