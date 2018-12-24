@@ -8,13 +8,12 @@
 #pragma warning(disable : 4996)
 #include <EAStdC/EAString.h>
 
-#include "Core/Memory/Allocator.h"
 #include "Core/Platform/Platform.h"
+#include "Core/Memory/Allocator.h"
 #include "Core/Containers/Array.h"
 
 
 using String = eastl::basic_string<TCHAR, StringAllocator>;
-using UTF8String = eastl::basic_string<ANSICHAR, StringAllocator>;
 using StringView = eastl::basic_string_view<TCHAR>;
 
 
@@ -100,13 +99,13 @@ struct CString {
 
 private:
 
-	// #TODO: EASTL doesn't support codecvt and wstring conversion yet
+	// #NOTE: EASTL doesn't support codecvt and wstring conversion yet
 	//static std::wstring_convert<std::codecvt_utf8<TCHAR>, TCHAR, StringAllocator, StringAllocator> converter;
 
 public:
 
-	static String ToString(const UTF8String& str) { return TX(""); /*converter.from_bytes(str);*/ }
-	static UTF8String ToUTF8(const String& str) { return ""; /*converter.to_bytes(str);*/ }
+	//static String ToString(const UTF8String& str) { return TX(""); /*converter.from_bytes(str);*/ }
+	//static UTF8String ToUTF8(const String& str) { return ""; /*converter.to_bytes(str);*/ }
 };
 
 using Regex = std::basic_regex<TCHAR>;
@@ -120,19 +119,6 @@ namespace eastl
 		size_t operator()(const String& x) const
 		{
 			const TCHAR* p = (const TCHAR*)x.c_str(); // To consider: limit p to at most 256 chars.
-			unsigned int c, result = 2166136261U; // We implement an FNV-like String hash.
-			while ((c = *p++) != 0) // Using '!=' disables compiler warnings.
-				result = (result * 16777619) ^ c;
-			return (size_t)result;
-		}
-	};
-
-	template <>
-	struct hash<UTF8String>
-	{
-		size_t operator()(const UTF8String& x) const
-		{
-			const ANSICHAR* p = (const ANSICHAR*)x.c_str(); // To consider: limit p to at most 256 chars.
 			unsigned int c, result = 2166136261U; // We implement an FNV-like String hash.
 			while ((c = *p++) != 0) // Using '!=' disables compiler warnings.
 				result = (result * 16777619) ^ c;

@@ -2,15 +2,6 @@
 
 #pragma once
 
-#ifndef PLATFORM_TCHAR_IS_1_BYTE
-	#define PLATFORM_TCHAR_IS_1_BYTE			0
-#endif
-#ifndef PLATFORM_TCHAR_IS_4_BYTES
-	#define PLATFORM_TCHAR_IS_4_BYTES			0
-#endif
-#ifndef PLATFORM_TCHAR_IS_CHAR16
-	#define PLATFORM_TCHAR_IS_CHAR16			0
-#endif
 
 #include "GenericPlatform.h"
 
@@ -80,10 +71,14 @@ typedef FPlatformTypes::TYPE_OF_NULLPTR	TYPE_OF_NULLPTR;
 
 
 #if !defined(TX)
-	#if PLATFORM_TCHAR_IS_CHAR16
+	#if PLATFORM_TCHAR_IS_1_BYTE
+		#define TEXT_PASTE(x) x
+	#elif PLATFORM_TCHAR_IS_CHAR16
 		#define TEXT_PASTE(x) u ## x
-	#else
+	#elif PLATFORM_TCHAR_IS_WCHAR
 		#define TEXT_PASTE(x) L ## x
+	#else
+		#define TEXT_PASTE(x) x
 	#endif
 	#define TX(x) TEXT_PASTE(x)
 #endif

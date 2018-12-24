@@ -18,38 +18,23 @@ const int32 DateTime::DaysPerMonth[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 
 const int32 DateTime::DaysToMonth[] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
 
 
-/* FDateTime structors
+/* FDateTime Constructors
  *****************************************************************************/
 
-DateTime::DateTime(int32 Year, int32 Month, int32 Day, int32 Hour, int32 Minute, int32 Second, int32 Millisecond)
+DateTime::DateTime(int32 year, int32 month, int32 day, int32 hour, int32 minute, int32 second, int32 millisecond)
 {
-	if (!Validate(Year, Month, Day, Hour, Minute, Second, Millisecond))
+	if (!Validate(year, month, day, hour, minute, second, millisecond))
 	{
 		// LOG Invalid date-time
 	}
 
-	int32 TotalDays = 0;
-
-	if ((Month > 2) && IsLeapYear(Year))
-	{
-		++TotalDays;
-	}
-
-	--Year;											// the current year is not a full year yet
-	--Month;										// the current month is not a full month yet
-
-	TotalDays += Year * 365;
-	TotalDays += Year / 4;							// leap year day every four years...
-	TotalDays -= Year / 100;						// ...except every 100 years...
-	TotalDays += Year / 400;						// ...but also every 400 years
-	TotalDays += DaysToMonth[Month];				// days in this year up to last month
-	TotalDays += Day - 1;							// days in this month minus today
-
-	Ticks = TotalDays * ETimespan::TicksPerDay
-		+ Hour * ETimespan::TicksPerHour
-		+ Minute * ETimespan::TicksPerMinute
-		+ Second * ETimespan::TicksPerSecond
-		+ Millisecond * ETimespan::TicksPerMillisecond;
+	time = SysTime{
+		date::sys_days(date::year{ year } / month / day)
+	       + std::chrono::hours{ hour }
+		 + std::chrono::minutes{ minute }
+		 + std::chrono::seconds{ second }
+	+ std::chrono::milliseconds{ millisecond }
+	};
 }
 
 
@@ -143,12 +128,12 @@ String DateTime::ToHttpDate() const
 		case EMonthOfYear::December:	MonthStr = TX("Dec");	break;
 	}
 
-	String time;
-	time.sprintf(TX("%02i:%02i:%02i"), GetHour(), GetMinute(), GetSecond());
+	String timeStr;
+	timeStr.sprintf(TX("%02i:%02i:%02i"), GetHour(), GetMinute(), GetSecond());
 
-	String dateTime;
-	dateTime.sprintf(TX("%s, %02d %s %d %s GMT"), DayStr.c_str(), GetDay(), MonthStr.c_str(), GetYear(), time.c_str());
-	return dateTime;
+	String dateTimeStr;
+	dateTimeStr.sprintf(TX("%s, %02d %s %d %s GMT"), DayStr.c_str(), GetDay(), MonthStr.c_str(), GetYear(), timeStr.c_str());
+	return dateTimeStr;
 }
 
 
@@ -280,7 +265,7 @@ bool DateTime::Parse(const String& DateTimeString, DateTime& OutDateTime)
 	}
 
 	// convert the tokens to numbers
-	OutDateTime.Ticks = DateTime(Year, Month, Day, Hour, Minute, Second, Millisecond).Ticks;
+	OutDateTime = { Year, Month, Day, Hour, Minute, Second, Millisecond };
 
 	return true;
 }
@@ -706,18 +691,6 @@ bool DateTime::ParseIso8601(const TCHAR* DateTimeString, DateTime& OutDateTime)
 
 	return true;
 }
-
-
-DateTime DateTime::UtcNow()
-{
-	int32 Year, Month, Day, DayOfWeek;
-	int32 Hour, Minute, Second, Millisecond;
-
-	PlatformTime::UtcTime(Year, Month, DayOfWeek, Day, Hour, Minute, Second, Millisecond);
-
-	return DateTime(Year, Month, Day, Hour, Minute, Second, Millisecond);
-}
-
 
 bool DateTime::Validate(int32 Year, int32 Month, int32 Day, int32 Hour, int32 Minute, int32 Second, int32 Millisecond)
 {

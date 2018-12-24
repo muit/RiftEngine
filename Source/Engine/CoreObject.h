@@ -5,5 +5,6 @@
  * Include this header first on all headers that declare an Object
  */
 
-#include "CoreEngine.h"
+// Object includes CoreEngine
+//#include "CoreEngine.h"
 #include "Core/Object/Object.h"

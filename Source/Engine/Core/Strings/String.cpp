@@ -9,14 +9,14 @@ void CString::ToSentenceCase(const String& str, String& result)
 	if (!str.empty())
 	{
 		//static const std::regex wordToCapital("\b[a-z]");
-		static const Regex spaceCamelCase("([a-zA-Z])(?=[A-Z])");
+		static const Regex spaceCamelCase(TX("([a-zA-Z])(?=[A-Z])"));
 
-		result = String{ std::regex_replace(str.c_str(), spaceCamelCase, TEXT("$& ")).c_str() };
+		result = String{ std::regex_replace(str.c_str(), spaceCamelCase, TX("$& ")).c_str() };
 		result[0] = (char)::toupper(result[0]);
 	}
 	else
 	{
-		result = "";
+		result = TX("");
 	}
 }
 
@@ -32,15 +32,15 @@ String CString::BackSubstr(const String& str, int32 size)
 
 bool CString::IsNumeric(const TCHAR* Str)
 {
-	if (*Str == '-' || *Str == '+')
+	if (*Str == TX('-') || *Str == TX('+'))
 	{
 		Str++;
 	}
 
 	bool bHasDot = false;
-	while (*Str != '\0')
+	while (*Str != TX('\0'))
 	{
-		if (*Str == '.')
+		if (*Str == TX('.'))
 		{
 			if (bHasDot)
 			{

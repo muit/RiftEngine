@@ -3,7 +3,7 @@
 #include "EngineTypes.h"
 
 
-#define DEFINE_REFLECTION_TYPE(Type) const Name ReflectionTypeTraits<Type>::name { #Type };
+#define DEFINE_REFLECTION_TYPE(Type) const Name ReflectionTypeTraits<Type>::name { TX(#Type) };
 
 DEFINE_REFLECTION_TYPE(uint8);
 DEFINE_REFLECTION_TYPE(int32);

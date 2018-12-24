@@ -4,9 +4,17 @@
 
 #include "CoreEngine.h"
 
+#include <chrono>
+
+#include "Core/Misc/DateTime.h"
+
 
 struct PlatformTime
 {
-	static void SystemTime(int32& year, int32& month, int32& dayOfWeek, int32& day, int32& hour, int32& min, int32& sec, int32& mSec);
-	static void UtcTime(int32& year, int32& month, int32& dayOfWeek, int32& day, int32& hour, int32& min, int32& sec, int32& mSec);
+	static FORCEINLINE uint32 Cycles() {
+		return Cycles64();
+	}
+	static FORCEINLINE uint64 Cycles64() {
+		return floor<std::chrono::microseconds>(DateTime::Now().GetTime().time_since_epoch()).count();
+	}
 };

@@ -12,26 +12,17 @@ void PlatformMisc::CreateGuid(Guid& guid)
 	static uint16 IncrementCounter = 0;
 
 	static DateTime InitialDateTime;
-	static uint64 InitialCycleCounter;
 
 	DateTime EstimatedCurrentDateTime;
 
 	if (IncrementCounter == 0)
 	{
-		// Hack: First Guid can be created prior to FPlatformTime::InitTiming(), so do it here.
-		//PlatformTime::InitTiming();
-
-		// uses FPlatformTime::SystemTime()
 		InitialDateTime = DateTime::Now();
-		InitialCycleCounter = PlatformTime::Cycles64();
-
 		EstimatedCurrentDateTime = InitialDateTime;
 	}
 	else
 	{
-		Timespan ElapsedTime = Timespan::FromSeconds(PlatformTime::ToSeconds64(PlatformTime::Cycles64() - InitialCycleCounter));
-
-		EstimatedCurrentDateTime = InitialDateTime + ElapsedTime;
+		EstimatedCurrentDateTime = DateTime::Now();
 	}
 
 	uint32 SequentialBits = static_cast<uint32>(IncrementCounter++); // Add sequential bits to ensure sequentially generated guids are unique even if Cycles is wrong

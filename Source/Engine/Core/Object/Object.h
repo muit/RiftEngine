@@ -1,9 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include "CoreEngine.h"
 #include "BaseObject.h"
-#include "EngineTypes.h"
 #include "ObjectPtr.h"
 #include "../Reflection/TClass.h"
 

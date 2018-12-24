@@ -84,9 +84,6 @@ public:
 	 *
 	 * @param Ticks The ticks representing the date and time.
 	 */
-	DateTime(int64 InTicks)
-		: Ticks(InTicks)
-	{ }
 	DateTime(SysTime time)
 		: time(time)
 	{ }
@@ -125,8 +122,7 @@ public:
 	 */
 	DateTime& operator+=(const Timespan& Other)
 	{
-		// #TODO: time += Other.GetTime();
-
+		time += Other.GetTime();
 		return *this;
 	}
 
@@ -217,7 +213,7 @@ public:
 	 */
 	bool operator<(const DateTime& Other) const
 	{
-		return (Ticks < Other.Ticks);
+		return (time < Other.time);
 	}
 
 	/**
@@ -228,10 +224,19 @@ public:
 	 */
 	bool operator<=(const DateTime& Other) const
 	{
-		return (Ticks <= Other.Ticks);
+		return (time <= Other.time);
 	}
 
 public:
+	const SysTime& GetTime() const
+	{
+		return time;
+	}
+
+	int64 GetTicks() const
+	{
+		return time.time_since_epoch().count();
+	}
 
 	/**
 	 * Gets the date part of this date.
@@ -592,19 +597,6 @@ public:
 	}
 
 	/**
-	 * Gets the UTC date and time on this computer.
-	 *
-	 * This method returns the Coordinated Universal Time (UTC), which does not take the
-	 * local computer's time zone and daylight savings settings into account. It should be
-	 * used when comparing dates and times that should be independent of the user's locale.
-	 * To get the date and time in the current locale, use Now() instead.
-	 *
-	 * @return Current date and time.
-	 * @see Now
-	 */
-	static DateTime UtcNow();
-
-	/**
 	 * Validates the given components of a date and time value.
 	 *
 	 * The allow ranges for the components are:
@@ -634,6 +626,5 @@ private:
 private:
 
 	/** Holds the ticks in 100 nanoseconds resolution since January 1, 0001 A.D. */
-	int64 Ticks;
 	SysTime time;
 };

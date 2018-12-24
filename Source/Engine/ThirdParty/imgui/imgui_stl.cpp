@@ -9,7 +9,6 @@
 #include "imgui.h"
 #include "imgui_stl.h"
 
-
 void ImGui::Text(String&& txt)
 {
 	ImGui::TextUnformatted(txt.cbegin(), txt.cend());
@@ -22,7 +21,7 @@ void ImGui::Text(const String& txt)
 
 struct InputTextCallback_UserData
 {
-	String*            Str;
+	String*             Str;
 	ImGuiInputTextCallback  ChainCallback;
 	void*                   ChainCallbackUserData;
 };

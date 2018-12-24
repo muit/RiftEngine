@@ -6,7 +6,7 @@
 void Window::Build()
 {
 	bOpen = true;
-	windowName = "";
+	windowName = TX("");
 	windowFlags = 0;
 }
 

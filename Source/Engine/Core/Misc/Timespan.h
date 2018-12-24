@@ -59,7 +59,7 @@ namespace ETimespan
  * positive or negative ticks depending on whether the difference is measured forward or backward.
  * Each tick has a resolution of 0.1 microseconds (= 100 nanoseconds).
  *
- * In conjunction with the companion class FDateTime, time spans can be used to perform date and time
+ * In conjunction with the companion class DateTime, time spans can be used to perform date and time
  * based arithmetic, such as calculating the difference between two dates or adding a certain amount
  * of time to a given date.
  *
@@ -67,7 +67,7 @@ namespace ETimespan
  * FromSeconds, Zero, MinValue and related methods instead of calling the overloaded constructors as
  * they will make your code easier to read and understand.
  *
- * @see FDateTime
+ * @see DateTime
  */
 struct Timespan
 {
@@ -87,11 +87,10 @@ public:
 	 *
 	 * For better readability, consider using MinValue, MaxValue and Zero.
 	 *
-	 * @param Ticks The number of ticks.
+	 * @param duration The number of decimals of microseconds.
 	 * @see MaxValue, MinValue, Zero
 	 */
-	Timespan(decmicroseconds duration) : duration(duration)
-	{}
+	Timespan(decmicroseconds duration) : duration(duration) {}
 
 	/**
 	 * Create and initialize a new time interval with the specified number of hours, minutes and seconds.
@@ -636,7 +635,7 @@ protected:
 	 * @param Seconds The seconds component.
 	 * @param FractionNano The fractional seconds (in nanosecond resolution).
 	 */
-	void Assign(int32 Days, int32 Hours, int32 Minutes, int32 Seconds, int32 FractionNano);
+	void Assign(int32 days, int32 hours, int32 minutes, int32 seconds, int32 fractionNano);
 
 private:
 	friend struct Z_Construct_UScriptStruct_FTimespan_Statics;
@@ -645,6 +644,9 @@ private:
 
 	/** The time span value in 100 nanoseconds resolution. */
 	decmicroseconds duration;
+public:
+	static Timespan FromMinutes(int32 TzOffsetMinutes);
+	static Timespan FromSeconds(int32 seconds);
 };
 
 

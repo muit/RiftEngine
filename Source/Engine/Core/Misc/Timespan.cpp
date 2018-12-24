@@ -115,23 +115,24 @@ bool Timespan::Parse(const String& TimespanString, Timespan& OutTimespan)
 		}
 	}
 
-	const int32 Days         = AtoI32(Tokens[0].c_str());
-	const int32 Hours        = AtoI32(Tokens[1].c_str());
-	const int32 Minutes      = AtoI32(Tokens[2].c_str());
-	const int32 Seconds      = AtoI32(Tokens[3].c_str());
-	const int32 FractionNano = AtoI32(Tokens[4].c_str());
+	const int32 days = AtoI32(Tokens[0].c_str());
+	const int32 hours = AtoI32(Tokens[1].c_str());
+	const int32 minutes = AtoI32(Tokens[2].c_str());
+	const int32 seconds = AtoI32(Tokens[3].c_str());
+	const int32 fractionNano = AtoI32(Tokens[4].c_str());
 
-	if ((Days > (ETimespan::MaxTicks / ETimespan::TicksPerDay) - 1))
+	// Max days
+	if ((days > floor<date::days>(decmicroseconds::max()).count() -1))
 	{
 		return false;
 	}
 
-	if ((Hours > 23) || (Minutes > 59) || (Seconds > 59) || (FractionNano > 999999999))
+	if ((hours > 23) || (minutes > 59) || (seconds > 59) || (fractionNano > 999999999))
 	{
 		return false;
 	}
 
-	OutTimespan.Assign(Days, Hours, Minutes, Seconds, FractionNano);
+	OutTimespan.Assign(days, hours, minutes, seconds, fractionNano);
 
 	if (Negative)
 	{
@@ -145,18 +146,22 @@ bool Timespan::Parse(const String& TimespanString, Timespan& OutTimespan)
 /* FTimespan implementation
  *****************************************************************************/
 
-void Timespan::Assign(int32 Days, int32 Hours, int32 Minutes, int32 Seconds, int32 FractionNano)
+void Timespan::Assign(int32 days, int32 hours, int32 minutes, int32 seconds, int32 fractionNano)
 {
-	// #TODO: Implement Timespan assign
-	/*int64 TotalTicks = 0;
+	duration = floor<decmicroseconds>(
+		            date::days { days }
+	      + std::chrono::hours { hours }
+	    + std::chrono::minutes { minutes }
+	    + std::chrono::seconds { seconds }
+	+ std::chrono::nanoseconds { fractionNano });
+}
 
-	TotalTicks += Days * ETimespan::TicksPerDay;
-	TotalTicks += Hours * ETimespan::TicksPerHour;
-	TotalTicks += Minutes * ETimespan::TicksPerMinute;
-	TotalTicks += Seconds * ETimespan::TicksPerSecond;
-	TotalTicks += FractionNano / ETimespan::NanosecondsPerTick;
+Timespan Timespan::FromMinutes(int32 minutes)
+{
+	return Timespan{ 0, minutes, 0 };
+}
 
-	assert((TotalTicks >= ETimespan::MinTicks) && (TotalTicks <= ETimespan::MaxTicks));
-
-	Ticks = TotalTicks;*/
+Timespan Timespan::FromSeconds(int32 seconds)
+{
+	return Timespan{ 0, 0, seconds };
 }

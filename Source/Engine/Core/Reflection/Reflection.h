@@ -24,7 +24,7 @@ virtual inline void SerializeReflection(Archive& ar) override {\
 	__meta_SerializeProperty(ar, MetaInt<0>{});\
 }\
 static void __meta_RegistryClass() {\
-	StaticClass()->RegistryClass<Super>(TX(#type));\
+	StaticClass()->RegistryClass<Super>(Name{ TX(#type) });\
 BASECLASS(type, tags)
 
 #define ORPHAN_CLASS(type, tags) \
@@ -33,7 +33,7 @@ virtual inline void SerializeReflection(Archive& ar) {\
 	__meta_SerializeProperty(ar, MetaInt<0>{});\
 }\
 static void __meta_RegistryClass() {\
-	StaticClass()->RegistryClass(TX(#type));\
+	StaticClass()->RegistryClass(Name{ TX(#type) });\
 BASECLASS(type, tags)
 
 #define BASECLASS(type, inTags)\
@@ -75,7 +75,7 @@ public:\
 static void __meta_RegistryStruct() {\
 	static_assert(eastl::is_convertible<__meta_type, Pod >::value, "Type does not inherit Pod!");\
 \
-	StaticStruct()->Registry(#type);\
+	StaticStruct()->Registry(TX(#type));\
 	constexpr ReflectionTags tags = ReflectionTagsInitializer<inTags>::value;\
 	static_assert(!(tags & DetailsEdit), "Structs can't use DetailsEdit"); \
 	static_assert(!(tags & DetailsView), "Structs can't use DetailsView"); \
@@ -131,7 +131,7 @@ FORCEINLINE void __meta_SerializeProperty(Archive& ar, MetaInt<id_name>) {\
 	\
 	if(!(tags & Transient))\
 	{/* If prop is not transient (Compile time) */\
-		ar(TX(#name) , name);\
+		ar(#name , name);\
 	}\
 	/* Serialize next property if any */\
 	__meta_SerializeProperty(ar, MetaInt<id_name + 1>{});\

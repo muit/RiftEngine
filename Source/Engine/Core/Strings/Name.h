@@ -1,7 +1,6 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include "Core/Platform/Platform.h"
 #include "String.h"
 #include <EASTL/functional.h>
 #include <EASTL/unordered_set.h>

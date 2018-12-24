@@ -27,7 +27,7 @@ struct adl_serializer;
 template<template<typename U, typename V, typename... Args> class ObjectType =
          std::map,
          template<typename U, typename... Args> class ArrayType = std::vector,
-         class StringType = UTF8String, class BooleanType = bool,
+         class StringType = String, class BooleanType = bool,
          class NumberIntegerType = std::int64_t,
          class NumberUnsignedType = std::uint64_t,
          class NumberFloatType = double,
