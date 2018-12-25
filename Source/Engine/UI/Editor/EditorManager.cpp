@@ -16,6 +16,7 @@ void EditorManager::Tick(float deltaTime)
 	if (showDemoWindow)
 		ImGui::ShowDemoWindow(&showDemoWindow);
 
+	sceneEntities->OnTick();
 	details->OnTick();
 	memory->OnTick();
 
@@ -91,6 +92,7 @@ void EditorManager::TickMainNavBar()
 
 		if (ImGui::BeginMenu("View"))
 		{
+			if (ImGui::MenuItem("Entities", (const char*)0, sceneEntities->IsOpenedPtr())) {}
 			if (ImGui::MenuItem("Details", (const char*)0, details->IsOpenedPtr())) {}
 			if (ImGui::MenuItem("Memory", (const char*)0, memory->IsOpenedPtr())) {}
 			ImGui::EndMenu();

@@ -9,6 +9,8 @@
 #include "Core/Platform/Platform.h"
 
 
+constexpr int32 NO_INDEX = -1;
+
 template<typename Type, typename Allocator = EASTLAllocatorType>
 class TArray {
 public:
@@ -21,7 +23,7 @@ public:
 	typedef typename VectorType::const_iterator         ConstIterator;
 	typedef typename VectorType::reverse_iterator       ReverseIterator;
 	typedef typename VectorType::const_reverse_iterator ConstReverseIterator;
-	
+
 
 private:
 
@@ -57,6 +59,13 @@ public:
 		return Size() - 1;
 	}
 
+	int32 AddUnique(const Type item) {
+		const int32 foundIndex = FindIndex(item);
+		if (foundIndex == NO_INDEX)
+			return Add(eastl::move(item));
+		return foundIndex;
+	}
+
 	int32 AddDefaulted() {
 		vector.push_back();
 		return Size() - 1;
@@ -82,15 +91,20 @@ public:
 	}
 
 	FORCEINLINE ConstIterator FindIt(const Type& item) const {
-		return eastl::find_if(vector.begin(), vector.end(), item);
+		return eastl::find(vector.begin(), vector.end(), item);
 	}
+
 	int32 FindIndex(const Type& item) const {
 		ConstIterator found = FindIt(item);
 		if (found != vector.end())
 		{
-			return eastl::distance(vector.begin(), found);
+			return (int32)eastl::distance(vector.begin(), found);
 		}
-		return NoIndex;
+		return NO_INDEX;
+	}
+
+	bool Contains(const Type& item) const {
+		return FindIndex(item) != NO_INDEX;
 	}
 
 	/**
@@ -149,7 +163,7 @@ public:
 		}
 	}
 
-	void Empty() { vector.empty(); }
+	void Empty() { vector.clear(); }
 
 	FORCEINLINE int32 Size() const { return (int32)vector.size(); }
 
@@ -212,5 +226,4 @@ private:
 	/** STATIC */
 public:
 
-	static constexpr int32 NoIndex = -1;
 };

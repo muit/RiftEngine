@@ -6,13 +6,7 @@
 #include "ECS/EntityManager.h"
 
 
-class CTransform : public Component {
-	STRUCT(CTransform)
+class CMesh : public Component {
+	STRUCT(CMesh)
 
-public:
-
-	PROP(Name, name, Transient | SaveGame)
-	Name name;
-
-	EntityId parent;
 };

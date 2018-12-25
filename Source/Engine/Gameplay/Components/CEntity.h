@@ -10,7 +10,7 @@ class CEntity : public Component {
 
 public:
 
-	CEntity() : id{Guid::New()} {}
+	CEntity(Name name) : id{ Guid::New() }, name{name} {}
 
 	PROP(Guid, id, DetailsEdit | SaveGame)
 	Guid id;

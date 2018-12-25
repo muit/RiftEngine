@@ -12,8 +12,12 @@ void Window::Build()
 
 void Window::Tick()
 {
-	BeginWindow();
-	EndWindow();
+	if (bOpen)
+	{
+		BeginWindow();
+		TickChilds();
+		EndWindow();
+	}
 }
 
 void Window::BeginWindow()

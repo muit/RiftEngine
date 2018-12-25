@@ -3667,7 +3667,7 @@ bool ImGui::InputTextEx(const char* label, char* buf, int buf_size, const ImVec2
             searches_remaining += is_multiline ? 1 : 0;
             int line_count = 0;
             //for (const ImWchar* s = text_begin; (s = (const ImWchar*)wcschr((const wchar_t*)s, (wchar_t)'\n')) != NULL; s++)  // FIXME-OPT: Could use this when wchar_t are 16-bits
-            for (const ImWchar* s = text_begin; *s != 0; s++)
+            for (const ImWchar* s = text_begin; s != 0; ++s)
                 if (*s == '\n')
                 {
                     line_count++;

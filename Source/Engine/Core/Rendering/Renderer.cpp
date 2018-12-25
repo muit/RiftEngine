@@ -6,6 +6,7 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_sdl.h>
 #include "tracy/TracyOpenGL.hpp"
+#include "World/World.h"
 
 
 Renderer::Renderer() : Super()
@@ -80,7 +81,7 @@ void Renderer::PrepareUI()
 
 	ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
 	ImGui_ImplOpenGL3_Init(glslVersion);
-	
+
 	ImGui::StyleColorsDark();
 }
 
@@ -107,6 +108,8 @@ void Renderer::Render()
 		ImGui::Render();
 		SDL_GL_MakeCurrent(window, gl_context);
 
+		GetWorld()->Render();
+
 		ImGuiIO& io = ImGui::GetIO();
 		glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
 		glClearColor(0.7f, 0.4f, 0.4f, 1);
@@ -115,14 +118,12 @@ void Renderer::Render()
 
 
 		// Present
-			// Update and Render additional Platform Windows
+		// Update and Render additional Platform Windows
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
 		}
-
-		SDL_GL_MakeCurrent(window, gl_context);
 	}
 	{
 		ZoneScopedNC("Sleep", 0xD15545);

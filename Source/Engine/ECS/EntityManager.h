@@ -21,10 +21,10 @@ class EntityManager : public Object {
 
 public:
 
-	EntityId CreateEntity(json data = {})
+	EntityId CreateEntity(Name entityName)
 	{
 		EntityId ent = registry.create();
-		registry.assign<CEntity>(ent);
+		registry.assign<CEntity>(ent, entityName);
 		return ent;
 	}
 
@@ -37,6 +37,11 @@ public:
 	{
 		return registry.valid(entity);
 	}
+
+	template<typename... Component>
+	auto View() {
+		return registry.view<Component...>();
+	};
 
 private:
 

@@ -128,8 +128,6 @@ public:
 		}
 	}
 
-	operator bool() const { return IsValid(); }
-
 	/** INTERNAL USAGE ONLY. Use "Create<YourObject>" instead */
 	static GlobalPtr<Type> Create(const Ptr<BaseObject>& owner);
 };
@@ -157,8 +155,12 @@ protected:
 
 public:
 
-	bool IsValid() const { return globalPtr != nullptr && globalPtr->IsValid(); }
-	operator bool() const { return IsValid(); };
+	bool IsValid() const {
+		return globalPtr != nullptr && globalPtr->IsValid();
+	}
+	operator bool() const {
+		return IsValid();
+	};
 
 	void Reset() {
 		UnBind();
@@ -279,6 +281,14 @@ public:
 
 	template<typename Type2>
 	bool operator==(const GlobalPtr<Type2>& other) const { return other == *this; }
+
+
+	template<typename Type2>
+	bool operator!=(const Ptr<Type2>& other) const { return !operator==(other); }
+
+	template<typename Type2>
+	bool operator!=(const GlobalPtr<Type2>& other) const { return !operator==(other); }
+
 
 	Type* operator*() const {
 		// Static cast since types are always cast-able or invalid

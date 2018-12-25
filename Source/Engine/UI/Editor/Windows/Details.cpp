@@ -12,17 +12,19 @@ void Details::Build()
 	Super::Build();
 	windowName = "Details";
 
-	if (object && object->GetClass())
+	if (object)
 	{
 		windowName = String("Details: ").append(object->GetName().ToString());
 
-		Class* objectClass = object->GetClass();
-		for (const auto& property : objectClass->GetAllProperties())
+		if (Class* objectClass = object->GetClass())
 		{
-			if (property.second->HasTag(DetailsEdit) || property.second->HasTag(DetailsView))
+			for (const auto& property : objectClass->GetAllProperties())
 			{
-				auto handle = HandleHelper::CreatePropertyHandle(object, property.second.get());
-				Add(PropertyWidget::NewPropertyWidget(handle));
+				if (property.second->HasTag(DetailsEdit) || property.second->HasTag(DetailsView))
+				{
+					auto handle = HandleHelper::CreatePropertyHandle(object, property.second.get());
+					Add(PropertyWidget::NewPropertyWidget(handle));
+				}
 			}
 		}
 	}
@@ -40,7 +42,7 @@ void Details::Tick()
 	if (bOpen)
 	{
 		BeginWindow();
-		if (object.IsValid())
+		if (object)
 		{
 			TickChilds();
 		}

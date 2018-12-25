@@ -35,6 +35,12 @@ public:
 		});
 	}
 
+	void Render() {
+		IterateSystems([](Ptr<System> system) {
+			system->Render();
+		});
+	}
+
 	void EndPlay() {
 		IterateSystems([](Ptr<System> system) {
 			system->BeginPlay();

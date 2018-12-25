@@ -23,6 +23,10 @@ public:
 		systemManager = Create<SystemManager>(GetSelf());
 
 		systemManager->BeginPlay();
+
+		// Test entity
+		entityManager->CreateEntity(TX("MyEntity"));
+		entityManager->CreateEntity(TX("MyOtherEntity"));
 	}
 
 	void Tick(float deltaTime) {
@@ -31,9 +35,17 @@ public:
 		systemManager->Tick(deltaTime);
 	}
 
+	void Render() {
+		systemManager->Render();
+	}
+
 	void EndPlay() {
 		systemManager->EndPlay();
 	}
 
 	Ptr<Scene> GetScene() { return scene; }
+
+
+	Ptr<SystemManager> GetSystemManager() { return systemManager; }
+	Ptr<EntityManager> GetEntityManager() { return entityManager; }
 };

@@ -10,6 +10,7 @@
 #include <imgui/imgui.h>
 #include "World/World.h"
 #include "UI/Widget.h"
+#include "Windows/SceneEntities.h"
 #include "Windows/Details.h"
 #include "Windows/MemoryDebugger.h"
 
@@ -20,6 +21,7 @@ class EditorManager : public Object {
 
 	eastl::vector<GlobalPtr<Editor>> activeEditors;
 
+	GlobalPtr<SceneEntities> sceneEntities;
 	GlobalPtr<Details> details;
 	GlobalPtr<MemoryDebugger> memory;
 
@@ -31,11 +33,19 @@ class EditorManager : public Object {
 public:
 
 	EditorManager() : Super() {
+		sceneEntities = Widget::CreateStandalone<SceneEntities>();
+
 		details = Widget::CreateStandalone<Details>();
 		details->SetObject(GetWorld()->GetScene());
 
 		memory = Widget::CreateStandalone<MemoryDebugger>();
 	}
+
+	void Tick(float deltaTime);
+
+	void TickDocking();
+	void TickMainNavBar();
+
 
 	template<typename EditorType>
 	Ptr<Editor> CreateEditor()
@@ -43,11 +53,6 @@ public:
 		activeEditors.push_back(Create<EditorType>(GetSelf()));
 		return activeEditors.back();
 	}
-
-	void Tick(float deltaTime);
-
-	void TickDocking();
-	void TickMainNavBar();
 };
 
 #endif
