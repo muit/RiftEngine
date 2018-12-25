@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreEngine.h"
-#include "Core/Serialization/Archive.h"
+#include "Core/TypeTraits.h"
+#include "Core/Strings/String.h"
 
 
 /**
@@ -167,19 +168,7 @@ public:
 		return A;
 	}
 
-	/**
-	 * Serializes a GUID from or into an archive.
-	 *
-	 * @param Ar The archive to serialize from or into.
-	 * @param G The GUID to serialize.
-	 */
-	friend Archive& operator<<(Archive& Ar, Guid& G);
-
-	bool Serialize(Archive& Ar)
-	{
-		Ar << *this;
-		return true;
-	}
+	bool Serialize(class Archive& Ar, const char* name);
 
 	/**
 	* Guid default string conversion.
@@ -244,7 +233,7 @@ public:
 	 *
 	 * @return A new GUID.
 	 */
-	static Guid NewGuid();
+	static Guid New();
 
 	/**
 	 * Converts a string to a GUID.
@@ -282,3 +271,7 @@ public:
 	/** Holds the fourth component. */
 	uint32 D;
 };
+
+DEFINE_CLASS_TRAITS(Guid, {
+	HasCustomSerialize = true
+});

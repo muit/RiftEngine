@@ -43,10 +43,11 @@ public:
 
 		GetSelf();
 		world = Create<World>(GetSelf());
-		world->Start();
 
 		ui = Create<UIManager>(GetSelf());
 		ui->Prepare();
+
+		world->Start();
 
 		frameTime = {};
 		bool bFinish = false;

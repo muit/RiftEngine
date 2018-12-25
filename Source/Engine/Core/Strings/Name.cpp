@@ -1,6 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "Name.h"
+#include "Core/Serialization/Archive.h"
 
 
 NameTable::ConstIterator NameTable::Init(const String& string)
@@ -15,4 +16,20 @@ NameTable::ConstIterator NameTable::Init(const String& string)
 	{
 		return table.insert(string).first;
 	}
+}
+
+bool Name::Serialize(Archive& ar, const char* name)
+{
+	if (ar.IsSaving())
+	{
+		String str = ToString();
+		ar(name, str);
+	}
+	else
+	{
+		String str;
+		ar(name, str);
+		*this = str;
+	}
+	return true;
 }

@@ -3,10 +3,25 @@
 #include "Guid.h"
 #include "Char.h"
 #include "Core/Platform/PlatformMisc.h"
+#include "Core/Serialization/Archive.h"
+
 
 
 /* Guid interface
  *****************************************************************************/
+
+bool Guid::Serialize(Archive& ar, const char* name)
+{
+	ar.BeginObject(name);
+	{
+		ar(TX("a"), A);
+		ar(TX("b"), B);
+		ar(TX("c"), C);
+		ar(TX("d"), D);
+	}
+	ar.EndObject();
+	return true;
+}
 
 String Guid::ToString(EGuidFormats Format) const
 {
@@ -39,7 +54,7 @@ String Guid::ToString(EGuidFormats Format) const
 /* Guid static interface
  *****************************************************************************/
 
-Guid Guid::NewGuid()
+Guid Guid::New()
 {
 	Guid result(0, 0, 0, 0);
 	PlatformMisc::CreateGuid(result);
@@ -55,12 +70,12 @@ bool Guid::Parse(const String& guidString, Guid& OutGuid)
 	{
 		return ParseExact(guidString, EGuidFormats::Digits, OutGuid);
 	}
-	
+
 	if (stringSize == 36)
 	{
 		return ParseExact(guidString, EGuidFormats::DigitsWithHyphens, OutGuid);
 	}
-	
+
 	if (stringSize == 38)
 	{
 		if (guidString[0] == TX('{'))
@@ -225,10 +240,10 @@ bool Guid::ParseExact(const String& GuidString, EGuidFormats Format, Guid& OutGu
 
 	// #TODO: Implement HexNumber parse
 	/*OutGuid = Guid(
-		FParse::HexNumber(*NormalizedGuidString.substr(0, 8)),
-		FParse::HexNumber(*NormalizedGuidString.substr(8, 8)),
-		FParse::HexNumber(*NormalizedGuidString.substr(16, 8)),
-		FParse::HexNumber(*NormalizedGuidString.substr(24, 8))
+		FParse::HexNumber(NormalizedGuidString.substr(0, 8)),
+		FParse::HexNumber(NormalizedGuidString.substr(8, 8)),
+		FParse::HexNumber(NormalizedGuidString.substr(16, 8)),
+		FParse::HexNumber(NormalizedGuidString.substr(24, 8))
 	);*/
 
 	return true;

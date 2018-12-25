@@ -4,15 +4,12 @@
 #include <EASTL/stack.h>
 #include <nlohmann/json.hpp>
 
-#include "EngineTypes.h"
 #include "Core/TypeTraits.h"
-#include "Core/Strings/Name.h"
-
 #include "Core/Object/ObjectPtr.h"
 
 #include "MemoryReader.h"
 #include "MemoryWriter.h"
-#include "Core/Strings/String.h"
+#include <fstream>
 
 using json = nlohmann::json;
 
@@ -30,62 +27,63 @@ public:
 
 	template<typename T>
 	FORCEINLINE Archive& operator()(const char* name, T& val) {
-		Serialize(*this, name, val);
+		CustomSerializeOrNot(*this, name, val);
 		return *this;
 	}
 
+	virtual void Serialize(const char* name, uint8& val) = 0;
 
-	virtual void Serialize(Archive& ar, const TCHAR* name, uint8& val) = 0;
+	virtual void Serialize(const char* name, int32& val) = 0;
 
-	virtual void Serialize(Archive& ar, const char* name, int32& val) = 0;
+	virtual void Serialize(const char* name, uint32& val) = 0;
 
-	virtual void Serialize(Archive& ar, const char* name, float& val) = 0;
+	virtual void Serialize(const char* name, float& val) = 0;
 
-	virtual void Serialize(Archive& ar, const char* name, Name& val) = 0;
-
-	virtual void Serialize(Archive& ar, const char* name, String& val) = 0;
+	virtual void Serialize(const char* name, String& val) = 0;
 
 	template<typename T>
-	void Serialize(Archive& ar, const char* name, GlobalPtr<T>& val) {
+	void Serialize(const char* name, GlobalPtr<T>& val) {
 		BeginObject(name);
-
-		if (ar.IsLoading())
+		/*if (IsLoading())
 		{
 			// #TODO: Create Object
+			val->Serialize(*this);
 		}
 
 		if (val)
 		{
-			val->Serialize(ar);
-		}
+			val->Serialize(*this);
+		}*/
 		EndObject();
 	}
 
 	template<typename T>
-	void Serialize(Archive& ar, const char* name, Ptr<T>& val) {
-		if (ar.IsSaving())
-		{
-			ar(name, val? val->GetName() : nullptr);
-		}
-		else
-		{
-			// #TODO: Load pointer. Find object and assign it
-			// ar(name, ...);
-		}
+	void Serialize(const char* name, Ptr<T>& val) {
+		Name ptrName;
+		if (IsSaving())
+			ptrName = val ? val->GetName() : TX("None");
+
+		Serialize(name, ptrName);
+
+		/*if(IsLoading())
+			Find and Assign object */
 	}
 
 	template<typename T>
-	void Serialize(Archive& ar, const char* name, eastl::vector<T>& val)
+	void Serialize(const char* name, eastl::vector<T>& val)
 	{
 		BeginObject(name);
-		if (ar.IsLoading())
+		if (IsLoading())
 		{
-			// Read Amount
+			// Ideally should read size form json array
+			Serialize(TX("num"), val.size());
 			// Read each Item
 		}
 		else
 		{
-			// Save Amount
+			int32 num;
+			Serialize(TX("num"), num);
+			val.reserve(num);
 			// Save Items
 		}
 		EndObject();
@@ -96,6 +94,23 @@ public:
 
 	FORCEINLINE bool IsLoading() { return bReads; }
 	FORCEINLINE bool IsSaving() { return !bReads; }
+
+private:
+	/**
+	 * Selection of Serialize call.
+	 */
+	template<class T>
+	FORCEINLINE typename eastl::enable_if_t<!ClassTraits<T>::HasCustomSerialize, bool> CustomSerializeOrNot(Archive& ar, const char* name, T& val)
+	{
+		ar.Serialize(name, val);
+		return true;
+	}
+
+	template<class T>
+	FORCEINLINE typename eastl::enable_if_t<ClassTraits<T>::HasCustomSerialize, bool> CustomSerializeOrNot(Archive& ar, const char* name, T& val)
+	{
+		return val.Serialize(ar, name);
+	}
 };
 
 
@@ -123,35 +138,35 @@ private:
 	}
 
 
-	virtual void Serialize(Archive&, const char* name, uint8& val) override {
+	virtual void Serialize(const char* name, uint8& val) override {
 		if (IsLoading())
 			val = Data()[name].get<uint8>();
 		else
 			Data()[name] = val;
 	}
 
-	virtual void Serialize(Archive&, const char* name, int32& val) override {
+	virtual void Serialize(const char* name, int32& val) override {
 		if (IsLoading())
 			val = Data()[name].get<int32>();
 		else
 			Data()[name] = val;
 	}
 
-	virtual void Serialize(Archive&, const char* name, float& val) override {
+	virtual void Serialize(const char* name, uint32& val) override {
+		if (IsLoading())
+			val = Data()[name].get<uint32>();
+		else
+			Data()[name] = val;
+	}
+
+	virtual void Serialize(const char* name, float& val) override {
 		if (IsLoading())
 			val = Data()[name].get<float>();
 		else
 			Data()[name] = val;
 	}
 
-	virtual void Serialize(Archive& ar, const char* name, Name& val) override {
-		String str = val.ToString();
-		ar(name, str);
-		if (IsLoading())
-			val = str;
-	}
-
-	virtual void Serialize(Archive&, const char* name, String& val) override {
+	virtual void Serialize(const char* name, String& val) override {
 		if (IsLoading())
 			val = Data()[name].get<String>();
 		else

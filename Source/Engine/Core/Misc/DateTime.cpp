@@ -233,7 +233,6 @@ DateTime DateTime::Now()
 	return DateTime(floor<std::chrono::milliseconds>(SysClock::now()));
 }
 
-
 bool DateTime::Parse(const String& DateTimeString, DateTime& OutDateTime)
 {
 	// first replace -, : and . with space
@@ -296,7 +295,7 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 
 	auto ParseWkday = [](const String& WkDay) -> int32
 	{
-		const int32 NumChars = WkDay.size();
+		const SIZE_T NumChars = WkDay.size();
 
 		if (NumChars == 3)
 		{
@@ -335,7 +334,7 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 
 	auto ParseWeekday = [](const String& WeekDay) -> int32
 	{
-		const int32 NumChars = WeekDay.size();
+		const SIZE_T NumChars = WeekDay.size();
 
 		if (NumChars >= 6 && NumChars <= 9)
 		{
@@ -374,7 +373,7 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 
 	auto ParseMonth = [](const String& Month) -> int32
 	{
-		const int32 NumChars = Month.size();
+		const SIZE_T NumChars = Month.size();
 
 		if (NumChars == 3)
 		{
@@ -468,7 +467,7 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 	{
 		// date3 = month SP(2DIGIT | (SP 1DIGIT))
 		// ; month day(e.g., Jun  2)
-		const int32 NumDigits = DayStr.size();
+		const SIZE_T NumDigits = DayStr.size();
 		Day = (NumDigits > 0 && NumDigits <= 2) ? AtoI32(DayStr.c_str()) : -1;
 		Month = ParseMonth(MonStr);
 
@@ -639,7 +638,7 @@ bool DateTime::ParseIso8601(const TCHAR* DateTimeString, DateTime& OutDateTime)
 				return false;
 			}
 
-			for (int32 Digits = Next - ptr; Digits < 3; ++Digits)
+			for (SIZE_T Digits = Next - ptr; Digits < 3; ++Digits)
 			{
 				Millisecond *= 10;
 			}

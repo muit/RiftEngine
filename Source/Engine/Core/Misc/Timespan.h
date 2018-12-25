@@ -14,42 +14,6 @@
 // decimals of microseconds
 typedef std::chrono::duration<int64, std::ratio<1, 10'000'000>> decmicroseconds;
 
-/**
- * Time span related constants.
- */
-namespace ETimespan
-{
-	/** The maximum number of ticks that can be represented in FTimespan. */
-	const int64 MaxTicks = 9223372036854775807;
-
-	/** The minimum number of ticks that can be represented in FTimespan. */
-	const int64 MinTicks = -9223372036854775807 - 1;
-
-	/** The number of nanoseconds per tick. */
-	const int64 NanosecondsPerTick = 100;
-
-	/** The number of timespan ticks per day. */
-	const int64 TicksPerDay = 864000000000;
-
-	/** The number of timespan ticks per hour. */
-	const int64 TicksPerHour = 36000000000;
-
-	/** The number of timespan ticks per microsecond. */
-	const int64 TicksPerMicrosecond = 10;
-
-	/** The number of timespan ticks per millisecond. */
-	const int64 TicksPerMillisecond = 10000;
-
-	/** The number of timespan ticks per minute. */
-	const int64 TicksPerMinute = 600000000;
-
-	/** The number of timespan ticks per second. */
-	const int64 TicksPerSecond = 10000000;
-
-	/** The number of timespan ticks per week. */
-	const int64 TicksPerWeek = 6048000000000;
-}
-
 
 /**
  * Implements a time span.

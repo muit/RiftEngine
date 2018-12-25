@@ -27,7 +27,7 @@ int32 CString::ParseIntoArray(const String& str, TArray<String>& OutArray, const
 
 String CString::BackSubstr(const String& str, int32 size)
 {
-	return str.substr(Math::Max(0u, str.size() - size), size);
+	return str.substr(Math::Max((SIZE_T)0u, str.size() - size), size);
 }
 
 bool CString::IsNumeric(const TCHAR* Str)

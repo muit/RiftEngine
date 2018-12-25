@@ -103,7 +103,7 @@ bool Timespan::Parse(const String& TimespanString, Timespan& OutTimespan)
 	// pad fractional token with zeros
 	if (HasFractional)
 	{
-		const int32 FractionalLen = Tokens[4].size();
+		const int32 FractionalLen = (int32)(Tokens[4].size());
 
 		if (FractionalLen > 9)
 		{

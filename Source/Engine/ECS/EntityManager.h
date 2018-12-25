@@ -5,6 +5,8 @@
 #include "CoreObject.h"
 #include <entt/entity/registry.hpp>
 
+#include "Gameplay/Components/CEntity.h"
+
 
 using EntityId = uint32;
 class Archive;
@@ -21,7 +23,9 @@ public:
 
 	EntityId CreateEntity(json data = {})
 	{
-		return registry.create();
+		EntityId ent = registry.create();
+		registry.assign<CEntity>(ent);
+		return ent;
 	}
 
 	void DestroyEntity(EntityId entity)

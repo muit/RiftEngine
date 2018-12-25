@@ -4,6 +4,7 @@
 #include "String.h"
 #include <EASTL/functional.h>
 #include <EASTL/unordered_set.h>
+#include "Core/TypeTraits.h"
 
 
 struct Name;
@@ -88,11 +89,16 @@ public:
 	static const Name None() { return { NoneId() }; };
 	static const Id NoneId() { return NameTable::GetGlobal().None(); };
 
+	bool Serialize(class Archive& ar, const char* name);
 
 private:
 
 	Name(const Id& id) : id(id) {}
 };
+
+DEFINE_CLASS_TRAITS(Name, {
+	HasCustomSerialize = true
+});
 
 namespace eastl {
 	template <>
@@ -117,7 +123,7 @@ namespace eastl {
 	///
 #if EASTL_USER_LITERALS_ENABLED && EASTL_INLINE_NAMESPACES_ENABLED
 	EA_DISABLE_VC_WARNING(4455) // disable warning C4455: literal suffix identifiers that do not start with an underscore are reserved
-		inline namespace literals
+	inline namespace literals
 	{
 		inline namespace String_literals
 		{

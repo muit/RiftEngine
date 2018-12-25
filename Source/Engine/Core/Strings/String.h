@@ -20,13 +20,13 @@ using StringView = eastl::basic_string_view<TCHAR>;
 struct CString {
 	static void ToSentenceCase(const String& str, String& result);
 
-	static FORCEINLINE String ReplaceCopy(const String& original, const TCHAR searchChar, const TCHAR replacementChar) {
+	static String ReplaceCopy(const String& original, const TCHAR searchChar, const TCHAR replacementChar) {
 		String result = original;
 		Replace(result, searchChar, replacementChar);
 		return eastl::move(result);
 	}
 
-	static FORCEINLINE void Replace(String& value, const TCHAR searchChar, const TCHAR replacementChar) {
+	static void Replace(String& value, const TCHAR searchChar, const TCHAR replacementChar) {
 		eastl::replace(value.begin(), value.end(), searchChar, replacementChar);
 	}
 

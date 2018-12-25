@@ -12,7 +12,7 @@
 struct PlatformTime
 {
 	static FORCEINLINE uint32 Cycles() {
-		return Cycles64();
+		return (uint32)Cycles64();
 	}
 	static FORCEINLINE uint64 Cycles64() {
 		return floor<std::chrono::microseconds>(DateTime::Now().GetTime().time_since_epoch()).count();

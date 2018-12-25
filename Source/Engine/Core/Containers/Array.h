@@ -151,7 +151,7 @@ public:
 
 	void Empty() { vector.empty(); }
 
-	FORCEINLINE int32 Size() const { return vector.size(); }
+	FORCEINLINE int32 Size() const { return (int32)vector.size(); }
 
 	FORCEINLINE bool IsValidIndex(int32 Index) const
 	{
