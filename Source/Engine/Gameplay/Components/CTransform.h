@@ -11,8 +11,8 @@ class CTransform : public Component {
 
 public:
 
-	PROP(Name, name, Transient | SaveGame)
-	Name name;
+	// #TODO: Implement Vector3 & Quaternion types
 
-	EntityId parent;
+	// In the future hierarchy will be implemented. Similar to unity in this sense. Entities will contain entities
+	//EntityId parent;
 };

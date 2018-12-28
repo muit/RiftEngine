@@ -291,7 +291,6 @@ public:
 	 */
 	uint32 GetHour() const
 	{
-		// #TODO: Ensure this works
 		return (floor<std::chrono::hours>(time) - floor<days>(time)).count();
 	}
 
@@ -408,7 +407,7 @@ public:
 	 * Returns the RFC 1123 string representation of the FDateTime.
 	 *
 	 * The resulting string assumes that the FDateTime is in UTC.
-	 * 
+	 *
 	 * @return String representation.
 	 * @see ParseHttpDate, ToIso8601, ToString
 	 */
@@ -418,7 +417,7 @@ public:
 	 * Returns the ISO-8601 string representation of the FDateTime.
 	 *
 	 * The resulting string assumes that the FDateTime is in UTC.
-	 * 
+	 *
 	 * @return String representation.
 	 * @see ParseIso8601, ToHttpDate, ToString
 	 */
@@ -575,7 +574,7 @@ public:
 
 	/**
 	 * Parses a date string in ISO-8601 format.
-	 * 
+	 *
 	 * @param DateTimeString The string to be parsed
 	 * @param OutDateTime FDateTime object (in UTC) corresponding to the input string (which may have been in any timezone).
 	 * @return true if the string was converted successfully, false otherwise.

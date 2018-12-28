@@ -44,9 +44,9 @@ public:
 	template<typename T>
 	void Serialize(const char* name, GlobalPtr<T>& val) {
 		BeginObject(name);
+		// Not yet supported. Hard and soft references need to take care of each other while serializing
 		/*if (IsLoading())
 		{
-			// #TODO: Create Object
 			val->Serialize(*this);
 		}
 

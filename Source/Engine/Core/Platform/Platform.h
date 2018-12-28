@@ -5,9 +5,6 @@
 
 #include "GenericPlatform.h"
 
-// #TODO: Remove me when TCHAR is no longer defined by windows
-//#include <wtypes.h>
-
 #if PLATFORM_WINDOWS
 	#include "Windows/WindowsPlatform.h"
 #else
