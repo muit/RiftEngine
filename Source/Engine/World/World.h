@@ -36,6 +36,7 @@ public:
 	}
 
 	void Render() {
+		ZoneScopedNC("World", 0x94d145);
 		systemManager->Render();
 	}
 

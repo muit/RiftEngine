@@ -104,25 +104,31 @@ void Renderer::PreTick()
 void Renderer::Render()
 {
 	{
-		ZoneScopedN("Render Tick");
+		ZoneScopedNC("Render", 0x94d145);
 		ImGui::Render();
 		SDL_GL_MakeCurrent(window, gl_context);
 
-		GetWorld()->Render();
 
 		ImGuiIO& io = ImGui::GetIO();
-		glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+		//glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
 		glClearColor(0.7f, 0.4f, 0.4f, 1);
-		glClear(GL_COLOR_BUFFER_BIT);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
 
+		// World Render
+		GetWorld()->Render();
 
-		// Present
-		// Update and Render additional Platform Windows
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		{
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
+		{ // UI Render
+			ZoneScopedNC("UI", 0x94d145);
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+			// Update and Render additional Platform Windows
+			if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+			{
+				ImGui::UpdatePlatformWindows();
+				ImGui::RenderPlatformWindowsDefault();
+			}
 		}
 	}
 	{

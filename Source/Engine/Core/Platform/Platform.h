@@ -11,6 +11,8 @@
 	#error Unknown platform
 #endif
 
+#include <GL/gl3w.h>
+
 
 //------------------------------------------------------------------
 // Transfer the platform types to global types
