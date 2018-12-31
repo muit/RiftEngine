@@ -20,15 +20,15 @@ protected:
 public:
 
 	/**
-		* @returns true if this can never be pointed towards an asset
-		*/
+	 * @returns true if this can never be pointed towards an asset
+	 */
 	const bool IsNull() const {
 		return id.IsNone();
 	}
 
 	/**
-		* @returns true if this can never be pointed towards an asset
-		*/
+	 * @returns true if this can never be pointed towards an asset
+	 */
 	const bool IsValid() const {
 		return false; // #TODO: Implement Is asset valid
 	}

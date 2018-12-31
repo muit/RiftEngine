@@ -8,7 +8,9 @@
 
 class Model : public AssetData
 {
+	CLASS(Model, AssetData)
+
 public:
 
-    virtual bool Construct(const AssetInfo& info) override;
+    virtual bool PostLoad(const AssetInfo& info) override;
 };

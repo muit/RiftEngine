@@ -11,15 +11,13 @@ class AssetData : public Object
 {
 	CLASS(AssetData, Object)
 
-protected:
+public:
 
 	AssetData() {}
-
-public:
 
 	//Called when loading the asset
 	AssetData(const AssetInfo& info) {}
 
-	virtual bool Construct(const AssetInfo& info)
+	virtual bool PostLoad(const AssetInfo& info)
 	{ return true; }
 };

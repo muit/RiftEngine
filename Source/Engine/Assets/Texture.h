@@ -10,10 +10,7 @@ class Texture : public AssetData
 {
 	CLASS(Texture, AssetData)
 
-protected:
-
 public:
 
-	virtual bool Construct(const AssetInfo& info) override;
-
+	virtual bool PostLoad(const AssetInfo& info) override;
 };

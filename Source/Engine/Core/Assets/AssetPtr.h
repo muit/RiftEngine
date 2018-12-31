@@ -6,7 +6,6 @@
 
 #include <EASTL/type_traits.h>
 
-#include "AssetManager.h"
 #include "AssetInfo.h"
 #include "AssetData.h"
 
@@ -47,7 +46,7 @@ public:
 			return nullptr;
 
 		if(!IsValid())
-			cachedAsset = AssetManager::Get().TryLoad<T>(director, *this);
+			cachedAsset = AssetManager::Get().TryLoad<T>(*this);
 
 		return cachedAsset;
 	}

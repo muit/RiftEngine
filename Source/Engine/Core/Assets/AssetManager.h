@@ -18,8 +18,8 @@ private:
 	eastl::unordered_map<Name, GlobalPtr<AssetData>> loadedAssets;
 
 
-	void Internal_StaticLoad(const AssetInfo& asset);
-	void Internal_StaticLoad(const TArray<AssetInfo>& assets);
+	void __StaticLoad(const AssetInfo& asset);
+	void __StaticLoad(const TArray<AssetInfo>& assets);
 
 public:
 
@@ -45,13 +45,14 @@ public:
 		return nullptr;
 	}
 
-	inline const Ptr<AssetData>& GetAssetById(AssetInfo id) {
+	inline const GlobalPtr<AssetData>& GetLoadedAsset(const AssetInfo& id) {
 		return loadedAssets[id.GetPath()];
 	}
+
 	template<class T>
-	inline Ptr<T> GetAssetById(AssetInfo id) {
-		static_assert(is_base_of<AssetData, T>::value, "Template must inherit from AssetData");
-		return static_pointer_cast<T>(loadedAssets[id]);
+	inline Ptr<T> GetLoadedAsset(const TAssetPtr<T>& id) {
+		static_assert(eastl::is_base_of<AssetData, T>::value, "Template must inherit from AssetData");
+		return GetLoadedAsset(id).Cast<T>();
 	}
 
 
