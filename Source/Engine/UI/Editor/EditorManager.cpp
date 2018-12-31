@@ -19,7 +19,7 @@ void EditorManager::Tick(float deltaTime)
 	sceneEntities->OnTick();
 	details->OnTick();
 	memory->OnTick();
-
+	assetBrowser->OnTick();
 }
 
 void EditorManager::TickDocking()
@@ -95,6 +95,7 @@ void EditorManager::TickMainNavBar()
 			if (ImGui::MenuItem("Entities", (const char*)0, sceneEntities->IsOpenedPtr())) {}
 			if (ImGui::MenuItem("Details", (const char*)0, details->IsOpenedPtr())) {}
 			if (ImGui::MenuItem("Memory", (const char*)0, memory->IsOpenedPtr())) {}
+			if (ImGui::MenuItem("Asset Browser", (const char*)0, assetBrowser->IsOpenedPtr())) {}
 			ImGui::EndMenu();
 		}
 

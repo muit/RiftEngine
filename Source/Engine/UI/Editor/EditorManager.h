@@ -13,6 +13,7 @@
 #include "Windows/SceneEntities.h"
 #include "Windows/Details.h"
 #include "Windows/MemoryDebugger.h"
+#include "Windows/AssetBrowser.h"
 
 
 class EditorManager : public Object {
@@ -24,6 +25,7 @@ class EditorManager : public Object {
 	GlobalPtr<SceneEntities> sceneEntities;
 	GlobalPtr<Details> details;
 	GlobalPtr<MemoryDebugger> memory;
+	GlobalPtr<AssetBrowser> assetBrowser;
 
 
 	bool showDemoWindow = true;
@@ -39,6 +41,7 @@ public:
 		details->SetObject(GetWorld()->GetScene());
 
 		memory = Widget::CreateStandalone<MemoryDebugger>();
+		assetBrowser = Widget::CreateStandalone<AssetBrowser>();
 	}
 
 	void Tick(float deltaTime);

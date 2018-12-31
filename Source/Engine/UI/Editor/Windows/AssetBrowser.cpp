@@ -12,6 +12,8 @@ void AssetBrowser::Build()
 	bOpen = true;
 	windowName = TX("Asset Browser");
 	windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize;
+
+	FileSystem::LoadJsonFile("entity.json", testFile);
 }
 
 void AssetBrowser::Tick()
@@ -20,7 +22,8 @@ void AssetBrowser::Tick()
 	{
 		BeginWindow();
 		{
-			ImGui::Text("Content path: %s", FileSystem::GetContentPath().c_str());
+			ImGui::Text("Content path: %s", FileSystem::GetAssetsPath().c_str());
+			ImGui::Text("Test Value: %s", testFile.dump().c_str());
 		}
 		EndWindow();
 	}

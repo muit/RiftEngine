@@ -10,6 +10,8 @@
 class AssetBrowser : public EditorWindow {
 	CLASS(AssetBrowser, EditorWindow)
 
+	json testFile;
+
 protected:
 
 	virtual void Build() override;
