@@ -10,7 +10,7 @@ class Object;
 class World;
 
 
-template<typename ObjectType>
+template<class ObjectType>
 static GlobalPtr<ObjectType> Create(Class* objectClass, const Ptr<Object> owner = {}) {
 	static_assert(eastl::is_convertible< ObjectType, Object >::value, "Type is not an Object!");
 
@@ -21,7 +21,7 @@ static GlobalPtr<ObjectType> Create(Class* objectClass, const Ptr<Object> owner 
 	return {};
 }
 
-template<typename ObjectType>
+template<class ObjectType>
 static GlobalPtr<ObjectType> Create(const Ptr<BaseObject> owner = {}) {
 	static_assert(eastl::is_convertible< ObjectType, Object >::value, "Type is not an Object!");
 

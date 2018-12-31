@@ -4,7 +4,7 @@
 #include "Core/Assets/AssetInfo.h"
 
 
-bool Texture::PostLoad(const AssetInfo &info)
+bool Texture::PostLoad()
 {
 	return false;
 }

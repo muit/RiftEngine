@@ -28,19 +28,25 @@ public:
 	void Shutdown() {}*/
 
 	template<class T>
-	Ptr<T> TryLoad(const AssetInfo& info) {
+	Ptr<T> Load(const AssetInfo& info) {
 		static_assert(eastl::is_base_of<AssetData, T>::value, "AssetPtr type must inherit from AssetData");
 
-		if (info.IsNull() || info.GetPath().empty())
+		if (info.IsNull())
 			return nullptr;
 
-		GlobalPtr<T> newAsset = Create<T>(info);
-		if (newAsset->Construct(info))
+		json data;
+		if (FileSystem::LoadJsonFile(info.GetPath().ToString(), info))
 		{
-			const Ptr<T> newAssetptr = newAsset;
-			// Loading succeeded, registry the asset
-			loadedAssets[info.GetId()] = eastl::move(newAsset);
-			return eastl::move(newAssetPtr);
+			GlobalPtr<T> newAsset = Create<T>(info);
+
+			if (newAsset->__Load(info, data))
+			{
+				const Ptr<T> newAssetptr = newAsset;
+
+				// Loading succeeded, registry the asset
+				loadedAssets[info.GetId()] = eastl::move(newAsset);
+				return eastl::move(newAssetPtr);
+			}
 		}
 		return nullptr;
 	}

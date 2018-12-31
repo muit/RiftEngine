@@ -33,5 +33,5 @@ public:
 		return false; // #TODO: Implement Is asset valid
 	}
 
-	inline const Name GetPath() const { return id; }
+	inline const Name& GetPath() const { return id; }
 };

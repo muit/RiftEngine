@@ -12,5 +12,5 @@ class Texture : public AssetData
 
 public:
 
-	virtual bool PostLoad(const AssetInfo& info) override;
+	virtual bool PostLoad() override;
 };

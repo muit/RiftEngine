@@ -6,7 +6,7 @@
 
 
 
-bool Model::PostLoad(const AssetInfo &info)
+bool Model::PostLoad()
 {
 	return false;
 }

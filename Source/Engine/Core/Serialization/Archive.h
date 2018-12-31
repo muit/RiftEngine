@@ -123,6 +123,11 @@ class JsonArchive : public Archive {
 public:
 
 	JsonArchive() : Archive(), baseData{}, depthData{} {}
+	JsonArchive(const json& data, bool bReads = false)
+		: Archive(bReads)
+		, baseData{ data }
+		, depthData{}
+	{}
 	virtual ~JsonArchive() = default;
 
 	String GetDataString() { return baseData.dump(); }

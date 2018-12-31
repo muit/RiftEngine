@@ -3,21 +3,27 @@
 #pragma once
 
 #include "CoreObject.h"
+#include "AssetInfo.h"
 
-
-class AssetInfo;
 
 class AssetData : public Object
 {
 	CLASS(AssetData, Object)
 
+	AssetInfo info;
+
 public:
 
-	AssetData() {}
+	AssetData() : Super() {}
 
-	//Called when loading the asset
-	AssetData(const AssetInfo& info) {}
+	/** Deserializes the asset. Internal usage only */
+	bool __Load(const AssetInfo& inInfo, json& data);
 
-	virtual bool PostLoad(const AssetInfo& info)
+	/** Deserializes the asset. Internal usage only */
+	bool Save();
+
+protected:
+
+	virtual bool PostLoad()
 	{ return true; }
 };

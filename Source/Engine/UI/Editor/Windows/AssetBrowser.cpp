@@ -13,7 +13,12 @@ void AssetBrowser::Build()
 	windowName = TX("Asset Browser");
 	windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize;
 
+
 	FileSystem::LoadJsonFile("entity.json", testFile);
+
+	testFile["foo"] = "bar";
+
+	FileSystem::SaveJsonFile("entity.json", testFile);
 }
 
 void AssetBrowser::Tick()

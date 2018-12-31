@@ -26,19 +26,26 @@ bool FileSystem::LoadJsonFile(const String& inPath, json& result)
 {
 	fs::path path { inPath.begin(), inPath.end() };
 
-	if (!path.has_filename())
-		return false;
-
-	if (path.is_relative())
-		path = GetAssetsAsPath() / path;
-
-	if (!fs::exists(path))
+	if (!SanitizeAssetPath(path) || !fs::exists(path))
 		return false;
 
 	std::ifstream file(path);
 
 	result = {};
 	result << file;
+	return true;
+}
+
+bool FileSystem::SaveJsonFile(const String& inPath, const json& data)
+{
+	fs::path path{ inPath.begin(), inPath.end() };
+
+	if (!SanitizeAssetPath(path) || !fs::exists(path))
+		return false;
+
+	std::ofstream file(path);
+	file << data;
+
 	return true;
 }
 
