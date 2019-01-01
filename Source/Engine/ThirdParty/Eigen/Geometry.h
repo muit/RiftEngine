@@ -8,12 +8,12 @@
 #ifndef EIGEN_GEOMETRY_MODULE_H
 #define EIGEN_GEOMETRY_MODULE_H
 
-#include "Core"
+#include "Core.h"
 
 #include "src/Core/util/DisableStupidWarnings.h"
 
-#include "SVD"
-#include "LU"
+#include "SVD.h"
+#include "LU.h"
 #include <limits>
 
 /** \defgroup Geometry_Module Geometry module

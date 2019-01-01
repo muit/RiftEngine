@@ -19,6 +19,12 @@ eastl::shared_ptr<PropertyHandle> HandleHelper::CreatePropertyHandle(const Ptr<B
 		else if (const auto* propString = dynamic_cast<const TProperty<String>*>(property)) {
 			return CreatePropertyHandle(instance, propString);
 		}
+		else if (const auto* propV2 = dynamic_cast<const TProperty<v2>*>(property)) {
+			return CreatePropertyHandle(instance, propV2);
+		}
+		else if (const auto* propV3 = dynamic_cast<const TProperty<v3>*>(property)) {
+			return CreatePropertyHandle(instance, propV3);
+		}
 	}
 	return {};
 }

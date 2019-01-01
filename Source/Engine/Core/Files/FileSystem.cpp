@@ -40,7 +40,7 @@ bool FileSystem::SaveJsonFile(const String& inPath, const json& data)
 {
 	fs::path path{ inPath.begin(), inPath.end() };
 
-	if (!SanitizeAssetPath(path) || !fs::exists(path))
+	if (!SanitizeAssetPath(path))
 		return false;
 
 	std::ofstream file(path);

@@ -15,11 +15,15 @@ void AssetBrowser::Build()
 	windowName = TX("Asset Browser");
 	windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize;
 
-	tex.Load();
+	//tex.Load();
 
-	tex->SetName(TX("MyTexture"));
+	//tex->SetName(TX("MyTexture"));
+	//tex->Save();
 
-	tex->Save();
+	auto otherTex = Create<Texture>();
+	otherTex->SetName(TX("MyTexture"));
+	otherTex->myVector = v3{ 3.f, 4.f, 5.f };
+	otherTex->SaveToPath("myOtherTextore.json");
 }
 
 void AssetBrowser::Tick()

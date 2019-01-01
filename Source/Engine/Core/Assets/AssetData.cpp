@@ -16,6 +16,12 @@ bool AssetData::__Load(const AssetInfo& inInfo, json& data)
 	return PostLoad();
 }
 
+bool AssetData::SaveToPath(Name path)
+{
+	info = { path };
+	return Save();
+}
+
 bool AssetData::Save()
 {
 	if (info.GetPath().IsNone())

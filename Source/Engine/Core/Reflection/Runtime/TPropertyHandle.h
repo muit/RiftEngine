@@ -76,8 +76,8 @@ public:
 		return false;
 	}
 
-	bool HasTag(Name tag) const {
-		return prop? prop->HasTag(std::move(tag)) : false;
+	bool HasTag(ReflectionTags tag) const {
+		return prop? prop->HasTag(tag) : false;
 	}
 
 	virtual bool IsValid() const override { return instance && prop != nullptr; }

@@ -4,6 +4,7 @@
 #include "CoreObject.h"
 #include "Core/Strings/String.h"
 #include "Core/Strings/Name.h"
+#include "Core/Misc/Vector.h"
 
 
 class Scene : public Object {
@@ -11,17 +12,20 @@ class Scene : public Object {
 
 public:
 
-	PROP(String, displayName)
+	PROP(String, displayName, DetailsEdit)
 	String displayName;
 
-	PROP(Name, someName)
+	PROP(Name, someName, DetailsEdit)
 	Name someName;
 
-	PROP(int32, aNumber)
+	PROP(int32, aNumber, DetailsEdit)
 	int32 aNumber;
 
-	PROP(uint8, anotherNumber, Transient)
+	PROP(uint8, anotherNumber, DetailsEdit | Transient)
 	uint8 anotherNumber;
+
+	PROP(v3, myVector, DetailsEdit)
+	v3 myVector;
 
 	void Tick(float /*deltaTime*/) {
 	}

@@ -41,7 +41,10 @@ public:
 	virtual ~Property() = default;
 
 	String GetName() const { return name.ToString(); }
-	bool HasTag(ReflectionTags tag) const { return (tags | tag) > 0; }
+
+	bool HasTag(ReflectionTags tag)      const { return HasAnyTags(tag); }
+	bool HasAllTags(ReflectionTags inTags) const { return (tags & inTags) == inTags; }
+	bool HasAnyTags(ReflectionTags inTags) const { return (tags & inTags) > 0; }
 
 	BaseType* GetType() const { return typePtr; }
 	Name GetTypeName() const { return typeName; }

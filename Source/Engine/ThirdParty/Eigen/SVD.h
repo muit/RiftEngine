@@ -8,9 +8,9 @@
 #ifndef EIGEN_SVD_MODULE_H
 #define EIGEN_SVD_MODULE_H
 
-#include "QR"
-#include "Householder"
-#include "Jacobi"
+#include "QR.h"
+#include "Householder.h"
+#include "Jacobi.h"
 
 #include "src/Core/util/DisableStupidWarnings.h"
 

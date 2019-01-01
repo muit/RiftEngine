@@ -8,13 +8,13 @@
 #ifndef EIGEN_QR_MODULE_H
 #define EIGEN_QR_MODULE_H
 
-#include "Core"
+#include "Core.h"
 
 #include "src/Core/util/DisableStupidWarnings.h"
 
-#include "Cholesky"
-#include "Jacobi"
-#include "Householder"
+#include "Cholesky.h"
+#include "Jacobi.h"
+#include "Householder.h"
 
 /** \defgroup QR_Module QR module
   *

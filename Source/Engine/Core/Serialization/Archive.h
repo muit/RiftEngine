@@ -11,7 +11,22 @@
 #include "MemoryWriter.h"
 #include <fstream>
 
+
 using json = nlohmann::json;
+
+
+template <typename T>
+class HasGlobalSerialize
+{
+	typedef char a;
+	typedef long b;
+
+	template <typename C> static a test(decltype(&Serialize(eastl::declval<Archive&>(), eastl::declval<const char *>(), eastl::declval<C&>())));
+	template <typename C> static b test(...);
+
+public:
+	enum { value = sizeof(test<T>(0)) == sizeof(char) };
+};
 
 
 class Archive {
@@ -40,6 +55,9 @@ public:
 	virtual void Serialize(const char* name, float& val) = 0;
 
 	virtual void Serialize(const char* name, String& val) = 0;
+
+	void Serialize(const char* name, v2& val);
+	void Serialize(const char* name, v3& val);
 
 	template<typename T>
 	void Serialize(const char* name, GlobalPtr<T>& val) {
@@ -100,14 +118,16 @@ private:
 	 * Selection of Serialize call.
 	 */
 	template<class T>
-	FORCEINLINE typename eastl::enable_if_t<!ClassTraits<T>::HasCustomSerialize, bool> CustomSerializeOrNot(Archive& ar, const char* name, T& val)
+	FORCEINLINE typename eastl::enable_if_t<!ClassTraits<T>::HasCustomSerialize, bool>
+		CustomSerializeOrNot(Archive& ar, const char* name, T& val)
 	{
 		ar.Serialize(name, val);
 		return true;
 	}
 
 	template<class T>
-	FORCEINLINE typename eastl::enable_if_t<ClassTraits<T>::HasCustomSerialize, bool> CustomSerializeOrNot(Archive& ar, const char* name, T& val)
+	FORCEINLINE typename eastl::enable_if_t<ClassTraits<T>::HasCustomSerialize, bool>
+		CustomSerializeOrNot(Archive& ar, const char* name, T& val)
 	{
 		return val.Serialize(ar, name);
 	}

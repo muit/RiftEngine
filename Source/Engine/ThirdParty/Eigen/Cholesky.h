@@ -8,8 +8,8 @@
 #ifndef EIGEN_CHOLESKY_MODULE_H
 #define EIGEN_CHOLESKY_MODULE_H
 
-#include "Core"
-#include "Jacobi"
+#include "Core.h"
+#include "Jacobi.h"
 
 #include "src/Core/util/DisableStupidWarnings.h"
 

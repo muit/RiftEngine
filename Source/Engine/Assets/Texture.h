@@ -12,5 +12,9 @@ class Texture : public AssetData
 
 public:
 
+	PROP(v3, myVector, DetailsEdit)
+	v3 myVector;
+
+
 	virtual bool PostLoad() override;
 };

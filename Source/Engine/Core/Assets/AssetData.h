@@ -19,7 +19,9 @@ public:
 	/** Deserializes the asset. Internal usage only */
 	bool __Load(const AssetInfo& inInfo, json& data);
 
-	/** Deserializes the asset. Internal usage only */
+
+	bool SaveToPath(Name path);
+
 	bool Save();
 
 protected:

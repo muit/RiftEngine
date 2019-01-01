@@ -10,12 +10,15 @@
 #include "Properties/FloatPropertyWidget.h"
 #include "Properties/NamePropertyWidget.h"
 #include "Properties/StringPropertyWidget.h"
+#include "Properties/V3PropertyWidget.h"
+#include "Properties/V2PropertyWidget.h"
 
 
 GlobalPtr<PropertyWidget> PropertyWidget::NewPropertyWidget(const eastl::shared_ptr<PropertyHandle>& prop)
 {
 	if (prop)
 	{
+		// Ordered by estimated usage
 		// #TODO: Switch to native pointers
 		if (auto propFloat = eastl::dynamic_pointer_cast<TPropertyHandle<float>>(prop)) {
 			return New<FloatPropertyWidget>(propFloat);
@@ -31,6 +34,12 @@ GlobalPtr<PropertyWidget> PropertyWidget::NewPropertyWidget(const eastl::shared_
 		}
 		else if (auto propString = eastl::dynamic_pointer_cast<TPropertyHandle<String>>(prop)) {
 			return New<StringPropertyWidget>(propString);
+		}
+		else if (auto propV3 = eastl::dynamic_pointer_cast<TPropertyHandle<v3>>(prop)) {
+			return New<V3PropertyWidget>(propV3);
+		}
+		else if (auto propV2 = eastl::dynamic_pointer_cast<TPropertyHandle<v2>>(prop)) {
+			return New<V2PropertyWidget>(propV2);
 		}
 	}
 	return {};
