@@ -65,6 +65,8 @@ public:
 
 	Class* GetClass() const { return ownClass; }
 
+
+	void SetName(Name newName) { name = eastl::move(newName); }
 	Name GetName() { return name; }
 
 	virtual Ptr<World> GetWorld() const;

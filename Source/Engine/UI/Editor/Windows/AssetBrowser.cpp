@@ -6,6 +6,8 @@
 
 #if WITH_EDITOR
 
+const TAssetPtr<Texture> AssetBrowser::tex {"myTexture.json"};
+
 void AssetBrowser::Build()
 {
 	Super::Build();
@@ -13,12 +15,11 @@ void AssetBrowser::Build()
 	windowName = TX("Asset Browser");
 	windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize;
 
+	tex.Load();
 
-	FileSystem::LoadJsonFile("entity.json", testFile);
+	tex->SetName(TX("MyTexture"));
 
-	testFile["foo"] = "bar";
-
-	FileSystem::SaveJsonFile("entity.json", testFile);
+	tex->Save();
 }
 
 void AssetBrowser::Tick()
@@ -28,7 +29,10 @@ void AssetBrowser::Tick()
 		BeginWindow();
 		{
 			ImGui::Text("Content path: %s", FileSystem::GetAssetsPath().c_str());
-			ImGui::Text("Test Value: %s", testFile.dump().c_str());
+			if(tex.IsValid())
+				ImGui::Text("Test Value: %s", tex->GetName().ToString().c_str());
+			else
+				ImGui::Text("Test Value: Not loaded");
 		}
 		EndWindow();
 	}

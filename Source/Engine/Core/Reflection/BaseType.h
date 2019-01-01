@@ -28,7 +28,8 @@ public:
 	BaseType& operator=(const BaseType&) = delete;
 	virtual ~BaseType() {}
 
-	Name GetName() const { return name; }
+	const Name& GetName() const { return name; }
+	Name& GetNameRef() { return name; }
 
 	const Property* FindProperty(const Name& propertyName) const;
 

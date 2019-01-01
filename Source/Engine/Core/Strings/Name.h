@@ -70,7 +70,7 @@ public:
 	String ToString() const {
 		if (IsNone())
 		{
-			return TX("None");
+			return TX("");
 		}
 		return *id;
 	}

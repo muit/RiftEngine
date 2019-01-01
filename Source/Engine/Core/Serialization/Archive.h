@@ -16,12 +16,12 @@ using json = nlohmann::json;
 
 class Archive {
 
-	const bool bReads = false;
+	const bool bLoads = false;
 
 public:
 
-	Archive() : bReads(false) {}
-	Archive(bool bReads) : bReads(bReads) {}
+	Archive() : bLoads(false) {}
+	Archive(bool bLoads) : bLoads(bLoads) {}
 	virtual ~Archive() = default;
 
 
@@ -92,8 +92,8 @@ public:
 	virtual void BeginObject(const char* name) = 0;
 	virtual void EndObject() = 0;
 
-	FORCEINLINE bool IsLoading() { return bReads; }
-	FORCEINLINE bool IsSaving() { return !bReads; }
+	FORCEINLINE bool IsLoading() { return bLoads; }
+	FORCEINLINE bool IsSaving() { return !bLoads; }
 
 private:
 	/**
@@ -122,15 +122,24 @@ class JsonArchive : public Archive {
 
 public:
 
-	JsonArchive() : Archive(), baseData{}, depthData{} {}
-	JsonArchive(const json& data, bool bReads = false)
-		: Archive(bReads)
-		, baseData{ data }
+	//Save Constructor
+	JsonArchive()
+		: Archive(false)
+		, baseData()
 		, depthData{}
 	{}
+
+	// Load constructor
+	JsonArchive(const json& data)
+		: Archive(true)
+		, baseData(data)
+		, depthData{}
+	{}
+
 	virtual ~JsonArchive() = default;
 
-	String GetDataString() { return baseData.dump(); }
+	String GetDataString() const { return baseData.dump(); }
+	const json& GetData() const { return baseData; }
 
 private:
 
@@ -173,7 +182,11 @@ private:
 
 	virtual void Serialize(const char* name, String& val) override {
 		if (IsLoading())
-			val = Data()[name].get<String>();
+		{
+			const auto field = Data()[name];
+			if(field.is_string())
+				val = field.get<String>();
+		}
 		else
 			Data()[name] = val;
 	}

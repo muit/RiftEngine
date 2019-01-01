@@ -6,11 +6,16 @@
 
 #include "UI/Editor/EditorWindow.h"
 
+#include "Core/Assets/AssetPtr.h"
+#include "Assets/Texture.h"
+
 
 class AssetBrowser : public EditorWindow {
 	CLASS(AssetBrowser, EditorWindow)
 
+	static const TAssetPtr<Texture> tex;
 	json testFile;
+
 
 protected:
 

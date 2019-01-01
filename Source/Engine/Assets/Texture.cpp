@@ -6,5 +6,5 @@
 
 bool Texture::PostLoad()
 {
-	return false;
+	return true;
 }

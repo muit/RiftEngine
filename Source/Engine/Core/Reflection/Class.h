@@ -36,6 +36,20 @@ public:
 		}
 	}
 
+	Class* FindChildClass(const Name& className) const {
+		if (className.IsNone())
+			return nullptr;
+
+		for (auto* child : children)
+		{
+			if (child->GetName() == className)
+				return child;
+			else if (Class* found = child->FindChildClass(className))
+				return found;
+		}
+		return nullptr;
+	}
+
 public:
 
 	/** GENERATION */

@@ -26,12 +26,5 @@ public:
 		return id.IsNone();
 	}
 
-	/**
-	 * @returns true if this can never be pointed towards an asset
-	 */
-	const bool IsValid() const {
-		return false; // #TODO: Implement Is asset valid
-	}
-
 	inline const Name& GetPath() const { return id; }
 };

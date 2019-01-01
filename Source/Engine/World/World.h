@@ -5,26 +5,33 @@
 #include "Scene.h"
 #include "ECS/EntityManager.h"
 #include "ECS/SystemManager.h"
+#include "Core/Assets/AssetManager.h"
 
 
 class World : public Object {
 	CLASS(World, Object)
+
+
+	GlobalPtr<AssetManager> assetManager;
 
 	GlobalPtr<Scene> scene;
 
 	GlobalPtr<EntityManager> entityManager;
 	GlobalPtr<SystemManager> systemManager;
 
+
 public:
 
 	void Start() {
+		assetManager = Create<AssetManager>(GetSelf());
+
 		scene = Create<Scene>(GetSelf());
 		entityManager = Create<EntityManager>(GetSelf());
 		systemManager = Create<SystemManager>(GetSelf());
 
 		systemManager->BeginPlay();
 
-		// Test entity
+		// Test entities
 		entityManager->CreateEntity(TX("MyEntity"));
 		entityManager->CreateEntity(TX("MyOtherEntity"));
 	}
@@ -44,9 +51,9 @@ public:
 		systemManager->EndPlay();
 	}
 
-	Ptr<Scene> GetScene() { return scene; }
 
-
-	Ptr<SystemManager> GetSystemManager() { return systemManager; }
-	Ptr<EntityManager> GetEntityManager() { return entityManager; }
+	Ptr<Scene> GetScene() const { return scene; }
+	Ptr<AssetManager> GetAssetManager()   const { return assetManager; }
+	Ptr<SystemManager> GetSystemManager() const { return systemManager; }
+	Ptr<EntityManager> GetEntityManager() const { return entityManager; }
 };

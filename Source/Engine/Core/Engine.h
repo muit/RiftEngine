@@ -31,6 +31,7 @@ public:
 	virtual Ptr<World> GetWorld() const override { return world; }
 	/** End Object interface */
 
+private:
 
 	bool Start() {
 		// Setup SDL
@@ -43,7 +44,6 @@ public:
 
 		GetSelf();
 		world = Create<World>(GetSelf());
-
 		world->Start();
 
 		ui = Create<UIManager>(GetSelf());
@@ -86,6 +86,9 @@ public:
 		SDL_Quit();
 	}
 
+
+	/** STATIC */
+public:
 
 	static void StartEngine()
 	{

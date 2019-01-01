@@ -8,6 +8,7 @@
 
 #include "AssetInfo.h"
 #include "AssetData.h"
+#include "AssetManager.h"
 
 
 template<class T>
@@ -34,19 +35,20 @@ public:
 		* @returns true if this asset is loaded
 		*/
 	const bool IsValid() const {
-		return Get() != nullptr;
+		return Get().IsValid();
 	}
 
 	/**
 		* Tries to load this asset if it's not already
 		* @returns the loaded asset
 		*/
-	const Ptr<T> Load() const {
+	const Ptr<T>& Load() const {
 		if(IsNull())
-			return nullptr;
+			return cachedAsset; // Cached asset should always be invalid here
 
-		if(!IsValid())
-			cachedAsset = AssetManager::Get().TryLoad<T>(*this);
+		auto manager = AssetManager::Get();
+		if(manager && !IsValid())
+			cachedAsset = manager->Load(*this).Cast<T>();
 
 		return cachedAsset;
 	}
@@ -54,13 +56,19 @@ public:
 	/**
 	 * @returns the asset if it's valid and loaded
 	 */
-	Ptr<T> Get() const {
+	const Ptr<T>& Get() const {
 		if(IsNull())
-			return nullptr;
+			return cachedAsset; // Cached asset should always be invalid here
 
-		if(!cachedAsset)
-			cachedAsset = AssetManager::Get().GetAssetById<T>(id);
+		auto manager = AssetManager::Get();
+		if(manager && !cachedAsset)
+			cachedAsset = manager->GetLoadedAsset(id).Cast<T>();
 
 		return cachedAsset;
 	}
+
+
+	operator bool() const { return IsValid(); };
+	Ptr<T> operator*()  const { return Get(); }
+	Ptr<T> operator->() const { return Get(); }
 };

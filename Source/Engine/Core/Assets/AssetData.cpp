@@ -10,7 +10,7 @@ bool AssetData::__Load(const AssetInfo& inInfo, json& data)
 	info = inInfo;
 
 	// Deserialize asset
-	JsonArchive ar(data, true);
+	JsonArchive ar(data);
 	Serialize(ar);
 
 	return PostLoad();
@@ -21,9 +21,9 @@ bool AssetData::Save()
 	if (info.GetPath().IsNone())
 		return false;
 
-	json data;
-	JsonArchive ar(data, false);
+	JsonArchive ar {};
+	ar("asset_type", GetClass()->GetNameRef());
 	Serialize(ar);
 
-	return FileSystem::SaveJsonFile(info.GetPath().ToString(), data);
+	return FileSystem::SaveJsonFile(info.GetPath().ToString(), ar.GetData());
 }

@@ -2,4 +2,51 @@
 
 #include "AssetManager.h"
 
-const GlobalPtr<AssetManager> AssetManager::globalManager { Create<AssetManager>() };
+#include "Core/Files/FileSystem.h"
+#include "Core/Object/ObjectPtr.h"
+#include "World/World.h"
+#include "Core/Engine.h"
+
+
+Ptr<AssetData> AssetManager::Load(const AssetInfo& info)
+{
+	if (info.IsNull())
+		return {};
+
+	json data;
+	if (FileSystem::LoadJsonFile(info.GetPath().ToString(), data))
+	{
+		const auto type{ data["asset_type"] };
+		if (!type.is_string())
+			return {}; // Asset doesn't have a type
+
+		// Get asset type from json
+		Class* assetClass = AssetData::StaticClass()->FindChildClass(Name{ type });
+		if (!assetClass)
+			return {}; // Asset doesn't have a valid class
+
+		// Create asset from json type
+		GlobalPtr<AssetData> newAsset = assetClass->CreateInstance(GetSelf()).Cast<AssetData>();
+
+		if (newAsset->__Load(info, data))
+		{
+			const Ptr<AssetData> newAssetPtr = newAsset;
+
+			// Loading succeeded, registry the asset
+			loadedAssets[info.GetPath()] = eastl::move(newAsset);
+			return eastl::move(newAssetPtr);
+		}
+	}
+	return {};
+}
+
+Ptr<AssetManager> AssetManager::Get(Ptr<Object> context)
+{
+	if (!context)
+		context = GEngine;
+
+	if (Ptr<World> world = context->GetWorld()) {
+		return world->GetAssetManager();
+	}
+	return {};
+}
