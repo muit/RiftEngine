@@ -9,7 +9,7 @@
 #include "Core/Strings/String.h"
 #include "Core/Strings/Name.h"
 #include "Core/Misc/Guid.h"
-#include "Core/Misc/Vector.h"
+#include "Core/Math/Vector.h"
 
 
 #define DECLARE_REFLECTION_TYPE(Type)\

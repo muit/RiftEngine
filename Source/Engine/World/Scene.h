@@ -4,7 +4,7 @@
 #include "CoreObject.h"
 #include "Core/Strings/String.h"
 #include "Core/Strings/Name.h"
-#include "Core/Misc/Vector.h"
+#include "Core/Math/Vector.h"
 
 
 class Scene : public Object {

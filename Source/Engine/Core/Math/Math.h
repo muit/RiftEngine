@@ -8,7 +8,13 @@
 
 struct Math
 {
-	static constexpr float PI { 3.14159265358979323846f };
+	static constexpr float PI{ 3.14159265358979323846f };
+	static constexpr float SMALL_NUMBER{ 1.e-4f };
+	static constexpr float SMALLER_NUMBER{ 0.00001f };
+	static constexpr float VERY_SMALL_NUMBER{ 1.e-8f };
+	static constexpr float BIG_NUMBER{ 3.4e+38f };
+	static constexpr float EULER{ 2.71828182845904523536f };
+
 
 	template<typename Type>
 	static FORCEINLINE constexpr Type Max(Type a, Type b) { return a >= b ? a : b; }
@@ -126,5 +132,15 @@ struct Math
 	static FORCEINLINE double CeilToDouble(double d)
 	{
 		return std::ceil(d);
+	}
+
+	template<class T>
+	static FORCEINLINE T Sqrt(T val) {
+		return std::sqrt(val);
+	}
+
+	template<class T>
+	static FORCEINLINE T Square(T val) {
+		return val * val;
 	}
 };

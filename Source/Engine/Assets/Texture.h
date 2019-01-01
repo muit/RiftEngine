@@ -12,8 +12,8 @@ class Texture : public AssetData
 
 public:
 
-	PROP(v3, myVector, DetailsEdit)
-	v3 myVector;
+	PROP(String, texturePath, DetailsEdit)
+	String texturePath;
 
 
 	virtual bool PostLoad() override;

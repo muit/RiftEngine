@@ -2,7 +2,7 @@
 
 #include "String.h"
 #include "Core/Misc/Char.h"
-#include "../Math.h"
+#include "Core/Math/Math.h"
 
 void CString::ToSentenceCase(const String& str, String& result)
 {

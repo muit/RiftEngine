@@ -1,7 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "V3PropertyWidget.h"
-#include "Core/Math.h"
+#include "Core/Math/Math.h"
 #include "Core/Reflection/ReflectionTags.h"
 
 #if WITH_EDITOR

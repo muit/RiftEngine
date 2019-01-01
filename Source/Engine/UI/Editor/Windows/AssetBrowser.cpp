@@ -19,11 +19,6 @@ void AssetBrowser::Build()
 
 	//tex->SetName(TX("MyTexture"));
 	//tex->Save();
-
-	auto otherTex = Create<Texture>();
-	otherTex->SetName(TX("MyTexture"));
-	otherTex->myVector = v3{ 3.f, 4.f, 5.f };
-	otherTex->SaveToPath("myOtherTextore.json");
 }
 
 void AssetBrowser::Tick()
