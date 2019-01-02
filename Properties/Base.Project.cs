@@ -18,7 +18,7 @@ class BaseProject : Project
     {
         conf.ProjectPath = @"[project.SharpmakeCsPath]\..\..\Binaries\[project.Name]";
         
-        conf.Options.Add(Sharpmake.Options.Vc.Compiler.CppLanguageStandard.CPP14);
+        conf.Options.Add(Sharpmake.Options.Vc.Compiler.CppLanguageStandard.CPP17);
         conf.Options.Add(Sharpmake.Options.Vc.Compiler.RTTI.Enable);
         conf.Options.Add(Sharpmake.Options.Vc.Compiler.Exceptions.Enable);
 

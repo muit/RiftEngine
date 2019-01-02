@@ -18,6 +18,9 @@ NameTable::ConstIterator NameTable::Init(const String& string)
 	}
 }
 
+
+const String Name::NoneStr {""};
+
 bool Name::Serialize(Archive& ar, const char* name)
 {
 	if (ar.IsSaving())

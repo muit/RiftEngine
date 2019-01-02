@@ -24,8 +24,17 @@ public:
 
 	bool Save();
 
+
 protected:
 
-	virtual bool PostLoad()
-	{ return true; }
+	virtual bool PostLoad() { return true; }
+
+
+	/** HELPERS */
+public:
+
+	const AssetInfo& Info() const { return info; }
+
+	const Name& GetMetaPath() const { return info.GetPath(); }
+	const Name& GetRawPath() const { return info.GetPath(); }
 };

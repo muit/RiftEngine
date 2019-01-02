@@ -26,5 +26,6 @@ public:
 		return id.IsNone();
 	}
 
-	inline const Name& GetPath() const { return id; }
+	inline const Name& GetPath()    const { return id; }
+	inline const String& GetSPath() const { return id.ToString(); }
 };

@@ -4,10 +4,9 @@
 
 #include "EngineTypes.h"
 #include "Core/Serialization/Archive.h"
-#include <experimental/filesystem>
+#include <filesystem>
 
-namespace fs = std::experimental::filesystem;
-
+namespace fs = std::filesystem;
 
 class FileSystem
 {
@@ -16,10 +15,15 @@ public:
 	static bool FileExists(const String& path);
 	static bool FolderExists(const String& path);
 
-	static String GetAssetsPath();
-
 	static bool LoadJsonFile(const String& path, json& result);
 	static bool SaveJsonFile(const String& path, const json& data);
+
+	static String GetAssetsPath() {
+		const fs::path path = GetAssetsPathAsPath();
+
+		const std::string pathStr = path.string();
+		return String{ pathStr.c_str(), pathStr.size() };
+	}
 
 private:
 
@@ -29,9 +33,13 @@ private:
 
 	static inline bool SanitizeDirectoryPath(fs::path& path) {
 		if (path.is_relative())
-			path = GetAssetsAsPath() / path;
+			path = GetAssetsPathAsPath() / path;
 		return true;
 	}
 
-	static fs::path GetAssetsAsPath();
+	static fs::path GetAssetsPathAsPath();
+
+
+	static fs::path FindMetaFile(fs::path in);
+	static fs::path FindRawFile(fs::path in);
 };

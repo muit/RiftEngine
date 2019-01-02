@@ -15,13 +15,6 @@ bool FileSystem::FolderExists(const String& path)
 	return fs::exists(pathObj) && fs::is_directory(pathObj);
 }
 
-String FileSystem::GetAssetsPath()
-{
-	const fs::path path = GetAssetsAsPath();
-	const std::string pathStr = path.string();
-	return String{ pathStr.c_str(), pathStr.size() };
-}
-
 bool FileSystem::LoadJsonFile(const String& inPath, json& result)
 {
 	fs::path path { inPath.begin(), inPath.end() };
@@ -49,10 +42,21 @@ bool FileSystem::SaveJsonFile(const String& inPath, const json& data)
 	return true;
 }
 
-fs::path FileSystem::GetAssetsAsPath()
+
+fs::path FileSystem::GetAssetsPathAsPath()
 {
-	// Take two folders up. Different for distributed versions / other platforms
+	// Take two folders up. May change for distributed versions / other platforms
 	fs::path path = fs::current_path().parent_path().parent_path();
 	path /= "Assets";
 	return eastl::move(path);
+}
+
+fs::path FileSystem::FindMetaFile(fs::path in)
+{
+	return in;
+}
+
+fs::path FileSystem::FindRawFile(fs::path in)
+{
+	return in;
 }

@@ -2,6 +2,7 @@
 
 //#include <Core/Engine.h>
 
+#define GTEST_HAS_TR1_TUPLE 0
 #include <gtest/gtest.h>
 #include <Core/Engine.h>
 #include <tracy/Tracy.hpp>

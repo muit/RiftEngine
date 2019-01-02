@@ -41,6 +41,8 @@ struct Name {
 	using Id = NameTable::ConstIterator;
 private:
 
+
+	static const String NoneStr;
 	Id id;
 
 
@@ -67,10 +69,10 @@ public:
 		return *this;
 	}
 
-	String ToString() const {
+	const String& ToString() const {
 		if (IsNone())
 		{
-			return TX("");
+			return NoneStr;
 		}
 		return *id;
 	}
