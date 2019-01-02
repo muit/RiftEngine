@@ -6,8 +6,6 @@
 #include "Math.h"
 
 
-class FFloat16Color;
-
 /**
  * Enum for the different kinds of gamma spaces we expect to need to convert from/to.
  */
@@ -20,6 +18,8 @@ enum class EGammaSpace
 	/** Use the standard sRGB conversion. */
 	sRGB,
 };
+
+struct Color;
 
 
 /**
@@ -47,8 +47,6 @@ struct LinearColor
 	LinearColor(const v3& vector);
 
 	explicit LinearColor(const v4& vector);
-
-	explicit LinearColor(const FFloat16Color& C);
 
 
 	bool Serialize(class Archive& ar, const char* name);
@@ -283,7 +281,7 @@ struct LinearColor
 	Color QuantizeRound() const;
 
 	/** Quantizes the linear color and returns the result as a FColor with optional sRGB conversion and quality as goal. */
-	Color ToFColor(const bool bSRGB) const;
+	Color ToColor(const bool bSRGB) const;
 
 	/**
 	 * Returns a desaturated color, with 0 meaning no desaturation and 1 == full desaturation
@@ -338,14 +336,14 @@ struct LinearColor
 	}
 
 	// Common colors.
-	static constexpr LinearColor White;
-	static constexpr LinearColor Gray;
-	static constexpr LinearColor Black;
-	static constexpr LinearColor Transparent;
-	static constexpr LinearColor Red;
-	static constexpr LinearColor Green;
-	static constexpr LinearColor Blue;
-	static constexpr LinearColor Yellow;
+	static const LinearColor White;
+	static const LinearColor Gray;
+	static const LinearColor Black;
+	static const LinearColor Transparent;
+	static const LinearColor Red;
+	static const LinearColor Green;
+	static const LinearColor Blue;
+	static const LinearColor Yellow;
 };
 
 FORCEINLINE LinearColor operator*(float scalar,const LinearColor& Color)
@@ -375,7 +373,7 @@ public:
 	#endif
 #else // PLATFORM_LITTLE_ENDIAN
 	union {
-		struct{ uint8 a, r, g, b; };
+		uint8 a, r, g, b;
 		uint32 alignmentDummy;
 	};
 #endif
@@ -428,17 +426,6 @@ public:
 	LinearColor FromRGBE() const;
 
 	/**
-	 * Creates a color value from the given hexadecimal string.
-	 *
-	 * Supported formats are: RGB, RRGGBB, RRGGBBAA, #RGB, #RRGGBB, #RRGGBBAA
-	 *
-	 * @param HexString - The hexadecimal string.
-	 * @return The corresponding color value.
-	 * @see ToHex
-	 */
-	static Color FromHex( const String& hexString );
-
-	/**
 	 * Makes a random but quite nice color.
 	 */
 	static Color MakeRandomColor();
@@ -446,7 +433,7 @@ public:
 	/**
 	 * Makes a color red->green with the passed in scalar (e.g. 0 is red, 1 is green)
 	 */
-	static Color MakeRedToGreenColorFromscalar(float scalar);
+	static Color MakeRedToGreenColorFromScalar(float scalar);
 
 	/**
 	* Converts temperature in Kelvins of a black body radiator to RGB chromaticism.
@@ -533,20 +520,20 @@ public:
 	}
 
 	/** Some pre-initialized colors, useful for debug code */
-	static constexpr const Color White;
-	static constexpr Color Black;
-	static constexpr Color Transparent;
-	static constexpr Color Red;
-	static constexpr Color Green      ;
-	static constexpr Color Blue       ;
-	static constexpr Color Yellow     ;
-	static constexpr Color Cyan       ;
-	static constexpr Color Magenta    ;
-	static constexpr Color Orange     ;
-	static constexpr Color Purple     ;
-	static constexpr Color Turquoise  ;
-	static constexpr Color Silver     ;
-	static constexpr Color Emerald    ;
+	static const Color White;
+	static const Color Black;
+	static const Color Transparent;
+	static const Color Red;
+	static const Color Green;
+	static const Color Blue;
+	static const Color Yellow;
+	static const Color Cyan;
+	static const Color Magenta;
+	static const Color Orange;
+	static const Color Purple;
+	static const Color Turquoise;
+	static const Color Silver;
+	static const Color Emerald;
 
 private:
 	/**

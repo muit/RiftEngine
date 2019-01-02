@@ -38,8 +38,8 @@ struct IsBiggerType : eastl::integral_constant< bool, (sizeof(T) > size) > {};
 #define EnableIfBiggerType(size)    class = eastl::enable_if< IsBiggerType< T, size >::value >
 #define EnableIfNotBiggerType(size) class = eastl::enable_if< !IsBiggerType< T, size >::value >
 
-#define EnableIfPassByValue    class = eastl::enable_if<  IsSmallerType< T, sizeof(size_t) >::value && eastl::is_copy_constructible< T >::value>
-#define EnableIfNotPassByValue class = eastl::enable_if<!(IsSmallerType< T, sizeof(size_t) >::value && eastl::is_copy_constructible< T >::value)>
+#define EnableIfPassByValue(T)    class = eastl::enable_if<  IsSmallerType< T, sizeof(size_t) >::value && eastl::is_copy_constructible< T >::type>
+#define EnableIfNotPassByValue(T) class = eastl::enable_if<!(IsSmallerType< T, sizeof(size_t) >::value && eastl::is_copy_constructible< T >::type)>
 
 #define EnableIfAll    class = void
 

@@ -43,6 +43,13 @@ struct Math
 	/** Returns a random integer between 0 and RAND_MAX, inclusive */
 	static FORCEINLINE int32 Rand() { return rand(); }
 
+	/** Returns a random float between 0 and 1, inclusive. */
+	static FORCEINLINE float Rand01() { return Rand() / (float)RAND_MAX; }
+
+	static FORCEINLINE int32 RoundToInt(float f)
+	{
+		return (int32)std::round(f);
+	}
 
 	/**
 	* Converts a floating point number to an integer which is further from zero, "larger" in absolute value: 0.1 becomes 1, -0.1 becomes -1
@@ -142,5 +149,40 @@ struct Math
 	template<class T>
 	static FORCEINLINE T Square(T val) {
 		return val * val;
+	}
+
+	template<class T>
+	static constexpr T Pow(T a, T b) {
+		return std::pow(eastl::move(a), eastl::move(b));
+	}
+
+
+	// Same as Max but with N arguments
+	template<typename Type, typename... Args>
+	static FORCEINLINE constexpr Type Max(Type a, Type b, Args... args) {
+		return Max(a, Max(b, std::forward<Args>(args)...));
+	}
+
+	// Same as Min but with N arguments
+	template<typename Type, typename... Args>
+	static FORCEINLINE constexpr Type Min(Type a, Type b, Args... args) {
+		return Min(a, Min(b, std::forward<Args>(args)...));
+	}
+
+
+	/*template< class T, class U, EnableIfPassByValue(T)>
+	static constexpr T Lerp(const T A, const T B, const U Alpha)
+	{
+		return (T)(A + Alpha * (B - A));
+	}*/
+
+	template< class T, class U/*, EnableIfNotPassByValue(T)*/>
+	static constexpr T Lerp(const T& A, const T& B, const U& Alpha)
+	{
+		return (T)(A + Alpha * (B - A));
+	}
+
+	static float Fmod(float a, float b) {
+		return std::fmod(a, b);
 	}
 };

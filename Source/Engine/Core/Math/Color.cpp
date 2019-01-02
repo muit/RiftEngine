@@ -6,32 +6,31 @@
 
 #include "Color.h"
 #include "Vector.h"
-#include "Math/Float16Color.h"
 
 // Common colors.
-constexpr LinearColor LinearColor::White       { 1.f,  1.f,  1.f};
-constexpr LinearColor LinearColor::Gray        {0.5f, 0.5f, 0.5f};
-constexpr LinearColor LinearColor::Black       { 0.f,  0.f,  0.f};
-constexpr LinearColor LinearColor::Transparent { 0.f,  0.f,  0.f,  0.f };
-constexpr LinearColor LinearColor::Red         { 1.f,  0.f,  0.f};
-constexpr LinearColor LinearColor::Green       { 0.f,  1.f,  0.f};
-constexpr LinearColor LinearColor::Blue        { 0.f,  0.f,  1.f};
-constexpr LinearColor LinearColor::Yellow      { 1.f,  1.f,  0.f};
+const LinearColor LinearColor::White       {  1.f,  1.f,  1.f};
+const LinearColor LinearColor::Gray        { 0.5f, 0.5f, 0.5f};
+const LinearColor LinearColor::Black       {  0.f,  0.f,  0.f};
+const LinearColor LinearColor::Transparent {  0.f,  0.f,  0.f,  0.f };
+const LinearColor LinearColor::Red         {  1.f,  0.f,  0.f};
+const LinearColor LinearColor::Green       {  0.f,  1.f,  0.f};
+const LinearColor LinearColor::Blue        {  0.f,  0.f,  1.f};
+const LinearColor LinearColor::Yellow      {  1.f,  1.f,  0.f};
 
-constexpr const Color Color::White       { 255, 255, 255 };
-constexpr Color Color::Black       {   0,   0,   0 };
-constexpr Color Color::Transparent {   0,   0,   0,   0 };
-constexpr Color Color::Red         { 255,   0,   0 };
-constexpr Color Color::Green       {   0, 255,   0 };
-constexpr Color Color::Blue        {   0,   0, 255 };
-constexpr Color Color::Yellow      { 255, 255,   0 };
-constexpr Color Color::Cyan        {   0, 255, 255 };
-constexpr Color Color::Magenta     { 255,   0, 255 };
-constexpr Color Color::Orange      { 243, 156,  18 };
-constexpr Color Color::Purple      { 169,   7, 228 };
-constexpr Color Color::Turquoise   {  26, 188, 156 };
-constexpr Color Color::Silver      { 189, 195, 199 };
-constexpr Color Color::Emerald     {  46, 204, 113 };
+const Color Color::White       { 255, 255, 255 };
+const Color Color::Black       {   0,   0,   0 };
+const Color Color::Transparent {   0,   0,   0,   0 };
+const Color Color::Red         { 255,   0,   0 };
+const Color Color::Green       {   0, 255,   0 };
+const Color Color::Blue        {   0,   0, 255 };
+const Color Color::Yellow      { 255, 255,   0 };
+const Color Color::Cyan        {   0, 255, 255 };
+const Color Color::Magenta     { 255,   0, 255 };
+const Color Color::Orange      { 243, 156,  18 };
+const Color Color::Purple      { 169,   7, 228 };
+const Color Color::Turquoise   {  26, 188, 156 };
+const Color Color::Silver      { 189, 195, 199 };
+const Color Color::Emerald     {  46, 204, 113 };
 
 /**
 * Helper used by FColor -> FLinearColor conversion. We don't use a lookup table as unlike pow, multiplication is fast.
@@ -39,104 +38,96 @@ constexpr Color Color::Emerald     {  46, 204, 113 };
 static const float OneOver255 = 1.0f / 255.0f;
 
 //	FColor->FLinearColor conversion.
-LinearColor::LinearColor(const Color& Color)
+LinearColor::LinearColor(const Color& other)
 {
-	R = sRGBToLinearTable[Color.R];
-	G = sRGBToLinearTable[Color.G];
-	B =	sRGBToLinearTable[Color.B];
-	A =	float(Color.A) * OneOver255;
+	r = sRGBToLinearTable[other.r];
+	g = sRGBToLinearTable[other.g];
+	b =	sRGBToLinearTable[other.b];
+	a =	float(other.a) * OneOver255;
 }
 
-LinearColor::LinearColor(const FVector& vector) :
-	R(vector.X),
-	G(vector.Y),
-	B(vector.Z),
-	A(1.0f)
+LinearColor::LinearColor(const v3& vector) :
+	r(vector.x()),
+	g(vector.y()),
+	b(vector.z()),
+	a(1.0f)
 {}
 
-LinearColor::LinearColor(const FVector4& Vector) :
-	R(Vector.X),
-	G(Vector.Y),
-	B(Vector.Z),
-	A(Vector.W)
+LinearColor::LinearColor(const v4& vector) :
+	r(vector.x()),
+	g(vector.y()),
+	b(vector.z()),
+	a(vector.w())
 {}
 
-LinearColor::LinearColor(const FFloat16Color& C)
+LinearColor LinearColor::FromSRGBColor(const Color& color)
 {
-	R = C.R.GetFloat();
-	G = C.G.GetFloat();
-	B =	C.B.GetFloat();
-	A =	C.A.GetFloat();
+	LinearColor lColor;
+	lColor.r = sRGBToLinearTable[color.r];
+	lColor.g = sRGBToLinearTable[color.g];
+	lColor.b = sRGBToLinearTable[color.b];
+	lColor.a = float(color.a) * OneOver255;
+
+	return lColor;
 }
 
-LinearColor LinearColor::FromSRGBColor(const Color& Color)
+LinearColor LinearColor::FromPow22Color(const Color& color)
 {
-	LinearColor LinearColor;
-	LinearColor.R = sRGBToLinearTable[Color.R];
-	LinearColor.G = sRGBToLinearTable[Color.G];
-	LinearColor.B =	sRGBToLinearTable[Color.B];
-	LinearColor.A =	float(Color.A) * OneOver255;
+	LinearColor linearColor;
+	linearColor.r = Pow22OneOver255Table[color.r];
+	linearColor.g = Pow22OneOver255Table[color.g];
+	linearColor.b =	Pow22OneOver255Table[color.b];
+	linearColor.a =	float(color.a) * OneOver255;
 
-	return LinearColor;
-}
-
-LinearColor LinearColor::FromPow22Color(const Color& Color)
-{
-	LinearColor LinearColor;
-	LinearColor.R = Pow22OneOver255Table[Color.R];
-	LinearColor.G = Pow22OneOver255Table[Color.G];
-	LinearColor.B =	Pow22OneOver255Table[Color.B];
-	LinearColor.A =	float(Color.A) * OneOver255;
-
-	return LinearColor;
+	return linearColor;
 }
 
 // Convert from float to RGBE as outlined in Gregory Ward's Real Pixels article, Graphics Gems II, page 80.
 Color LinearColor::ToRGBE() const
 {
-	const float	Primary = FMath::Max3( R, G, B );
-	Color	Color;
+	const float	Primary = Math::Max( r, g, b );
+	Color color;
 
 	if( Primary < 1E-32 )
 	{
-		Color = Color(0,0,0,0);
+		color = Color(0,0,0,0);
 	}
 	else
 	{
-		int32	Exponent;
-		const float Scale	= frexp(Primary, &Exponent) / Primary * 255.f;
+		int32 exponent;
+		const float scale	= frexp(Primary, &exponent) / Primary * 255.f;
 
-		Color.R		= FMath::Clamp(FMath::TruncToInt(R * Scale), 0, 255);
-		Color.G		= FMath::Clamp(FMath::TruncToInt(G * Scale), 0, 255);
-		Color.B		= FMath::Clamp(FMath::TruncToInt(B * Scale), 0, 255);
-		Color.A		= FMath::Clamp(FMath::TruncToInt(Exponent),-128,127) + 128;
+		color.r	= (uint8)Math::Clamp(Math::FloorToInt(r * scale), 0, 255);
+		color.g = (uint8)Math::Clamp(Math::FloorToInt(g * scale), 0, 255);
+		color.b = (uint8)Math::Clamp(Math::FloorToInt(b * scale), 0, 255);
+		color.a = (uint8)(Math::Clamp(exponent, -128, 127) + 128);
 	}
 
-	return Color;
+	return color;
 }
 
 
 /** Quantizes the linear color and returns the result as a FColor with optional sRGB conversion and quality as goal. */
-Color LinearColor::ToFColor(const bool bSRGB) const
+Color LinearColor::ToColor(const bool bSRGB) const
 {
-	float FloatR = FMath::Clamp(R, 0.0f, 1.0f);
-	float FloatG = FMath::Clamp(G, 0.0f, 1.0f);
-	float FloatB = FMath::Clamp(B, 0.0f, 1.0f);
-	float FloatA = FMath::Clamp(A, 0.0f, 1.0f);
+	float floatr = Math::Clamp(r, 0.0f, 1.0f);
+	float floatg = Math::Clamp(g, 0.0f, 1.0f);
+	float floatb = Math::Clamp(b, 0.0f, 1.0f);
+	float floata = Math::Clamp(a, 0.0f, 1.0f);
 
 	if(bSRGB)
 	{
-		FloatR = FloatR <= 0.0031308f ? FloatR * 12.92f : FMath::Pow( FloatR, 1.0f / 2.4f ) * 1.055f - 0.055f;
-		FloatG = FloatG <= 0.0031308f ? FloatG * 12.92f : FMath::Pow( FloatG, 1.0f / 2.4f ) * 1.055f - 0.055f;
-		FloatB = FloatB <= 0.0031308f ? FloatB * 12.92f : FMath::Pow( FloatB, 1.0f / 2.4f ) * 1.055f - 0.055f;
+		floatr = floatr <= 0.0031308f ? floatr * 12.92f : Math::Pow(floatr, 1.0f / 2.4f) * 1.055f - 0.055f;
+		floatg = floatg <= 0.0031308f ? floatg * 12.92f : Math::Pow(floatg, 1.0f / 2.4f) * 1.055f - 0.055f;
+		floatb = floatb <= 0.0031308f ? floatb * 12.92f : Math::Pow(floatb, 1.0f / 2.4f) * 1.055f - 0.055f;
 	}
 
 	Color ret;
 
-	ret.A = FMath::FloorToInt(FloatA * 255.999f);
-	ret.R = FMath::FloorToInt(FloatR * 255.999f);
-	ret.G = FMath::FloorToInt(FloatG * 255.999f);
-	ret.B = FMath::FloorToInt(FloatB * 255.999f);
+	ret.a = (uint8)Math::FloorToInt(floata * 255.999f);
+	ret.r = (uint8)Math::FloorToInt(floatr * 255.999f);
+	ret.g = (uint8)Math::FloorToInt(floatg * 255.999f);
+	ret.b = (uint8)Math::FloorToInt(floatb * 255.999f);
 
 	return ret;
 }
@@ -145,84 +136,44 @@ Color LinearColor::ToFColor(const bool bSRGB) const
 Color LinearColor::Quantize() const
 {
 	return Color(
-		(uint8)FMath::Clamp<int32>(FMath::TruncToInt(R*255.f),0,255),
-		(uint8)FMath::Clamp<int32>(FMath::TruncToInt(G*255.f),0,255),
-		(uint8)FMath::Clamp<int32>(FMath::TruncToInt(B*255.f),0,255),
-		(uint8)FMath::Clamp<int32>(FMath::TruncToInt(A*255.f),0,255)
-		);
+		(uint8)Math::Clamp<int32>(Math::FloorToInt(r * 255.f),0,255),
+		(uint8)Math::Clamp<int32>(Math::FloorToInt(g * 255.f),0,255),
+		(uint8)Math::Clamp<int32>(Math::FloorToInt(b * 255.f),0,255),
+		(uint8)Math::Clamp<int32>(Math::FloorToInt(a * 255.f),0,255)
+	);
 }
 
 Color LinearColor::QuantizeRound() const
 {
 	return Color(
-		(uint8)FMath::Clamp<int32>(FMath::RoundToInt(R*255.f),0,255),
-		(uint8)FMath::Clamp<int32>(FMath::RoundToInt(G*255.f),0,255),
-		(uint8)FMath::Clamp<int32>(FMath::RoundToInt(B*255.f),0,255),
-		(uint8)FMath::Clamp<int32>(FMath::RoundToInt(A*255.f),0,255)
-		);
+		(uint8)Math::Clamp<int32>(Math::RoundToInt(r*255.f),0,255),
+		(uint8)Math::Clamp<int32>(Math::RoundToInt(g*255.f),0,255),
+		(uint8)Math::Clamp<int32>(Math::RoundToInt(b*255.f),0,255),
+		(uint8)Math::Clamp<int32>(Math::RoundToInt(a*255.f),0,255)
+	);
 }
 
 /**
  * Returns a desaturated color, with 0 meaning no desaturation and 1 == full desaturation
  *
- * @param	Desaturation	Desaturation factor in range [0..1]
+ * @param	desaturation factor in range [0..1]
  * @return	Desaturated color
  */
-LinearColor LinearColor::Desaturate( float Desaturation ) const
+LinearColor LinearColor::Desaturate( float desaturation ) const
 {
 	float Lum = ComputeLuminance();
-	return FMath::Lerp( *this, LinearColor( Lum, Lum, Lum, 0 ), Desaturation );
-}
-
-Color Color::FromHex( const FString& HexString )
-{
-	int32 StartIndex = (!HexString.IsEmpty() && HexString[0] == TCHAR('#')) ? 1 : 0;
-
-	if (HexString.Len() == 3 + StartIndex)
-	{
-		const int32 R = FParse::HexDigit(HexString[StartIndex++]);
-		const int32 G = FParse::HexDigit(HexString[StartIndex++]);
-		const int32 B = FParse::HexDigit(HexString[StartIndex]);
-
-		return Color((R << 4) + R, (G << 4) + G, (B << 4) + B, 255);
-	}
-
-	if (HexString.Len() == 6 + StartIndex)
-	{
-		Color Result;
-
-		Result.R = (FParse::HexDigit(HexString[StartIndex+0]) << 4) + FParse::HexDigit(HexString[StartIndex+1]);
-		Result.G = (FParse::HexDigit(HexString[StartIndex+2]) << 4) + FParse::HexDigit(HexString[StartIndex+3]);
-		Result.B = (FParse::HexDigit(HexString[StartIndex+4]) << 4) + FParse::HexDigit(HexString[StartIndex+5]);
-		Result.A = 255;
-
-		return Result;
-	}
-
-	if (HexString.Len() == 8 + StartIndex)
-	{
-		Color Result;
-
-		Result.R = (FParse::HexDigit(HexString[StartIndex+0]) << 4) + FParse::HexDigit(HexString[StartIndex+1]);
-		Result.G = (FParse::HexDigit(HexString[StartIndex+2]) << 4) + FParse::HexDigit(HexString[StartIndex+3]);
-		Result.B = (FParse::HexDigit(HexString[StartIndex+4]) << 4) + FParse::HexDigit(HexString[StartIndex+5]);
-		Result.A = (FParse::HexDigit(HexString[StartIndex+6]) << 4) + FParse::HexDigit(HexString[StartIndex+7]);
-
-		return Result;
-	}
-
-	return Color(ForceInitToZero);
+	return Math::Lerp( *this, LinearColor( Lum, Lum, Lum, 0 ), desaturation );
 }
 
 // Convert from RGBE to float as outlined in Gregory Ward's Real Pixels article, Graphics Gems II, page 80.
 LinearColor Color::FromRGBE() const
 {
-	if( A == 0 )
+	if( a == 0 )
 		return LinearColor::Black;
 	else
 	{
-		const float Scale = ldexp( 1 / 255.0, A - 128 );
-		return LinearColor( R * Scale, G * Scale, B * Scale, 1.0f );
+		const float scale = (float)ldexp( 1 / 255.0, a - 128 );
+		return LinearColor( r * scale, g * scale, b * scale, 1.0f );
 	}
 }
 
@@ -232,43 +183,41 @@ LinearColor Color::FromRGBE() const
 LinearColor LinearColor::FGetHSV( uint8 H, uint8 S, uint8 V )
 {
 	float Brightness = V * 1.4f / 255.f;
-	Brightness *= 0.7f/(0.01f + FMath::Sqrt(Brightness));
-	Brightness  = FMath::Clamp(Brightness,0.f,1.f);
-	const FVector Hue = (H<86) ? FVector((85-H)/85.f,(H-0)/85.f,0) : (H<171) ? FVector(0,(170-H)/85.f,(H-85)/85.f) : FVector((H-170)/85.f,0,(255-H)/84.f);
-	const FVector ColorVector = (Hue + S/255.f * (FVector(1,1,1) - Hue)) * Brightness;
-	return LinearColor(ColorVector.X,ColorVector.Y,ColorVector.Z,1);
+	Brightness *= 0.7f/(0.01f + Math::Sqrt(Brightness));
+	Brightness  = Math::Clamp(Brightness,0.f,1.f);
+	const v3 Hue = (H<86) ? v3((85-H)/85.f,(H-0)/85.f,0) : (H<171) ? v3(0,(170-H)/85.f,(H-85)/85.f) : v3((H-170)/85.f,0,(255-H)/84.f);
+	const v3 ColorVector = (Hue + S/255.f * (v3(1,1,1) - Hue)) * Brightness;
+	return LinearColor(ColorVector.x(), ColorVector.y(), ColorVector.z(), 1);
 }
-
 
 /** Converts a linear space RGB color to an HSV color */
 LinearColor LinearColor::LinearRGBToHSV() const
 {
-	const float RGBMin = FMath::Min3(R, G, B);
-	const float RGBMax = FMath::Max3(R, G, B);
+	const float RGBMin = Math::Min(r, g, b);
+	const float RGBMax = Math::Max(r, g, b);
 	const float RGBRange = RGBMax - RGBMin;
 
-	const float Hue = (RGBMax == RGBMin ? 0.0f :
-					   RGBMax == R    ? FMath::Fmod((((G - B) / RGBRange) * 60.0f) + 360.0f, 360.0f) :
-					   RGBMax == G    ?             (((B - R) / RGBRange) * 60.0f) + 120.0f :
-					   RGBMax == B    ?             (((R - G) / RGBRange) * 60.0f) + 240.0f :
+	const float hue = (RGBMax == RGBMin ? 0.0f :
+					   RGBMax == r    ?  Math::Fmod((((g - b) / RGBRange) * 60.0f) + 360.0f, 360.0f) :
+					   RGBMax == g    ?             (((b - r) / RGBRange) * 60.0f) + 120.0f :
+					   RGBMax == b    ?             (((r - g) / RGBRange) * 60.0f) + 240.0f :
 					   0.0f);
 
 	const float Saturation = (RGBMax == 0.0f ? 0.0f : RGBRange / RGBMax);
 	const float Value = RGBMax;
 
-	// In the new color, R = H, G = S, B = V, A = A
-	return LinearColor(Hue, Saturation, Value, A);
+	// In the new color, r = H, g = S, b = V, a = A
+	return LinearColor(hue, Saturation, Value, a);
 }
-
 
 
 /** Converts an HSV color to a linear space RGB color */
 LinearColor LinearColor::HSVToLinearRGB() const
 {
-	// In this color, R = H, G = S, B = V
-	const float Hue = R;
-	const float Saturation = G;
-	const float Value = B;
+	// In this color, r = H, g = S, b = V
+	const float Hue = r;
+	const float Saturation = g;
+	const float Value = b;
 
 	const float HDiv60 = Hue / 60.0f;
 	const float HDiv60_Floor = floorf(HDiv60);
@@ -293,7 +242,7 @@ LinearColor LinearColor::HSVToLinearRGB() const
 	return LinearColor(RGBValues[RGBSwizzle[SwizzleIndex][0]],
 						RGBValues[RGBSwizzle[SwizzleIndex][1]],
 						RGBValues[RGBSwizzle[SwizzleIndex][2]],
-						A);
+						a);
 }
 
 
@@ -302,11 +251,11 @@ LinearColor LinearColor::LerpUsingHSV( const LinearColor& From, const LinearColo
 	const LinearColor FromHSV = From.LinearRGBToHSV();
 	const LinearColor ToHSV = To.LinearRGBToHSV();
 
-	float FromHue = FromHSV.R;
-	float ToHue = ToHSV.R;
+	float FromHue = FromHSV.r;
+	float ToHue = ToHSV.r;
 
 	// Take the shortest path to the new hue
-	if( FMath::Abs( FromHue - ToHue ) > 180.0f )
+	if( Math::Abs( FromHue - ToHue ) > 180.0f )
 	{
 		if( ToHue > FromHue )
 		{
@@ -318,20 +267,20 @@ LinearColor LinearColor::LerpUsingHSV( const LinearColor& From, const LinearColo
 		}
 	}
 
-	float NewHue = FMath::Lerp( FromHue, ToHue, Progress );
+	float NewHue = Math::Lerp( FromHue, ToHue, Progress );
 
-	NewHue = FMath::Fmod( NewHue, 360.0f );
+	NewHue = Math::Fmod( NewHue, 360.0f );
 	if( NewHue < 0.0f )
 	{
 		NewHue += 360.0f;
 	}
 
-	const float NewSaturation = FMath::Lerp( FromHSV.G, ToHSV.G, Progress );
-	const float NewValue = FMath::Lerp( FromHSV.B, ToHSV.B, Progress );
+	const float NewSaturation = Math::Lerp( FromHSV.g, ToHSV.g, Progress );
+	const float NewValue = Math::Lerp( FromHSV.b, ToHSV.b, Progress );
 	LinearColor Interpolated = LinearColor( NewHue, NewSaturation, NewValue ).HSVToLinearRGB();
 
-	const float NewAlpha = FMath::Lerp( From.A, To.A, Progress );
-	Interpolated.A = NewAlpha;
+	const float NewAlpha = Math::Lerp( From.a, To.a, Progress );
+	Interpolated.a = NewAlpha;
 
 	return Interpolated;
 }
@@ -342,18 +291,18 @@ LinearColor LinearColor::LerpUsingHSV( const LinearColor& From, const LinearColo
 */
 LinearColor LinearColor::MakeRandomColor()
 {
-	const uint8 Hue = (uint8)(FMath::FRand()*255.f);
+	const uint8 Hue = (uint8)(Math::Rand01()*255.f);
 	return LinearColor::FGetHSV(Hue, 0, 255);
 }
 
 Color Color::MakeRandomColor()
 {
-	return LinearColor::MakeRandomColor().ToFColor(true);
+	return LinearColor::MakeRandomColor().ToColor(true);
 }
 
 LinearColor LinearColor::MakeFromColorTemperature( float Temp )
 {
-	Temp = FMath::Clamp( Temp, 1000.0f, 15000.0f );
+	Temp = Math::Clamp( Temp, 1000.0f, 15000.0f );
 
 	// Approximate Planckian locus in CIE 1960 UCS
 	float u = ( 0.860117757f + 1.54118254e-4f * Temp + 1.28641212e-7f * Temp*Temp ) / ( 1.0f + 8.42420235e-4f * Temp + 7.08145163e-7f * Temp*Temp );
@@ -368,32 +317,33 @@ LinearColor LinearColor::MakeFromColorTemperature( float Temp )
 	float Z = Y/y * z;
 
 	// XYZ to RGB with BT.709 primaries
-	float R =  3.2404542f * X + -1.5371385f * Y + -0.4985314f * Z;
-	float G = -0.9692660f * X +  1.8760108f * Y +  0.0415560f * Z;
-	float B =  0.0556434f * X + -0.2040259f * Y +  1.0572252f * Z;
+	float r =  3.2404542f * X + -1.5371385f * Y + -0.4985314f * Z;
+	float g = -0.9692660f * X +  1.8760108f * Y +  0.0415560f * Z;
+	float b =  0.0556434f * X + -0.2040259f * Y +  1.0572252f * Z;
 
-	return LinearColor(R,G,B);
+	return LinearColor(r,g,b);
 }
 
 Color Color::MakeFromColorTemperature( float Temp )
 {
-	return LinearColor::MakeFromColorTemperature( Temp ).ToFColor( true );
+	return LinearColor::MakeFromColorTemperature( Temp ).ToColor( true );
 }
 
-Color Color::MakeRedToGreenColorFromScalar(float Scalar)
+Color Color::MakeRedToGreenColorFromScalar(float scalar)
 {
-	float RedSclr = FMath::Clamp<float>((1.0f - Scalar)/0.5f,0.f,1.f);
-	float GreenSclr = FMath::Clamp<float>((Scalar/0.5f),0.f,1.f);
-	int32 R = FMath::TruncToInt(255 * RedSclr);
-	int32 G = FMath::TruncToInt(255 * GreenSclr);
-	int32 B = 0;
-	return Color(R, G, B);
+	float redSclr = Math::Clamp<float>((1.0f - scalar)/0.5f,0.f,1.f);
+	float greenSclr = Math::Clamp<float>((scalar/0.5f),0.f,1.f);
+
+	uint8 r = (uint8)Math::FloorToInt(255 * redSclr);
+	uint8 g = (uint8)Math::FloorToInt(255 * greenSclr);
+	uint8 b = 0;
+	return Color(r, g, b);
 }
 
 void ComputeAndFixedColorAndIntensity(const LinearColor& InLinearColor,Color& OutColor,float& OutIntensity)
 {
-	float MaxComponent = FMath::Max(DELTA,FMath::Max(InLinearColor.R,FMath::Max(InLinearColor.G,InLinearColor.B)));
-	OutColor = ( InLinearColor / MaxComponent ).ToFColor(true);
+	float MaxComponent = Math::Max(Math::SMALLER_NUMBER, InLinearColor.r, InLinearColor.g, InLinearColor.b);
+	OutColor = ( InLinearColor / MaxComponent ).ToColor(true);
 	OutIntensity = MaxComponent;
 }
 
@@ -401,7 +351,7 @@ void ComputeAndFixedColorAndIntensity(const LinearColor& InLinearColor,Color& Ou
 /**
  * Pow table for fast FColor -> FLinearColor conversion.
  *
- * FMath::Pow( i / 255.f, 2.2f )
+ * Math::Pow( i / 255.f, 2.2f )
  */
 float LinearColor::Pow22OneOver255Table[256] =
 {
