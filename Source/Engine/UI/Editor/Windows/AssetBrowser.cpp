@@ -2,6 +2,7 @@
 
 #include "AssetBrowser.h"
 #include "Core/Files/FileSystem.h"
+#include "SDL_log.h"
 
 
 #if WITH_EDITOR
@@ -15,10 +16,11 @@ void AssetBrowser::Build()
 	windowName = TX("Asset Browser");
 	windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize;
 
-	//tex.Load();
 
-	//tex->SetName(TX("MyTexture"));
-	//tex->Save();
+	tex.Load();
+
+	tex->SetName(TX("MyTexture"));
+	tex->Save();
 }
 
 void AssetBrowser::Tick()

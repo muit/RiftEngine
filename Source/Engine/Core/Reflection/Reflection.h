@@ -129,8 +129,8 @@ FORCEINLINE void __meta_SerializeProperty(Archive& ar, MetaInt<id_name>) {\
 \
 	constexpr ReflectionTags tags = ReflectionTagsInitializer<inTags>::value;\
 	\
-	if(!(tags & Transient))\
-	{/* If prop is not transient (Compile time) */\
+	if constexpr(!(tags & Transient))\
+	{/* Don't serialize property if Transient */\
 		ar(#name , name);\
 	}\
 	/* Serialize next property if any */\

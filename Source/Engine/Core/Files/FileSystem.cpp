@@ -3,22 +3,18 @@
 #include "FileSystem.h"
 
 
-bool FileSystem::FileExists(const String& path)
+bool FileSystem::FileExists(const Path& path)
 {
-	const fs::path pathObj{ path.begin(), path.end() };
-	return fs::exists(pathObj) && fs::is_regular_file(pathObj);
+	return fs::exists(path) && fs::is_regular_file(path);
 }
 
-bool FileSystem::FolderExists(const String& path)
+bool FileSystem::FolderExists(const Path& path)
 {
-	const fs::path pathObj{ path.begin(), path.end() };
-	return fs::exists(pathObj) && fs::is_directory(pathObj);
+	return fs::exists(path) && fs::is_directory(path);
 }
 
-bool FileSystem::LoadJsonFile(const String& inPath, json& result)
+bool FileSystem::LoadJsonFile(Path path, json& result)
 {
-	fs::path path { inPath.begin(), inPath.end() };
-
 	if (!SanitizeAssetPath(path) || !fs::exists(path))
 		return false;
 
@@ -29,10 +25,8 @@ bool FileSystem::LoadJsonFile(const String& inPath, json& result)
 	return true;
 }
 
-bool FileSystem::SaveJsonFile(const String& inPath, const json& data)
+bool FileSystem::SaveJsonFile(Path path, const json& data)
 {
-	fs::path path{ inPath.begin(), inPath.end() };
-
 	if (!SanitizeAssetPath(path))
 		return false;
 
@@ -43,20 +37,33 @@ bool FileSystem::SaveJsonFile(const String& inPath, const json& data)
 }
 
 
-fs::path FileSystem::GetAssetsPathAsPath()
+Path FileSystem::GetAssetsPathAsPath()
 {
 	// Take two folders up. May change for distributed versions / other platforms
-	fs::path path = fs::current_path().parent_path().parent_path();
+	Path path = fs::current_path().parent_path().parent_path();
 	path /= "Assets";
 	return eastl::move(path);
 }
 
-fs::path FileSystem::FindMetaFile(fs::path in)
+Path FileSystem::FindMetaFile(Path in)
 {
+	if (!SanitizeAssetPath(in))
+		return {};
+
+	if (in.extension() != ".meta")
+		in += ".meta";
+
 	return in;
 }
 
-fs::path FileSystem::FindRawFile(fs::path in)
+Path FileSystem::FindRawFile(Path in)
 {
-	return in;
+	if (!SanitizeAssetPath(in))
+		return {};
+
+	const Path stem = in.stem();
+	if (!stem.has_extension() || in.extension() != ".meta")
+		return {};
+
+	return in.parent_path() / stem;
 }
