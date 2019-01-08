@@ -71,15 +71,8 @@ struct LinearColor
 
 	// Operators.
 
-	FORCEINLINE float& Component(int32 index)
-	{
-		return (&r)[index];
-	}
-
-	FORCEINLINE const float& Component(int32 index) const
-	{
-		return (&r)[index];
-	}
+	FORCEINLINE float& Component(int32 index) { return (&r)[index]; }
+	FORCEINLINE const float& Component(int32 index) const { return (&r)[index]; }
 
 	FORCEINLINE LinearColor operator+(const LinearColor& other) const
 	{

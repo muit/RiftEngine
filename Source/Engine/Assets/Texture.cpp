@@ -1,16 +1,31 @@
-// Copyright 2017/2018 - Miguel Fernández Arce
+// © 2019 Miguel Fernández Arce - All rights reserved
 
 #include "Texture.h"
 #include <SDL_surface.h>
+
 #include "Core/Assets/AssetInfo.h"
-#include "SDL_opengl.h"
+#include "Core/Files/FileSystem.h"
 
 
 bool Texture::PostLoad()
 {
-	//SDL_Surface* img = SDL_LoadBMP(Info().GetSPath().c_str());
+	Super::PostLoad();
+
+	Path rawTexturePath = FileSystem::FindRawFile(FileSystem::FromString(Info().GetSPath()));
+	if(!rawTexturePath.empty())
+	{
+		SDL_Surface* rawImg = SDL_LoadBMP(FileSystem::ToString(rawTexturePath).c_str());
+		// Copy texture data
+		data.FromSurface(rawImg);
+		SDL_FreeSurface(rawImg);
+	}
 
 	return true;
+}
+
+void Texture::BeforeDestroy()
+{
+	Super::BeforeDestroy();
 }
 
 void Texture::Render()

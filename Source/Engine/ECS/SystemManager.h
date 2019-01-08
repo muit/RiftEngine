@@ -43,7 +43,7 @@ public:
 
 	void EndPlay() {
 		IterateSystems([](Ptr<System> system) {
-			system->BeginPlay();
+			system->EndPlay();
 		});
 	}
 

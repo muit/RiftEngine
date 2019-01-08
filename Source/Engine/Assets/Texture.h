@@ -1,12 +1,11 @@
-// Copyright 2017/2018 - Miguel Fernández Arce
+// © 2019 Miguel Fernández Arce - All rights reserved
 
 #pragma once
 
 #include "CoreObject.h"
 #include "Core/Assets/AssetData.h"
 #include "Core/Math/Color.h"
-
-using PixelBuffer = TArray<Color>;
+#include "Core/Rendering/TextureData.h"
 
 
 class Texture : public AssetData
@@ -15,14 +14,21 @@ class Texture : public AssetData
 
 public:
 
-	PROP(v2_u32, size, DetailsView)
-	v2_u32 size;
+	Texture() : Super() {}
 
-	PROP(PixelBuffer, buffer)
-	PixelBuffer buffer;
+private:
 
+	TextureData data;
+
+protected:
 
 	virtual bool PostLoad() override;
+	virtual void BeforeDestroy() override;
 
 	void Render();
+
+public:
+
+	FORCEINLINE bool IsEmpty() const { return data.size.x() == 0 && data.size.y() == 0; }
+	FORCEINLINE v2_u32 GetSize() const { return data.size; }
 };

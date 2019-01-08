@@ -1,4 +1,4 @@
-// Copyright 2017/2018 - Miguel Fernández Arce
+// © 2019 Miguel Fernández Arce - All rights reserved
 
 #include "Model.h"
 
