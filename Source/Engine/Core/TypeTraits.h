@@ -23,6 +23,17 @@ template <typename T>
 struct ClassTraits : public BaseClassTraits<T> {};
 
 
+template<typename T, typename = void>
+struct IsDefined {
+	static constexpr bool value = false;
+};
+
+template<typename T>
+struct IsDefined<T, decltype(typeid(T), void())> {
+	static constexpr bool value = true;
+};
+
+
 /** SIZE SELECTORS */
 
 template < class T, size_t size >
@@ -44,7 +55,30 @@ struct IsBiggerType : eastl::integral_constant< bool, (sizeof(T) > size) > {};
 #define EnableIfAll    class = void
 
 
-template<typename Type>
-struct ReflectionTypeTraits {
-	static constexpr bool valid = false;
+template<typename T>
+struct HasItemType
+{
+private:
+	template<typename V> static void impl(decltype(typename V::ItemType(), int()));
+	template<typename V> static bool impl(char);
+
+public:
+	static const bool value = eastl::is_void<decltype(impl<T>(0))>::value;
 };
+
+template<typename T>
+inline constexpr bool IsArrayType() {
+	// Check if we are dealing with a TArray
+	if constexpr (HasItemType<T>::value)
+		return eastl::is_same<TArray<typename T::ItemType>, T>::value;
+
+	return false;
+}
+
+template<typename T>
+inline constexpr bool IsReflectableType() {
+	if constexpr (IsArrayType<T>())
+		return IsReflectableType<typename T::ItemType>();
+
+	return false;
+}

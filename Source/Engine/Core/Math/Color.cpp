@@ -6,6 +6,8 @@
 
 #include "Color.h"
 #include "Vector.h"
+#include "Core/Serialization/Archive.h"
+
 
 // Common colors.
 const LinearColor LinearColor::White       {  1.f,  1.f,  1.f};
@@ -163,6 +165,19 @@ LinearColor LinearColor::Desaturate( float desaturation ) const
 {
 	float Lum = ComputeLuminance();
 	return Math::Lerp( *this, LinearColor( Lum, Lum, Lum, 0 ), desaturation );
+}
+
+bool Color::Serialize(Archive& ar, const char* name)
+{
+	ar.BeginObject(name);
+	{
+		ar("r", r);
+		ar("g", g);
+		ar("b", b);
+		ar("a", a);
+	}
+	ar.EndObject();
+	return true;
 }
 
 // Convert from RGBE to float as outlined in Gregory Ward's Real Pixels article, Graphics Gems II, page 80.

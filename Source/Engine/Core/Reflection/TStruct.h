@@ -48,7 +48,7 @@ public:
 		properties.emplace(name, eastl::unique_ptr<Property>(
 			new TProperty<VarType>(
 				this,
-				ReflectionTypeTraits<VarType>::name,
+				GetReflectableName<VarType>(),
 				eastl::move(name),
 				eastl::move(access),
 				tags

@@ -17,6 +17,7 @@ public:
 	template <typename OtherType, typename OtherAllocator>
 	friend class TArray;
 
+	using ItemType = Type;
 	using VectorType = eastl::vector<Type, Allocator>;
 
 	using Iterator = typename VectorType::iterator;
@@ -167,10 +168,15 @@ public:
 
 	FORCEINLINE int32 Size() const { return (int32)vector.size(); }
 
-	FORCEINLINE bool IsValidIndex(int32 Index) const
+	FORCEINLINE bool IsValidIndex(int32 index) const
 	{
-		return Index >= 0 && Index < Size();
+		return index >= 0 && index < Size();
 	}
+
+	Type& First() { return vector.front(); }
+	Type& Last() { return vector.back(); }
+	const Type& First() const { return vector.front(); }
+	const Type& Last() const { return vector.back(); }
 
 	/** OPERATORS */
 public:

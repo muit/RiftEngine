@@ -4,6 +4,9 @@
 
 #include "CoreEngine.h"
 #include "Math.h"
+#include "Vector.h"
+#include "Core/Containers/Array.h"
+#include "Core/Strings/String.h"
 
 
 /**
@@ -328,8 +331,7 @@ struct LinearColor
 		return r * 0.3f + g * 0.59f + b * 0.11f;
 	}
 
-	String ToString() const
-	{
+	String ToString() const {
 		String str;
 		str.sprintf(TX("(r=%f,g=%f,b=%f,a=%f)"), r, g, b, a);
 		return eastl::move(str);
@@ -402,7 +404,7 @@ public:
 		DWColor() = InColor;
 	}
 
-	// #TODO: Serialize Color
+	bool Serialize(class Archive& ar, const char* name);
 
 	// Operators.
 	FORCEINLINE bool operator==( const Color &other ) const
@@ -566,6 +568,10 @@ extern void ComputeAndFixedColorAndIntensity(const LinearColor& InLinearColor,Co
 // These act like a POD
 EASTL_DECLARE_IS_POD(Color, true);
 EASTL_DECLARE_IS_POD(LinearColor, true);
+
+DEFINE_CLASS_TRAITS(Color, {
+	HasCustomSerialize = true
+});
 
 
 /**

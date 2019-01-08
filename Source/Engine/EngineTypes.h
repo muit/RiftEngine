@@ -9,14 +9,29 @@
 #include "Core/Strings/String.h"
 #include "Core/Strings/Name.h"
 #include "Core/Misc/Guid.h"
+#include "Core/Math/Color.h"
 #include "Core/Math/Vector.h"
 
 
 #define DECLARE_REFLECTION_TYPE(Type)\
-template <>\
-struct ReflectionTypeTraits<Type> {\
-	static constexpr bool valid = true;\
-	static const Name name;\
+template<>\
+inline constexpr bool IsReflectableType<Type>() { return true; }\
+template<>\
+inline Name GetReflectableName<Type>() { return { TX(#Type) }; }
+
+
+template<typename T>
+inline Name GetReflectableName() {
+	if constexpr (IsArrayType<T>())
+	{
+		if constexpr (IsReflectableType<typename T::ItemType>()) {
+			String name;
+			name.sprintf(TX("TArray<%s>"), GetReflectableName<typename T::ItemType>().ToString().c_str());
+			return { name };
+		}
+		return TX("TArray<Invalid>");
+	}
+	return TX("Invalid");
 }
 
 
@@ -28,9 +43,12 @@ DECLARE_REFLECTION_TYPE(float);
 DECLARE_REFLECTION_TYPE(Name);
 DECLARE_REFLECTION_TYPE(String);
 DECLARE_REFLECTION_TYPE(Guid);
+DECLARE_REFLECTION_TYPE(Color);
 
 DECLARE_REFLECTION_TYPE(v2);
 DECLARE_REFLECTION_TYPE(v3);
+DECLARE_REFLECTION_TYPE(v2_u32);
+
 
 /** To registry a new native type:
  * 1. Add Definition above

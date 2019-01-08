@@ -12,5 +12,5 @@ class Model : public AssetData
 
 public:
 
-    virtual bool PostLoad() override;
+	virtual bool PostLoad() override;
 };

@@ -9,6 +9,7 @@
 #include <date/date.h>
 
 #include "Core/Math/Math.h"
+#include "Core/Strings/String.h"
 
 
 // decimals of microseconds

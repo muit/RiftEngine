@@ -4,6 +4,9 @@
 
 #include "CoreObject.h"
 #include "Core/Assets/AssetData.h"
+#include "Core/Math/Color.h"
+
+using PixelBuffer = TArray<Color>;
 
 
 class Texture : public AssetData
@@ -12,9 +15,14 @@ class Texture : public AssetData
 
 public:
 
-	PROP(String, texturePath, DetailsEdit)
-	String texturePath;
+	PROP(v2_u32, size, DetailsView)
+	v2_u32 size;
+
+	PROP(PixelBuffer, buffer)
+	PixelBuffer buffer;
 
 
 	virtual bool PostLoad() override;
+
+	void Render();
 };

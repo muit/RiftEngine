@@ -57,6 +57,7 @@ public:
 	virtual void Serialize(const char* name, String& val) = 0;
 
 	void Serialize(const char* name, v2& val);
+	void Serialize(const char* name, v2_u32& val);
 	void Serialize(const char* name, v3& val);
 
 	template<typename T>
@@ -88,32 +89,54 @@ public:
 	}
 
 	template<typename T>
-	void Serialize(const char* name, eastl::vector<T>& val)
+	void Serialize(const char* name, TArray<T>& val)
 	{
 		BeginObject(name);
 		if (IsLoading())
 		{
-			// Ideally should read size form json array
-			Serialize(TX("num"), val.size());
-			// Read each Item
+			uint32 size;
+			SerializeArraySize(size);
+			val.Reserve(size);
+
+			for (uint32 i = 0; i < size; ++i)
+			{
+				BeginObject(i);
+				{
+					operator()("val", val[i]);
+					//Data() = Data()[""]; // Temporal patch to avoid named properties
+				}
+				EndObject();
+			}
 		}
 		else
 		{
-			int32 num;
-			Serialize(TX("num"), num);
-			val.reserve(num);
-			// Save Items
+			uint32 size = val.Size();
+			SerializeArraySize(size);
+
+			for (uint32 i = 0; i < size; ++i)
+			{
+				BeginObject(i);
+				{
+					//Data()[""] = Data(); // Temporal patch to avoid named properties
+					operator()("val", val[i]);
+				}
+				EndObject();
+			}
 		}
 		EndObject();
 	}
 
 	virtual void BeginObject(const char* name) = 0;
+	virtual void BeginObject(uint32 index) = 0;
 	virtual void EndObject() = 0;
 
 	FORCEINLINE bool IsLoading() { return bLoads; }
 	FORCEINLINE bool IsSaving() { return !bLoads; }
 
 private:
+
+	virtual void SerializeArraySize(uint32& Size) = 0;
+
 	/**
 	 * Selection of Serialize call.
 	 */
@@ -163,15 +186,6 @@ public:
 
 private:
 
-	virtual void BeginObject(const char* name) override {
-		depthData.push(&Data()[name]);
-	}
-
-	virtual void EndObject() override {
-		depthData.pop();
-	}
-
-
 	virtual void Serialize(const char* name, uint8& val) override {
 		if (IsLoading())
 			val = Data()[name].get<uint8>();
@@ -211,9 +225,33 @@ private:
 			Data()[name] = val;
 	}
 
-	json& Data() {
+	FORCEINLINE json& Data() {
 		if(depthData.size() > 0)
 			return *depthData.top();
 		return baseData;
 	}
+
+	virtual void BeginObject(const char* name) override {
+		depthData.push(&Data()[name]);
+	}
+
+	virtual void BeginObject(uint32 index) override {
+		depthData.push(&Data()[index]);
+	}
+
+	virtual void EndObject() override {
+		depthData.pop();
+	}
+
+	virtual void SerializeArraySize(uint32& size) override {
+		if (IsLoading())
+		{
+			size = (uint32)Data().size();
+		}
+		else
+		{
+			json::array_t* ptr = Data().get_ptr<json::array_t*>();
+			ptr->reserve((size_t)size);
+		}
+	};
 };
