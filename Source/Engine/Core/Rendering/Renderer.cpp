@@ -5,7 +5,9 @@
 #include <SDL_opengl.h>
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_sdl.h>
-#include "tracy/TracyOpenGL.hpp"
+#include <tracy/TracyOpenGL.hpp>
+
+#include "Core/Log.h"
 #include "World/World.h"
 
 
@@ -104,7 +106,7 @@ void Renderer::Render(Frame& frame)
 	// World Render
 	{
 		// Execute commands
-		TracyMessageL(CString::Printf(TX("Commands: %i"), frame.commands.Size()).c_str());
+		Log::Message("Commands: %i", frame.commands.Size());
 		// Render final frame pixels
 	}
 
