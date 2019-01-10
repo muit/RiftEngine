@@ -13,11 +13,11 @@
 class UInt8PropertyWidget : public PropertyWidget {
 	CLASS(UInt8PropertyWidget, PropertyWidget)
 
-	eastl::shared_ptr<TPropertyHandle<uint8>> prop;
+	eastl::shared_ptr<TPropertyHandle<u8>> prop;
 
 public:
 
-	void Configure(const eastl::shared_ptr<TPropertyHandle<uint8>>& inProperty)
+	void Configure(const eastl::shared_ptr<TPropertyHandle<u8>>& inProperty)
 	{
 		prop = inProperty;
 		idName = prop->GetName();

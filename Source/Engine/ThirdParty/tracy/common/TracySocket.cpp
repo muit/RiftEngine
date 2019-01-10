@@ -1,7 +1,10 @@
 #include <algorithm>
 #include <assert.h>
 #include <new>
-#include "EASTL/algorithm.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
 
 #include "TracyAlloc.hpp"
 #include "TracySocket.hpp"
@@ -165,7 +168,7 @@ int Socket::RecvBuffered( void* buf, int len, const timeval* tv )
     m_bufLeft = Recv( m_buf, BufSize, tv );
     if( m_bufLeft <= 0 ) return m_bufLeft;
 
-    const auto sz = eastl::min_alt( len, m_bufLeft );
+    const auto sz = std::min( len, m_bufLeft );
     memcpy( buf, m_buf, sz );
     m_bufPtr = m_buf + sz;
     m_bufLeft -= sz;

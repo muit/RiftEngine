@@ -2,11 +2,11 @@
 
 #include "BitArray.h"
 
-BitArray::BitArray(uint32 newSize)
+BitArray::BitArray(u32 newSize)
 {
 	arraySize = newSize;
 	bitLongs  = ((arraySize - 1) >> 5) + 1;
-	bits = new uint32[bitLongs];
+	bits = new u32[bitLongs];
 }
 
 BitArray::BitArray(BitArray&& other)
@@ -24,16 +24,16 @@ BitArray::BitArray(const BitArray& other)
 {
 	arraySize = other.arraySize;
 	bitLongs  = other.bitLongs;
-	bits = new uint32[bitLongs];
-	for (uint32 i = 0; i < bitLongs; i++)
+	bits = new u32[bitLongs];
+	for (u32 i = 0; i < bitLongs; i++)
 		bits[i] = other.bits[i];
 }
 
-BitArray::BitArray(uint32 newSize, bool bitValues)
+BitArray::BitArray(u32 newSize, bool bitValues)
 {
 	arraySize = newSize;
 	bitLongs = ((arraySize - 1) >> 5) + 1;
-	bits = new uint32[bitLongs];
+	bits = new u32[bitLongs];
 
 	if (bitValues)
 		FillBits();
@@ -41,12 +41,12 @@ BitArray::BitArray(uint32 newSize, bool bitValues)
 		ClearBits();
 }
 
-BitArray::BitArray(uint32 newSize, uint32 *newBits)
+BitArray::BitArray(u32 newSize, u32 *newBits)
 {
 	arraySize = newSize;
 	bitLongs = ((arraySize - 1) >> 5) + 1;
-	bits = new uint32[bitLongs];
-	for (uint32 i = 0; i < bitLongs; i++)
+	bits = new u32[bitLongs];
+	for (u32 i = 0; i < bitLongs; i++)
 		bits[i] = newBits[i];
 }
 
@@ -79,9 +79,9 @@ BitArray& BitArray::operator=(const BitArray& other)
 
 	if (!equalSize) {
 		delete []bits;
-		bits = new uint32[bitLongs];
+		bits = new u32[bitLongs];
 	}
-	for (uint32 i = 0; i < bitLongs; i++)
+	for (u32 i = 0; i < bitLongs; i++)
 		bits[i] = other.bits[i];
 
 	return *this;
@@ -91,7 +91,7 @@ BitArray BitArray::operator~()
 {
 	BitArray result(arraySize);
 
-	for (uint32 i = 0; i < bitLongs; i++)
+	for (u32 i = 0; i < bitLongs; i++)
 		result.bits[i] = ~bits[i];
 
 	return result;
@@ -99,21 +99,21 @@ BitArray BitArray::operator~()
 
 BitArray& BitArray::operator^=(const BitArray& other)
 {
-	for (uint32 i = 0; i < ((bitLongs < other.bitLongs) ? bitLongs : other.bitLongs); i++)
+	for (u32 i = 0; i < ((bitLongs < other.bitLongs) ? bitLongs : other.bitLongs); i++)
 		bits[i] ^= other.bits[i];
 	return *this;
 }
 
 BitArray& BitArray::operator&=(const BitArray& other)
 {
-	for (uint32 i = 0; i < ((bitLongs < other.bitLongs) ? bitLongs : other.bitLongs); i++)
+	for (u32 i = 0; i < ((bitLongs < other.bitLongs) ? bitLongs : other.bitLongs); i++)
 		bits[i] &= other.bits[i];
 	return *this;
 }
 
 BitArray& BitArray::operator|=(const BitArray& other)
 {
-	for (uint32 i = 0; i < (bitLongs < other.bitLongs ? bitLongs : other.bitLongs); i++)
+	for (u32 i = 0; i < (bitLongs < other.bitLongs ? bitLongs : other.bitLongs); i++)
 		bits[i] |= other.bits[i];
 	return *this;
 }
@@ -122,7 +122,7 @@ BitArray BitArray::operator^(const BitArray& other)
 {
 	BitArray result((arraySize < other.arraySize) ? arraySize : other.arraySize);
 
-	for (uint32 i = 0; i < result.bitLongs; i++)
+	for (u32 i = 0; i < result.bitLongs; i++)
 		result.bits[i] = bits[i] ^ other.bits[i];
 	return result;
 }
@@ -131,7 +131,7 @@ BitArray BitArray::operator&(const BitArray& other)
 {
 	BitArray result((arraySize < other.arraySize) ? arraySize : other.arraySize);
 
-	for (uint32 i = 0; i < result.bitLongs; i++)
+	for (u32 i = 0; i < result.bitLongs; i++)
 		result.bits[i] = bits[i] & other.bits[i];
 	return result;
 }
@@ -140,19 +140,19 @@ BitArray BitArray::operator|(const BitArray& other)
 {
 	BitArray result((arraySize < other.arraySize) ? arraySize : other.arraySize);
 
-	for (uint32 i = 0; i < result.bitLongs; i++)
+	for (u32 i = 0; i < result.bitLongs; i++)
 		result.bits[i] = bits[i] | other.bits[i];
 	return result;
 }
 
-void BitArray::FillBitArray(uint32 pattern)
+void BitArray::FillBitArray(u32 pattern)
 {
-	for (uint32 i = 0; i < bitLongs; bits[i++] = pattern);
+	for (u32 i = 0; i < bitLongs; bits[i++] = pattern);
 }
 
-int32 BitArray::GetNextSet(uint32 index) const
+i32 BitArray::GetNextSet(u32 index) const
 {
-	uint32 i;
+	u32 i;
 	for (i = index + 1; i < arraySize; i++)
 	{
 		if (IsValidIndex(i))
@@ -167,9 +167,9 @@ int32 BitArray::GetNextSet(uint32 index) const
 	return -1;
 }
 
-int32 BitArray::GetPreviousSet(uint32 index) const
+i32 BitArray::GetPreviousSet(u32 index) const
 {
-	uint32 i;
+	u32 i;
 	if (index != 0)
 	{
 		for (i = index - 1; i > 0; i--)

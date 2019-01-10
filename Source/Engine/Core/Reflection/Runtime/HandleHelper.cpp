@@ -7,10 +7,10 @@ eastl::shared_ptr<PropertyHandle> HandleHelper::CreatePropertyHandle(const Ptr<B
 {
 	if (property && instance->GetClass() == property->GetType())
 	{
-		if (const auto* propUInt8 = dynamic_cast<const TProperty<uint8>*>(property)) {
+		if (const auto* propUInt8 = dynamic_cast<const TProperty<u8>*>(property)) {
 			return CreatePropertyHandle(instance, propUInt8);
 		}
-		else if (const auto* propInt32 = dynamic_cast<const TProperty<int32>*>(property)) {
+		else if (const auto* propInt32 = dynamic_cast<const TProperty<i32>*>(property)) {
 			return CreatePropertyHandle(instance, propInt32);
 		}
 		else if (const auto* propName = dynamic_cast<const TProperty<Name>*>(property)) {

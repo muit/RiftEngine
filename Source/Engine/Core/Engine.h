@@ -34,27 +34,43 @@ public:
 private:
 
 	bool Start() {
-		// Setup SDL
-		if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
-			return false;
+		{
+			ZoneScopedN("Start-Up");
 
-		renderer = Create<Renderer>();
-		if(renderer->GetState() == ERendererState::Failed)
-			return false;
+			// Setup SDL
+			if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
+				return false;
 
-		GetSelf();
-		world = Create<World>(GetSelf());
-		world->Start();
+			renderer = Create<Renderer>();
+			if (!renderer->Initialize())
+				return false;
 
-		ui = Create<UIManager>(GetSelf());
-		ui->Prepare();
+			world = Create<World>(GetSelf());
+			world->Start();
+
+			ui = Create<UIManager>(GetSelf());
+			ui->Prepare();
+		}
 
 		frameTime = {};
 		bool bFinish = false;
 		while (!bFinish)
 		{
+			ZoneScoped("Tick");
 			TracyMessageL("Tick");
-			ZoneScopedN("Tick");
+			Loop(bFinish);
+		}
+
+		return true;
+	}
+
+	void Loop(bool& bFinish) {
+		// New frame
+		Frame frame = {};
+
+		{
+			String tickName = CString::Printf(TX("Tick %i"), frame.Id()).c_str();
+			FrameMarkStart(tickName.c_str());
 
 			frameTime.Tick();
 
@@ -77,9 +93,10 @@ private:
 
 			// Rendering
 			renderer->Render();
-		}
 
-		return true;
+			FrameMarkEnd(tickName.c_str());
+		}
+		renderer->Sleep();
 	}
 
 	void Shutdown() {

@@ -1027,11 +1027,12 @@ public:
     ~save_ostream()
     {
         if ((this->flags_ & std::ios::unitbuf) &&
-#if __cplusplus >= 201703
+			// Disabled because macro shows 1997 instead of 2017
+//#if __cplusplus >= 201703
                 std::uncaught_exceptions() == 0 &&
-#else
-                !std::uncaught_exception() &&
-#endif
+//#else
+//                !std::uncaught_exception() &&
+//#endif
                 this->is_.good())
             this->is_.rdbuf()->pubsync();
     }

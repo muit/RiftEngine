@@ -8,23 +8,23 @@ class BitArray
 {
 private:
 	/** The number of bits in this array */
-	uint32 arraySize;
+	u32 arraySize;
 
 	/** The number of uint32s for storing at least arraySize bits */
-	uint32 bitLongs;
+	u32 bitLongs;
 
 	/** The array of uint32s containing the bits */
-	uint32 *bits;
+	u32 *bits;
 
 public:
 
 	/** Constructors */
-	BitArray(uint32 newSize);
+	BitArray(u32 newSize);
 	BitArray(BitArray&& other);
 	BitArray(const BitArray& other);
 
-	BitArray(uint32 newSize, bool setClear);
-	BitArray(uint32 newSize, uint32 *newBits);
+	BitArray(u32 newSize, bool setClear);
+	BitArray(u32 newSize, u32 *newBits);
 
 	/** Destructor */
 	~BitArray();
@@ -40,7 +40,7 @@ public:
 	BitArray  operator|(const BitArray& other);
 
 	/** @return true if a bit is set */
-	inline bool IsValidIndex(uint32 index) const
+	inline bool IsValidIndex(u32 index) const
 	{
 		return bits[(index>>5)] >> (index & 0x0000001f) & 0x00000001;
 	}
@@ -52,7 +52,7 @@ public:
 	}
 
 	/** Set a single bit */
-	inline void FillBit(uint32 index)
+	inline void FillBit(u32 index)
 	{
 		bits[index >> 5] |= 0x00000001 << (index & 0x0000001f);
 	}
@@ -64,16 +64,16 @@ public:
 	}
 
 	/** Clear a single bit */
-	inline void ClearBit(uint32 index)
+	inline void ClearBit(u32 index)
 	{
 		bits[index >> 5] &= ~(0x00000001 << (index & 0x0000001f));
 	}
 	/** Fill with a 32-bit pattern */
-	void FillBitArray(uint32 pattern);
+	void FillBitArray(u32 pattern);
 
 	/** flip a single bit.
 	*/
-	inline void FlipBit(uint32 index)
+	inline void FlipBit(u32 index)
 	{
 		if (IsValidIndex(index))
 			ClearBit(index);
@@ -90,11 +90,11 @@ public:
 
 	/** Returns index of next set bit in array (wraps around)
 	*/
-	int32 GetNextSet(uint32 index) const;
+	i32 GetNextSet(u32 index) const;
 
 	/** @return index of previous set bit in array (wraps around) */
-	int32 GetPreviousSet(uint32 index) const;
+	i32 GetPreviousSet(u32 index) const;
 
 	/** @return the number of bits in this bit array */
-	uint32 Size() { return arraySize; }
+	u32 Size() { return arraySize; }
 };

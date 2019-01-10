@@ -17,14 +17,14 @@ void TextureData::FromSurface(SDL_Surface* surface)
 
 		size = { surface->w, surface->h };
 
-		const uint32 pixelCount = size.x() * size.y();
-		uint32* const pixels = (uint32*)surface->pixels;
+		const u32 pixelCount = size.x() * size.y();
+		u32* const pixels = (u32*)surface->pixels;
 
 		// Copy pixels
 		buffer.Reserve(pixelCount);
-		for (uint32 i = 0; i < pixelCount; ++i)
+		for (u32 i = 0; i < pixelCount; ++i)
 		{
-			const uint32 pixel = pixels[i];
+			const u32 pixel = pixels[i];
 			buffer.Add(Color{ pixel });
 		}
 

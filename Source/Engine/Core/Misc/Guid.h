@@ -79,7 +79,7 @@ public:
 	 * @param InC The third component.
 	 * @param InD The fourth component.
 	 */
-	Guid(uint32 InA, uint32 InB, uint32 InC, uint32 InD)
+	Guid(u32 InA, u32 InB, u32 InC, u32 InD)
 		: A(InA), B(InB), C(InC), D(InD)
 	{ }
 
@@ -130,7 +130,7 @@ public:
 	 * @param Index The index of the component to return (0...3).
 	 * @return The component.
 	 */
-	uint32& operator[](uint8 Index)
+	u32& operator[](u8 Index)
 	{
 		//checkSlow(Index >= 0);
 		//checkSlow(Index < 4);
@@ -152,7 +152,7 @@ public:
 	 * @param Index The index of the component to return (0...3).
 	 * @return The component.
 	 */
-	const uint32& operator[](uint8 Index) const
+	const u32& operator[](u8 Index) const
 	{
 		//checkSlow(Index >= 0);
 		//checkSlow(Index < 4);
@@ -260,16 +260,16 @@ public:
 public:
 
 	/** Holds the first component. */
-	uint32 A;
+	u32 A;
 
 	/** Holds the second component. */
-	uint32 B;
+	u32 B;
 
 	/** Holds the third component. */
-	uint32 C;
+	u32 C;
 
 	/** Holds the fourth component. */
-	uint32 D;
+	u32 D;
 };
 
 DEFINE_CLASS_TRAITS(Guid, {

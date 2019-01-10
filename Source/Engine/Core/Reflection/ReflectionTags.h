@@ -4,7 +4,7 @@
 #include "CoreEngine.h"
 #include "EngineTypes.h"
 
-enum class ReflectionTags : uint16 {
+enum class ReflectionTags : u16 {
 	// Class only Tags
 	Abstract  = 1 << 0,
 
@@ -24,9 +24,9 @@ enum class ReflectionTags : uint16 {
 #define DetailsView ReflectionTags::DetailsView
 
 
-constexpr uint16 operator*(ReflectionTags f)
+constexpr u16 operator*(ReflectionTags f)
 {
-	return static_cast<uint16>(f);
+	return static_cast<u16>(f);
 }
 
 constexpr ReflectionTags operator|(ReflectionTags lhs, ReflectionTags rhs)
@@ -44,22 +44,22 @@ constexpr bool operator!(ReflectionTags lhs)
 	return *lhs <= 0;
 }
 
-constexpr bool operator>(ReflectionTags lhs, uint16 rhs)
+constexpr bool operator>(ReflectionTags lhs, u16 rhs)
 {
 	return (*lhs) > rhs;
 }
 
-constexpr bool operator<(ReflectionTags lhs, uint16 rhs)
+constexpr bool operator<(ReflectionTags lhs, u16 rhs)
 {
 	return (*lhs) < rhs;
 }
 
-constexpr bool operator>(uint16 lhs, ReflectionTags rhs)
+constexpr bool operator>(u16 lhs, ReflectionTags rhs)
 {
 	return lhs > (*rhs);
 }
 
-constexpr bool operator<(uint16 lhs, ReflectionTags rhs)
+constexpr bool operator<(u16 lhs, ReflectionTags rhs)
 {
 	return lhs < (*rhs);
 }

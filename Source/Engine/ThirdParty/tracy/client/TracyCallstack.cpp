@@ -5,10 +5,14 @@
 
 #if TRACY_HAS_CALLSTACK == 1
 #  include <windows.h>
-#  pragma warning( push )
-#  pragma warning( disable : 4091 )
+#  ifdef _MSC_VER
+#    pragma warning( push )
+#    pragma warning( disable : 4091 )
+#  endif
 #  include <dbghelp.h>
-#  pragma warning( pop )
+#  ifdef _MSC_VER
+#    pragma warning( pop )
+#  endif
 #elif TRACY_HAS_CALLSTACK >= 2
 #  include <dlfcn.h>
 #  include <cxxabi.h>
@@ -19,7 +23,7 @@ namespace tracy
 
 #if TRACY_HAS_CALLSTACK == 1
 
-extern "C" t_RtlWalkFrameChain RtlWalkFrameChain = 0;
+extern "C" { t_RtlWalkFrameChain RtlWalkFrameChain = 0; }
 
 void InitCallstack()
 {

@@ -9,10 +9,8 @@
 #include "World/World.h"
 
 
-Renderer::Renderer() : Super()
+bool Renderer::Initialize()
 {
-	state = ERendererState::Rendering;
-
 #if PLATFORM_APPLE
 	// GL 3.2 Core + GLSL 150
 	glslVersion = "#version 150";
@@ -39,9 +37,9 @@ Renderer::Renderer() : Super()
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 #if WITH_EDITOR
-	uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED;
+	u32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED;
 #else
-	uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED;
+	u32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED;
 #endif
 	window = SDL_CreateWindow(
 		"Rift Engine",
@@ -51,8 +49,7 @@ Renderer::Renderer() : Super()
 	);
 
 	if (!window) {
-		state = ERendererState::Failed;
-		return;
+		return false;
 	}
 
 	gl_context = SDL_GL_CreateContext(window);
@@ -61,12 +58,12 @@ Renderer::Renderer() : Super()
 
 	//Setup GL and UI
 	if (gl3wInit() != 0) {
-		state = ERendererState::Failed;
-		return;
+		return false;
 	}
 
 	PrepareUI();
 	TracyGpuContext(gl_context);
+	return true;
 }
 
 void Renderer::PrepareUI()
@@ -85,16 +82,6 @@ void Renderer::PrepareUI()
 	ImGui::StyleColorsDark();
 }
 
-void Renderer::BeforeDestroy()
-{
-	Super::BeforeDestroy();
-
-	if (window)
-	{
-		SDL_DestroyWindow(window);
-	}
-}
-
 void Renderer::PreTick()
 {
 	ImGui_ImplOpenGL3_NewFrame();
@@ -103,37 +90,44 @@ void Renderer::PreTick()
 
 void Renderer::Render()
 {
+	ZoneScopedNC("Render", 0x94d145);
+	ImGui::Render();
+	SDL_GL_MakeCurrent(window, gl_context);
+
+	ImGuiIO& io = ImGui::GetIO();
+	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+	glClearColor(0.7f, 0.4f, 0.4f, 1);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+
+	// World Render
 	{
-		ZoneScopedNC("Render", 0x94d145);
-		ImGui::Render();
-		SDL_GL_MakeCurrent(window, gl_context);
+		// Execute commands
+		GetWorld()->Render(); //<- Probably no longer needed
 
+		// Render final frame pixels
+	}
 
-		ImGuiIO& io = ImGui::GetIO();
-		//glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-		glClearColor(0.7f, 0.4f, 0.4f, 1);
-		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
+	{ // UI Render
+		ZoneScopedNC("UI", 0x94d145);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-		// World Render
-		GetWorld()->Render();
-
-		{ // UI Render
-			ZoneScopedNC("UI", 0x94d145);
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-			// Update and Render additional Platform Windows
-			if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-			{
-				ImGui::UpdatePlatformWindows();
-				ImGui::RenderPlatformWindowsDefault();
-			}
+		// Update and Render additional Platform Windows
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
 		}
 	}
+}
+
+void Renderer::BeforeDestroy()
+{
+	Super::BeforeDestroy();
+
+	if (window)
 	{
-		ZoneScopedNC("Sleep", 0xD15545);
-		SDL_GL_SwapWindow(window);
+		SDL_DestroyWindow(window);
 	}
-	FrameMark;
 }

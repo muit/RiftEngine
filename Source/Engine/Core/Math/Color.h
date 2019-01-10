@@ -71,8 +71,8 @@ struct LinearColor
 
 	// Operators.
 
-	FORCEINLINE float& Component(int32 index) { return (&r)[index]; }
-	FORCEINLINE const float& Component(int32 index) const { return (&r)[index]; }
+	FORCEINLINE float& Component(i32 index) { return (&r)[index]; }
+	FORCEINLINE const float& Component(i32 index) const { return (&r)[index]; }
 
 	FORCEINLINE LinearColor operator+(const LinearColor& other) const
 	{
@@ -222,7 +222,7 @@ struct LinearColor
 	/**
 	 * Converts byte hue-saturation-brightness to floating point red-green-blue.
 	 */
-	static LinearColor FGetHSV(uint8 H,uint8 S,uint8 V);
+	static LinearColor FGetHSV(u8 H,u8 S,u8 V);
 
 	/**
 	* Makes a random but quite nice color.
@@ -250,7 +250,7 @@ struct LinearColor
 	 * @param	OutPoints		Receives the output samples.
 	 * @return					Path length.
 	 */
-	static float EvaluateBezier(const LinearColor* ControlPoints, int32 NumPoints, TArray<LinearColor>& OutPoints);
+	static float EvaluateBezier(const LinearColor* ControlPoints, i32 NumPoints, TArray<LinearColor>& OutPoints);
 
 	/** Converts a linear space RGB color to an HSV color */
 	LinearColor LinearRGBToHSV() const;
@@ -360,21 +360,21 @@ public:
 #if PLATFORM_LITTLE_ENDIAN
 	#ifdef _MSC_VER
 		// Win32 x86
-		union { struct{ uint8 b,g,r,a; }; uint32 alignmentDummy; };
+		union { struct{ u8 b,g,r,a; }; u32 alignmentDummy; };
 	#else
 		// Linux x86, etc
-		uint8 b GCC_ALIGN(4);
-		uint8 g,r,a;
+		u8 b GCC_ALIGN(4);
+		u8 g,r,a;
 	#endif
 #else // PLATFORM_LITTLE_ENDIAN
 	union {
-		uint8 a, r, g, b;
-		uint32 alignmentDummy;
+		u8 a, r, g, b;
+		u32 alignmentDummy;
 	};
 #endif
 
-	uint32& DWColor(void) {return *((uint32*)this);}
-	const uint32& DWColor(void) const {return *((uint32*)this);}
+	u32& DWColor(void) {return *((u32*)this);}
+	const u32& DWColor(void) const {return *((u32*)this);}
 
 	// Constructors.
 	FORCEINLINE explicit Color()
@@ -383,7 +383,7 @@ public:
 		r = g = b = a = 0;
 	}
 
-	constexpr FORCEINLINE Color( uint8 r, uint8 g, uint8 b, uint8 a = 255 )
+	constexpr FORCEINLINE Color( u8 r, u8 g, u8 b, u8 a = 255 )
 		// put these into the body for proper ordering with INTEL vs non-INTEL_BYTE_ORDER
 #if PLATFORM_LITTLE_ENDIAN
 		: b(b), g(g), r(r), a(a)
@@ -392,7 +392,7 @@ public:
 #endif
 	{}
 
-	FORCEINLINE explicit Color( uint32 InColor )
+	FORCEINLINE explicit Color( u32 InColor )
 	{
 		DWColor() = InColor;
 	}
@@ -412,10 +412,10 @@ public:
 
 	FORCEINLINE void operator+=(const Color& other)
 	{
-		r = (uint8) Math::Min((int32) r + (int32) other.r, 255);
-		g = (uint8) Math::Min((int32) g + (int32) other.g, 255);
-		b = (uint8) Math::Min((int32) b + (int32) other.b, 255);
-		a = (uint8) Math::Min((int32) a + (int32) other.a, 255);
+		r = (u8) Math::Min((i32) r + (i32) other.r, 255);
+		g = (u8) Math::Min((i32) g + (i32) other.g, 255);
+		b = (u8) Math::Min((i32) b + (i32) other.b, 255);
+		a = (u8) Math::Min((i32) a + (i32) other.a, 255);
 	}
 
 	LinearColor FromRGBE() const;
@@ -439,7 +439,7 @@ public:
 	 *	@return a new FColor based of this color with the new alpha value.
 	 *	Usage: const FColor& MyColor = FColorList::Green.WithAlpha(128);
 	 */
-	Color WithAlpha( uint8 alpha ) const
+	Color WithAlpha( u8 alpha ) const
 	{
 		return Color( r, g, b, alpha );
 	}
@@ -485,7 +485,7 @@ public:
 	/**
 	 * Gets the color in a packed uint32 format packed in the order ARGB.
 	 */
-	FORCEINLINE uint32 ToPackedARGB() const
+	FORCEINLINE u32 ToPackedARGB() const
 	{
 		return ( a << 24 ) | ( r << 16 ) | ( g << 8 ) | ( b << 0 );
 	}
@@ -493,7 +493,7 @@ public:
 	/**
 	 * Gets the color in a packed uint32 format packed in the order ABGR.
 	 */
-	FORCEINLINE uint32 ToPackedABGR() const
+	FORCEINLINE u32 ToPackedABGR() const
 	{
 		return ( a << 24 ) | ( b << 16 ) | ( g << 8 ) | ( r << 0 );
 	}
@@ -501,7 +501,7 @@ public:
 	/**
 	 * Gets the color in a packed uint32 format packed in the order RGBA.
 	 */
-	FORCEINLINE uint32 ToPackedRGBA() const
+	FORCEINLINE u32 ToPackedRGBA() const
 	{
 		return ( r << 24 ) | ( g << 16 ) | ( g << 8 ) | ( a << 0 );
 	}
@@ -509,7 +509,7 @@ public:
 	/**
 	 * Gets the color in a packed uint32 format packed in the order BGRA.
 	 */
-	FORCEINLINE uint32 ToPackedBGRA() const
+	FORCEINLINE u32 ToPackedBGRA() const
 	{
 		return ( b << 24 ) | ( g << 16 ) | ( r << 8 ) | ( a << 0 );
 	}
@@ -542,7 +542,7 @@ private:
 };
 
 
-FORCEINLINE uint32 GetTypeHash( const Color& Color )
+FORCEINLINE u32 GetTypeHash( const Color& Color )
 {
 	return Color.DWColor();
 }
@@ -573,13 +573,13 @@ DEFINE_CLASS_TRAITS(Color, {
 struct FDXTColor565
 {
 	/** Blue component, 5 bit. */
-	uint16 B:5;
+	u16 B:5;
 
 	/** Green component, 6 bit. */
-	uint16 G:6;
+	u16 G:6;
 
 	/** Red component, 5 bit */
-	uint16 R:5;
+	u16 R:5;
 };
 
 
@@ -593,7 +593,7 @@ struct FDXTColor16
 		/** 565 Color */
 		FDXTColor565 Color565;
 		/** 16 bit entity representation for easy access. */
-		uint16 Value;
+		u16 Value;
 	};
 };
 
@@ -607,10 +607,10 @@ struct FDXT1
 	union
 	{
 		FDXTColor16 Color[2];
-		uint32 Colors;
+		u32 Colors;
 	};
 	/** Indices controlling how to blend colors. */
-	uint32 Indices;
+	u32 Indices;
 };
 
 
@@ -620,7 +620,7 @@ struct FDXT1
 struct FDXT5
 {
 	/** Alpha component of DXT5 */
-	uint8	Alpha[8];
+	u8	Alpha[8];
 	/** DXT1 color component. */
 	FDXT1	DXT1;
 };

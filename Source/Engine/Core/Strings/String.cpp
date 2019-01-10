@@ -20,12 +20,12 @@ void CString::ToSentenceCase(const String& str, String& result)
 	}
 }
 
-int32 CString::ParseIntoArray(const String& str, TArray<String>& OutArray, const TCHAR* pchDelim, bool InCullEmpty /*= true*/)
+i32 CString::ParseIntoArray(const String& str, TArray<String>& OutArray, const TCHAR* pchDelim, bool InCullEmpty /*= true*/)
 {
 	return 0;
 }
 
-String CString::BackSubstr(const String& str, int32 size)
+String CString::BackSubstr(const String& str, i32 size)
 {
 	return str.substr(Math::Max((SIZE_T)0u, SIZE_T(str.size() - size)), size);
 }

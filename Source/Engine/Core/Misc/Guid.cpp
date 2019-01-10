@@ -230,7 +230,7 @@ bool Guid::ParseExact(const String& GuidString, EGuidFormats Format, Guid& OutGu
 		NormalizedGuidString += GuidString.substr(27, 8);
 	}
 
-	for (int32 Index = 0; Index < (int32)NormalizedGuidString.size(); ++Index)
+	for (i32 Index = 0; Index < (i32)NormalizedGuidString.size(); ++Index)
 	{
 		if (!FChar::IsHexDigit(NormalizedGuidString[Index]))
 		{

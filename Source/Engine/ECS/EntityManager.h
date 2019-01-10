@@ -8,7 +8,7 @@
 #include "Gameplay/Components/CEntity.h"
 
 
-using EntityId = uint32;
+using EntityId = u32;
 class Archive;
 
 

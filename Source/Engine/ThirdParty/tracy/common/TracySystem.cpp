@@ -180,7 +180,7 @@ const char* GetThreadName( uint64_t id )
     return buf;
 #  endif
 #endif
-    sprintf_s( buf, "%" PRIu64, id );
+    sprintf( buf, "%" PRIu64, id );
     return buf;
 }
 

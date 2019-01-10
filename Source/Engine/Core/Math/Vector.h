@@ -9,7 +9,7 @@
 
 
 using v2 = Eigen::Matrix<float, 2, 1>;
-using v2_u32 = Eigen::Matrix<uint32, 2, 1>;
+using v2_u32 = Eigen::Matrix<u32, 2, 1>;
 
 using v3 = Eigen::Matrix<float, 3, 1>;
 
@@ -18,13 +18,13 @@ using v3 = Eigen::Matrix<float, 3, 1>;
 
 using v4 = Eigen::Matrix<float, 4, 1>;
 
-using v2_u8 = Eigen::Matrix<uint8, 2, 1>;
-using v3_u8 = Eigen::Matrix<uint8, 3, 1>;
-using v4_u8 = Eigen::Matrix<uint8, 4, 1>;
+using v2_u8 = Eigen::Matrix<u8, 2, 1>;
+using v3_u8 = Eigen::Matrix<u8, 3, 1>;
+using v4_u8 = Eigen::Matrix<u8, 4, 1>;
 
-using v2_i32 = Eigen::Matrix<int32, 2, 1>;
-using v3_i32 = Eigen::Matrix<int32, 3, 1>;
-using v4_i32 = Eigen::Matrix<int32, 4, 1>;
+using v2_i32 = Eigen::Matrix<i32, 2, 1>;
+using v3_i32 = Eigen::Matrix<i32, 3, 1>;
+using v4_i32 = Eigen::Matrix<i32, 4, 1>;
 
-using v3_u32 = Eigen::Matrix<uint32, 3, 1>;
-using v4_u32 = Eigen::Matrix<uint32, 4, 1>;
+using v3_u32 = Eigen::Matrix<u32, 3, 1>;
+using v4_u32 = Eigen::Matrix<u32, 4, 1>;

@@ -103,7 +103,7 @@ bool Timespan::Parse(const String& TimespanString, Timespan& OutTimespan)
 	// pad fractional token with zeros
 	if (HasFractional)
 	{
-		const int32 FractionalLen = (int32)(Tokens[4].size());
+		const i32 FractionalLen = (i32)(Tokens[4].size());
 
 		if (FractionalLen > 9)
 		{
@@ -115,11 +115,11 @@ bool Timespan::Parse(const String& TimespanString, Timespan& OutTimespan)
 		}
 	}
 
-	const int32 days = AtoI32(Tokens[0].c_str());
-	const int32 hours = AtoI32(Tokens[1].c_str());
-	const int32 minutes = AtoI32(Tokens[2].c_str());
-	const int32 seconds = AtoI32(Tokens[3].c_str());
-	const int32 fractionNano = AtoI32(Tokens[4].c_str());
+	const i32 days = AtoI32(Tokens[0].c_str());
+	const i32 hours = AtoI32(Tokens[1].c_str());
+	const i32 minutes = AtoI32(Tokens[2].c_str());
+	const i32 seconds = AtoI32(Tokens[3].c_str());
+	const i32 fractionNano = AtoI32(Tokens[4].c_str());
 
 	// Max days
 	if ((days > floor<date::days>(decmicroseconds::max()).count() -1))
@@ -146,7 +146,7 @@ bool Timespan::Parse(const String& TimespanString, Timespan& OutTimespan)
 /* FTimespan implementation
  *****************************************************************************/
 
-void Timespan::Assign(int32 days, int32 hours, int32 minutes, int32 seconds, int32 fractionNano)
+void Timespan::Assign(i32 days, i32 hours, i32 minutes, i32 seconds, i32 fractionNano)
 {
 	duration = floor<decmicroseconds>(
 		            date::days { days }
@@ -156,12 +156,12 @@ void Timespan::Assign(int32 days, int32 hours, int32 minutes, int32 seconds, int
 	+ std::chrono::nanoseconds { fractionNano });
 }
 
-Timespan Timespan::FromMinutes(int32 minutes)
+Timespan Timespan::FromMinutes(i32 minutes)
 {
 	return Timespan{ 0, minutes, 0 };
 }
 
-Timespan Timespan::FromSeconds(int32 seconds)
+Timespan Timespan::FromSeconds(i32 seconds)
 {
 	return Timespan{ 0, 0, seconds };
 }

@@ -4,15 +4,44 @@
 
 #include "CoreEngine.h"
 
+#include <EASTL/queue.h>
+#include <EASTL/shared_ptr.h>
+
+#include "Core/Misc/DateTime.h"
+#include "RenderCommand.h"
 #include "TextureData.h"
-#include "../Misc/DateTime.h"
 
 
 struct Frame {
+private:
+	static u16 idCounter;
+	u16 id;
+
+public:
 
 	DateTime time;
-	v2_u32 size;
 	TextureData baseColor;
 
-	Frame(v2_u32 size) : time(DateTime::Now()), size{size}, baseColor{ size } {}
+	TArray<eastl::shared_ptr<RenderCommand>> commands;
+
+
+	Frame() : id(idCounter++), time(DateTime::Now()) {}
+	Frame(const Frame& other) = delete;
+	Frame& operator=(const Frame& other) = delete;
+
+	void ScheduleCommand(eastl::shared_ptr<RenderCommand>&& command) {
+		commands.Add(command);
+	}
+
+	u16 Id() { return id; }
+
+private:
+
+	void ExecuteCommands(Renderer& renderer) {
+		for(const auto& command : commands)
+		{
+			command->Execute(renderer);
+		}
+		commands.Empty();
+	}
 };

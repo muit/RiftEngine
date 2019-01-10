@@ -41,14 +41,14 @@ struct Math
 
 
 	/** Returns a random integer between 0 and RAND_MAX, inclusive */
-	static FORCEINLINE int32 Rand() { return rand(); }
+	static FORCEINLINE i32 Rand() { return rand(); }
 
 	/** Returns a random float between 0 and 1, inclusive. */
 	static FORCEINLINE float Rand01() { return Rand() / (float)RAND_MAX; }
 
-	static FORCEINLINE int32 RoundToInt(float f)
+	static FORCEINLINE i32 RoundToInt(float f)
 	{
-		return (int32)std::round(f);
+		return (i32)std::round(f);
 	}
 
 	/**
@@ -111,9 +111,9 @@ struct Math
 		return CeilToDouble(d);
 	}
 
-	static FORCEINLINE int32 FloorToInt(float f)
+	static FORCEINLINE i32 FloorToInt(float f)
 	{
-		return (int32)FloorToFloat(f);
+		return (i32)FloorToFloat(f);
 	}
 
 	static FORCEINLINE float FloorToFloat(float f)
@@ -126,9 +126,9 @@ struct Math
 		return std::floor(d);
 	}
 
-	static FORCEINLINE int32 CeilToInt(float f)
+	static FORCEINLINE i32 CeilToInt(float f)
 	{
-		return (int32)CeilToFloat(f);
+		return (i32)CeilToFloat(f);
 	}
 
 	static FORCEINLINE float CeilToFloat(float f)

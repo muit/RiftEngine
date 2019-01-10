@@ -99,7 +99,7 @@ public:
 	 * @param Second The second (optional).
 	 * @param Millisecond The millisecond (optional).
 	 */
-	DateTime(int32 Year, int32 Month, int32 Day, int32 Hour = 0, int32 Minute = 0, int32 Second = 0, int32 Millisecond = 0);
+	DateTime(i32 Year, i32 Month, i32 Day, i32 Hour = 0, i32 Minute = 0, i32 Second = 0, i32 Millisecond = 0);
 
 public:
 
@@ -233,7 +233,7 @@ public:
 		return time;
 	}
 
-	int64 GetTicks() const
+	i64 GetTicks() const
 	{
 		return time.time_since_epoch().count();
 	}
@@ -265,7 +265,7 @@ public:
 	 * @return Day of the month.
 	 * @see GetHour, GetHour12, GetMillisecond, GetMinute, GetMonth, GetSecond, GetYear
 	 */
-	uint32 GetDay() const;
+	u32 GetDay() const;
 
 	/**
 	 * Calculates this date's day of the week (Sunday - Saturday).
@@ -281,7 +281,7 @@ public:
 	 * @return The day of year.
 	 * @see GetDayOfWeek, GetMonthOfYear, GetTimeOfDay
 	 */
-	uint32 GetDayOfYear() const;
+	u32 GetDayOfYear() const;
 
 	/**
 	 * Gets this date's hour part in 24-hour clock format (0 to 23).
@@ -289,7 +289,7 @@ public:
 	 * @return The hour.
 	 * @see GetDay, GetDayOfWeek, GetDayOfYear, GetHour12, GetMillisecond, GetMinute, GetMonth, GetSecond, GetYear
 	 */
-	uint32 GetHour() const
+	u32 GetHour() const
 	{
 		return (floor<std::chrono::hours>(time) - floor<days>(time)).count();
 	}
@@ -300,7 +300,7 @@ public:
 	 * @return The hour in AM/PM format.
 	 * @see GetDay, GetHour, GetMillisecond, GetMinute, GetMonth, GetSecond, GetYear
 	 */
-	uint32 GetHour12() const;
+	u32 GetHour12() const;
 
 	/**
 	 * Gets this date's millisecond part (0 to 999).
@@ -308,9 +308,9 @@ public:
 	 * @return The millisecond.
 	 * @see GetDay, GetHour, GetHour12, GetMinute, GetMonth, GetSecond, GetYear
 	 */
-	int32 GetMillisecond() const
+	i32 GetMillisecond() const
 	{
-		return (int32)(floor<std::chrono::milliseconds>(time) - floor<std::chrono::seconds>(time)).count();
+		return (i32)(floor<std::chrono::milliseconds>(time) - floor<std::chrono::seconds>(time)).count();
 	}
 
 	/**
@@ -319,7 +319,7 @@ public:
 	 * @return The minute.
 	 * @see GetDay, GetHour, GetHour12, GetMillisecond, GetMonth, GetSecond, GetYear
 	 */
-	int32 GetMinute() const
+	i32 GetMinute() const
 	{
 		return (floor<std::chrono::minutes>(time) - floor<std::chrono::hours>(time)).count();
 	}
@@ -330,7 +330,7 @@ public:
 	 * @return The month.
 	 * @see GetDay, GetHour, GetHour12, GetMillisecond, GetMinute, GetSecond, GetYear
 	 */
-	uint32 GetMonth() const;
+	u32 GetMonth() const;
 
 	/**
 	 * Gets the date's month of the year (January to December).
@@ -349,9 +349,9 @@ public:
 	 * @return The second.
 	 * @see GetDay, GetHour, GetHour12, GetMillisecond, GetMinute, GetMonth, GetYear
 	 */
-	int32 GetSecond() const
+	i32 GetSecond() const
 	{
-		return (int32)(floor<std::chrono::seconds>(time) - floor<std::chrono::minutes>(time)).count();
+		return (i32)(floor<std::chrono::seconds>(time) - floor<std::chrono::minutes>(time)).count();
 	}
 
 	/**
@@ -371,7 +371,7 @@ public:
 	 * @return The year.
 	 * @see GetDay, GetHour, GetHour12, GetMillisecond, GetMinute, GetMonth, GetSecond
 	 */
-	int32 GetYear() const;
+	i32 GetYear() const;
 
 	/**
 	 * Gets whether this date's time is in the afternoon.
@@ -449,7 +449,7 @@ public:
 	 * @return Time of day.
 	 * @see FromUnixTimestamp
 	 */
-	int64 ToUnixTimestamp() const
+	i64 ToUnixTimestamp() const
 	{
 		return floor<std::chrono::seconds>( time ).time_since_epoch().count();
 	}
@@ -464,7 +464,7 @@ public:
 	 * @return The number of days
 	 * @see DaysInYear
 	 */
-	static int32 DaysInMonth(int32 Year, int32 Month);
+	static i32 DaysInMonth(i32 Year, i32 Month);
 
 	/**
 	 * Gets the number of days in the given year.
@@ -473,7 +473,7 @@ public:
 	 * @return The number of days.
 	 * @see DaysInMonth
 	 */
-	static int32 DaysInYear(int32 Year);
+	static i32 DaysInYear(i32 Year);
 
 
 	/**
@@ -483,7 +483,7 @@ public:
 	 * @return Gregorian date and time.
 	 * @see ToUnixTimestamp
 	 */
-	static DateTime FromUnixTimestamp(int64 UnixTime)
+	static DateTime FromUnixTimestamp(i64 UnixTime)
 	{
 		return DateTime(1970, 1, 1) + Timespan(std::chrono::seconds{ UnixTime });
 	}
@@ -498,7 +498,7 @@ public:
 	 * @param Year The year to check.
 	 * @return true if the year is a leap year, false otherwise.
 	 */
-	static bool IsLeapYear(int32 Year);
+	static bool IsLeapYear(i32 Year);
 
 	/**
 	 * Returns the maximum date value.
@@ -609,15 +609,15 @@ public:
 	 *
 	 * @return true if the components are valid, false otherwise.
 	 */
-	static bool Validate(int32 Year, int32 Month, int32 Day, int32 Hour, int32 Minute, int32 Second, int32 Millisecond);
+	static bool Validate(i32 Year, i32 Month, i32 Day, i32 Hour, i32 Minute, i32 Second, i32 Millisecond);
 
 protected:
 
 	/** Holds the days per month in a non-leap year. */
-	static const int32 DaysPerMonth[];
+	static const i32 DaysPerMonth[];
 
 	/** Holds the cumulative days per month in a non-leap year. */
-	static const int32 DaysToMonth[];
+	static const i32 DaysToMonth[];
 
 private:
 	friend struct Z_Construct_UScriptStruct_FDateTime_Statics;

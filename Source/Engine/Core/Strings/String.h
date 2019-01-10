@@ -18,6 +18,14 @@ using StringView = eastl::basic_string_view<TCHAR>;
 
 
 struct CString {
+	template<typename ...Args>
+	static String Printf(const TCHAR* format, Args... args) {
+		String str;
+		str.sprintf(format, eastl::forward<Args>(args)...);
+		return eastl::move(str);
+	}
+
+
 	static void ToSentenceCase(const String& str, String& result);
 
 	static String ReplaceCopy(const String& original, const TCHAR searchChar, const TCHAR replacementChar) {
@@ -47,7 +55,7 @@ struct CString {
 	 *
 	 * @return	The number of elements in InArray
 	 */
-	static int32 ParseIntoArray(const String& str, TArray<String>& OutArray, const TCHAR* pchDelim, bool InCullEmpty = true);
+	static i32 ParseIntoArray(const String& str, TArray<String>& OutArray, const TCHAR* pchDelim, bool InCullEmpty = true);
 
 	static FORCEINLINE bool StartsWith(const String& str, const String& subStr) {
 		return StartsWith(str, subStr.c_str());
@@ -66,7 +74,7 @@ struct CString {
 		return str.size() >= 1 && str.back() == c;
 	}
 
-	static int32 Split(const String& str, TArray<String>& tokens, const TCHAR delim)
+	static i32 Split(const String& str, TArray<String>& tokens, const TCHAR delim)
 	{
 		std::size_t current, previous = 0;
 		current = str.find(delim);
@@ -79,11 +87,11 @@ struct CString {
 		return tokens.Size();
 	}
 
-	static String FrontSubstr(const String& str, int32 size) {
+	static String FrontSubstr(const String& str, i32 size) {
 		return str.substr(0, size);
 	}
 
-	static String BackSubstr(const String& str, int32 size);
+	static String BackSubstr(const String& str, i32 size);
 
 	/* Unneeded
 	static FORCEINLINE uint32 StrtoU32(const String& str) {

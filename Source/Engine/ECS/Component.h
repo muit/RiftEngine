@@ -10,6 +10,6 @@
 class Component : public Pod {
 	STRUCT(Component)
 
-	PROP(uint8, time)
-	uint8 time;
+	PROP(u8, time)
+	u8 time;
 };

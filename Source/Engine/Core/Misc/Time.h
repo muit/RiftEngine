@@ -12,8 +12,8 @@ struct FrameTime
 {
 	FrameTime() : lastTick(SDL_GetPerformanceCounter()), deltaTime(0.f) {}
 
-	uint64 currentTick;
-	uint64 lastTick;
+	u64 currentTick;
+	u64 lastTick;
 	float deltaTime;
 
 	void Tick()

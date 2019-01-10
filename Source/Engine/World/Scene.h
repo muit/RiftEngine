@@ -18,11 +18,11 @@ public:
 	PROP(Name, someName, DetailsEdit)
 	Name someName;
 
-	PROP(int32, aNumber, DetailsEdit)
-	int32 aNumber;
+	PROP(i32, aNumber, DetailsEdit)
+	i32 aNumber;
 
-	PROP(uint8, anotherNumber, DetailsEdit | Transient)
-	uint8 anotherNumber;
+	PROP(u8, anotherNumber, DetailsEdit | Transient)
+	u8 anotherNumber;
 
 	PROP(v3, myVector, DetailsEdit)
 	v3 myVector;

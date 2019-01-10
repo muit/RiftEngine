@@ -23,10 +23,10 @@ GlobalPtr<PropertyWidget> PropertyWidget::NewPropertyWidget(const eastl::shared_
 		if (auto propFloat = eastl::dynamic_pointer_cast<TPropertyHandle<float>>(prop)) {
 			return New<FloatPropertyWidget>(propFloat);
 		}
-		else if (auto propInt32 = eastl::dynamic_pointer_cast<TPropertyHandle<int32>>(prop)) {
+		else if (auto propInt32 = eastl::dynamic_pointer_cast<TPropertyHandle<i32>>(prop)) {
 			return New<Int32PropertyWidget>(propInt32);
 		}
-		else if (auto propUInt8 = eastl::dynamic_pointer_cast<TPropertyHandle<uint8>>(prop)) {
+		else if (auto propUInt8 = eastl::dynamic_pointer_cast<TPropertyHandle<u8>>(prop)) {
 			return New<UInt8PropertyWidget>(propUInt8);
 		}
 		else if (auto propName = eastl::dynamic_pointer_cast<TPropertyHandle<Name>>(prop)) {

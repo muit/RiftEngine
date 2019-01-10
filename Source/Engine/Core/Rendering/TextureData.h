@@ -13,11 +13,11 @@
 struct TextureData {
 	using PixelBuffer = TArray<Color>;
 
-	TextureData(v2_u32 size = v2_u32::Zero()) : size{size} {}
-
 	v2_u32 size;
 	PixelBuffer buffer;
 
+
+	TextureData(v2_u32 size = v2_u32::Zero()) : size{ size } {}
 
 	void FromSurface(struct SDL_Surface* surface);
 };

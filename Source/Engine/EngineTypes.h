@@ -36,8 +36,8 @@ inline Name GetReflectableName() {
 
 
 /** Registry new editor-supported types here and on "EngineTypes.cpp" */
-DECLARE_REFLECTION_TYPE(uint8);
-DECLARE_REFLECTION_TYPE(int32);
+DECLARE_REFLECTION_TYPE(u8);
+DECLARE_REFLECTION_TYPE(i32);
 DECLARE_REFLECTION_TYPE(float);
 
 DECLARE_REFLECTION_TYPE(Name);

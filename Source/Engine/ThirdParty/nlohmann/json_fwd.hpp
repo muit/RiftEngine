@@ -28,8 +28,8 @@ template<template<typename U, typename V, typename... Args> class ObjectType =
          std::map,
          template<typename U, typename... Args> class ArrayType = std::vector,
          class StringType = String, class BooleanType = bool,
-         class NumberIntegerType = int64,
-         class NumberUnsignedType = uint64,
+         class NumberIntegerType = i64,
+         class NumberUnsignedType = u64,
          class NumberFloatType = float,
          template<typename U> class AllocatorType = std::allocator,
          template<typename T, typename SFINAE = void> class JSONSerializer =

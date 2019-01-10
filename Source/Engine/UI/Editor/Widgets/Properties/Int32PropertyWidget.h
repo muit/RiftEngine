@@ -13,11 +13,11 @@
 class Int32PropertyWidget : public PropertyWidget {
 	CLASS(Int32PropertyWidget, PropertyWidget)
 
-	eastl::shared_ptr<TPropertyHandle<int32>> prop;
+	eastl::shared_ptr<TPropertyHandle<i32>> prop;
 
 public:
 
-	void Configure(const eastl::shared_ptr<TPropertyHandle<int32>>&  inProperty)
+	void Configure(const eastl::shared_ptr<TPropertyHandle<i32>>&  inProperty)
 	{
 		prop = inProperty;
 		idName = prop->GetName();

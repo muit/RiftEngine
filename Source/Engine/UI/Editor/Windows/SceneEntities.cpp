@@ -30,7 +30,7 @@ void SceneEntities::Tick()
 			filter.Draw("##FilterDraw");
 
 			auto view = entityManager->View<CEntity>();
-			int32 numOfEntities = (int32)view.size();
+			i32 numOfEntities = (i32)view.size();
 
 			if (ImGui::ListBoxHeader("##EntityContainer", numOfEntities, 10))
 			{
@@ -63,7 +63,7 @@ void SceneEntities::Tick()
 
 void SceneEntities::OnEntityClicked(EntityId entity)
 {
-	const int32 selectedIndex = selectedEntities.FindIndex(entity);
+	const i32 selectedIndex = selectedEntities.FindIndex(entity);
 	const bool selected = selectedIndex != NO_INDEX;
 
 	if (!selected)

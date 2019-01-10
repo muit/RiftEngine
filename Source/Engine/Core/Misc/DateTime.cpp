@@ -14,14 +14,14 @@ using namespace EA::StdC;
 /* FDateTime constants
  *****************************************************************************/
 
-const int32 DateTime::DaysPerMonth[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-const int32 DateTime::DaysToMonth[] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
+const i32 DateTime::DaysPerMonth[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+const i32 DateTime::DaysToMonth[] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
 
 
 /* FDateTime Constructors
  *****************************************************************************/
 
-DateTime::DateTime(int32 year, int32 month, int32 day, int32 hour, int32 minute, int32 second, int32 millisecond)
+DateTime::DateTime(i32 year, i32 month, i32 day, i32 hour, i32 minute, i32 second, i32 millisecond)
 {
 	if (!Validate(year, month, day, hour, minute, second, millisecond))
 	{
@@ -48,9 +48,9 @@ year_month_day DateTime::GetDateComponents() const
 }
 
 
-uint32 DateTime::GetDay() const
+u32 DateTime::GetDay() const
 {
-	return (uint32)GetDateComponents().day();
+	return (u32)GetDateComponents().day();
 }
 
 
@@ -63,7 +63,7 @@ EDayOfWeek DateTime::GetDayOfWeek() const
 }
 
 
-uint32 DateTime::GetDayOfYear() const
+u32 DateTime::GetDayOfYear() const
 {
 	auto timeDays = std::chrono::floor<days>(time);
 	const year_month_day ymd { timeDays };
@@ -72,9 +72,9 @@ uint32 DateTime::GetDayOfYear() const
 }
 
 
-uint32 DateTime::GetHour12() const
+u32 DateTime::GetHour12() const
 {
-	uint32 Hour = GetHour();
+	u32 Hour = GetHour();
 
 	if (Hour < 1)
 		return 12;
@@ -86,14 +86,14 @@ uint32 DateTime::GetHour12() const
 }
 
 
-uint32 DateTime::GetMonth() const
+u32 DateTime::GetMonth() const
 {
-	return (uint32)year_month_day{ floor<days>(time) }.month();
+	return (u32)year_month_day{ floor<days>(time) }.month();
 }
 
-int32 DateTime::GetYear() const
+i32 DateTime::GetYear() const
 {
-	return (int32)GetDateComponents().year();
+	return (i32)GetDateComponents().year();
 }
 
 String DateTime::ToHttpDate() const
@@ -193,7 +193,7 @@ String DateTime::ToString(const TCHAR* Format) const
 /* FDateTime static interface
  *****************************************************************************/
 
-int32 DateTime::DaysInMonth(int32 Year, int32 Month)
+i32 DateTime::DaysInMonth(i32 Year, i32 Month)
 {
 	assert((Month >= 1) && (Month <= 12));
 
@@ -206,7 +206,7 @@ int32 DateTime::DaysInMonth(int32 Year, int32 Month)
 }
 
 
-int32 DateTime::DaysInYear(int32 Year)
+i32 DateTime::DaysInYear(i32 Year)
 {
 	if (IsLeapYear(Year))
 	{
@@ -217,7 +217,7 @@ int32 DateTime::DaysInYear(int32 Year)
 }
 
 
-bool DateTime::IsLeapYear(int32 Year)
+bool DateTime::IsLeapYear(i32 Year)
 {
 	if ((Year % 4) == 0)
 	{
@@ -250,13 +250,13 @@ bool DateTime::Parse(const String& DateTimeString, DateTime& OutDateTime)
 		return false;
 	}
 
-	const int32 Year  = AtoI32(Tokens[0].c_str());
-	const int32 Month = AtoI32(Tokens[1].c_str());
-	const int32 Day   = AtoI32(Tokens[2].c_str());
-	const int32 Hour  = AtoI32(Tokens[3].c_str());
-	const int32 Minute = AtoI32(Tokens[4].c_str());
-	const int32 Second = AtoI32(Tokens[5].c_str());
-	const int32 Millisecond = Tokens.Size() > 6 ? AtoI32(Tokens[6].c_str()) : 0;
+	const i32 Year  = AtoI32(Tokens[0].c_str());
+	const i32 Month = AtoI32(Tokens[1].c_str());
+	const i32 Day   = AtoI32(Tokens[2].c_str());
+	const i32 Hour  = AtoI32(Tokens[3].c_str());
+	const i32 Minute = AtoI32(Tokens[4].c_str());
+	const i32 Second = AtoI32(Tokens[5].c_str());
+	const i32 Millisecond = Tokens.Size() > 6 ? AtoI32(Tokens[6].c_str()) : 0;
 
 	if (!Validate(Year, Month, Day, Hour, Minute, Second, Millisecond))
 	{
@@ -272,14 +272,14 @@ bool DateTime::Parse(const String& DateTimeString, DateTime& OutDateTime)
 
 bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 {
-	auto ParseTime = [](const String& Time, int32& Hour, int32& Minute, int32& Second) -> bool
+	auto ParseTime = [](const String& Time, i32& Hour, i32& Minute, i32& Second) -> bool
 	{
 		// 2DIGIT ":" 2DIGIT ":" 2DIGIT
 		// ; 00:00 : 00 - 23 : 59 : 59
 		TArray<String> Tokens;
 
 		// split up on a single delimiter
-		int32 NumTokens = CString::Split(Time, Tokens, TX(':'));
+		i32 NumTokens = CString::Split(Time, Tokens, TX(':'));
 
 		if (NumTokens == 3)
 		{
@@ -293,7 +293,7 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 		return false;
 	};
 
-	auto ParseWkday = [](const String& WkDay) -> int32
+	auto ParseWkday = [](const String& WkDay) -> i32
 	{
 		const SIZE_T NumChars = WkDay.size();
 
@@ -332,7 +332,7 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 		return -1;
 	};
 
-	auto ParseWeekday = [](const String& WeekDay) -> int32
+	auto ParseWeekday = [](const String& WeekDay) -> i32
 	{
 		const SIZE_T NumChars = WeekDay.size();
 
@@ -371,7 +371,7 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 		return -1;
 	};
 
-	auto ParseMonth = [](const String& Month) -> int32
+	auto ParseMonth = [](const String& Month) -> i32
 	{
 		const SIZE_T NumChars = Month.size();
 
@@ -430,7 +430,7 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 		return -1;
 	};
 
-	auto ParseDate1 = [ParseMonth](const String& DayStr, const String& MonStr, const String& YearStr, int32& Month, int32& Day, int32& Year) -> bool
+	auto ParseDate1 = [ParseMonth](const String& DayStr, const String& MonStr, const String& YearStr, i32& Month, i32& Day, i32& Year) -> bool
 	{
 		// date1 = 2DIGIT SP month SP 4DIGIT
 		// ; day month year(e.g., 02 Jun 1982)
@@ -442,14 +442,14 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 		return (Day > 0 && Day <= 31) && (Month > 0 && Month <= 12) && (Year > 0 && Year <= 9999);
 	};
 
-	auto ParseDate2 = [ParseMonth](const String& Date2, int32& Month, int32& Day, int32& Year) -> bool
+	auto ParseDate2 = [ParseMonth](const String& Date2, i32& Month, i32& Day, i32& Year) -> bool
 	{
 		// date2 = 2DIGIT "-" month "-" 2DIGIT
 		// ; day - month - year(e.g., 02 - Jun - 82)
 		TArray<String> Tokens;
 
 		// split up on a single delimiter
-		int32 NumTokens = CString::Split(Date2, Tokens, TX('-'));
+		i32 NumTokens = CString::Split(Date2, Tokens, TX('-'));
 		if (NumTokens == 3)
 		{
 			Day = AtoI32(Tokens[0].c_str());
@@ -463,7 +463,7 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 		return (Day > 0 && Day <= 31) && (Month > 0 && Month <= 12) && (Year > 0 && Year <= 9999);
 	};
 
-	auto ParseDate3 = [ParseMonth](const String& MonStr, const String& DayStr, int32& Month, int32& Day) -> bool
+	auto ParseDate3 = [ParseMonth](const String& MonStr, const String& DayStr, i32& Month, i32& Day) -> bool
 	{
 		// date3 = month SP(2DIGIT | (SP 1DIGIT))
 		// ; month day(e.g., Jun  2)
@@ -479,17 +479,17 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 		TArray<String> Tokens;
 
 		// split up on a single delimiter
-		int32 NumTokens = CString::Split(HttpDate, Tokens, TX(' '));
+		i32 NumTokens = CString::Split(HttpDate, Tokens, TX(' '));
 
 		if (NumTokens > 0 && Tokens.Size() == NumTokens)
 		{
-			int32 Month = 0;
-			int32 Day = 0;
-			int32 Year = 0;
-			int32 Hour = 0;
-			int32 Minute = 0;
-			int32 Second = 0;
-			int32 Millisecond = 0;
+			i32 Month = 0;
+			i32 Day = 0;
+			i32 Year = 0;
+			i32 Hour = 0;
+			i32 Minute = 0;
+			i32 Second = 0;
+			i32 Millisecond = 0;
 
 			if (CString::EndsWith(Tokens[0], TX(',')))
 			{
@@ -501,7 +501,7 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 				// rfc1123 - date | rfc850 - date 
 				if (Tokens.Size() == 6)
 				{
-					int32 WkDay = ParseWkday(Tokens[0]);
+					i32 WkDay = ParseWkday(Tokens[0]);
 
 					if (WkDay > 0)
 					{
@@ -515,7 +515,7 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 				else if (Tokens.Size() == 4)
 				{
 					// rfc850 - date = weekday "," SP date2 SP time SP "GMT"
-					int32 WeekDay = ParseWeekday(Tokens[0]);
+					i32 WeekDay = ParseWeekday(Tokens[0]);
 
 					if (WeekDay > 0)
 					{
@@ -530,7 +530,7 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 			else if (Tokens.Size() == 5)
 			{
 				// asctime - date = wkday SP date3 SP time SP 4DIGIT
-				int32 WkDay = ParseWkday(Tokens[0]);
+				i32 WkDay = ParseWkday(Tokens[0]);
 
 				if (WkDay > 0)
 				{
@@ -569,9 +569,9 @@ bool DateTime::ParseIso8601(const TCHAR* DateTimeString, DateTime& OutDateTime)
 	const TCHAR* ptr = DateTimeString;
 	TCHAR* Next = nullptr;
 
-	int32 Year = 0, Month = 0, Day = 0;
-	int32 Hour = 0, Minute = 0, Second = 0, Millisecond = 0;
-	int32 TzHour = 0, TzMinute = 0;
+	i32 Year = 0, Month = 0, Day = 0;
+	i32 Hour = 0, Minute = 0, Second = 0, Millisecond = 0;
+	i32 TzHour = 0, TzMinute = 0;
 
 	// get date
 	Year = FChar::StrtoI32(ptr, &Next, 10);
@@ -684,14 +684,14 @@ bool DateTime::ParseIso8601(const TCHAR* DateTimeString, DateTime& OutDateTime)
 	DateTime Final(Year, Month, Day, Hour, Minute, Second, Millisecond);
 
 	// adjust for the timezone (bringing the DateTime into UTC)
-	int32 TzOffsetMinutes = (TzHour < 0) ? TzHour * 60 - TzMinute : TzHour * 60 + TzMinute;
+	i32 TzOffsetMinutes = (TzHour < 0) ? TzHour * 60 - TzMinute : TzHour * 60 + TzMinute;
 	Final -= Timespan::FromMinutes(TzOffsetMinutes);
 	OutDateTime = Final;
 
 	return true;
 }
 
-bool DateTime::Validate(int32 Year, int32 Month, int32 Day, int32 Hour, int32 Minute, int32 Second, int32 Millisecond)
+bool DateTime::Validate(i32 Year, i32 Month, i32 Day, i32 Hour, i32 Minute, i32 Second, i32 Millisecond)
 {
 	return (Year >= 1) && (Year <= 9999) &&
 		(Month >= 1) && (Month <= 12) &&

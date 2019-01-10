@@ -13,7 +13,7 @@
 
 
 // decimals of microseconds
-typedef std::chrono::duration<int64, std::ratio<1, 10'000'000>> decmicroseconds;
+typedef std::chrono::duration<i64, std::ratio<1, 10'000'000>> decmicroseconds;
 
 
 /**
@@ -67,7 +67,7 @@ public:
 	 * @param Seconds The seconds component.
 	 * @see FromHours, FromMinutes, FromSeconds
 	 */
-	Timespan(int32 Hours, int32 Minutes, int32 Seconds)
+	Timespan(i32 Hours, i32 Minutes, i32 Seconds)
 	{
 		Assign(0, Hours, Minutes, Seconds, 0);
 	}
@@ -83,7 +83,7 @@ public:
 	 * @param Seconds The seconds component.
 	 * @see FromDays, FromHours, FromMinutes, FromSeconds
 	 */
-	Timespan(int32 Days, int32 Hours, int32 Minutes, int32 Seconds)
+	Timespan(i32 Days, i32 Hours, i32 Minutes, i32 Seconds)
 	{
 		Assign(Days, Hours, Minutes, Seconds, 0);
 	}
@@ -97,7 +97,7 @@ public:
 	 * @param Seconds The seconds component.
 	 * @param FractionNano The fractional seconds (in nanosecond resolution).
 	 */
-	Timespan(int32 Days, int32 Hours, int32 Minutes, int32 Seconds, int32 FractionNano)
+	Timespan(i32 Days, i32 Hours, i32 Minutes, i32 Seconds, i32 FractionNano)
 	{
 		Assign(Days, Hours, Minutes, Seconds, FractionNano);
 	}
@@ -168,7 +168,7 @@ public:
 	 */
 	Timespan operator*(double scalar) const
 	{
-		return Timespan( decmicroseconds{ (int64)(duration.count() * scalar) });
+		return Timespan( decmicroseconds{ (i64)(duration.count() * scalar) });
 	}
 
 	/**
@@ -179,7 +179,7 @@ public:
 	 */
 	Timespan& operator*=(double scalar)
 	{
-		duration = decmicroseconds{ (int64)(duration.count() * scalar) };
+		duration = decmicroseconds{ (i64)(duration.count() * scalar) };
 		return *this;
 	}
 
@@ -191,7 +191,7 @@ public:
 	 */
 	Timespan operator/(double scalar) const
 	{
-		return Timespan(decmicroseconds{ (int64)(duration.count() / scalar) });
+		return Timespan(decmicroseconds{ (i64)(duration.count() / scalar) });
 	}
 
 	/**
@@ -202,7 +202,7 @@ public:
 	 */
 	Timespan& operator/=(double scalar)
 	{
-		duration = decmicroseconds{ (int64)(duration.count() / scalar) };
+		duration = decmicroseconds{ (i64)(duration.count() / scalar) };
 		return *this;
 	}
 
@@ -302,7 +302,7 @@ public:
 	 *
 	 * @return Days component.
 	 */
-	int32 GetDays() const
+	i32 GetDays() const
 	{
 		return floor<date::days>(duration).count();
 	}
@@ -326,7 +326,7 @@ public:
 	 * @return Number of microseconds in fractional part.
 	 * @see GetTotalMicroseconds
 	 */
-	int64 GetFractionMicro() const
+	i64 GetFractionMicro() const
 	{
 		return (floor<std::chrono::microseconds>(duration) - floor<std::chrono::seconds>(duration)).count();
 	}
@@ -337,7 +337,7 @@ public:
 	 * @return Number of milliseconds in fractional part.
 	 * @see GetTotalMilliseconds
 	 */
-	int64 GetFractionMilli() const
+	i64 GetFractionMilli() const
 	{
 		return (floor<std::chrono::milliseconds>(duration) - floor<std::chrono::seconds>(duration)).count();
 	}
@@ -347,7 +347,7 @@ public:
 	 *
 	 * @return Number of nanoseconds in fractional part.
 	 */
-	int64 GetFractionNano() const
+	i64 GetFractionNano() const
 	{
 		return (floor<std::chrono::nanoseconds>(duration) - floor<std::chrono::seconds>(duration)).count();
 	}
@@ -357,7 +357,7 @@ public:
 	 *
 	 * @return Number of ticks in fractional part.
 	 */
-	int64 GetFractionTicks() const
+	i64 GetFractionTicks() const
 	{
 		return (duration - floor<std::chrono::seconds>(duration)).count();
 	}
@@ -368,9 +368,9 @@ public:
 	 * @return Hours component.
 	 * @see GetTotalHours
 	 */
-	int32 GetHours() const
+	i32 GetHours() const
 	{
-		return (int32)(floor<std::chrono::hours>(duration) - floor<date::days>(duration)).count();
+		return (i32)(floor<std::chrono::hours>(duration) - floor<date::days>(duration)).count();
 	}
 
 	/**
@@ -379,9 +379,9 @@ public:
 	 * @return Minutes component.
 	 * @see GetTotalMinutes
 	 */
-	int32 GetMinutes() const
+	i32 GetMinutes() const
 	{
-		return (int32)(floor<std::chrono::minutes>(duration) - floor<std::chrono::hours>(duration)).count();
+		return (i32)(floor<std::chrono::minutes>(duration) - floor<std::chrono::hours>(duration)).count();
 	}
 
 	/**
@@ -390,9 +390,9 @@ public:
 	 * @return Seconds component.
 	 * @see GetTotalSeconds
 	 */
-	int32 GetSeconds() const
+	i32 GetSeconds() const
 	{
-		return (int32)(floor<std::chrono::seconds>(duration) - floor<std::chrono::minutes>(duration)).count();
+		return (i32)(floor<std::chrono::seconds>(duration) - floor<std::chrono::minutes>(duration)).count();
 	}
 
 	/**
@@ -600,7 +600,7 @@ protected:
 	 * @param Seconds The seconds component.
 	 * @param FractionNano The fractional seconds (in nanosecond resolution).
 	 */
-	void Assign(int32 days, int32 hours, int32 minutes, int32 seconds, int32 fractionNano);
+	void Assign(i32 days, i32 hours, i32 minutes, i32 seconds, i32 fractionNano);
 
 private:
 	friend struct Z_Construct_UScriptStruct_FTimespan_Statics;
@@ -610,8 +610,8 @@ private:
 	/** The time span value in 100 nanoseconds resolution. */
 	decmicroseconds duration;
 public:
-	static Timespan FromMinutes(int32 TzOffsetMinutes);
-	static Timespan FromSeconds(int32 seconds);
+	static Timespan FromMinutes(i32 TzOffsetMinutes);
+	static Timespan FromSeconds(i32 seconds);
 };
 
 

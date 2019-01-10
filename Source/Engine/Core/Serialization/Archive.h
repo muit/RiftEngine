@@ -46,11 +46,11 @@ public:
 		return *this;
 	}
 
-	virtual void Serialize(const char* name, uint8& val) = 0;
+	virtual void Serialize(const char* name, u8& val) = 0;
 
-	virtual void Serialize(const char* name, int32& val) = 0;
+	virtual void Serialize(const char* name, i32& val) = 0;
 
-	virtual void Serialize(const char* name, uint32& val) = 0;
+	virtual void Serialize(const char* name, u32& val) = 0;
 
 	virtual void Serialize(const char* name, float& val) = 0;
 
@@ -94,11 +94,11 @@ public:
 		BeginObject(name);
 		if (IsLoading())
 		{
-			uint32 size;
+			u32 size;
 			SerializeArraySize(size);
 			val.Reserve(size);
 
-			for (uint32 i = 0; i < size; ++i)
+			for (u32 i = 0; i < size; ++i)
 			{
 				BeginObject(i);
 				{
@@ -110,10 +110,10 @@ public:
 		}
 		else
 		{
-			uint32 size = val.Size();
+			u32 size = val.Size();
 			SerializeArraySize(size);
 
-			for (uint32 i = 0; i < size; ++i)
+			for (u32 i = 0; i < size; ++i)
 			{
 				BeginObject(i);
 				{
@@ -127,7 +127,7 @@ public:
 	}
 
 	virtual void BeginObject(const char* name) = 0;
-	virtual void BeginObject(uint32 index) = 0;
+	virtual void BeginObject(u32 index) = 0;
 	virtual void EndObject() = 0;
 
 	FORCEINLINE bool IsLoading() { return bLoads; }
@@ -135,7 +135,7 @@ public:
 
 private:
 
-	virtual void SerializeArraySize(uint32& Size) = 0;
+	virtual void SerializeArraySize(u32& Size) = 0;
 
 	/**
 	 * Selection of Serialize call.
@@ -186,23 +186,23 @@ public:
 
 private:
 
-	virtual void Serialize(const char* name, uint8& val) override {
+	virtual void Serialize(const char* name, u8& val) override {
 		if (IsLoading())
-			val = Data()[name].get<uint8>();
+			val = Data()[name].get<u8>();
 		else
 			Data()[name] = val;
 	}
 
-	virtual void Serialize(const char* name, int32& val) override {
+	virtual void Serialize(const char* name, i32& val) override {
 		if (IsLoading())
-			val = Data()[name].get<int32>();
+			val = Data()[name].get<i32>();
 		else
 			Data()[name] = val;
 	}
 
-	virtual void Serialize(const char* name, uint32& val) override {
+	virtual void Serialize(const char* name, u32& val) override {
 		if (IsLoading())
-			val = Data()[name].get<uint32>();
+			val = Data()[name].get<u32>();
 		else
 			Data()[name] = val;
 	}
@@ -235,7 +235,7 @@ private:
 		depthData.push(&Data()[name]);
 	}
 
-	virtual void BeginObject(uint32 index) override {
+	virtual void BeginObject(u32 index) override {
 		depthData.push(&Data()[index]);
 	}
 
@@ -243,10 +243,10 @@ private:
 		depthData.pop();
 	}
 
-	virtual void SerializeArraySize(uint32& size) override {
+	virtual void SerializeArraySize(u32& size) override {
 		if (IsLoading())
 		{
-			size = (uint32)Data().size();
+			size = (u32)Data().size();
 		}
 		else
 		{

@@ -14,29 +14,30 @@
 #include <GL/gl3w.h>
 
 
+
 //------------------------------------------------------------------
 // Transfer the platform types to global types
 //------------------------------------------------------------------
 
 //~ Unsigned base types.
 /// An 8-bit unsigned integer.
-typedef FPlatformTypes::uint8     uint8;
+typedef FPlatformTypes::uint8     u8;
 /// A 16-bit unsigned integer.
-typedef FPlatformTypes::uint16    uint16;
+typedef FPlatformTypes::uint16    u16;
 /// A 32-bit unsigned integer.
-typedef FPlatformTypes::uint32    uint32;
+typedef FPlatformTypes::uint32    u32;
 /// A 64-bit unsigned integer.
-typedef FPlatformTypes::uint64    uint64;
+typedef FPlatformTypes::uint64    u64;
 
 //~ Signed base types.
 /// An 8-bit signed integer.
-typedef FPlatformTypes::int8      int8;
+typedef FPlatformTypes::int8      i8;
 /// A 16-bit signed integer.
-typedef FPlatformTypes::int16     int16;
+typedef FPlatformTypes::int16     i16;
 /// A 32-bit signed integer.
-typedef FPlatformTypes::int32     int32;
+typedef FPlatformTypes::int32     i32;
 /// A 64-bit signed integer.
-typedef FPlatformTypes::int64     int64;
+typedef FPlatformTypes::int64     i64;
 
 //~ Character types.
 /// An ANSI character. Normally a signed type.

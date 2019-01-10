@@ -112,9 +112,9 @@ public:
 		return c >= '0' && c <= '7';
 	}
 	static inline bool IsHexDigit(CharType c);
-	static inline int32 ConvertCharDigitToInt(CharType c)
+	static inline i32 ConvertCharDigitToInt(CharType c)
 	{
-		return static_cast<int32>(c) - static_cast<int32>('0');
+		return static_cast<i32>(c) - static_cast<i32>('0');
 	}
 	static inline bool IsWhitespace(CharType c);
 	static inline bool IsIdentifier(CharType c)
@@ -125,7 +125,7 @@ public:
 
 	static inline bool IsLinebreak(CharType c) { return LineBreakImplementation<CharType, sizeof(CharType)>::IsLinebreak(c); }
 
-	static inline int32 StrtoI32(const CharType* str, CharType** end, int32 radix);
+	static inline i32 StrtoI32(const CharType* str, CharType** end, i32 radix);
 };
 
 typedef TChar<TCHAR>    FChar;
@@ -145,7 +145,7 @@ template <> inline bool  TChar<WIDECHAR>::IsAlnum(CharType c)							{ return ::i
 template <> inline bool  TChar<WIDECHAR>::IsDigit(CharType c)							{ return ::iswdigit(c) != 0; }
 template <> inline bool  TChar<WIDECHAR>::IsHexDigit(CharType c)					   	{ return ::iswxdigit(c) != 0; }
 template <> inline bool  TChar<WIDECHAR>::IsWhitespace(CharType c)                      { return ::iswspace(c) != 0; }
-template <> inline int32 TChar<WIDECHAR>::StrtoI32(const CharType* str, CharType** end, int32 radix) { return ::wcstol(str, end, radix); }
+template <> inline i32 TChar<WIDECHAR>::StrtoI32(const CharType* str, CharType** end, i32 radix) { return ::wcstol(str, end, radix); }
 
 /*-----------------------------------------------------------------------------
 	ANSICHAR specialized functions
@@ -160,4 +160,4 @@ template <> inline bool  TChar<ANSICHAR>::IsAlnum(CharType Char)							{ return 
 template <> inline bool  TChar<ANSICHAR>::IsDigit(CharType Char)							{ return ::isdigit((unsigned char)Char) != 0; }
 template <> inline bool  TChar<ANSICHAR>::IsHexDigit(CharType Char)				    		{ return ::isxdigit((unsigned char)Char) != 0; }
 template <> inline bool  TChar<ANSICHAR>::IsWhitespace(CharType Char)                       { return ::isspace((unsigned char)Char) != 0; }
-template <> inline int32 TChar<ANSICHAR>::StrtoI32(const CharType* str, CharType** end, int32 radix) { return ::strtol(str, end, radix); }
+template <> inline i32 TChar<ANSICHAR>::StrtoI32(const CharType* str, CharType** end, i32 radix) { return ::strtol(str, end, radix); }

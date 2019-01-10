@@ -9,7 +9,7 @@
 
 void PlatformMisc::CreateGuid(Guid& guid)
 {
-	static uint16 IncrementCounter = 0;
+	static u16 IncrementCounter = 0;
 
 	static DateTime InitialDateTime;
 
@@ -25,8 +25,8 @@ void PlatformMisc::CreateGuid(Guid& guid)
 		EstimatedCurrentDateTime = DateTime::Now();
 	}
 
-	uint32 SequentialBits = static_cast<uint32>(IncrementCounter++); // Add sequential bits to ensure sequentially generated guids are unique even if Cycles is wrong
-	uint32 RandBits = Math::Rand() & 0xFFFF; // Add randomness to improve uniqueness across machines
+	u32 SequentialBits = static_cast<u32>(IncrementCounter++); // Add sequential bits to ensure sequentially generated guids are unique even if Cycles is wrong
+	u32 RandBits = Math::Rand() & 0xFFFF; // Add randomness to improve uniqueness across machines
 
 	guid = Guid(RandBits | (SequentialBits << 16), EstimatedCurrentDateTime.GetTicks() >> 32, EstimatedCurrentDateTime.GetTicks() & 0xffffffff, PlatformTime::Cycles());
 }
