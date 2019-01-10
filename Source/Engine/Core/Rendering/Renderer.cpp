@@ -110,7 +110,7 @@ void Renderer::Render()
 	}
 
 	{ // UI Render
-		ZoneScopedNC("UI", 0x94d145);
+		ZoneScopedNC("UI Render", 0x94d145);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		// Update and Render additional Platform Windows
@@ -120,6 +120,12 @@ void Renderer::Render()
 			ImGui::RenderPlatformWindowsDefault();
 		}
 	}
+}
+
+void Renderer::Sleep()
+{
+	ZoneScopedNC("Sleep", 0xD15545);
+	SDL_GL_SwapWindow(window);
 }
 
 void Renderer::BeforeDestroy()

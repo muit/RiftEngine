@@ -13,7 +13,7 @@
 }*/
 
 int main(int argc, char** argv) {
-	TracyMessageL("Tick");
+	TracyMessageL("Hello");
 
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();

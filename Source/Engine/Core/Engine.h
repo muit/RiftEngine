@@ -33,71 +33,9 @@ public:
 
 private:
 
-	bool Start() {
-		{
-			ZoneScopedN("Start-Up");
+	bool Start();
 
-			// Setup SDL
-			if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
-				return false;
-
-			renderer = Create<Renderer>();
-			if (!renderer->Initialize())
-				return false;
-
-			world = Create<World>(GetSelf());
-			world->Start();
-
-			ui = Create<UIManager>(GetSelf());
-			ui->Prepare();
-		}
-
-		frameTime = {};
-		bool bFinish = false;
-		while (!bFinish)
-		{
-			ZoneScoped("Tick");
-			TracyMessageL("Tick");
-			Loop(bFinish);
-		}
-
-		return true;
-	}
-
-	void Loop(bool& bFinish) {
-		// New frame
-		Frame frame = {};
-
-		{
-			String tickName = CString::Printf(TX("Tick %i"), frame.Id()).c_str();
-			FrameMarkStart(tickName.c_str());
-
-			frameTime.Tick();
-
-			// Process window and input events
-			SDL_PumpEvents();
-			SDL_Event event;
-			while (SDL_PollEvent(&event))
-			{
-				ui->OnSDLEvent(&event);
-				if (event.type == SDL_QUIT)
-					bFinish = true;
-				else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == renderer->GetWindowId())
-					bFinish = true;
-			}
-
-			renderer->PreTick();
-
-			world->Tick(frameTime.deltaTime);
-			ui->Tick(frameTime.deltaTime);
-
-			// Rendering
-			renderer->Render();
-
-			FrameMarkEnd(tickName.c_str());
-		}
-		renderer->Sleep();
-	}
+	void Loop(bool& bFinish);
 
 	void Shutdown() {
 		SDL_Quit();

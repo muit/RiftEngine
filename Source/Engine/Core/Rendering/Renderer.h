@@ -41,11 +41,7 @@ public:
 
 	void Render();
 
-	void Sleep()
-	{
-		ZoneScopedNC("Sleep", 0xD15545);
-		SDL_GL_SwapWindow(window);
-	}
+	void Sleep();
 
 	virtual void BeforeDestroy() override;
 
