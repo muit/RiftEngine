@@ -7,6 +7,4 @@
 
 class SRenderCamera : public System {
 	CLASS(SRenderCamera, System)
-
-	virtual void Render() override;
 };

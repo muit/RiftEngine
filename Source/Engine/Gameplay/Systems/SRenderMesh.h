@@ -8,5 +8,5 @@
 class SRenderMesh : public System {
 	CLASS(SRenderMesh, System)
 
-	virtual void Render() override;
+	virtual void Tick(float /*deltaTime*/) override;
 };

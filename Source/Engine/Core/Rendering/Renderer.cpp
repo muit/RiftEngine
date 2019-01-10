@@ -88,7 +88,7 @@ void Renderer::PreTick()
 	ImGui_ImplSDL2_NewFrame(window);
 }
 
-void Renderer::Render()
+void Renderer::Render(Frame& frame)
 {
 	ZoneScopedNC("Render", 0x94d145);
 	ImGui::Render();
@@ -104,8 +104,7 @@ void Renderer::Render()
 	// World Render
 	{
 		// Execute commands
-		GetWorld()->Render(); //<- Probably no longer needed
-
+		TracyMessageL(CString::Printf(TX("Commands: %i"), frame.commands.Size()).c_str());
 		// Render final frame pixels
 	}
 

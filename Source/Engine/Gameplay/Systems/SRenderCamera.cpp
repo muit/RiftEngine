@@ -2,7 +2,4 @@
 
 #include "SRenderCamera.h"
 
-void SRenderCamera::Render()
-{
-	// #TODO: Find an entity with a camera and a transform
-}
+// #TODO: Find an entity with a camera and a transform

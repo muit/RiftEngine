@@ -6,6 +6,7 @@
 #include "System.h"
 
 #include "Gameplay/Systems/SRenderCamera.h"
+#include "Gameplay/Systems/SRenderMesh.h"
 
 
 class SystemManager : public Object {
@@ -16,6 +17,7 @@ class SystemManager : public Object {
 
 	void RegistrySystems() {
 		// #TODO: Externalize system registry
+		RegistrySystem<SRenderMesh>();
 		RegistrySystem<SRenderCamera>();
 	}
 
@@ -32,12 +34,6 @@ public:
 	void Tick(float deltaTime) {
 		IterateSystems([deltaTime](Ptr<System> system) {
 			system->Tick(deltaTime);
-		});
-	}
-
-	void Render() {
-		IterateSystems([](Ptr<System> system) {
-			system->Render();
 		});
 	}
 

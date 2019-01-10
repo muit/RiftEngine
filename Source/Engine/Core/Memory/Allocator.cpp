@@ -98,8 +98,16 @@ void operator delete(void* p, std::size_t size)
 {
 	Memory::GetAllocator()->Deallocate(p, size);
 }
+void operator delete(void* p)
+{
+	Memory::GetAllocator()->Deallocate(p);
+}
 
 void operator delete[](void* p, std::size_t size)
 {
 	Memory::GetAllocator()->Deallocate(p, size);
+}
+void operator delete[](void* p)
+{
+	Memory::GetAllocator()->Deallocate(p);
 }

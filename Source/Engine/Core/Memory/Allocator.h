@@ -7,6 +7,7 @@
 #include <EASTL/allocator_malloc.h>
 #include <EASTL/string_view.h>
 #include <tracy/Tracy.hpp>
+#include <tracy/client/tracy_rpmalloc.hpp>
 #include <new>
 
 
@@ -44,6 +45,13 @@ public:
 		void* const ptr = malloc_alloc.allocate(n, alignment, alignmentOffset, flags);
 		TracyAllocS(ptr, n, 10);
 		return ptr;
+	}
+
+	void Deallocate(void* const ptr)
+	{
+		// #TODO: obtain size of the ptr
+		TracyFreeS(ptr, 10);
+		malloc_alloc.deallocate(ptr, 0);
 	}
 
 	void Deallocate(void* const ptr, size_t n)

@@ -9,7 +9,6 @@
 #include "Core/Containers/Array.h"
 
 
-
 struct TextureData {
 	using PixelBuffer = TArray<Color>;
 

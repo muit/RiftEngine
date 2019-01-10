@@ -12,7 +12,6 @@
 class RenderCommand {
 public:
 
-	RenderCommand() {}
 	virtual ~RenderCommand() {}
 
 	virtual void Execute(class Renderer& renderer) = 0;

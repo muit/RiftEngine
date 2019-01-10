@@ -37,10 +37,10 @@ bool Engine::Start()
 
 void Engine::Loop(bool& bFinish)
 {
+	Frame frame = {};
 	{
 		ZoneScopedN("Game");
 
-		Frame frame = {};
 		frameTime.Tick();
 
 		{
@@ -60,12 +60,12 @@ void Engine::Loop(bool& bFinish)
 
 		renderer->PreTick();
 
-		world->Tick(frameTime.deltaTime);
+		world->Tick(frame, frameTime.deltaTime);
 		ui->Tick(frameTime.deltaTime);
 	}
 
 	// Rendering
-	renderer->Render();
+	renderer->Render(frame);
 
 	renderer->Sleep();
 	FrameMark;

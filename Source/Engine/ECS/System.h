@@ -12,6 +12,5 @@ public:
 
 	virtual void BeginPlay() {}
 	virtual void Tick(float /*deltaTime*/) {}
-	virtual void Render() {}
 	virtual void EndPlay() {}
 };

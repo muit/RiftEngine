@@ -39,7 +39,7 @@ public:
 
 	void PreTick();
 
-	void Render();
+	void Render(Frame& frame);
 
 	void Sleep();
 
