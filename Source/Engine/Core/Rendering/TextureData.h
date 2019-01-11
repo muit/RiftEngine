@@ -12,11 +12,22 @@
 struct TextureData {
 	using PixelBuffer = TArray<Color>;
 
+private:
 	v2_u32 size;
 	PixelBuffer buffer;
 
 
-	TextureData(v2_u32 size = v2_u32::Zero()) : size{ size } {}
+public:
+
+	TextureData(v2_u32 size = v2_u32::Zero()) : size{ size }, buffer{size.x() * size.y()} {}
 
 	void FromSurface(struct SDL_Surface* surface);
+
+	// Receives a surface and updates all its pixels
+	void ToSurface(struct SDL_Surface* surface);
+
+	const v2_u32& Size() const { return size; }
+
+	PixelBuffer& Buffer() { return buffer; }
+	const PixelBuffer& Buffer() const { return buffer; }
 };

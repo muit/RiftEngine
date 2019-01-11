@@ -22,15 +22,3 @@ bool Texture::PostLoad()
 
 	return true;
 }
-
-void Texture::BeforeDestroy()
-{
-	Super::BeforeDestroy();
-}
-
-void Texture::Render()
-{
-	//glRasterPos2f(-1.f, +1.f);
-	//glPixelZoom(+1.f, -1.f);
-	//glDrawPixels(size.x(), size.y(), GL_RGBA, GL_UNSIGNED_BYTE, &buffer.First());
-}

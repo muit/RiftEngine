@@ -14,5 +14,5 @@ public:
 
 	virtual ~RenderCommand() {}
 
-	virtual void Execute(class Renderer& renderer) = 0;
+	virtual void Execute(class Renderer& renderer, struct Frame& frame) = 0;
 };

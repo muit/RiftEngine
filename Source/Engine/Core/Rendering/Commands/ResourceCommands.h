@@ -7,6 +7,7 @@
 #include "../TextureData.h"
 #include "../MeshData.h"
 #include "../Renderer.h"
+#include "../Frame.h"
 
 
 class LoadTextureCommand : public RenderCommand {
@@ -17,7 +18,7 @@ public:
 
 	LoadTextureCommand(u32 id, TextureData texture) : id(id), texture{eastl::move(texture)} {}
 
-	virtual void Execute(Renderer& renderer) override {
+	virtual void Execute(Renderer& renderer, Frame& frame) override {
 		renderer.resources.Load(id, eastl::move(texture));
 	}
 };
@@ -29,7 +30,7 @@ public:
 
 	FreeTextureCommand(u32 id) : id(id) {}
 
-	virtual void Execute(Renderer& renderer) override {
+	virtual void Execute(Renderer& renderer, Frame& frame) override {
 		renderer.resources.Free<ResourceType::Texture>(id);
 	}
 };
@@ -42,8 +43,10 @@ public:
 
 	DrawTextureCommand(u32 id, v2_u32 position) : id{id}, position{position} {}
 
-	virtual void Execute(Renderer& renderer) override {
+	virtual void Execute(Renderer& renderer, Frame& frame) override {
 		const TextureData& texture = renderer.resources.Get<ResourceType::Texture>(id);
+
+		renderer.DrawImage(frame, position, texture);
 	}
 };
 
@@ -56,7 +59,7 @@ public:
 
 	LoadMeshCommand(u32 id, MeshData texture) : id(id), mesh{ eastl::move(mesh) } {}
 
-	virtual void Execute(Renderer& renderer) override {
+	virtual void Execute(Renderer& renderer, Frame& frame) override {
 		renderer.resources.Load(id, eastl::move(mesh));
 	}
 };
@@ -68,7 +71,7 @@ public:
 
 	FreeMeshCommand(u32 id) : id(id) {}
 
-	virtual void Execute(Renderer& renderer) override {
+	virtual void Execute(Renderer& renderer, Frame& frame) override {
 		renderer.resources.Free<ResourceType::Mesh>(id);
 	}
 };
@@ -80,7 +83,7 @@ public:
 
 	DrawMeshCommand(u32 id) : id(id) {}
 
-	virtual void Execute(Renderer& renderer) override {
+	virtual void Execute(Renderer& renderer, Frame& frame) override {
 		const MeshData& mesh = renderer.resources.Get<ResourceType::Mesh>(id);
 	}
 };

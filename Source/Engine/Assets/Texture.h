@@ -12,23 +12,18 @@ class Texture : public AssetData
 {
 	CLASS(Texture, AssetData)
 
-public:
-
-	Texture() : Super() {}
 
 private:
 
 	TextureData data;
 
-protected:
-
-	virtual bool PostLoad() override;
-	virtual void BeforeDestroy() override;
-
-	void Render();
-
 public:
 
-	FORCEINLINE bool IsEmpty() const { return data.size.x() == 0 && data.size.y() == 0; }
-	FORCEINLINE v2_u32 GetSize() const { return data.size; }
+	Texture() : Super() {}
+
+	virtual bool PostLoad() override;
+
+	FORCEINLINE bool IsEmpty() const { return data.Size().x() == 0 && data.Size().y() == 0; }
+	FORCEINLINE const v2_u32& GetSize() const { return data.Size(); }
+	FORCEINLINE const TextureData& GetTextureData() const { return data; }
 };

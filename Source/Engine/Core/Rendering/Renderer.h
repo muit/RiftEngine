@@ -21,8 +21,13 @@ class Renderer : public Object {
 
 
 	SDL_Window* window;
+	SDL_Renderer* renderer;
 	SDL_GLContext gl_context;
 	const char* glslVersion;
+
+	GLuint pboIds[2];
+	GLuint finalFrameId;
+	TextureData baseColor;
 
 public:
 	// Render thread only
@@ -49,4 +54,7 @@ public:
 	u32 GetWindowId() const {
 		return window ? SDL_GetWindowID(window) : 0;
 	}
+
+
+	void DrawImage(Frame& frame, const v2_u32& position, const TextureData& texture);
 };

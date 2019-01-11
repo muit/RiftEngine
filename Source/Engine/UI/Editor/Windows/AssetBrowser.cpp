@@ -7,7 +7,7 @@
 
 #if WITH_EDITOR
 
-const TAssetPtr<Texture> AssetBrowser::tex {"myTexture.json"};
+const TAssetPtr<Texture> AssetBrowser::tex {"test.png.meta"};
 
 void AssetBrowser::Build()
 {

@@ -39,7 +39,7 @@ bool Renderer::Initialize()
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 #if WITH_EDITOR
-	u32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED;
+	u32 windowFlags = SDL_WINDOW_OPENGL | /*SDL_WINDOW_RESIZABLE | */SDL_WINDOW_MAXIMIZED;
 #else
 	u32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED;
 #endif
@@ -50,9 +50,12 @@ bool Renderer::Initialize()
 		windowFlags
 	);
 
-	if (!window) {
+	if (!window)
 		return false;
-	}
+
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	if (!renderer)
+		return false;
 
 	gl_context = SDL_GL_CreateContext(window);
 	SDL_GL_SetSwapInterval(1); // Enable vsync
@@ -62,6 +65,17 @@ bool Renderer::Initialize()
 	if (gl3wInit() != 0) {
 		return false;
 	}
+
+	baseColor = { v2_u32{SCREEN_WIDTH, SCREEN_HEIGHT} };
+
+	glGenTextures(1, &finalFrameId);
+	glBindTexture(GL_TEXTURE_2D, finalFrameId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_BGRA, GL_UNSIGNED_BYTE, (GLvoid*)baseColor.Buffer().Data());
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	PrepareUI();
 	TracyGpuContext(gl_context);
@@ -93,6 +107,18 @@ void Renderer::PreTick()
 void Renderer::Render(Frame& frame)
 {
 	ZoneScopedNC("Render", 0x94d145);
+
+	// World Render
+	{
+		// Execute commands
+		Log::Message("Commands: %i", frame.commands.Size());
+		frame.ExecuteCommands(*this);
+
+		// Render final base color into screen
+		glBindTexture(GL_TEXTURE_2D, finalFrameId);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GL_BGRA, GL_UNSIGNED_BYTE, (GLvoid*)baseColor.Buffer().Data());
+	}
+
 	ImGui::Render();
 	SDL_GL_MakeCurrent(window, gl_context);
 
@@ -102,13 +128,6 @@ void Renderer::Render(Frame& frame)
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-
-	// World Render
-	{
-		// Execute commands
-		Log::Message("Commands: %i", frame.commands.Size());
-		// Render final frame pixels
-	}
 
 	{ // UI Render
 		ZoneScopedNC("UI Render", 0x94d145);
@@ -134,7 +153,32 @@ void Renderer::BeforeDestroy()
 	Super::BeforeDestroy();
 
 	if (window)
-	{
 		SDL_DestroyWindow(window);
+
+	if (renderer)
+		SDL_DestroyRenderer(renderer);
+
+	glDeleteTextures(1, &finalFrameId);
+}
+
+void Renderer::DrawImage(Frame& frame, const v2_u32& position, const TextureData& texture)
+{
+	u32 width = texture.Size().x();
+	u32 height = texture.Size().y();
+	u32 pitch = baseColor.Size().x();
+	u32 offset = pitch * position.y() + position.x();
+	u32 delta = pitch - width;
+
+	const Color* texturePixel = texture.Buffer().Data();
+	Color* bcPixel = baseColor.Buffer().Data() + offset;
+
+	while (height-- > 0)
+	{
+		for (Color* end = bcPixel + width; bcPixel < end; bcPixel++, texturePixel++)
+		{
+			*bcPixel = *texturePixel;
+		}
+
+		bcPixel += delta;
 	}
 }

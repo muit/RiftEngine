@@ -34,6 +34,7 @@ public:
 
 	TArray() : vector{} {}
 
+	TArray(u32 DefaultSize) : vector{ DefaultSize } {}
 	TArray(std::initializer_list<Type> initList) : vector{initList} {}
 
 	TArray(TArray<Type>&& other) { MoveFrom(eastl::move(other)); }
@@ -67,7 +68,7 @@ public:
 		return foundIndex;
 	}
 
-	i32 AddDefaulted() {
+	i32 AddDefaulted(u32 Amount = 0) {
 		vector.push_back();
 		return Size() - 1;
 	}
@@ -178,6 +179,9 @@ public:
 	const Type& First() const { return vector.front(); }
 	const Type& Last() const { return vector.back(); }
 
+	Type* Data() { return vector.data(); }
+	const Type* Data() const { return vector.data(); }
+
 	/** OPERATORS */
 public:
 
@@ -227,9 +231,4 @@ private:
 
 	FORCEINLINE void CopyFrom(const TArray& other) { vector = other.vector; }
 	FORCEINLINE void MoveFrom(TArray&& other) { vector = eastl::move(other.vector); }
-
-
-	/** STATIC */
-public:
-
 };

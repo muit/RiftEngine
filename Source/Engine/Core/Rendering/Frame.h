@@ -33,15 +33,13 @@ public:
 		commands.Add(command);
 	}
 
-	u16 Id() { return id; }
-
-private:
-
 	void ExecuteCommands(Renderer& renderer) {
 		for(const auto& command : commands)
 		{
-			command->Execute(renderer);
+			command->Execute(renderer, *this);
 		}
 		commands.Empty();
 	}
+
+	u16 Id() { return id; }
 };
