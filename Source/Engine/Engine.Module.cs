@@ -25,7 +25,7 @@ class EngineModule : BaseModule
         conf.IncludePaths.Add(@"[project.SharpmakeCsPath]/ThirdParty/EASTL/test/packages/EAThread/include");
 
         
-        conf.Options.Add(new Sharpmake.Options.Vc.Compiler.DisableSpecificWarnings("4152", "4100"));
+        conf.Options.Add(new Sharpmake.Options.Vc.Compiler.DisableSpecificWarnings("4152", "4100", "4201"));
         //conf.Options.Add(Sharpmake.Options.Vc.Compiler.ShowIncludes.Enable);
 
         if(target.Optimization == Optimization.Debug)

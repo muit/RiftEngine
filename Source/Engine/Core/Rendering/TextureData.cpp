@@ -4,6 +4,15 @@
 #include "SDL_surface.h"
 
 
+void TextureData::Fill(Color color)
+{
+	const u32 pixelCount = size.x() * size.y();
+	for (u32 i = 0; i < pixelCount; ++i)
+	{
+		buffer[i] = color;
+	}
+}
+
 void TextureData::FromSurface(SDL_Surface* surface)
 {
 	if (surface)

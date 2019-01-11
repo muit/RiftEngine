@@ -33,7 +33,7 @@ public:
 
 	void* Allocate(size_t n, int flags = 0)
 	{
-		size += n;
+		//size += n;
 		void* const ptr = malloc_alloc.allocate(n, flags);
 		TracyAllocS(ptr, n, 10);
 		return ptr;
@@ -41,7 +41,7 @@ public:
 
 	void* Allocate(size_t n, size_t alignment, size_t alignmentOffset, int flags = 0)
 	{
-		size += n;
+		//size += n;
 		void* const ptr = malloc_alloc.allocate(n, alignment, alignmentOffset, flags);
 		TracyAllocS(ptr, n, 10);
 		return ptr;
@@ -56,7 +56,7 @@ public:
 
 	void Deallocate(void* const ptr, size_t n)
 	{
-		size -= n;
+		//size -= n;
 		TracyFreeS(ptr, 10);
 		malloc_alloc.deallocate(ptr, n);
 	}

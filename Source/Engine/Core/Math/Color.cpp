@@ -37,7 +37,7 @@ const Color Color::Emerald     {  46, 204, 113 };
 /**
 * Helper used by FColor -> FLinearColor conversion. We don't use a lookup table as unlike pow, multiplication is fast.
 */
-static const float OneOver255 = 1.0f / 255.0f;
+static constexpr float OneOver255 = 1.0f / 255.0f;
 
 //	FColor->FLinearColor conversion.
 LinearColor::LinearColor(const Color& other)

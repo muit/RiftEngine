@@ -356,22 +356,12 @@ FORCEINLINE LinearColor operator*(float scalar,const LinearColor& Color)
 struct Color
 {
 public:
-	// Variables.
-#if PLATFORM_LITTLE_ENDIAN
-	#ifdef _MSC_VER
-		// Win32 x86
-		union { struct{ u8 b,g,r,a; }; u32 alignmentDummy; };
-	#else
-		// Linux x86, etc
-		u8 b GCC_ALIGN(4);
-		u8 g,r,a;
-	#endif
-#else // PLATFORM_LITTLE_ENDIAN
+	#pragma warning(disable: 4201) // Avoid warning about nameless struct
 	union {
-		u8 a, r, g, b;
+		struct { u8 r, g, b, a; };
 		u32 alignmentDummy;
 	};
-#endif
+	#pragma warning(default: 4201)
 
 	u32& DWColor(void) {return *((u32*)this);}
 	const u32& DWColor(void) const {return *((u32*)this);}
@@ -384,12 +374,7 @@ public:
 	}
 
 	constexpr FORCEINLINE Color( u8 r, u8 g, u8 b, u8 a = 255 )
-		// put these into the body for proper ordering with INTEL vs non-INTEL_BYTE_ORDER
-#if PLATFORM_LITTLE_ENDIAN
-		: b(b), g(g), r(r), a(a)
-#else
 		: a(a), r(r), g(g), b(b)
-#endif
 	{}
 
 	FORCEINLINE explicit Color( u32 InColor )

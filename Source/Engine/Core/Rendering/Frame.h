@@ -20,7 +20,6 @@ private:
 public:
 
 	DateTime time;
-	TextureData baseColor;
 
 	TArray<eastl::shared_ptr<RenderCommand>> commands;
 
@@ -43,3 +42,13 @@ public:
 
 	u16 Id() { return id; }
 };
+
+struct FrameRender {
+public:
+
+	TextureData baseColor;
+
+
+	FrameRender() = default;
+};
+

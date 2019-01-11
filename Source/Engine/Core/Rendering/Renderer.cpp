@@ -66,8 +66,6 @@ bool Renderer::Initialize()
 		return false;
 	}
 
-	baseColor = { v2_u32{SCREEN_WIDTH, SCREEN_HEIGHT} };
-
 	glGenTextures(1, &finalFrameId);
 	glBindTexture(GL_TEXTURE_2D, finalFrameId);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -108,17 +106,6 @@ void Renderer::Render(Frame& frame)
 {
 	ZoneScopedNC("Render", 0x94d145);
 
-	// World Render
-	{
-		// Execute commands
-		Log::Message("Commands: %i", frame.commands.Size());
-		frame.ExecuteCommands(*this);
-
-		// Render final base color into screen
-		glBindTexture(GL_TEXTURE_2D, finalFrameId);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GL_BGRA, GL_UNSIGNED_BYTE, (GLvoid*)baseColor.Buffer().Data());
-	}
-
 	ImGui::Render();
 	SDL_GL_MakeCurrent(window, gl_context);
 
@@ -128,6 +115,20 @@ void Renderer::Render(Frame& frame)
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+
+	// World Render
+	{
+		baseColor = { v2_u32{SCREEN_WIDTH, SCREEN_HEIGHT} };
+		baseColor.Fill(Color::Red);
+
+		// Execute commands
+		Log::Message("Commands: %i", frame.commands.Size());
+		frame.ExecuteCommands(*this);
+
+		// Render final base color into screen
+		glBindTexture(GL_TEXTURE_2D, finalFrameId);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGBA8, GL_UNSIGNED_BYTE, (GLvoid*)baseColor.Buffer().Data());
+	}
 
 	{ // UI Render
 		ZoneScopedNC("UI Render", 0x94d145);

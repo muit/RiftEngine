@@ -21,6 +21,8 @@ public:
 
 	TextureData(v2_u32 size = v2_u32::Zero()) : size{ size }, buffer{size.x() * size.y()} {}
 
+	void Fill(Color color);
+
 	void FromSurface(struct SDL_Surface* surface);
 
 	// Receives a surface and updates all its pixels
