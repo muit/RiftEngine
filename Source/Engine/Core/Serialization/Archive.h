@@ -7,8 +7,6 @@
 #include "Core/TypeTraits.h"
 #include "Core/Object/ObjectPtr.h"
 
-#include "MemoryReader.h"
-#include "MemoryWriter.h"
 #include <fstream>
 
 
@@ -59,6 +57,7 @@ public:
 	void Serialize(const char* name, v2& val);
 	void Serialize(const char* name, v2_u32& val);
 	void Serialize(const char* name, v3& val);
+	void Serialize(const char* name, Quat& val);
 
 	template<typename T>
 	void Serialize(const char* name, GlobalPtr<T>& val) {

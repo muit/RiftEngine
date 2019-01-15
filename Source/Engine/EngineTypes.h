@@ -11,6 +11,7 @@
 #include "Core/Misc/Guid.h"
 #include "Core/Math/Color.h"
 #include "Core/Math/Vector.h"
+#include "Core/Math/Transform.h"
 
 
 #define DECLARE_REFLECTION_TYPE(Type)\
@@ -48,6 +49,8 @@ DECLARE_REFLECTION_TYPE(Color);
 DECLARE_REFLECTION_TYPE(v2);
 DECLARE_REFLECTION_TYPE(v3);
 DECLARE_REFLECTION_TYPE(v2_u32);
+DECLARE_REFLECTION_TYPE(Quat);
+DECLARE_REFLECTION_TYPE(Transform);
 
 
 /** To registry a new native type:

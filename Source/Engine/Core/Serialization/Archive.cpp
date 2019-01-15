@@ -32,3 +32,15 @@ void Archive::Serialize(const char* name, v3& val)
 	}
 	EndObject();
 }
+
+void Archive::Serialize(const char* name, Quat& val)
+{
+	BeginObject(name);
+	{
+		Serialize(TX("x"), val.x());
+		Serialize(TX("y"), val.y());
+		Serialize(TX("z"), val.z());
+		Serialize(TX("w"), val.w());
+	}
+	EndObject();
+}

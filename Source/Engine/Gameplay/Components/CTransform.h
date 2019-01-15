@@ -9,7 +9,10 @@
 class CTransform : public Component {
 	STRUCT(CTransform)
 
-public:
+private:
+
+	PROP(Transform, transform);
+	Transform transform;
 
 	// #TODO: Implement Vector3 & Quaternion types
 

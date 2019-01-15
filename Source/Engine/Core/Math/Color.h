@@ -547,9 +547,9 @@ extern void ComputeAndFixedColorAndIntensity(const LinearColor& InLinearColor,Co
 EASTL_DECLARE_IS_POD(Color, true);
 EASTL_DECLARE_IS_POD(LinearColor, true);
 
-DEFINE_CLASS_TRAITS(Color, {
+DEFINE_CLASS_TRAITS(Color,
 	HasCustomSerialize = true
-});
+);
 
 
 /**

@@ -98,9 +98,9 @@ private:
 	Name(const Id& id) : id(id) {}
 };
 
-DEFINE_CLASS_TRAITS(Name, {
+DEFINE_CLASS_TRAITS(Name,
 	HasCustomSerialize = true
-});
+);
 
 namespace eastl {
 	template <>

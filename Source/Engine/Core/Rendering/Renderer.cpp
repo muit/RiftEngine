@@ -29,32 +29,24 @@ bool Renderer::Initialize()
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #endif
 
-	// Create window with graphics context
+	// Setup window
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 	SDL_DisplayMode current;
 	SDL_GetCurrentDisplayMode(0, &current);
 
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-#if WITH_EDITOR
-	u32 windowFlags = SDL_WINDOW_OPENGL | /*SDL_WINDOW_RESIZABLE | */SDL_WINDOW_MAXIMIZED;
-#else
-	u32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED;
-#endif
 	window = SDL_CreateWindow(
 		"Rift Engine",
-		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		SCREEN_WIDTH, SCREEN_HEIGHT,
-		windowFlags
+#if WITH_EDITOR
+		SDL_WINDOW_OPENGL | /*SDL_WINDOW_RESIZABLE | */SDL_WINDOW_MAXIMIZED
+#else
+		SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED
+#endif
 	);
-
 	if (!window)
-		return false;
-
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	if (!renderer)
 		return false;
 
 	gl_context = SDL_GL_CreateContext(window);
@@ -66,14 +58,14 @@ bool Renderer::Initialize()
 		return false;
 	}
 
-	glGenTextures(1, &finalFrameId);
+	/*glGenTextures(1, &finalFrameId);
 	glBindTexture(GL_TEXTURE_2D, finalFrameId);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_BGRA, GL_UNSIGNED_BYTE, (GLvoid*)baseColor.Buffer().Data());
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)baseColor.Buffer().Data());
+	glBindTexture(GL_TEXTURE_2D, 0);*/
 
 	PrepareUI();
 	TracyGpuContext(gl_context);
@@ -90,10 +82,10 @@ void Renderer::PrepareUI()
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
+	ImGui::StyleColorsDark();
+
 	ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
 	ImGui_ImplOpenGL3_Init(glslVersion);
-
-	ImGui::StyleColorsDark();
 }
 
 void Renderer::PreTick()
@@ -118,16 +110,18 @@ void Renderer::Render(Frame& frame)
 
 	// World Render
 	{
-		baseColor = { v2_u32{SCREEN_WIDTH, SCREEN_HEIGHT} };
-		baseColor.Fill(Color::Red);
+		render.baseColor = { v2_u32{SCREEN_WIDTH, SCREEN_HEIGHT} };
+		render.baseColor.Fill(Color::Red);
 
 		// Execute commands
-		Log::Message("Commands: %i", frame.commands.Size());
-		frame.ExecuteCommands(*this);
+		//Log::Message("Commands: %i", frame.commands.Size());
+		//frame.ExecuteCommands(*this);
 
 		// Render final base color into screen
-		glBindTexture(GL_TEXTURE_2D, finalFrameId);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGBA8, GL_UNSIGNED_BYTE, (GLvoid*)baseColor.Buffer().Data());
+		//glBindTexture(GL_TEXTURE_2D, finalFrameId);
+		//glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)baseColor.Buffer().Data());
+		//glBindTexture(GL_TEXTURE_2D, 0);
+		// Render texture
 	}
 
 	{ // UI Render
@@ -156,22 +150,19 @@ void Renderer::BeforeDestroy()
 	if (window)
 		SDL_DestroyWindow(window);
 
-	if (renderer)
-		SDL_DestroyRenderer(renderer);
-
-	glDeleteTextures(1, &finalFrameId);
+	//glDeleteTextures(1, &finalFrameId);
 }
 
 void Renderer::DrawImage(Frame& frame, const v2_u32& position, const TextureData& texture)
 {
 	u32 width = texture.Size().x();
 	u32 height = texture.Size().y();
-	u32 pitch = baseColor.Size().x();
+	u32 pitch = render.baseColor.Size().x();
 	u32 offset = pitch * position.y() + position.x();
 	u32 delta = pitch - width;
 
 	const Color* texturePixel = texture.Buffer().Data();
-	Color* bcPixel = baseColor.Buffer().Data() + offset;
+	Color* bcPixel = render.baseColor.Buffer().Data() + offset;
 
 	while (height-- > 0)
 	{

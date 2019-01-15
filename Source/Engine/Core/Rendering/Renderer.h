@@ -21,13 +21,11 @@ class Renderer : public Object {
 
 
 	SDL_Window* window;
-	SDL_Renderer* renderer;
 	SDL_GLContext gl_context;
 	const char* glslVersion;
 
-	GLuint pboIds[2];
 	GLuint finalFrameId;
-	TextureData baseColor;
+	FrameRender render;
 
 public:
 	// Render thread only

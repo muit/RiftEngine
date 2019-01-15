@@ -272,6 +272,6 @@ public:
 	u32 D;
 };
 
-DEFINE_CLASS_TRAITS(Guid, {
+DEFINE_CLASS_TRAITS(Guid,
 	HasCustomSerialize = true
-});
+);

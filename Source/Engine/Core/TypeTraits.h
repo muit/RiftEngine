@@ -9,15 +9,16 @@
 /** Default traits go here */
 template <typename T>
 struct BaseClassTraits { enum {
-	HasCustomSerialize = false
+	HasCustomSerialize = false,
+	HasDetailsWidget = false
 };};
 
 /** Custom traits go here */
-#define DEFINE_CLASS_TRAITS(Class, traits)\
+#define DEFINE_CLASS_TRAITS(Class, ...)\
 template <>\
 struct ClassTraits<Class> : public BaseClassTraits<Class> {\
-	enum traits\
-;}
+	enum {__VA_ARGS__};\
+}
 
 template <typename T>
 struct ClassTraits : public BaseClassTraits<T> {};
