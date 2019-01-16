@@ -28,13 +28,6 @@ void Details::Build()
 			}
 		}
 	}
-
-	eastl::vector<Class*> children{};
-	Object::StaticClass()->GetAllChildClasses(children);
-
-	/*for (auto* child : children) {
-		W(PropertyWidget, child);
-	}*/
 }
 
 void Details::Tick()

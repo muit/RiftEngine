@@ -1,6 +1,8 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "SceneEntities.h"
+#include "Core/Log.h"
+#include "Core/Serialization/Archive.h"
 #include "World/World.h"
 #include "ECS/EntityManager.h"
 #include "Gameplay/Components/CEntity.h"
@@ -70,6 +72,11 @@ void SceneEntities::OnEntityClicked(EntityId entity)
 	{
 		selectedEntities.Empty();
 		selectedEntities.Add(entity);
+
+		JsonArchive ar{};
+		GetWorld()->GetEntityManager()->Serialize(ar);
+
+		Log::Message(ar.GetDataString().c_str());
 	}
 }
 

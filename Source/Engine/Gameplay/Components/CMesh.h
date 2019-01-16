@@ -7,6 +7,6 @@
 
 
 class CMesh : public Component {
-	STRUCT(CMesh)
+	POD(CMesh)
 
 };

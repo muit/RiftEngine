@@ -60,8 +60,7 @@ template<int N> static void __meta_RegistryProperty(MetaInt<N>) {}\
 template<int N> FORCEINLINE void __meta_SerializeProperty(Archive&, MetaInt<N>) {}
 
 
-// #TODO: Rename to POD
-#define STRUCT(type, inTags) \
+#define POD(type, inTags) \
 private:\
 using __meta_type = type;\
 friend TStruct<__meta_type>;\
@@ -76,8 +75,8 @@ static void __meta_RegistryStruct() {\
 \
 	StaticStruct()->Registry(TX(#type));\
 	constexpr ReflectionTags tags = ReflectionTagsInitializer<inTags>::value;\
-	static_assert(!(tags & DetailsEdit), "Structs can't use DetailsEdit"); \
-	static_assert(!(tags & DetailsView), "Structs can't use DetailsView"); \
+	static_assert(!(tags & DetailsEdit), "Pods can't use DetailsEdit"); \
+	static_assert(!(tags & DetailsView), "Pods can't use DetailsView"); \
 	StaticStruct()->RegistryTags(tags);\
 }\
 private:\

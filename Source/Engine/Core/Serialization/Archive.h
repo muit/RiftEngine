@@ -125,7 +125,11 @@ public:
 		EndObject();
 	}
 
+	// Starts an object by name
+	virtual void BeginObject(const String& name) { BeginObject(name.c_str()); };
 	virtual void BeginObject(const char* name) = 0;
+
+	// Starts an object by index (Array)
 	virtual void BeginObject(u32 index) = 0;
 	virtual void EndObject() = 0;
 

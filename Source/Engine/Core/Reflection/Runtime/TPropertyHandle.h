@@ -26,7 +26,7 @@ public:
 		: PropertyHandle(instance, prop), access{access}
 	{}
 
-	NOINLINE VarType* GetValuePtr() const
+	VarType* GetValuePtr() const
 	{
 		if (IsValid())
 		{

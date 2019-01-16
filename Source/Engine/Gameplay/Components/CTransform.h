@@ -8,15 +8,12 @@
 
 
 class CTransform : public Component {
-	STRUCT(CTransform)
+	POD(CTransform)
 
 private:
 
-	PROP(Transform, transform);
+	EntityId parent;
+
+	PROP(Transform, transform, DetailsEdit);
 	Transform transform;
-
-	// #TODO: Implement Vector3 & Quaternion types
-
-	// In the future hierarchy will be implemented. Similar to unity in this sense. Entities will contain entities
-	//EntityId parent;
 };

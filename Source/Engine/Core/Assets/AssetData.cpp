@@ -18,6 +18,7 @@ bool AssetData::__Load(const AssetInfo& inInfo, json& data)
 
 bool AssetData::SaveToPath(Name path)
 {
+	// #FIX: SaveToPath should modify the current asset
 	info = { path };
 	return Save();
 }
@@ -28,7 +29,8 @@ bool AssetData::Save()
 		return false;
 
 	JsonArchive ar {};
-	ar("asset_type", GetClass()->GetNameRef());
+	Name className = GetClass()->GetName();
+	ar("asset_type", className);
 	Serialize(ar);
 
 	return FileSystem::SaveJsonFile(info.GetPath().ToString(), ar.GetData());

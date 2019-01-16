@@ -6,5 +6,5 @@
 
 
 class CCamera : public Component {
-	STRUCT(CCamera)
+	POD(CCamera)
 };

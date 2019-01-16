@@ -29,7 +29,7 @@ public:
 	virtual ~BaseType() {}
 
 	const Name& GetName() const { return name; }
-	Name& GetNameRef() { return name; }
+	const String& GetSName() const { return GetName().ToString(); }
 
 	const Property* FindProperty(const Name& propertyName) const;
 

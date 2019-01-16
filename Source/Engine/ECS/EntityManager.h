@@ -43,9 +43,10 @@ public:
 		return registry.view<Component...>();
 	};
 
-private:
 
 	virtual bool Serialize(Archive& ar) override;
+
+private:
 
 	void SerializeEntity(Archive& ar, const EntityId& entity);
 };

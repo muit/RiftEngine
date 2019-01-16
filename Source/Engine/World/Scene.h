@@ -2,13 +2,14 @@
 #pragma once
 
 #include "CoreObject.h"
+#include "Core/Assets/AssetData.h"
 #include "Core/Strings/String.h"
 #include "Core/Strings/Name.h"
 #include "Core/Math/Vector.h"
 
 
-class Scene : public Object {
-	CLASS(Scene, Object)
+class Scene : public AssetData {
+	CLASS(Scene, AssetData)
 
 public:
 
