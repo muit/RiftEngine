@@ -4,6 +4,7 @@
 #include "CoreStruct.h"
 #include "ECS/Component.h"
 #include "ECS/EntityManager.h"
+#include "Core/Math/Transform.h"
 
 
 class CTransform : public Component {

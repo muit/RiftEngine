@@ -2,7 +2,7 @@
 #pragma once
 
 #include "Class.h"
-#include "Property.h"
+#include "TProperty.h"
 
 
 // Class will be specialized for each type at compile time and store

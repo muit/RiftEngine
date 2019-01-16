@@ -22,7 +22,7 @@ void Details::Build()
 			{
 				if (property.second->HasTag(DetailsEdit) || property.second->HasTag(DetailsView))
 				{
-					auto handle = HandleHelper::CreatePropertyHandle(object, property.second.get());
+					auto handle = property.second->CreateHandle(object);
 					Add(PropertyWidget::NewPropertyWidget(handle));
 				}
 			}

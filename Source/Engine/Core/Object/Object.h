@@ -4,6 +4,7 @@
 #include "BaseObject.h"
 #include "ObjectPtr.h"
 #include "../Reflection/TClass.h"
+#include "../Serialization/Archive.h"
 
 
 class Object;

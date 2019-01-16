@@ -7,6 +7,7 @@
 
 #include "BaseType.h"
 #include "Core/Object/BaseObject.h"
+#include "Core/Object/ObjectPtr.h"
 
 
 class Class : public BaseType {

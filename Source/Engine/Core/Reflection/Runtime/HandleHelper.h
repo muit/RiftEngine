@@ -6,7 +6,6 @@
 #include "Core/Object/ObjectPtr.h"
 
 #include "ClassHandle.h"
-#include "TPropertyHandle.h"
 
 
 class HandleHelper {
@@ -16,16 +15,4 @@ public:
 	{
 		return eastl::make_shared<ClassHandle>(instance);
 	}
-
-	template<typename VarType>
-	static eastl::shared_ptr<PropertyHandle> CreatePropertyHandle(const Ptr<BaseObject>& instance, const TProperty<VarType>* property)
-	{
-		if (property && instance->GetClass() == property->GetType())
-		{
-			return eastl::shared_ptr<PropertyHandle>(new TPropertyHandle<VarType>(instance, property));
-		}
-		return {};
-	}
-
-	static eastl::shared_ptr<PropertyHandle> CreatePropertyHandle(const Ptr<BaseObject>& instance, const Property* property);
 };

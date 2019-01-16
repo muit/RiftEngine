@@ -3,11 +3,10 @@
 
 #include "CoreEngine.h"
 
-#include <EASTL/type_traits.h>
-
 //#include "Property.h"
 #include "Macros.h"
 #include "ReflectionTags.h"
+#include "Core/Platform/Platform.h"
 
 
 // Wrap some types so we can use them at compile time

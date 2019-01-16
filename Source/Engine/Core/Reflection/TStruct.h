@@ -5,7 +5,7 @@
 #include <EASTL/type_traits.h>
 
 #include "Core/Object/Pod.h"
-#include "Property.h"
+#include "TProperty.h"
 
 
 /** TStruct will be specialized for each type at compile time and store

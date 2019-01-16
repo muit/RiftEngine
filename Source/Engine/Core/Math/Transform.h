@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreEngine.h"
-
 #include "Vector.h"
+
 
 struct Transform {
 
@@ -29,6 +29,10 @@ struct Transform {
 	//void SetRotation(v3 rotation) { value.rotate(rotation); }
 
 	bool Serialize(class Archive& ar, const char* name);
+
+#if WITH_EDITOR
+	static void CreateDetailsWidget(Transform& val);
+#endif
 };
 
 DEFINE_CLASS_TRAITS(Transform,

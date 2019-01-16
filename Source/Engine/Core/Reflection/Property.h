@@ -1,18 +1,16 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include <string>
-#include <vector>
-#include <functional>
+#include <EASTL/shared_ptr.h>
 
-#include "EngineTypes.h"
 #include "Core/Object/BaseObject.h"
-#include "Core/Object/ObjectPtr.h"
-#include "Core/Serialization/Archive.h"
+#include "Core/Strings/Name.h"
+#include "Core/Strings/String.h"
 #include "ReflectionTags.h"
 
-class BaseType;
 
+class BaseType;
+struct PropertyHandle;
 
 /**
 * Static information about a property
@@ -40,7 +38,7 @@ public:
 
 	virtual ~Property() = default;
 
-	String GetName() const { return name.ToString(); }
+	const String& GetName() const { return name.ToString(); }
 
 	bool HasTag(ReflectionTags tag)      const { return HasAnyTags(tag); }
 	bool HasAllTags(ReflectionTags inTags) const { return (tags & inTags) == inTags; }
@@ -48,29 +46,6 @@ public:
 
 	BaseType* GetType() const { return typePtr; }
 	Name GetTypeName() const { return typeName; }
-};
 
-
-/**
- * Static information about a property
- */
-template <typename VarType>
-class TProperty : public Property {
-
-private:
-
-	std::function<VarType*(BaseObject*)> access;
-
-
-public:
-
-	TProperty(BaseType* typePtr, const Name& typeName, Name&& name, std::function<VarType*(BaseObject*)>&& access, ReflectionTags tags)
-		: Property(typePtr, typeName, std::move(name), tags), access(access)
-	{}
-
-	// Will be nullptr if class is not correct
-	VarType* GetValuePtr(const Ptr<BaseObject>& instance) const
-	{
-		return access(*instance);
-	}
+	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(const Ptr<BaseObject>& instance) = 0;
 };
