@@ -9,13 +9,13 @@ void UInt8PropertyWidget::Tick()
 {
 	ImGui::PushID(idName.c_str());
 
-	i32 value = *prop->GetValuePtr();
+	i32 value = *GetHandle()->GetValuePtr();
 	ImGui::InputInt(displayName.c_str(), &value);
 
 	value = Math::Clamp(value, 0, 255);
-	if (value != *prop->GetValuePtr())
+	if (value != *GetHandle()->GetValuePtr())
 	{
-		prop->SetValue((u8)value);
+		GetHandle()->SetValue((u8)value);
 	}
 
 	ImGui::PopID();

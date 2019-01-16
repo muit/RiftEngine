@@ -8,7 +8,7 @@
 void NamePropertyWidget::OnValueChanged()
 {
 	const Name newValue{ currentValue };
-	prop->SetValue(newValue);
+	GetHandle()->SetValue(newValue);
 }
 
 void NamePropertyWidget::Tick()
@@ -16,7 +16,7 @@ void NamePropertyWidget::Tick()
 	ImGui::PushID(idName.c_str());
 	{
 		lastValue = currentValue;
-		currentValue = prop->GetValuePtr()->ToString();
+		currentValue = GetHandle()->GetValuePtr()->ToString();
 		ImGui::InputText(displayName.c_str(), currentValue);
 	}
 	ImGui::PopID();

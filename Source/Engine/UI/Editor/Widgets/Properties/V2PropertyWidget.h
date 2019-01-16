@@ -13,20 +13,13 @@
 class V2PropertyWidget : public PropertyWidget {
 	CLASS(V2PropertyWidget, PropertyWidget)
 
-	eastl::shared_ptr<TPropertyHandle<v2>> prop;
-
-public:
-
-	void Configure(const eastl::shared_ptr<TPropertyHandle<v2>>& inProperty)
-	{
-		prop = inProperty;
-		idName = prop->GetName();
-		CString::ToSentenceCase(idName, displayName);
-	}
-
 protected:
 
 	virtual void Tick() override;
+
+	TPropertyHandle<v2>* GetHandle() const {
+		return dynamic_cast<TPropertyHandle<v2>*>(prop.get());
+	}
 };
 
 #endif

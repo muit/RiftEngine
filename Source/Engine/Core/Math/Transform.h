@@ -5,6 +5,8 @@
 #include "CoreEngine.h"
 #include "Vector.h"
 
+class Class;
+
 
 struct Transform {
 
@@ -31,7 +33,7 @@ struct Transform {
 	bool Serialize(class Archive& ar, const char* name);
 
 #if WITH_EDITOR
-	static void CreateDetailsWidget(Transform& val);
+	static Class* GetDetailsWidgetClass();
 #endif
 };
 

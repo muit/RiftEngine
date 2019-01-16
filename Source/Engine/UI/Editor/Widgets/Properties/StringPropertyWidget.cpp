@@ -8,7 +8,7 @@
 void StringPropertyWidget::Tick()
 {
 	ImGui::PushID(idName.c_str());
-	ImGui::InputText(displayName.c_str(), *prop->GetValuePtr());
+	ImGui::InputText(displayName.c_str(), *GetHandle()->GetValuePtr());
 	ImGui::PopID();
 }
 

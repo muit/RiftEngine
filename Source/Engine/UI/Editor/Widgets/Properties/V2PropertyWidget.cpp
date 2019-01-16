@@ -13,7 +13,7 @@ void V2PropertyWidget::Tick()
 		flags |= ImGuiInputTextFlags_ReadOnly;
 
 	ImGui::PushID(idName.c_str());
-	v2* const val = prop->GetValuePtr();
+	v2* const val = GetHandle()->GetValuePtr();
 	ImGui::InputFloat2(displayName.c_str(), val->data(), "%g", flags);
 	ImGui::PopID();
 }

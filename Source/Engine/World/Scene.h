@@ -27,6 +27,10 @@ public:
 	PROP(v3, myVector, DetailsEdit)
 	v3 myVector;
 
+
+	PROP(Transform, transform, DetailsEdit)
+	Transform transform;
+
 	void Tick(float /*deltaTime*/) {
 	}
 };

@@ -11,6 +11,7 @@
 class HandleHelper {
 public:
 
+	// #TODO: Move to TClass
 	static eastl::shared_ptr<ClassHandle> CreateClassHandle(const Ptr<BaseObject>& instance)
 	{
 		return eastl::make_shared<ClassHandle>(instance);

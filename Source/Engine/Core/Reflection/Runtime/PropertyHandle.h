@@ -1,4 +1,4 @@
-// Copyright 2015-2019 Piperift - All rights reserved
+ // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
 #include "EngineTypes.h"
@@ -40,4 +40,9 @@ public:
 	bool IsValid() const { return instance && prop != nullptr; }
 
 	operator bool() const { return IsValid(); }
+
+
+	FORCEINLINE virtual Class* GetClassDefinedWidgetClass() {
+		return nullptr;
+	}
 };

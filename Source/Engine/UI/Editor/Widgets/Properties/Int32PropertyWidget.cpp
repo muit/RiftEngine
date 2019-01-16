@@ -9,7 +9,7 @@ void Int32PropertyWidget::Tick()
 {
 	ImGui::PushID(idName.c_str());
 
-	ImGui::InputInt(displayName.c_str(), prop->GetValuePtr());
+	ImGui::InputInt(displayName.c_str(), GetHandle()->GetValuePtr());
 
 	ImGui::PopID();
 }

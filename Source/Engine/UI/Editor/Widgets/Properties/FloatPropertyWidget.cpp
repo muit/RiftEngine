@@ -8,7 +8,7 @@
 void FloatPropertyWidget::Tick()
 {
 	ImGui::PushID(idName.c_str());
-	ImGui::InputFloat(displayName.c_str(), prop->GetValuePtr());
+	ImGui::InputFloat(displayName.c_str(), GetHandle()->GetValuePtr());
 	ImGui::PopID();
 }
 

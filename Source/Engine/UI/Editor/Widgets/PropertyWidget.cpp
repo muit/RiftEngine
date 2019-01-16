@@ -18,6 +18,12 @@ GlobalPtr<PropertyWidget> PropertyWidget::NewPropertyWidget(const eastl::shared_
 {
 	if (prop)
 	{
+		Class* customWidgetClass = prop->GetClassDefinedWidgetClass();
+		if (customWidgetClass)
+		{
+			return New<PropertyWidget>(customWidgetClass, prop);
+		}
+
 		// Ordered by estimated usage
 		// #TODO: Switch to native pointers
 		if (auto propFloat = eastl::dynamic_pointer_cast<TPropertyHandle<float>>(prop)) {

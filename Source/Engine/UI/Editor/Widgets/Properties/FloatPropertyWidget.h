@@ -13,20 +13,13 @@
 class FloatPropertyWidget : public PropertyWidget {
 	CLASS(FloatPropertyWidget, PropertyWidget)
 
-	eastl::shared_ptr<TPropertyHandle<float>> prop;
-
-public:
-
-	void Configure(const eastl::shared_ptr<TPropertyHandle<float>>& inProperty)
-	{
-		prop = inProperty;
-		idName = prop->GetName();
-		CString::ToSentenceCase(idName, displayName);
-	}
-
 protected:
 
 	virtual void Tick() override;
+
+	TPropertyHandle<float>* GetHandle() const {
+		return dynamic_cast<TPropertyHandle<float>*>(prop.get());
+	}
 };
 
 #endif

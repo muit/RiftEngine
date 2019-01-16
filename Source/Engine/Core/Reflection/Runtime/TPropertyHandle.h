@@ -52,4 +52,13 @@ public:
 
 		return valuePtr;
 	}
+
+
+	FORCEINLINE virtual Class* GetClassDefinedWidgetClass() override
+	{
+		if constexpr(ClassTraits<VarType>::HasDetailsWidget)
+			return VarType::GetDetailsWidgetClass();
+		else
+			return nullptr;
+	}
 };

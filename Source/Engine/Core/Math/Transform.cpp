@@ -8,6 +8,7 @@
 #include <imgui/imgui.h>
 #include "UI/Editor/Widgets/PropertyWidget.h"
 
+#include "Core/Reflection/Class.h"
 #include "Core/Reflection/Runtime/TPropertyHandle.h"
 #endif
 
@@ -25,31 +26,40 @@ bool Transform::Serialize(Archive& ar, const char* name)
 }
 
 
-void Transform::CreateDetailsWidget(Transform& val)
-{
-
-}
-
 #if WITH_EDITOR
 
 class TransformPropertyWidget : public PropertyWidget {
 	CLASS(TransformPropertyWidget, PropertyWidget)
 
-		eastl::shared_ptr<TPropertyHandle<Transform>> prop;
-
-public:
-
-	void Configure(const eastl::shared_ptr<TPropertyHandle<Transform>>& inProperty)
-	{
-		prop = inProperty;
-		idName = prop->GetName();
-		CString::ToSentenceCase(idName, displayName);
-	}
-
 protected:
 
-	virtual void Tick() override;
+	virtual void Tick() override {
+
+		ImGuiInputTextFlags flags = 0;
+		if (!prop->HasTag(DetailsEdit))
+			flags |= ImGuiInputTextFlags_ReadOnly;
+
+		ImGui::PushID(idName.c_str());
+		{
+			ImGui::Text(displayName.c_str());
+
+			Transform& tr = *GetHandle()->GetValuePtr();
+
+			ImGui::InputFloat3("Location", tr.location.data(), 3, flags);
+			//ImGui::InputFloat3("Rotation", tr.rotation.data(), 3);
+			ImGui::InputFloat3("Scale", tr.scale.data(), 3, flags);
+		}
+		ImGui::PopID();
+	}
+
+	TPropertyHandle<Transform>* GetHandle() const {
+		return dynamic_cast<TPropertyHandle<Transform>*>(prop.get());
+	}
 };
 
+Class* Transform::GetDetailsWidgetClass()
+{
+	return TransformPropertyWidget::StaticClass();
+}
 
 #endif

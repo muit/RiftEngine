@@ -81,12 +81,24 @@ protected:
 	}
 
 
+	/** Create widget from template type */
 	template<typename WidgetType, typename... Args>
 	static GlobalPtr<WidgetType> New(Args&&... args) {
 		// Create the widget
 		GlobalPtr<WidgetType> widget = Create<WidgetType>();
 
 		// Configure it
+		widget->Configure(std::forward<Args>(args)...);
+
+		return widget;
+	}
+
+	/** Create widget from class */
+	template<typename WidgetType, typename... Args>
+	static GlobalPtr<WidgetType> New(Class* c, Args&&... args) {
+		// Create the widget
+		GlobalPtr<WidgetType> widget = Create<WidgetType>(c);
+
 		widget->Configure(std::forward<Args>(args)...);
 
 		return widget;

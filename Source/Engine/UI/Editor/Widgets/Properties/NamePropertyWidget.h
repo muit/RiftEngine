@@ -12,8 +12,6 @@
 class NamePropertyWidget : public PropertyWidget {
 	CLASS(NamePropertyWidget, PropertyWidget)
 
-	eastl::shared_ptr<TPropertyHandle<Name>> prop;
-
 	String currentValue;
 	String lastValue;
 
@@ -21,18 +19,15 @@ public:
 
 	NamePropertyWidget() : Super(), lastValue{}, currentValue{} {}
 
-	void Configure(const eastl::shared_ptr<TPropertyHandle<Name>>&  inProperty)
-	{
-		prop = inProperty;
-		idName = prop->GetName();
-		CString::ToSentenceCase(idName, displayName);
-	}
-
 	void OnValueChanged();
 
 protected:
 
 	virtual void Tick() override;
+
+	TPropertyHandle<Name>* GetHandle() const {
+		return dynamic_cast<TPropertyHandle<Name>*>(prop.get());
+	}
 };
 
 #endif
