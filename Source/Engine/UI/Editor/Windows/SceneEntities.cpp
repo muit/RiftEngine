@@ -73,8 +73,9 @@ void SceneEntities::OnEntityClicked(EntityId entity)
 		selectedEntities.Empty();
 		selectedEntities.Add(entity);
 
+		// Display the serialized data of an entity
 		JsonArchive ar{};
-		GetWorld()->GetEntityManager()->Serialize(ar);
+		GetWorld()->GetEntityManager()->SerializeEntity(ar, entity);
 
 		Log::Message(ar.GetDataString().c_str());
 	}

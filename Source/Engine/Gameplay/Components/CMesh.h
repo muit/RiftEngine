@@ -9,4 +9,6 @@
 class CMesh : public Component {
 	POD(CMesh)
 
+	//PROP(AssetPtr<Mesh>, mesh)
+	//AssetPtr<Mesh> mesh;
 };
