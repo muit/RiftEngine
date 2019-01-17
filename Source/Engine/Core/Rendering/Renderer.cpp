@@ -58,14 +58,7 @@ bool Renderer::Initialize()
 		return false;
 	}
 
-	/*glGenTextures(1, &finalFrameId);
-	glBindTexture(GL_TEXTURE_2D, finalFrameId);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)baseColor.Buffer().Data());
-	glBindTexture(GL_TEXTURE_2D, 0);*/
+	glRenderTexture = { SCREEN_WIDTH, SCREEN_HEIGHT };
 
 	PrepareUI();
 	TracyGpuContext(gl_context);
@@ -102,7 +95,9 @@ void Renderer::Render(Frame& frame)
 	SDL_GL_MakeCurrent(window, gl_context);
 
 	ImGuiIO& io = ImGui::GetIO();
-	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+	v2_u32 viewportSize{ (u32)io.DisplaySize.x, (u32)io.DisplaySize.y };
+
+	glViewport(0, 0, viewportSize.x(), viewportSize.y());
 	glClearColor(0.7f, 0.4f, 0.4f, 1);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
@@ -110,18 +105,15 @@ void Renderer::Render(Frame& frame)
 
 	// World Render
 	{
-		render.baseColor = { v2_u32{SCREEN_WIDTH, SCREEN_HEIGHT} };
+		render.baseColor = { viewportSize };
 		render.baseColor.Fill(Color::Red);
 
 		// Execute commands
 		//Log::Message("Commands: %i", frame.commands.Size());
-		//frame.ExecuteCommands(*this);
+		frame.ExecuteCommands(*this);
 
 		// Render final base color into screen
-		//glBindTexture(GL_TEXTURE_2D, finalFrameId);
-		//glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)baseColor.Buffer().Data());
-		//glBindTexture(GL_TEXTURE_2D, 0);
-		// Render texture
+		glRenderTexture.Draw(viewportSize, render.baseColor);
 	}
 
 	{ // UI Render

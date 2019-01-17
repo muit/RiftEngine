@@ -10,6 +10,7 @@
 #include "Frame.h"
 #include "Resources.h"
 #include "RenderCommand.h"
+#include "GL/GLRenderTexture.h"
 
 
 #define SCREEN_WIDTH 1280
@@ -24,7 +25,7 @@ class Renderer : public Object {
 	SDL_GLContext gl_context;
 	const char* glslVersion;
 
-	GLuint finalFrameId;
+	GLRenderTexture glRenderTexture;
 	FrameRender render;
 
 public:
