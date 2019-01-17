@@ -89,7 +89,10 @@ void GLRenderTexture::BuildFrame(u32 width, u32 height)
 		+1.0f,  0.0f,
 		+1.0f, +1.0f,
 		 0.0f, +1.0f,
-		 0.0f,  0.0f
+
+		 0.0f, +1.0f,
+		 0.0f,  0.0f,
+		+1.0f,  0.0f
 	};
 
 	glGenBuffers(1, &square_vbo0);
