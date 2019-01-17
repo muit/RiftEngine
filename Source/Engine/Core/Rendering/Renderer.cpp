@@ -108,7 +108,6 @@ void Renderer::Render(Frame& frame)
 		render.baseColor = { viewportSize };
 		render.baseColor.Fill(Color::Red);
 
-		// Execute commands
 		//Log::Message("Commands: %i", frame.commands.Size());
 		frame.ExecuteCommands(*this);
 
