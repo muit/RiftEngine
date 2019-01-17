@@ -19,9 +19,23 @@ private:
 
 public:
 
-	TextureData(v2_u32 size = v2_u32::Zero()) : size{ size }, buffer{size.x() * size.y()} {}
+	TextureData(v2_u32 inSize = v2_u32::Zero()) : buffer{} {
+		Resize(inSize);
+	}
 
-	void Fill(Color color);
+	void Resize(v2_u32 inSize) {
+		size = inSize;
+		buffer.Resize(size.x() * size.y());
+	}
+
+	void Resize(v2_u32 inSize, const Color& clearColor) {
+		size = inSize;
+		buffer.Resize(size.x() * size.y(), clearColor);
+	}
+
+	void Fill(const Color& color) {
+		Resize(size, color);
+	}
 
 	void FromSurface(struct SDL_Surface* surface);
 

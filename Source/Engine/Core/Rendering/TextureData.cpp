@@ -4,15 +4,6 @@
 #include "SDL_surface.h"
 
 
-void TextureData::Fill(Color color)
-{
-	const u32 pixelCount = size.x() * size.y();
-	for (u32 i = 0; i < pixelCount; ++i)
-	{
-		buffer[i] = color;
-	}
-}
-
 void TextureData::FromSurface(SDL_Surface* surface)
 {
 	if (surface)
@@ -30,11 +21,10 @@ void TextureData::FromSurface(SDL_Surface* surface)
 		u32* const pixels = (u32*)surface->pixels;
 
 		// Copy pixels
-		buffer.Reserve(pixelCount);
+		buffer.Resize(pixelCount);
 		for (u32 i = 0; i < pixelCount; ++i)
 		{
-			const u32 pixel = pixels[i];
-			buffer.Add(Color{ pixel });
+			buffer[i] = Color{ pixels[i] };
 		}
 
 		if (reformated) {

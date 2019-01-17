@@ -51,6 +51,9 @@ public:
 
 	void Reserve(i32 sizeNum) { vector.reserve(sizeNum); }
 
+	void Resize(i32 sizeNum) { vector.resize(sizeNum); }
+	void Resize(i32 sizeNum, const Type& value) { vector.resize(sizeNum, value); }
+
 	i32 Add(Type&& item) {
 		vector.push_back(eastl::move(item));
 		return Size() - 1;

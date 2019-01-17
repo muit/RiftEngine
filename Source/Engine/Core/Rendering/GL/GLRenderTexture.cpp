@@ -33,28 +33,6 @@ const String GLRenderTexture::fragmentShader {
 	"}"
 };
 
-void GLRenderTexture::Draw(v2_u32 size, const TextureData& buffer)
-{
-	glViewport(0, 0, size.x(), size.y());
-	shaderProgram.Use();
-
-
-	glBindTexture(GL_TEXTURE_2D, textureId);
-
-	// Update texture data
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x(), size.y(), GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)buffer.Buffer().Data());
-
-	// Render texture
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, square_vbo0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, square_vbo1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-}
 
 void GLRenderTexture::BuildFrame(u32 width, u32 height)
 {
@@ -64,14 +42,13 @@ void GLRenderTexture::BuildFrame(u32 width, u32 height)
 		glBindTexture(GL_TEXTURE_2D, textureId);
 
 		// Texture format is RGB
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-
 
 	static const GLfloat squareVertices[] =
 	{
@@ -102,4 +79,27 @@ void GLRenderTexture::BuildFrame(u32 width, u32 height)
 	glGenBuffers(1, &square_vbo1);
 	glBindBuffer(GL_ARRAY_BUFFER, square_vbo1);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(squareTextureUV), squareTextureUV, GL_STATIC_DRAW);
+}
+
+void GLRenderTexture::Draw(v2_u32 size, const TextureData& buffer)
+{
+	glViewport(0, 0, size.x(), size.y());
+	shaderProgram.Use();
+
+
+	glBindTexture(GL_TEXTURE_2D, textureId);
+
+	// Update texture data
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x(), size.y(), GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)buffer.Buffer().Data());
+
+	// Render texture
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, square_vbo0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, square_vbo1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 }

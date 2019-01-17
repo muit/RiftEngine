@@ -41,7 +41,7 @@ bool Renderer::Initialize()
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		SCREEN_WIDTH, SCREEN_HEIGHT,
 #if WITH_EDITOR
-		SDL_WINDOW_OPENGL | /*SDL_WINDOW_RESIZABLE | */SDL_WINDOW_MAXIMIZED
+		SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
 #else
 		SDL_WINDOW_OPENGL | SDL_WINDOW_MAXIMIZED
 #endif
@@ -105,18 +105,20 @@ void Renderer::Render(Frame& frame)
 
 	// World Render
 	{
-		render.baseColor = { viewportSize };
-		render.baseColor.Fill(Color::Red);
+		ZoneScopedNC("World", 0x94d145);
+
+		// Clear texture to Red
+		render.baseColor.Resize(viewportSize, Color::Red);
 
 		//Log::Message("Commands: %i", frame.commands.Size());
-		frame.ExecuteCommands(*this);
+		//frame.ExecuteCommands(*this);
 
 		// Render final base color into screen
 		glRenderTexture.Draw(viewportSize, render.baseColor);
 	}
 
 	{ // UI Render
-		ZoneScopedNC("UI Render", 0x94d145);
+		ZoneScopedNC("UI", 0x94d145);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		// Update and Render additional Platform Windows
