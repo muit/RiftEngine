@@ -1,15 +1,18 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
-#include "EntityManager.h"
+#include "ECSManager.h"
 
 #include "Core/Serialization/Archive.h"
 
 #include "Gameplay/Components/CEntity.h"
 #include "Gameplay/Components/CTransform.h"
 #include "Gameplay/Components/CMesh.h"
+#include "Gameplay/Components/CCamera.h"
+#include "Gameplay/Systems/SRenderMesh.h"
+#include "Gameplay/Systems/SRenderCamera.h"
 
 
-bool EntityManager::Serialize(Archive& ar)
+bool ECSManager::Serialize(Archive& ar)
 {
 	bool bResult = Super::Serialize(ar);
 
@@ -23,19 +26,26 @@ bool EntityManager::Serialize(Archive& ar)
 	else
 	{
 		registry.reset();
-
 	}
 
 	return bResult;
 }
 
-void EntityManager::SerializeEntity(Archive& ar, const EntityId& entity)
+void ECSManager::SerializeEntity(Archive& ar, const EntityId& entity)
 {
 	ar.BeginObject("components");
 	{
 		SerializeComponent<CEntity>(ar, entity);
 		SerializeComponent<CTransform>(ar, entity);
 		SerializeComponent<CMesh>(ar, entity);
+		SerializeComponent<CCamera>(ar, entity);
 	}
 	ar.EndObject();
+}
+
+void ECSManager::RegistrySystems()
+{
+	// #TODO: Externalize system registry
+	RegistrySystem<SRenderMesh>();
+	RegistrySystem<SRenderCamera>();
 }

@@ -3,6 +3,8 @@
 #include "SRenderMesh.h"
 #include "Core/Rendering/Commands/ResourceCommands.h"
 #include "World/World.h"
+#include "Gameplay/Components/CTransform.h"
+#include "Gameplay/Components/CMesh.h"
 
 
 void SRenderMesh::BeginPlay()
@@ -13,6 +15,12 @@ void SRenderMesh::BeginPlay()
 
 void SRenderMesh::Tick(float /*deltaTime*/)
 {
+	ECS()->View<CTransform, CMesh>().each(
+		[](const EntityId e, CTransform& t, CMesh& c) {
+
+		}
+	);
+
 	if (texture)
 	{
 		GetWorld()->QueueRender<LoadTextureCommand>(0, texture->GetTextureData());

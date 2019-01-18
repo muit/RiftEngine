@@ -3,8 +3,7 @@
 
 #include "CoreObject.h"
 #include "Scene.h"
-#include "ECS/EntityManager.h"
-#include "ECS/SystemManager.h"
+#include "ECS/ECSManager.h"
 #include "Core/Assets/AssetManager.h"
 #include "Core/Rendering/Frame.h"
 #include "Core/Rendering/RenderCommand.h"
@@ -18,8 +17,7 @@ class World : public Object {
 
 	GlobalPtr<Scene> scene;
 
-	GlobalPtr<EntityManager> entityManager;
-	GlobalPtr<SystemManager> systemManager;
+	GlobalPtr<ECSManager> ecsManager;
 
 	Frame* currentFrame;
 
@@ -30,14 +28,12 @@ public:
 		assetManager = Create<AssetManager>(GetSelf());
 
 		scene = Create<Scene>(GetSelf());
-		entityManager = Create<EntityManager>(GetSelf());
-		systemManager = Create<SystemManager>(GetSelf());
-
-		systemManager->BeginPlay();
+		ecsManager = Create<ECSManager>(GetSelf());
+		ecsManager->BeginPlay();
 
 		// Test entities
-		entityManager->CreateEntity(TX("MyEntity"));
-		entityManager->CreateEntity(TX("MyOtherEntity"));
+		ecsManager->CreateEntity(TX("MyEntity"));
+		ecsManager->CreateEntity(TX("MyOtherEntity"));
 	}
 
 	void Tick(Frame& frame, float deltaTime) {
@@ -45,17 +41,16 @@ public:
 		currentFrame = &frame;
 
 		scene->Tick(deltaTime);
-		systemManager->Tick(deltaTime);
+		ecsManager->Tick(deltaTime);
 	}
 
 	void EndPlay() {
-		systemManager->EndPlay();
+		ecsManager->EndPlay();
 	}
 
 	Ptr<Scene> GetScene() const { return scene; }
 	Ptr<AssetManager> GetAssetManager()   const { return assetManager; }
-	Ptr<SystemManager> GetSystemManager() const { return systemManager; }
-	Ptr<EntityManager> GetEntityManager() const { return entityManager; }
+	Ptr<ECSManager> GetECS() const { return ecsManager; }
 
 
 	// RENDER COMMANDS

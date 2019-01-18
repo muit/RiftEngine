@@ -29,7 +29,7 @@ const String GLRenderTexture::fragmentShader {
 	""
 	"void main()"
 	"{"
-	"    fragment_color = vec4(texture(sampler2d, texture_uv.st).rgb, 1.0);"
+	"    fragment_color = vec4(texture(sampler2d, texture_uv.st).rgba);"
 	"}"
 };
 
@@ -38,6 +38,7 @@ void GLRenderTexture::BuildFrame(u32 width, u32 height)
 {
 	// Create texture
 	{
+		glEnable(GL_TEXTURE_2D);
 		glGenTextures(1, &textureId);
 		glBindTexture(GL_TEXTURE_2D, textureId);
 
@@ -102,4 +103,9 @@ void GLRenderTexture::Draw(v2_u32 size, const TextureData& buffer)
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
+GLRenderTexture::~GLRenderTexture()
+{
+	glDeleteTextures(1, &textureId);
 }

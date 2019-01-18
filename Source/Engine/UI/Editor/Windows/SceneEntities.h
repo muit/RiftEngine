@@ -7,7 +7,7 @@
 #include "UI/Editor/EditorWindow.h"
 #include "UI/Editor/Widgets/PropertyWidget.h"
 
-#include "ECS/EntityManager.h"
+#include "ECS/ECSManager.h"
 
 
 class SceneEntities : public EditorWindow {

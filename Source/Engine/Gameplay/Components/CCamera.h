@@ -7,4 +7,7 @@
 
 class CCamera : public Component {
 	POD(CCamera)
+
+	PROP(float, fov)
+	float fov = 60;
 };

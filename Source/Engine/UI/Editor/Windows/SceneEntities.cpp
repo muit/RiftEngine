@@ -4,7 +4,7 @@
 #include "Core/Log.h"
 #include "Core/Serialization/Archive.h"
 #include "World/World.h"
-#include "ECS/EntityManager.h"
+#include "ECS/ECSManager.h"
 #include "Gameplay/Components/CEntity.h"
 
 
@@ -23,15 +23,15 @@ void SceneEntities::Tick()
 
 	if (bOpen && world)
 	{
-		auto entityManager = world->GetEntityManager();
+		auto ecsManager = world->GetECS();
 
-		if (entityManager)
+		if (ecsManager)
 		{
 			BeginWindow();
 
 			filter.Draw("##FilterDraw");
 
-			auto view = entityManager->View<CEntity>();
+			auto view = ecsManager->View<CEntity>();
 			i32 numOfEntities = (i32)view.size();
 
 			if (ImGui::ListBoxHeader("##EntityContainer", numOfEntities, 10))
@@ -75,7 +75,7 @@ void SceneEntities::OnEntityClicked(EntityId entity)
 
 		// Display the serialized data of an entity
 		JsonArchive ar{};
-		GetWorld()->GetEntityManager()->SerializeEntity(ar, entity);
+		GetWorld()->GetECS()->SerializeEntity(ar, entity);
 
 		Log::Message(ar.GetDataString().c_str());
 	}

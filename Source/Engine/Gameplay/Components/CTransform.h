@@ -3,7 +3,7 @@
 
 #include "CoreStruct.h"
 #include "ECS/Component.h"
-#include "ECS/EntityManager.h"
+#include "ECS/ECSManager.h"
 #include "Core/Math/Transform.h"
 
 

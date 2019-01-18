@@ -27,6 +27,8 @@ struct GLRenderTexture {
 
 	void Draw(v2_u32 size, const TextureData& buffer);
 
+	~GLRenderTexture();
+
 private:
 
 	void BuildFrame(u32 width, u32 height);
