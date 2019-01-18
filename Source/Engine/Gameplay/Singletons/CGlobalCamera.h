@@ -5,9 +5,9 @@
 #include "ECS/Component.h"
 
 
-class CCamera : public Component {
-	STRUCT(CCamera, Component)
+class CGlobalCamera : public Component {
+	STRUCT(CGlobalCamera, Component)
 
-	PROP(float, fov)
-	float fov = 60;
+	PROP(Transform, transform)
+	Transform transform;
 };

@@ -8,9 +8,9 @@
 
 
 class CTransform : public Component {
-	POD(CTransform)
+	STRUCT(CTransform, Component)
 
-private:
+public:
 
 	EntityId parent;
 

@@ -34,22 +34,22 @@ public:
 
 	/** Registry a class
 	*/
-	void RegistryClass(Name&& inName)
+	void Registry(Name&& inName)
 	{
 		name = inName;
 	}
 
 	/** Registry a class with a parent */
 	template<typename Super>
-	void RegistryClass(Name&& inName)
+	void Registry(Name&& inName)
 	{
 		parent = Super::StaticClass();
 		parent->RegistryChildren(this);
-		RegistryClass(eastl::move(inName));
+		Registry(eastl::move(inName));
 	}
 
 	/** Registry a class's tags */
-	void RegistryClassTags(ReflectionTags inTags)
+	void RegistryTags(ReflectionTags inTags)
 	{
 		tags = inTags;
 	}

@@ -8,8 +8,10 @@
 #include "Gameplay/Components/CTransform.h"
 #include "Gameplay/Components/CMesh.h"
 #include "Gameplay/Components/CCamera.h"
+#include "Gameplay/Systems/SEditorCamera.h"
 #include "Gameplay/Systems/SRenderMesh.h"
 #include "Gameplay/Systems/SRenderCamera.h"
+#include "Gameplay/Singletons/CGlobalCamera.h"
 
 
 bool ECSManager::Serialize(Archive& ar)
@@ -46,6 +48,15 @@ void ECSManager::SerializeEntity(Archive& ar, const EntityId& entity)
 void ECSManager::RegistrySystems()
 {
 	// #TODO: Externalize system registry
+	RegistrySystem<SEditorCamera>();
 	RegistrySystem<SRenderMesh>();
 	RegistrySystem<SRenderCamera>();
+}
+
+void ECSManager::RegistrySingletons()
+{
+	RegistrySingleton<CGlobalCamera>();
+
+	FindSingleton<CGlobalCamera>();
+	HasSingleton<CGlobalCamera>();
 }

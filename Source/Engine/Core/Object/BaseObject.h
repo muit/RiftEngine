@@ -4,7 +4,7 @@
 #include "CoreEngine.h"
 #include <EASTL/type_traits.h>
 
-#include "Pod.h"
+#include "BaseStruct.h"
 #include "EngineTypes.h"
 #include "Core/Reflection/Reflection.h"
 #include "Core/Memory/Allocator.h"
@@ -17,9 +17,9 @@ template<typename Type>
 class Ptr;
 
 
-class BaseObject : public Pod {
+class BaseObject : public BaseStruct {
 protected:
-	BaseObject() : Pod() {}
+	BaseObject() : BaseStruct() {}
 
 public:
 

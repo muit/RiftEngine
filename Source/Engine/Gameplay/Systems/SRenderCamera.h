@@ -3,20 +3,10 @@
 
 #include "CoreObject.h"
 #include "ECS/System.h"
-#include "Gameplay/Components/CCamera.h"
-#include "Gameplay/Components/CTransform.h"
 
 
 class SRenderCamera : public System {
 	CLASS(SRenderCamera, System)
 
-	virtual void Tick(float deltaTime) override{
-		Super::Tick(deltaTime);
-
-		ECS()->View<CTransform, CCamera>().each(
-			[](const EntityId e, CTransform& t, CCamera& c) {
-
-			}
-		);
-	}
+	virtual void Tick(float deltaTime) override;
 };

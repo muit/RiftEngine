@@ -6,7 +6,7 @@
 
 
 class CEntity : public Component {
-	POD(CEntity)
+	STRUCT(CEntity, Component)
 
 public:
 

@@ -3,10 +3,13 @@
 #pragma once
 
 #include "CoreObject.h"
+#include "eastl/unique_ptr.h"
 #include <entt/entity/registry.hpp>
 
-#include "Gameplay/Components/CEntity.h"
+#include "Component.h"
 #include "System.h"
+
+#include "Gameplay/Components/CEntity.h"
 
 
 using EntityId = u32;
@@ -21,6 +24,8 @@ class ECSManager : public Object {
 
 	TArray<GlobalPtr<System>> systems;
 
+	TArray<eastl::unique_ptr<Component>> singletonComponents;
+
 public:
 
 	/**************************************************************
@@ -30,7 +35,7 @@ public:
 	EntityId CreateEntity(Name entityName)
 	{
 		EntityId ent = registry.create();
-		registry.assign<CEntity>(ent, entityName);
+		Assign<CEntity>(ent, entityName);
 		return ent;
 	}
 
@@ -42,6 +47,12 @@ public:
 	bool IsValid(EntityId entity) const
 	{
 		return registry.valid(entity);
+	}
+
+	template<typename C, typename... Args>
+	C& Assign(EntityId entity, Args... args)
+	{
+		return registry.assign<C>(entity, eastl::forward<Args>(args)...);
 	}
 
 
@@ -118,5 +129,40 @@ private:
 	template <typename T>
 	void RegistrySystem() {
 		systems.Add(Create<T>(GetSelf()));
+	}
+
+
+public:
+
+	/**************************************************************
+	 * Begin COMPONENT SINGLETONS
+	 * Singleton components are global and shared between all systems
+	 */
+
+	void RegistrySingletons();
+
+	template <typename C>
+	void RegistrySingleton() {
+		singletonComponents.Add(eastl::make_unique<C>());
+	}
+
+	template<typename C>
+	C* FindSingleton() {
+		static_assert(eastl::is_convertible<C, Component>::value, "Type is not a Component!");
+
+		const auto* foundPtr = singletonComponents.Find([](const auto& comp) {
+			return comp->GetStruct() == C::StaticStruct();
+		});
+
+		return foundPtr ? static_cast<C*>(foundPtr->get()) : nullptr;
+	}
+
+	template<typename C>
+	bool HasSingleton() {
+		static_assert(eastl::is_convertible<C, Component>::value, "Type is not a Component!");
+
+		return singletonComponents.Contains([](const auto& comp) {
+			return comp->GetStruct() == C::StaticStruct();
+		});
 	}
 };

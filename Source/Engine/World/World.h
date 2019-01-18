@@ -52,6 +52,15 @@ public:
 	Ptr<AssetManager> GetAssetManager()   const { return assetManager; }
 	Ptr<ECSManager> GetECS() const { return ecsManager; }
 
+	FORCEINLINE bool IsEditor() {
+#if WITH_EDITOR
+		return true;
+#else
+		return false;
+#endif
+	}
+
+
 
 	// RENDER COMMANDS
 	Frame& GetFrame() { return *currentFrame; }

@@ -7,7 +7,7 @@
 
 
 class CMesh : public Component {
-	POD(CMesh)
+	STRUCT(CMesh, Component)
 
 	//PROP(AssetPtr<Mesh>, mesh)
 	//AssetPtr<Mesh> mesh;

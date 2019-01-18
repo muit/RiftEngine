@@ -2,11 +2,11 @@
 #pragma once
 
 #include "CoreStruct.h"
-#include "ECS/Component.h"
+#include "CCamera.h"
 
 
-class CCamera : public Component {
-	STRUCT(CCamera, Component)
+class CEditorCamera : public CCamera {
+	STRUCT(CEditorCamera, CCamera)
 
 	PROP(float, fov)
 	float fov = 60;

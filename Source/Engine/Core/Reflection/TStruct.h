@@ -1,19 +1,19 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include "Struct.h"
+#include "StructType.h"
 #include <EASTL/type_traits.h>
 
-#include "Core/Object/Pod.h"
+#include "Core/Reflection/StructType.h"
 #include "TProperty.h"
 
 
 /** TStruct will be specialized for each type at compile time and store
  * the metadata for that type
  */
-template <typename StructType>
-class TStruct : public Struct {
-	static_assert(eastl::is_convertible< StructType, Pod >::value, "Type does not inherit Pod!");
+template <typename Type>
+class TStruct : public StructType {
+	static_assert(eastl::is_convertible< Type, Struct >::value, "Type does not inherit Pod!");
 private:
 
 	static TStruct _struct;
@@ -21,9 +21,9 @@ private:
 
 public:
 
-	TStruct() : Struct() {
-		StructType::__meta_RegistryStruct();
-		StructType::__meta_RegistryProperties();
+	TStruct() : StructType() {
+		Type::__meta_RegistryStruct();
+		Type::__meta_RegistryProperties();
 	}
 
 public:
@@ -34,6 +34,15 @@ public:
 	void Registry(const Name& inName)
 	{
 		name = inName;
+	}
+
+	/** Registry an struct with a parent */
+	template<typename Super>
+	void Registry(Name&& inName)
+	{
+		parent = Super::StaticStruct();
+		parent->RegistryChild(this);
+		Registry(eastl::move(inName));
 	}
 
 	/** Registry an struct's tags */
@@ -59,5 +68,5 @@ public:
 	static TStruct* GetStatic() { return &_struct; }
 };
 
-template <typename T>
-TStruct<T> TStruct<T>::_struct {};
+template <typename Type>
+TStruct<Type> TStruct<Type>::_struct {};

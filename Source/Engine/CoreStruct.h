@@ -7,8 +7,5 @@
  */
 
 #include "CoreEngine.h"
-#include "Core/Reflection/Reflection.h"
-#include "Core/Reflection/TStruct.h"
-#include "Core/Serialization/Archive.h"
 
-#include "Core/Object/Pod.h"
+#include "Core/Object/Struct.h"

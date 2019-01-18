@@ -7,9 +7,6 @@
 /**
  * Components hold Variables, Getters and Setters. They never have logic
  */
-class Component : public Pod {
-	POD(Component)
-
-	PROP(u8, time)
-	u8 time;
+class Component : public Struct {
+	STRUCT(Component, Struct)
 };
