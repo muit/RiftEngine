@@ -95,12 +95,12 @@ public:
 		}
 	}
 
-	FORCEINLINE ConstIterator FindIt(const Type& item) const {
-		return eastl::find(vector.begin(), vector.end(), item);
+	FORCEINLINE Iterator FindIt(const Type& item) const {
+		return const_cast<Iterator>(eastl::find(vector.begin(), vector.end(), item));
 	}
 
-	FORCEINLINE ConstIterator FindIt(eastl::function<bool(const Type&)> cb) const {
-		return eastl::find_if(vector.begin(), vector.end(), cb);
+	FORCEINLINE Iterator FindIt(eastl::function<bool(const Type&)> cb) const {
+		return const_cast<Iterator>(eastl::find_if(vector.begin(), vector.end(), cb));
 	}
 
 	i32 FindIndex(const Type& item) const {
@@ -113,7 +113,7 @@ public:
 	}
 
 	i32 FindIndex(eastl::function<bool(const Type&)> cb) const {
-		ConstIterator found = FindIt(eastl::move(cb));
+		Iterator found = FindIt(eastl::move(cb));
 		if (found != vector.end())
 		{
 			return (i32)eastl::distance(vector.begin(), found);
@@ -121,11 +121,11 @@ public:
 		return NO_INDEX;
 	}
 
-	Type* Find(const Type& item) {
+	Type* Find(const Type& item) const {
 		return FindIt(item);
 	}
 
-	Type* Find(eastl::function<bool(const Type&)> cb) {
+	Type* Find(eastl::function<bool(const Type&)> cb) const {
 		return FindIt(eastl::move(cb));
 	}
 
