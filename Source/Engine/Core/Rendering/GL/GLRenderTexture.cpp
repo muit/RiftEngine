@@ -108,4 +108,6 @@ void GLRenderTexture::Draw(v2_u32 size, const TextureData& buffer)
 GLRenderTexture::~GLRenderTexture()
 {
 	glDeleteTextures(1, &textureId);
+	glDeleteBuffers(1, &square_vbo0);
+	glDeleteBuffers(1, &square_vbo1);
 }
