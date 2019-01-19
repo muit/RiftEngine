@@ -28,6 +28,29 @@ class ECSManager : public Object {
 
 public:
 
+
+	void BeginPlay() {
+		RegistrySingletons();
+		RegistrySystems();
+
+		IterateSystems([](Ptr<System> system) {
+			system->BeginPlay();
+		});
+	}
+
+	void Tick(float deltaTime) {
+		IterateSystems([deltaTime](Ptr<System> system) {
+			system->Tick(deltaTime);
+		});
+	}
+
+	void EndPlay() {
+		IterateSystems([](Ptr<System> system) {
+			system->EndPlay();
+		});
+	}
+
+
 	/**************************************************************
 	 * Begin ENTITIES
 	 */
@@ -86,25 +109,6 @@ public:
 	/**************************************************************
 	 * Begin SYSTEMS
 	 */
-
-	void BeginPlay() {
-		RegistrySystems();
-		IterateSystems([](Ptr<System> system) {
-			system->BeginPlay();
-		});
-	}
-
-	void Tick(float deltaTime) {
-		IterateSystems([deltaTime](Ptr<System> system) {
-			system->Tick(deltaTime);
-		});
-	}
-
-	void EndPlay() {
-		IterateSystems([](Ptr<System> system) {
-			system->EndPlay();
-		});
-	}
 
 	void IterateSystems(eastl::function<void(Ptr<System>)> callback) const {
 		for (const GlobalPtr<System>& system : systems)

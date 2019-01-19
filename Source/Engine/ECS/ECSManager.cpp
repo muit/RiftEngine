@@ -56,7 +56,4 @@ void ECSManager::RegistrySystems()
 void ECSManager::RegistrySingletons()
 {
 	RegistrySingleton<CGlobalCamera>();
-
-	FindSingleton<CGlobalCamera>();
-	HasSingleton<CGlobalCamera>();
 }

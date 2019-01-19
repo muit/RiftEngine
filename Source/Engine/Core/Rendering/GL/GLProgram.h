@@ -16,6 +16,10 @@ struct GLProgram {
 		glUseProgram(programId);
 	}
 
+	~GLProgram() {
+		glDeleteProgram(programId);
+	}
+
 	void Use() {
 		glUseProgram(programId);
 	}

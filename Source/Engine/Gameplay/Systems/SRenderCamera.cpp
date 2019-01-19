@@ -5,8 +5,8 @@
 #include "Gameplay/Components/CCamera.h"
 #include "Gameplay/Components/CTransform.h"
 #include "Gameplay/Components/CEditorCamera.h"
+#include "Gameplay/Singletons/CGlobalCamera.h"
 
-// #TODO: Find an entity with a camera and a transform
 
 void SRenderCamera::Tick(float deltaTime)
 {
@@ -36,4 +36,5 @@ void SRenderCamera::Tick(float deltaTime)
 	}
 
 	// Render camera
+	ECS()->FindSingleton<CGlobalCamera>()->transform = cameraTransform;
 }

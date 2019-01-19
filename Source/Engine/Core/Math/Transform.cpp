@@ -46,7 +46,15 @@ protected:
 			Transform& tr = *GetHandle()->GetValuePtr();
 
 			ImGui::InputFloat3("Location", tr.location.data(), 3, flags);
-			//ImGui::InputFloat3("Rotation", tr.rotation.data(), 3);
+
+			v3 rotation = tr.GetRotationDegrees();
+			v3 prevRotation = rotation;
+			ImGui::InputFloat3("Rotation", rotation.data(), 3);
+			if (rotation != prevRotation)
+			{
+				tr.SetRotationDegrees(rotation);
+			}
+
 			ImGui::InputFloat3("Scale", tr.scale.data(), 3, flags);
 		}
 		ImGui::PopID();

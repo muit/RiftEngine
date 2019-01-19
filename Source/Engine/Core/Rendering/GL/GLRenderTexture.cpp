@@ -42,7 +42,7 @@ void GLRenderTexture::BuildFrame(u32 width, u32 height)
 		glBindTexture(GL_TEXTURE_2D, textureId);
 
 		// Texture format is RGB
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA8, GL_UNSIGNED_BYTE, nullptr);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -90,7 +90,7 @@ void GLRenderTexture::Draw(v2_u32 size, const TextureData& buffer)
 	glBindTexture(GL_TEXTURE_2D, textureId);
 
 	// Update texture data
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x(), size.y(), GL_RGBA8, GL_UNSIGNED_BYTE, (GLvoid*)buffer.Buffer().Data());
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x(), size.y(), GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)buffer.Buffer().Data());
 
 	// Render texture
 	glEnableVertexAttribArray(0);
