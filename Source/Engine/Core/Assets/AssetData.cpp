@@ -5,7 +5,14 @@
 #include "Core/Files/FileSystem.h"
 
 
-bool AssetData::__Load(const AssetInfo& inInfo, json& data)
+
+bool AssetData::OnCreate(const AssetInfo& inInfo)
+{
+	info = inInfo;
+	return PostLoad();
+}
+
+bool AssetData::OnLoad(const AssetInfo& inInfo, json& data)
 {
 	info = inInfo;
 
@@ -16,22 +23,21 @@ bool AssetData::__Load(const AssetInfo& inInfo, json& data)
 	return PostLoad();
 }
 
-bool AssetData::SaveToPath(Name path)
+bool AssetData::SaveToPath(const Name& path)
 {
-	// #FIX: SaveToPath should modify the current asset
-	info = { path };
-	return Save();
-}
-
-bool AssetData::Save()
-{
-	if (info.GetPath().IsNone())
+	String spath = path.ToString();
+	if (spath.empty() || !FileSystem::IsAssetPath(spath))
 		return false;
 
-	JsonArchive ar {};
+	JsonArchive ar{};
 	Name className = GetClass()->GetName();
 	ar("asset_type", className);
 	Serialize(ar);
 
-	return FileSystem::SaveJsonFile(info.GetPath().ToString(), ar.GetData());
+	return FileSystem::SaveJsonFile(spath, ar.GetData());
+}
+
+bool AssetData::Save()
+{
+	return SaveToPath(info.GetPath());
 }

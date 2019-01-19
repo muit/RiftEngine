@@ -2,11 +2,13 @@
 #pragma once
 
 #include "CoreObject.h"
-#include "Scene.h"
+#include "Assets/Scene.h"
+
 #include "ECS/ECSManager.h"
 #include "Core/Assets/AssetManager.h"
 #include "Core/Rendering/Frame.h"
 #include "Core/Rendering/RenderCommand.h"
+#include "Core/Assets/AssetPtr.h"
 
 
 class World : public Object {
@@ -15,7 +17,7 @@ class World : public Object {
 
 	GlobalPtr<AssetManager> assetManager;
 
-	GlobalPtr<Scene> scene;
+	TAssetPtr<Scene> scene;
 
 	GlobalPtr<ECSManager> ecsManager;
 
@@ -27,7 +29,9 @@ public:
 	void Start() {
 		assetManager = Create<AssetManager>(GetSelf());
 
-		scene = Create<Scene>(GetSelf());
+		scene = { "scene.meta" };
+		scene.LoadOrCreate();
+
 		ecsManager = Create<ECSManager>(GetSelf());
 		ecsManager->BeginPlay();
 
@@ -48,7 +52,7 @@ public:
 		ecsManager->EndPlay();
 	}
 
-	Ptr<Scene> GetScene() const { return scene; }
+	TAssetPtr<Scene> GetActiveScene() const { return scene; }
 	Ptr<AssetManager> GetAssetManager()   const { return assetManager; }
 	Ptr<ECSManager> GetECS() const { return ecsManager; }
 

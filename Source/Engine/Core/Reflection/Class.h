@@ -37,18 +37,18 @@ public:
 		}
 	}
 
-	Class* FindChildClass(const Name& className) const {
-		if (className.IsNone())
-			return nullptr;
+	Class* FindChildClass(const Name& className) const;
 
-		for (auto* child : children)
-		{
-			if (child->GetName() == className)
-				return child;
-			else if (Class* found = child->FindChildClass(className))
-				return found;
-		}
-		return nullptr;
+
+	bool IsChildOf(Class* other) const;
+
+	template<typename T>
+	bool IsChildOf() const {
+		return IsChildOf(T::StaticClass());
+	}
+
+	bool IsA(Class* other) const {
+		return this == other;
 	}
 
 public:

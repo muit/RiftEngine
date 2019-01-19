@@ -36,7 +36,7 @@ public:
 		sceneEntities = Widget::CreateStandalone<SceneEntities>();
 
 		details = Widget::CreateStandalone<Details>();
-		details->SetObject(GetWorld()->GetScene());
+		details->SetObject(GetWorld()->GetActiveScene().Get());
 
 		memory = Widget::CreateStandalone<MemoryDebugger>();
 		assetBrowser = Widget::CreateStandalone<AssetBrowser>();

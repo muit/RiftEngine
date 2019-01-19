@@ -20,7 +20,9 @@ public:
 	static FORCEINLINE bool LoadJsonFile(const String& path, json& result)     { return LoadJsonFile(FromString(path), result); }
 	static FORCEINLINE bool SaveJsonFile(const String& path, const json& data) { return SaveJsonFile(FromString(path), data);   }
 
-	static FORCEINLINE String GetAssetsPath() { return ToString(GetAssetsPathAsPath()); }
+	static FORCEINLINE String GetAssetsPathStr() { return ToString(GetAssetsPath()); }
+
+	static FORCEINLINE bool IsAssetPath(const String& path) { return IsAssetPath(FromString(path)); }
 
 
 	/** Path API */
@@ -32,11 +34,15 @@ public:
 	static bool LoadJsonFile(Path path, json& result);
 	static bool SaveJsonFile(Path path, const json& data);
 
-	static Path GetAssetsPathAsPath();
+	static Path GetAssetsPath();
 
 	static Path FindMetaFile(Path in);
 
 	static Path FindRawFile(Path in);
+
+	static bool IsAssetPath(Path path) {
+		return path.is_relative() || !fs::relative(path, GetAssetsPath()).empty();
+	}
 
 
 	/** HELPERS */
@@ -60,12 +66,12 @@ private:
 
 		if (path.is_relative())
 		{
-			path = GetAssetsPathAsPath() / path;
+			path = GetAssetsPath() / path;
 			return true;
 		}
 
 		// Ensure path is inside Assets folder
-		return !fs::relative(path, GetAssetsPathAsPath()).empty();
+		return !fs::relative(path, GetAssetsPath()).empty();
 
 	}
 };

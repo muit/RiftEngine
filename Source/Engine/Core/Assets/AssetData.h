@@ -16,17 +16,21 @@ public:
 
 	AssetData() : Super() {}
 
-	/** Deserializes the asset. Internal usage only */
-	bool __Load(const AssetInfo& inInfo, json& data);
+	/** Called after an asset is created. Internal usage only. */
+	bool OnCreate(const AssetInfo& inInfo);
+
+	/** Deserializes the asset. Internal usage only. */
+	bool OnLoad(const AssetInfo& inInfo, json& data);
 
 
-	bool SaveToPath(Name path);
+	bool SaveToPath(const Name& path);
 
 	bool Save();
 
 
-protected:
 
+protected:
+	/** Called after the asset was loaded or created */
 	virtual bool PostLoad() { return true; }
 
 

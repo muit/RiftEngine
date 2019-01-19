@@ -17,9 +17,6 @@ private:
 	eastl::unordered_map<Name, GlobalPtr<AssetData>> loadedAssets;
 
 
-	void __StaticLoad(const AssetInfo& asset);
-	void __StaticLoad(const TArray<AssetInfo>& assets);
-
 public:
 
 	/*void Initialize() {}
@@ -27,11 +24,12 @@ public:
 	void Shutdown() {}*/
 
 	Ptr<AssetData> Load(const AssetInfo& info);
+	Ptr<AssetData> LoadOrCreate(const AssetInfo& info, Class* assetType);
+
 
 	inline Ptr<AssetData> GetLoadedAsset(const AssetInfo& id) {
 		return loadedAssets[id.GetPath()];
 	}
-
 
 	static Ptr<AssetManager> Get(Ptr<Object> context = {});
 };

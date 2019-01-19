@@ -20,36 +20,59 @@ private:
 
 	mutable Ptr<T> cachedAsset;
 
+
 public:
+
 	TAssetPtr() : AssetInfo(), cachedAsset{} {}
 	TAssetPtr(Name id)
 		: AssetInfo(id)
 		, cachedAsset{}
 	{}
-	TAssetPtr(Name id, String inPath)
-		: AssetInfo(id, inPath)
+
+	TAssetPtr(const AssetInfo& other)
+		: AssetInfo(other)
 		, cachedAsset{}
 	{}
 
+	TAssetPtr(const TAssetPtr& other)
+		: AssetInfo(other)
+		, cachedAsset{other.cachedAsset}
+	{}
+
 	/**
-		* @returns true if this asset is loaded
-		*/
+	 * @returns true if this asset is loaded
+	 */
 	const bool IsValid() const {
 		return Get().IsValid();
 	}
 
 	/**
-		* Tries to load this asset if it's not already
-		* @returns the loaded asset
-		*/
+	 * Tries to load this asset if it's not already
+	 * @returns the loaded asset
+	 */
 	const Ptr<T>& Load() const {
-		if(IsNull())
-			return cachedAsset; // Cached asset should always be invalid here
+		if(IsNull() || IsValid())
+			return cachedAsset;
 
-		auto manager = AssetManager::Get();
-		if(manager && !IsValid())
+		if (auto manager = AssetManager::Get())
+		{
 			cachedAsset = manager->Load(*this).Cast<T>();
+		}
+		return cachedAsset;
+	}
 
+	/**
+	 * Tries to load this asset and returns a new one if not found
+	 * @returns the loaded asset
+	 */
+	const Ptr<T>& LoadOrCreate() const {
+		if (IsNull() || IsValid())
+			return cachedAsset;
+
+		if (auto manager = AssetManager::Get())
+		{
+			cachedAsset = manager->LoadOrCreate(*this, T::StaticClass()).Cast<T>();
+		}
 		return cachedAsset;
 	}
 
@@ -60,13 +83,12 @@ public:
 		if(IsNull())
 			return cachedAsset; // Cached asset should always be invalid here
 
-		auto manager = AssetManager::Get();
+		Ptr<AssetManager> manager = AssetManager::Get();
 		if(manager && !cachedAsset)
 			cachedAsset = manager->GetLoadedAsset(id).Cast<T>();
 
 		return cachedAsset;
 	}
-
 
 	operator bool() const { return IsValid(); };
 	Ptr<T> operator*()  const { return Get(); }

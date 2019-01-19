@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreObject.h"
+#include "Core/Files/FileSystem.h"
 
 
 class AssetInfo : public Object
@@ -23,7 +24,8 @@ public:
 	 * @returns true if this can never be pointed towards an asset
 	 */
 	const bool IsNull() const {
-		return id.IsNone();
+		const String& path = GetSPath();
+		return path.empty() || !FileSystem::IsAssetPath(path);
 	}
 
 	inline const Name& GetPath()    const { return id; }

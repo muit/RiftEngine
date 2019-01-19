@@ -16,22 +16,28 @@ void SRenderCamera::Tick(float deltaTime)
 
 	if (GetWorld()->IsEditor())
 	{
-		// Use first entity with Transform and Camera
-		auto view = ECS()->View<CTransform, CEditorCamera>();
-		EntityId cameraEntity = *view.begin();
+		// Use first editor camera
+		auto view = ECS()->View<CTransform, CCamera>();
+		if (!view.empty())
+		{
+			EntityId cameraEntity = *view.begin();
 
-		if (ECS()->IsValid(cameraEntity)) {
-			cameraTransform = view.get<CTransform>(cameraEntity).transform;
+			if (ECS()->IsValid(cameraEntity)) {
+				cameraTransform = view.get<CTransform>(cameraEntity).transform;
+			}
 		}
 	}
 	else
 	{
-		// Use first editor camera
-		auto view = ECS()->View<CTransform, CCamera>();
-		EntityId cameraEntity = *view.begin();
+		// Use first entity with Transform and Camera
+		auto view = ECS()->View<CTransform, CEditorCamera>();
+		if (!view.empty())
+		{
+			EntityId cameraEntity = *view.begin();
 
-		if (ECS()->IsValid(cameraEntity)) {
-			cameraTransform = view.get<CTransform>(cameraEntity).transform;
+			if (ECS()->IsValid(cameraEntity)) {
+				cameraTransform = view.get<CTransform>(cameraEntity).transform;
+			}
 		}
 	}
 

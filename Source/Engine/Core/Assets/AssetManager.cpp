@@ -10,7 +10,7 @@
 
 Ptr<AssetData> AssetManager::Load(const AssetInfo& info)
 {
-	if (info.IsNull())
+	if (info.IsNull() || !FileSystem::IsAssetPath(info.GetSPath()))
 		return {};
 
 	json data;
@@ -28,7 +28,7 @@ Ptr<AssetData> AssetManager::Load(const AssetInfo& info)
 		// Create asset from json type
 		GlobalPtr<AssetData> newAsset = assetClass->CreateInstance(GetSelf()).Cast<AssetData>();
 
-		if (newAsset->__Load(info, data))
+		if (newAsset->OnLoad(info, data))
 		{
 			const Ptr<AssetData> newAssetPtr = newAsset;
 
@@ -39,6 +39,35 @@ Ptr<AssetData> AssetManager::Load(const AssetInfo& info)
 	}
 	return {};
 }
+
+Ptr<AssetData> AssetManager::LoadOrCreate(const AssetInfo& info, Class* assetType)
+{
+	if (info.IsNull() || !FileSystem::IsAssetPath(info.GetSPath()))
+		return {};
+
+	if(Ptr<AssetData> loadedAsset = Load(info))
+	{
+		return loadedAsset;
+	}
+
+	if (!assetType)
+		return {};
+
+	if (assetType->IsChildOf<AssetData>())
+	{
+		GlobalPtr<AssetData> newAsset = assetType->CreateInstance(GetSelf()).Cast<AssetData>();
+		if (newAsset->OnCreate(info))
+		{
+			const Ptr<AssetData> newAssetPtr = newAsset;
+
+			loadedAssets[info.GetPath()] = eastl::move(newAsset);
+
+			return newAssetPtr;
+		}
+	}
+	return {};
+}
+
 
 Ptr<AssetManager> AssetManager::Get(Ptr<Object> context)
 {
