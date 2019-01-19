@@ -7,29 +7,29 @@
 const String GLRenderTexture::vertexShader {
 	"#version 330\n\
 	\
-	layout (location = 0) in vec3 vertex_coordinates;\
-	layout (location = 1) in vec2 vertex_texture_uv;\
+	layout (location = 0) in vec3 vertex_position;\
+	layout (location = 1) in vec2 vertex_uv;\
 	\
-	out vec2 texture_uv;\
+	out vec2 UV;\
 	\
 	void main()\
 	{\
-	   gl_Position = vec4(vertex_coordinates, 1.0);\
-	   texture_uv  = vertex_texture_uv;\
+	   gl_Position = vec4(vertex_position, 1.0);\
+	   UV  = vertex_uv;\
 	}"
 };
 
 const String GLRenderTexture::fragmentShader {
 	"#version 330\n\
 	\
-	uniform sampler2D sampler2d;\
+	uniform sampler2D square2d;\
 	\
-	in  vec2 texture_uv;\
-	out vec4 fragment_color;\
+	in  vec2 UV;\
+	out vec3 color;\
 	\
 	void main()\
 	{\
-		fragment_color = vec4(texture(sampler2d, texture_uv).rgb, 1.0);\
+		color = texture(square2d, UV.st).rgb;\
 	}"
 };
 
@@ -42,10 +42,10 @@ void GLRenderTexture::BuildFrame(u32 width, u32 height)
 		glBindTexture(GL_TEXTURE_2D, textureId);
 
 		// Texture format is RGB
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
@@ -90,7 +90,8 @@ void GLRenderTexture::Draw(v2_u32 size, const TextureData& buffer)
 	glBindTexture(GL_TEXTURE_2D, textureId);
 
 	// Update texture data
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x(), size.y(), GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)buffer.Buffer().Data());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size.x(), size.y(), 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)buffer.Buffer().Data());
+	//glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x(), size.y(), GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)buffer.Buffer().Data());
 
 	// Render texture
 	glEnableVertexAttribArray(0);
@@ -102,6 +103,8 @@ void GLRenderTexture::Draw(v2_u32 size, const TextureData& buffer)
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 GLRenderTexture::~GLRenderTexture()

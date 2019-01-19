@@ -46,7 +46,7 @@ public:
 	virtual void Execute(Renderer& renderer, Frame& frame) override {
 		const TextureData& texture = renderer.resources.Get<ResourceType::Texture>(id);
 
-		renderer.DrawImage(frame, position, texture);
+		renderer.DrawImage(position, texture);
 	}
 };
 

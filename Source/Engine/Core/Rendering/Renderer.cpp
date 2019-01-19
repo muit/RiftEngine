@@ -111,7 +111,7 @@ void Renderer::Render(Frame& frame)
 		render.baseColor.Resize(viewportSize, Color::Red);
 
 		//Log::Message("Commands: %i", frame.commands.Size());
-		//frame.ExecuteCommands(*this);
+		frame.ExecuteCommands(*this);
 
 		// Render final base color into screen
 		glRenderTexture.Draw(viewportSize, render.baseColor);
@@ -146,7 +146,7 @@ void Renderer::BeforeDestroy()
 	//glDeleteTextures(1, &finalFrameId);
 }
 
-void Renderer::DrawImage(Frame& frame, const v2_u32& position, const TextureData& texture)
+void Renderer::DrawImage(const v2_u32& position, const TextureData& texture)
 {
 	u32 width = texture.Size().x();
 	u32 height = texture.Size().y();

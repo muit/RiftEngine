@@ -55,5 +55,5 @@ public:
 	}
 
 
-	void DrawImage(Frame& frame, const v2_u32& position, const TextureData& texture);
+	void DrawImage(const v2_u32& position, const TextureData& texture);
 };

@@ -2,6 +2,8 @@
 
 #include "Engine.h"
 
+#include <SDL_image.h>
+
 Ptr<Engine> Engine::globalEngine {};
 
 
@@ -12,6 +14,10 @@ bool Engine::Start()
 
 		// Setup SDL
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
+			return false;
+
+		u32 imgFlags = IMG_INIT_PNG;
+		if (!IMG_Init(imgFlags) & imgFlags)
 			return false;
 
 		renderer = Create<Renderer>();
