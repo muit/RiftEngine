@@ -137,7 +137,7 @@ class BaseWeakPtr {
 	friend BaseGlobalPtr;
 
 	const BaseGlobalPtr* globalPtr;
-	SIZE_T id;
+	u32 id;
 
 protected:
 

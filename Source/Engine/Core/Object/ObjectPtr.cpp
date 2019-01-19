@@ -41,7 +41,7 @@ void BaseWeakPtr::Set(const BaseGlobalPtr* inGlobal)
 	// Bind into new owner
 	if (globalPtr) {
 		globalPtr->weaks.push_back(this);
-		id = globalPtr->weaks.size() - 1;
+		id = (u32)globalPtr->weaks.size() - 1;
 	}
 }
 
