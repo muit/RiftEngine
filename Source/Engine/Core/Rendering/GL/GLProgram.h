@@ -16,6 +16,14 @@ struct GLProgram {
 		glUseProgram(programId);
 	}
 
+	GLProgram(GLProgram&& other) : programId{other.programId} {
+		other.programId = 0;
+	}
+	GLProgram& operator=(GLProgram&& other) {
+		programId = other.programId;
+		other.programId = 0;
+	}
+
 	~GLProgram() {
 		glDeleteProgram(programId);
 	}

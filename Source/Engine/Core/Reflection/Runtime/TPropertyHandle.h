@@ -53,7 +53,7 @@ public:
 		return valuePtr;
 	}
 
-
+#if WITH_EDITOR
 	FORCEINLINE virtual Class* GetClassDefinedWidgetClass() override
 	{
 		if constexpr(ClassTraits<VarType>::HasDetailsWidget)
@@ -61,4 +61,5 @@ public:
 		else
 			return nullptr;
 	}
+#endif
 };

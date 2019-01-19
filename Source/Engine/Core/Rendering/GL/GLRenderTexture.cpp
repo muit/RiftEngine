@@ -5,32 +5,32 @@
 
 
 const String GLRenderTexture::vertexShader {
-	"#version 330\n"
-	""
-	"layout (location = 0) in vec3 vertex_coordinates;"
-	"layout (location = 1) in vec2 vertex_texture_uv;"
-	""
-	"out vec2 texture_uv;"
-	""
-	"void main()"
-	"{"
-	"   gl_Position = vec4(vertex_coordinates, 1.0);"
-	"   texture_uv  = vertex_texture_uv;"
-	"}"
+	"#version 330\n\
+	\
+	layout (location = 0) in vec3 vertex_coordinates;\
+	layout (location = 1) in vec2 vertex_texture_uv;\
+	\
+	out vec2 texture_uv;\
+	\
+	void main()\
+	{\
+	   gl_Position = vec4(vertex_coordinates, 1.0);\
+	   texture_uv  = vertex_texture_uv;\
+	}"
 };
 
 const String GLRenderTexture::fragmentShader {
-	"#version 330\n"
-	""
-	"uniform sampler2D sampler2d;"
-	""
-	"in  vec2 texture_uv;"
-	"out vec4 fragment_color;"
-	""
-	"void main()"
-	"{"
-	"    fragment_color = vec4(texture(sampler2d, texture_uv.st).rgb, 1.0);"
-	"}"
+	"#version 330\n\
+	\
+	uniform sampler2D sampler2d;\
+	\
+	in  vec2 texture_uv;\
+	out vec4 fragment_color;\
+	\
+	void main()\
+	{\
+		fragment_color = vec4(texture(sampler2d, texture_uv).rgb, 1.0);\
+	}"
 };
 
 
@@ -42,10 +42,10 @@ void GLRenderTexture::BuildFrame(u32 width, u32 height)
 		glBindTexture(GL_TEXTURE_2D, textureId);
 
 		// Texture format is RGB
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
@@ -109,4 +109,15 @@ GLRenderTexture::~GLRenderTexture()
 	glDeleteTextures(1, &textureId);
 	glDeleteBuffers(1, &square_vbo0);
 	glDeleteBuffers(1, &square_vbo1);
+}
+
+void GLRenderTexture::MoveFrom(GLRenderTexture&& other)
+{
+	textureId = other.textureId;
+	square_vbo0 = other.square_vbo0;
+	square_vbo1 = other.square_vbo1;
+	shaderProgram = eastl::move(other.shaderProgram);
+	other.textureId = 0;
+	other.square_vbo0 = 0;
+	other.square_vbo1 = 0;
 }

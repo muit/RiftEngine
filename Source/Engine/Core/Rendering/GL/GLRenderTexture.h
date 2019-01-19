@@ -20,10 +20,19 @@ struct GLRenderTexture {
 	GLProgram shaderProgram;
 
 
-	GLRenderTexture() : shaderProgram{} {}
-	GLRenderTexture(u32 initialWidth, u32 initialHeight) : shaderProgram{vertexShader, fragmentShader} {
+	GLRenderTexture()
+		: textureId{0}
+		, square_vbo0{0}
+		, square_vbo1{0}
+		, shaderProgram{}
+	{}
+	GLRenderTexture(u32 initialWidth, u32 initialHeight) : shaderProgram{ vertexShader, fragmentShader } {
 		BuildFrame(initialWidth, initialHeight);
 	}
+
+	GLRenderTexture(GLRenderTexture&& other) { MoveFrom(eastl::move(other)); }
+	GLRenderTexture& operator=(GLRenderTexture&& other) { MoveFrom(eastl::move(other)); }
+
 
 	void Draw(v2_u32 size, const TextureData& buffer);
 
@@ -32,6 +41,8 @@ struct GLRenderTexture {
 private:
 
 	void BuildFrame(u32 width, u32 height);
+
+	void MoveFrom(GLRenderTexture&& other);
 
 	// STATIC
 	static const String vertexShader;

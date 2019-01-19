@@ -22,13 +22,13 @@ bool Class::IsChildOf(Class* other) const
 	if (!other || !parent)
 		return false;
 
-	const Class* tempParent = this;
-	while (tempParent = tempParent->parent)
+	const Class* tempParent = parent;
+	while (tempParent)
 	{
 		if (other == tempParent)
 			return true;
 
-		tempParent = parent;
+		tempParent = tempParent->parent;
 	}
 	return false;
 }

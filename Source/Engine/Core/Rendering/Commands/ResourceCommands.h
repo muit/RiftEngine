@@ -84,6 +84,6 @@ public:
 	DrawMeshCommand(u32 id) : id(id) {}
 
 	virtual void Execute(Renderer& renderer, Frame& frame) override {
-		const MeshData& mesh = renderer.resources.Get<ResourceType::Mesh>(id);
+		//const MeshData& mesh = renderer.resources.Get<ResourceType::Mesh>(id);
 	}
 };

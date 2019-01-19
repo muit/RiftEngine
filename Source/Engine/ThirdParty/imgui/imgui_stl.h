@@ -3,7 +3,7 @@
 // This is also an example of how you may wrap your own similar types.
 
 // Compatibility:
-// - eastl::string support is only guaranteed to work from C++11. 
+// - eastl::string support is only guaranteed to work from C++11.
 //   If you try to use it pre-C++11, please share your findings (w/ info about compiler/architecture)
 
 // Changelog:
@@ -12,6 +12,7 @@
 #pragma once
 
 #include "Core/Strings/String.h"
+#include "imgui.h"
 
 namespace ImGui
 {
