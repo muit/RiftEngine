@@ -11,5 +11,7 @@
 /enc_temp_folder/**/*.*
 
 .vs
+.vscode
+.va
 
 !Programs/**/*
