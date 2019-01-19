@@ -41,7 +41,7 @@ public:
 	}
 
 	void Tick(Frame& frame, float deltaTime) {
-		ZoneScopedNC("World", 0x94d145);
+		ZoneScopedNC("World", 0x459bd1);
 		currentFrame = &frame;
 
 		scene->Tick(deltaTime);

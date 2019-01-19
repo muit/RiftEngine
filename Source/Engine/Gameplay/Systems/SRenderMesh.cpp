@@ -24,7 +24,7 @@ void SRenderMesh::Tick(float /*deltaTime*/)
 	if (texture)
 	{
 		GetWorld()->QueueRender<LoadTextureCommand>(0, texture->GetTextureData());
-		GetWorld()->QueueRender<DrawTextureCommand>(0, v2_u32{ 0, 0 });
+		GetWorld()->QueueRender<DrawTextureCommand>(0, v2_u32{ 10, 20 });
 	}
 }
 

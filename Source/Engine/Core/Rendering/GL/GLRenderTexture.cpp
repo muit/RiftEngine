@@ -29,7 +29,7 @@ const String GLRenderTexture::fragmentShader {
 	\
 	void main()\
 	{\
-		color = texture(square2d, UV.st).rgb;\
+		color = texture(square2d, vec2(UV.st.x, 1.0 - UV.st.y)).rgb;\
 	}"
 };
 
@@ -83,6 +83,7 @@ void GLRenderTexture::BuildFrame(u32 width, u32 height)
 
 void GLRenderTexture::Draw(v2_u32 size, const TextureData& buffer)
 {
+	ZoneScopedNC("RenderToGPU", 0x94d145);
 	glViewport(0, 0, size.x(), size.y());
 	shaderProgram.Use();
 

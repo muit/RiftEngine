@@ -45,12 +45,12 @@ void Engine::Loop(bool& bFinish)
 {
 	Frame frame = {};
 	{
-		ZoneScopedN("Game");
+		ZoneScopedNC("Game", 0x459bd1);
 
 		frameTime.Tick();
 
 		{
-			ZoneScopedN("Input");
+			ZoneScopedNC("Input", 0x459bd1);
 			// Process window and input events
 			SDL_PumpEvents();
 			SDL_Event event;
