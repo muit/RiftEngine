@@ -132,7 +132,7 @@ public:
 	static GlobalPtr<Type> Create(const Ptr<BaseObject>& owner);
 };
 
-/** Non templated version of GlobalPtr that points to all weak ptrs */
+/** Non templated version of WeakPtr that points to a globalPtr */
 class BaseWeakPtr {
 	friend BaseGlobalPtr;
 
@@ -295,6 +295,7 @@ public:
 		return IsValid() ? static_cast<Type*>(GetGlobal()->operator*()) : nullptr;
 	}
 	Type* operator->() const {
+		// #OPTIMIZE: Jumping to GlobalPtr and then Value ptr can produce cache misses. Consider accessing value directly.
 		// Static cast since types are always cast-able or invalid
 		return IsValid() ? static_cast<Type*>(GetGlobal()->operator->()) : nullptr;
 	}
