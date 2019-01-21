@@ -32,8 +32,3 @@ void TextureData::FromSurface(SDL_Surface* surface)
 		}
 	}
 }
-
-void TextureData::ToSurface(SDL_Surface* surface)
-{
-
-}

@@ -19,7 +19,8 @@ bool Texture::PostLoad()
 		// Copy texture data
 		data.FromSurface(rawImg);
 		SDL_FreeSurface(rawImg);
+		return true;
 	}
 
-	return true;
+	return false;
 }

@@ -40,8 +40,6 @@ public:
 
 	void FromSurface(struct SDL_Surface* surface);
 
-	// Receives a surface and updates all its pixels
-	void ToSurface(struct SDL_Surface* surface);
 
 	const v2_u32& Size() const { return size; }
 
