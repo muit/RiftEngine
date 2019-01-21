@@ -98,7 +98,7 @@ void Renderer::Render(Frame& frame)
 	v2_u32 viewportSize{ (u32)io.DisplaySize.x, (u32)io.DisplaySize.y };
 
 	glViewport(0, 0, viewportSize.x(), viewportSize.y());
-	//glClearColor(0.7f, 0.4f, 0.4f, 1); No need to clear color, CPU rendering takes care of it
+	glClearColor(0.7f, 0.4f, 0.4f, 1); //No need to clear color, CPU rendering takes care of it
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
