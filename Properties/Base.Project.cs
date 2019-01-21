@@ -13,7 +13,7 @@ class BaseProject : Project
         AddTargets(new RiftTarget( Editor.Editor | Editor.Game ));
     }
 
-    [Configure()]
+    [Configure]
     public virtual void ConfigureAll(Configuration conf, RiftTarget target)
     {
         conf.ProjectPath = @"[project.SharpmakeCsPath]\..\..\Binaries\[project.Name]";

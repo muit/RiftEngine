@@ -12,16 +12,19 @@
 namespace Log {
 	template<typename ...Args>
 	inline void Message(const TCHAR* format, Args... args) {
-		if constexpr (sizeof...(args) > 0)
+		if (format)
 		{
-			String msg = CString::Printf(format, eastl::forward<Args>(args)...).c_str();
-			TracyMessage(msg.c_str(), msg.size()); // Send to profiler
-			SDL_Log(msg.c_str()); // Send to console
-		}
-		else
-		{
-			TracyMessage(format, std::strlen(format)); // Send to profiler
-			SDL_Log(format); // Send to console
+			if constexpr (sizeof...(args) > 0)
+			{
+				String msg = CString::Printf(format, eastl::forward<Args>(args)...).c_str();
+				TracyMessage(msg.c_str(), msg.size()); // Send to profiler
+				SDL_Log(msg.c_str()); // Send to console
+			}
+			else
+			{
+				TracyMessage(format, std::strlen(format)); // Send to profiler
+				SDL_Log(format); // Send to console
+			}
 		}
 	}
 

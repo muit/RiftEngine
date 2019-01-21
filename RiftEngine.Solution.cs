@@ -24,8 +24,8 @@ class RiftEngineSolution : Solution
         AddTargets(new RiftTarget( Editor.Editor | Editor.Game ));
     }
 
-    [Configure()]
-    public void ConfigureAll(Solution.Configuration conf, RiftTarget target)
+    [Configure]
+    public virtual void ConfigureAll(Solution.Configuration conf, RiftTarget target)
     {   
         // Puts the generated solution in the /generated folder too.
         conf.SolutionPath = @"[solution.SharpmakeCsPath]";
@@ -65,7 +65,7 @@ class RiftTarget : Target {
         }
     }
 
-    public RiftTarget() : base() { }
+    public RiftTarget() { }
 
     public RiftTarget(Editor editor, OutputType outputType = OutputType.Lib) : base(
         Platform.win32 | Platform.win64,

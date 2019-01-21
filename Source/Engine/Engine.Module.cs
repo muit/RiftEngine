@@ -46,8 +46,6 @@ class EngineModule : BaseModule
                 conf.ExportDefines.Add("PLATFORM_WINDOWS");
                 conf.ExportDefines.Add("_WIN64");
                 break;
-            default:
-                break;
         }
     }
 }
