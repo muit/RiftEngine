@@ -30,6 +30,7 @@ public:
 
 	void Resize(v2_u32 inSize, const Color& clearColor) {
 		size = inSize;
+		buffer.Empty(false);
 		buffer.Resize(size.x() * size.y(), clearColor);
 	}
 

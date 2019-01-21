@@ -193,7 +193,11 @@ public:
 		}
 	}
 
-	void Empty() { vector.clear(); }
+	void Empty(const bool shouldShrink = true) {
+		vector.clear();
+		if(shouldShrink)
+			vector.shrink_to_fit();
+	}
 
 	FORCEINLINE i32 Size() const { return (i32)vector.size(); }
 
