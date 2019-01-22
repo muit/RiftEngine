@@ -1,11 +1,10 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "SRenderCamera.h"
-#include "World/World.h"
+#include "Core/World.h"
 #include "Gameplay/Components/CCamera.h"
 #include "Gameplay/Components/CTransform.h"
 #include "Gameplay/Components/CEditorCamera.h"
-#include "Gameplay/Singletons/CGlobalCamera.h"
 
 
 void SRenderCamera::Tick(float deltaTime)
@@ -42,5 +41,5 @@ void SRenderCamera::Tick(float deltaTime)
 	}
 
 	// Render camera
-	ECS()->FindSingleton<CGlobalCamera>()->transform = cameraTransform;
+	GetWorld()->QueueRender<CameraCommand>(cameraTransform);
 }

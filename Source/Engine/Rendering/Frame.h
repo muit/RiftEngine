@@ -45,6 +45,8 @@ struct FrameRender {
 
 	Resources resources;
 
+	Transform camera;
+
 
 	FrameRender() = default;
 

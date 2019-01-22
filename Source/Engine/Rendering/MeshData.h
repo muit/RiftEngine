@@ -10,13 +10,14 @@
 
 
 struct MeshData {
-	using VertexBuffer = TArray<v3_i32>;
-	using IndexBuffer = TArray<v3_u32>;
+	using VertexBuffer = TArray<v3>;
+	using Triangle = v3_u32;
+	using TriangleBuffer = TArray<Triangle>;
 
 private:
 
 	VertexBuffer vertices;
-	IndexBuffer triangles;
+	TriangleBuffer triangles;
 
 
 public:
@@ -64,5 +65,5 @@ public:
 
 
 	FORCEINLINE const VertexBuffer& GetVertices() const { return vertices; }
-	FORCEINLINE const IndexBuffer& GetTriangles() const { return triangles; }
+	FORCEINLINE const TriangleBuffer& GetTriangles() const { return triangles; }
 };

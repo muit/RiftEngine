@@ -7,15 +7,15 @@
 #include "Assets/Texture.h"
 
 
-class SRenderMesh : public System {
-	CLASS(SRenderMesh, System)
+class SRenderMeshes : public System {
+	CLASS(SRenderMeshes, System)
 
 	TAssetPtr<Texture> texture;
 
 
 public:
 
-	SRenderMesh() : Super(), texture{ "test.png.meta" } {}
+	SRenderMeshes() : Super(), texture{ "test.png.meta" } {}
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float /*deltaTime*/) override;

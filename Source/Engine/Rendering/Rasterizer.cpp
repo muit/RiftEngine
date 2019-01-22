@@ -7,23 +7,23 @@
 
 void Rasterizer::FillConvexPolygon(const VertexBuffer& vertices, const u32* indicesBegin, const u32* indicesEnd, const Color& color)
 {
-	// Se cachean algunos valores de interés:
+	// Se cachean algunos valores de i32erés:
 
 	u32 pitch = target.Size().x();
-	int* offsetCache0Index = this->offsetCache0;
-	int* offsetCache1Index = this->offsetCache1;
+	i32* offsetCache0Index = this->offsetCache0;
+	i32* offsetCache1Index = this->offsetCache1;
 	const u32* indices_back = indicesEnd - 1;
 
 	// Se busca el vértice de inicio (el que tiene menor Y) y el de terminación (el que tiene mayor Y):
 	const u32* startIndex = indicesBegin;
-	int startY = vertices[*startIndex][1];
+	i32 startY = vertices[*startIndex][1];
 
 	const u32* endIndex = indicesBegin;
-	int endY = startY;
+	i32 endY = startY;
 
 	for (const u32* it = startIndex; ++it < indicesEnd; )
 	{
-		int currentY = vertices[*it][1];
+		i32 currentY = vertices[*it][1];
 
 		if (currentY < startY)
 		{
@@ -44,10 +44,10 @@ void Rasterizer::FillConvexPolygon(const VertexBuffer& vertices, const u32* indi
 	const u32* cIndex = startIndex;
 	const u32* nextIndex = (startIndex > indicesBegin) ? startIndex - 1 : indices_back;
 
-	int y0 = vertices[*cIndex][1];
-	int y1 = vertices[*nextIndex][1];
-	int o0 = vertices[*cIndex][0] + y0 * pitch;
-	int o1 = vertices[*nextIndex][0] + y1 * pitch;
+	i32 y0 = vertices[*cIndex][1];
+	i32 y1 = vertices[*nextIndex][1];
+	i32 o0 = vertices[*cIndex][0] + y0 * pitch;
+	i32 o1 = vertices[*nextIndex][0] + y1 * pitch;
 
 	while (true)
 	{
@@ -66,7 +66,7 @@ void Rasterizer::FillConvexPolygon(const VertexBuffer& vertices, const u32* indi
 		o1 = vertices[*nextIndex][0] + y1 * pitch;
 	}
 
-	int end_offset = o1;
+	i32 end_offset = o1;
 
 	// Se cachean las coordenadas X de los lados que van desde el vértice con Y menor al
 	// vértice con Y mayor en sentido horario:
@@ -100,7 +100,7 @@ void Rasterizer::FillConvexPolygon(const VertexBuffer& vertices, const u32* indi
 	offsetCache0Index += startY;
 	offsetCache1Index += startY;
 
-	for (int y = startY; y < endY; y++)
+	for (i32 y = startY; y < endY; y++)
 	{
 		o0 = *offsetCache0Index++;
 		o1 = *offsetCache1Index++;
@@ -127,8 +127,8 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u3
 	// Se cachean algunos valores de interés:
 
 	i32 pitch = target.Size().x();
-	int* offsetCache0Index = this->offsetCache0;
-	int* offsetCache1Index = this->offsetCache1;
+	i32* offsetCache0Index = this->offsetCache0;
+	i32* offsetCache1Index = this->offsetCache1;
 	i32* zCache0Index = this->zCache0;
 	i32* zCache1Index = this->zCache1;
 	const u32* indicesBack = indicesEnd - 1;
@@ -136,13 +136,13 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u3
 	// Se busca el vértice de inicio (el que tiene menor Y) y el de terminación (el que tiene mayor Y):
 
 	const u32* startIndex = indicesBegin;
-	int   startY = vertices[*startIndex][1];
+	i32 startY = vertices[*startIndex][1];
 	const u32* endIndex = indicesBegin;
-	int   endY = startY;
+	i32 endY = startY;
 
 	for (const u32* it = startIndex; ++it < indicesEnd; )
 	{
-		int currentY = vertices[*it][1];
+		i32 currentY = vertices[*it][1];
 
 		if (currentY < startY)
 		{
@@ -186,7 +186,7 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u3
 		o1 = vertices[*nextIndex][0] + y1 * pitch;
 	}
 
-	int end_offset = o1;
+	i32 end_offset = o1;
 
 	// Se cachean las coordenadas X de los lados que van desde el vértice con Y menor al
 	// vértice con Y mayor en sentido horario:
@@ -237,7 +237,7 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u3
 	zCache0Index += startY;
 	zCache1Index += startY;
 
-	for (int y = startY; y < endY; y++)
+	for (i32 y = startY; y < endY; y++)
 	{
 		o0 = *offsetCache0Index++;
 		o1 = *offsetCache1Index++;
@@ -246,7 +246,7 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u3
 
 		if (o0 < o1)
 		{
-			int z_step = (z1 - z0) / (o1 - o0);
+			i32 z_step = (z1 - z0) / (o1 - o0);
 
 			while (o0 < o1)
 			{
@@ -265,7 +265,7 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u3
 		else
 			if (o1 < o0)
 			{
-				int z_step = (z0 - z1) / (o0 - o1);
+				i32 z_step = (z0 - z1) / (o0 - o1);
 
 				while (o1 < o0)
 				{

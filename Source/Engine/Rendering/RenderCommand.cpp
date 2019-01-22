@@ -7,8 +7,5 @@
 void CameraCommand::Execute(FrameRender& render, Frame& frame)
 {
 	// Store camera transform matrix
-	Eigen::Transform<float, 3, Eigen::Affine> a{};
-	a.pretranslate(cameraTransform.location)
-		.prerotate(cameraTransform.rotation)
-		.scale(cameraTransform.scale);
+	render.camera = cameraTransform;
 }

@@ -10,6 +10,10 @@
 #include "../Frame.h"
 
 
+// #TODO: Commands should be able to receive many orders of the same type.
+// E.g: Draw all this meshes
+
+
 class LoadTextureCommand : public RenderCommand {
 public:
 	u32 id;
@@ -88,7 +92,7 @@ public:
 
 		// Vertices over which we will operate
 		MeshData::VertexBuffer vertices{ mesh.GetVertices() };
-		MeshData::IndexBuffer triangles{ mesh.GetTriangles() };
+		MeshData::TriangleBuffer triangles{ mesh.GetTriangles() };
 
 		TransformToWorld(vertices);
 		TransformToCamera(vertices);
@@ -103,7 +107,7 @@ private:
 	void TransformToWorld(MeshData::VertexBuffer& vertices);
 	void TransformToCamera(MeshData::VertexBuffer& vertices);
 	void TransformToScreen(MeshData::VertexBuffer& vertices);
-	void BackFaceCulling(MeshData::VertexBuffer& vertices, MeshData::IndexBuffer& triangles);
+	void BackFaceCulling(MeshData::VertexBuffer& vertices, MeshData::TriangleBuffer& triangles);
 
-	void Draw(MeshData::VertexBuffer& vertices, MeshData::IndexBuffer& triangles, Color color);
+	void Draw(MeshData::VertexBuffer& vertices, MeshData::TriangleBuffer& triangles, Color color);
 };

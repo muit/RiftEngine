@@ -3,7 +3,7 @@
 #include "SceneEntities.h"
 #include "Core/Log.h"
 #include "Core/Serialization/Archive.h"
-#include "World/World.h"
+#include "Core/World.h"
 #include "ECS/ECSManager.h"
 #include "Gameplay/Components/CEntity.h"
 
