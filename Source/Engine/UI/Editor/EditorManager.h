@@ -8,7 +8,7 @@
 #include "Editor.h"
 
 #include <imgui/imgui.h>
-#include "World/World.h"
+#include "Core/World.h"
 #include "UI/Widget.h"
 #include "Windows/SceneEntities.h"
 #include "Windows/Details.h"

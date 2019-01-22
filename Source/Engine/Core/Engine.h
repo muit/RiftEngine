@@ -6,7 +6,7 @@
 #include "Rendering/Renderer.h"
 #include <tracy/Tracy.hpp>
 
-#include "World/World.h"
+#include "Core/World.h"
 #include "UI/UIManager.h"
 #include "Misc/Time.h"
 

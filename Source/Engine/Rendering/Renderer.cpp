@@ -7,8 +7,8 @@
 #include <imgui/imgui_impl_sdl.h>
 #include <tracy/TracyOpenGL.hpp>
 
+#include "Core/World.h"
 #include "Core/Log.h"
-#include "World/World.h"
 
 
 bool Renderer::Initialize()
@@ -110,8 +110,8 @@ void Renderer::Render(Frame& frame)
 		// Clear texture to Red
 		render.baseColor.Resize(viewportSize, Color::Red);
 
-		//Log::Message("Commands: %i", frame.commands.Size());
-		frame.ExecuteCommands(*this);
+		Log::Message("Executing Render Commands: %i", frame.commands.Size());
+		frame.ExecuteCommands(render);
 
 		// Render final base color into screen
 		glRenderTexture.Draw(viewportSize, render.baseColor);
@@ -144,26 +144,4 @@ void Renderer::BeforeDestroy()
 		SDL_DestroyWindow(window);
 
 	//glDeleteTextures(1, &finalFrameId);
-}
-
-void Renderer::DrawImage(const v2_u32& position, const TextureData& texture)
-{
-	u32 width = texture.Size().x();
-	u32 height = texture.Size().y();
-	u32 pitch = render.baseColor.Size().x();
-	u32 offset = pitch * position.y() + position.x();
-	u32 delta = pitch - width;
-
-	const Color* texturePixel = texture.Buffer().Data();
-	Color* bcPixel = render.baseColor.Buffer().Data() + offset;
-
-	while (height-- > 0)
-	{
-		for (Color* end = bcPixel + width; bcPixel < end; bcPixel++, texturePixel++)
-		{
-			*bcPixel = *texturePixel;
-		}
-
-		bcPixel += delta;
-	}
 }

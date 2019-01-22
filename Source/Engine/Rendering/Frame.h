@@ -10,6 +10,7 @@
 #include "Core/Misc/DateTime.h"
 #include "RenderCommand.h"
 #include "TextureData.h"
+#include "Resources.h"
 
 
 struct Frame {
@@ -32,23 +33,21 @@ public:
 		commands.Add(command);
 	}
 
-	void ExecuteCommands(Renderer& renderer) {
-		for(const auto& command : commands)
-		{
-			command->Execute(renderer, *this);
-		}
-		commands.Empty();
-	}
+	void ExecuteCommands(struct FrameRender& render);
 
-	u16 Id() { return id; }
+	u16 Id() const { return id; }
 };
 
+// Where all render data is stored. Gets reused every frame.
 struct FrameRender {
-public:
 
 	TextureData baseColor;
 
+	Resources resources;
+
 
 	FrameRender() = default;
+
+	void DrawImage(const v2_u32& position, const TextureData& texture);
 };
 

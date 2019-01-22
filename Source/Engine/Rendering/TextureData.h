@@ -10,11 +10,11 @@
 
 
 struct TextureData {
-	using PixelBuffer = TArray<Color>;
+	using ColorBuffer = TArray<Color>;
 
 private:
 	v2_u32 size;
-	PixelBuffer buffer;
+	ColorBuffer buffer;
 
 
 public:
@@ -40,9 +40,19 @@ public:
 
 	void FromSurface(struct SDL_Surface* surface);
 
+	FORCEINLINE Color& operator[](const v2_u32 position) {
+		// X + Y * Width
+		return buffer[position.x() + position.y() * size.x()];
+	}
 
-	const v2_u32& Size() const { return size; }
+	FORCEINLINE const Color& operator[](const v2_u32 position) const {
+		// X + Y * Width
+		return buffer[position.x() + position.y() * size.x()];
+	}
 
-	PixelBuffer& Buffer() { return buffer; }
-	const PixelBuffer& Buffer() const { return buffer; }
+
+	FORCEINLINE const v2_u32& Size() const { return size; }
+
+	FORCEINLINE ColorBuffer& Buffer() { return buffer; }
+	FORCEINLINE const ColorBuffer& Buffer() const { return buffer; }
 };

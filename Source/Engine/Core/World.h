@@ -6,8 +6,8 @@
 
 #include "ECS/ECSManager.h"
 #include "Core/Assets/AssetManager.h"
-#include "Core/Rendering/Frame.h"
-#include "Core/Rendering/RenderCommand.h"
+#include "Rendering/Frame.h"
+#include "Rendering/RenderCommand.h"
 #include "Core/Assets/AssetPtr.h"
 
 

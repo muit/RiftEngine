@@ -38,7 +38,7 @@ public:
 			{  0, +5, +5 },      // 13
 			{  0, +5, -5 },      // 15
 			{  0, -5, -5 }       // 14
-		}, triangles{
+		}, triangles {
 			{  0,  1,  2 },         // cube front
 			{  0,  2,  3 },
 			{  4,  0,  3 },         // cube left
@@ -61,4 +61,8 @@ public:
 			{ 15, 14, 12 }
 		}
 	{}
+
+
+	FORCEINLINE const VertexBuffer& GetVertices() const { return vertices; }
+	FORCEINLINE const IndexBuffer& GetTriangles() const { return triangles; }
 };

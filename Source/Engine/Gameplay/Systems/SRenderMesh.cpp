@@ -1,8 +1,8 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "SRenderMesh.h"
-#include "Core/Rendering/Commands/ResourceCommands.h"
-#include "World/World.h"
+#include "Rendering/Commands/ResourceCommands.h"
+#include "Core/World.h"
 #include "Gameplay/Components/CTransform.h"
 #include "Gameplay/Components/CMesh.h"
 

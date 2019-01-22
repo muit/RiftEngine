@@ -1,5 +1,7 @@
 // © 2019 Miguel Fernández Arce - All rights reserved
 
+#pragma once
+
 #include "CoreEngine.h"
 
 #include <EASTL/unordered_map.h>

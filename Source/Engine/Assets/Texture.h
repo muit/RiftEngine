@@ -5,7 +5,7 @@
 #include "CoreObject.h"
 #include "Core/Assets/AssetData.h"
 #include "Core/Math/Color.h"
-#include "Core/Rendering/TextureData.h"
+#include "Rendering/TextureData.h"
 
 
 class Texture : public AssetData

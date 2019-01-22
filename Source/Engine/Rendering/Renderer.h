@@ -29,11 +29,6 @@ class Renderer : public Object {
 	FrameRender render;
 
 public:
-	// Render thread only
-	Resources resources;
-
-
-public:
 
 	Renderer() : Super() {}
 
