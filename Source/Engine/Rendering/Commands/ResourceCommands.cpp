@@ -6,31 +6,10 @@
 
 void DrawMeshCommand::TransformToWorld(MeshData::VertexBuffer& vertices)
 {
-	/*for (auto& vertex : vertices)
+	Transform::Matrix toWorld = transform.ToWorldMatrix();
+
+	for (auto& vertex : vertices)
 	{
-		vertex = transform.GetTransformationMatrix() * vertex;
-	}*/
-
-	v3 vertex = transform.GetTransformationMatrix() * v3::Ones();
+		vertex = toWorld * vertex;
+	}
 }
-
-void DrawMeshCommand::TransformToCamera(MeshData::VertexBuffer& vertices)
-{
-
-}
-
-void DrawMeshCommand::TransformToScreen(MeshData::VertexBuffer& vertices)
-{
-
-}
-
-void DrawMeshCommand::BackFaceCulling(MeshData::VertexBuffer& vertices, MeshData::TriangleBuffer& triangles)
-{
-
-}
-
-void DrawMeshCommand::Draw(MeshData::VertexBuffer& vertices, MeshData::TriangleBuffer& triangles, Color color)
-{
-
-}
-

@@ -35,7 +35,7 @@ private:
 
 	bool Start();
 
-	void Loop(bool& bFinish);
+	void Loop(Frame& frame, bool& bFinish);
 
 	void Shutdown() {
 		SDL_Quit();

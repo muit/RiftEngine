@@ -9,6 +9,8 @@ Ptr<Engine> Engine::globalEngine {};
 
 bool Engine::Start()
 {
+	Frame frame = {};
+
 	{
 		ZoneScopedN("Start-Up");
 
@@ -24,8 +26,10 @@ bool Engine::Start()
 		if (!renderer->Initialize())
 			return false;
 
+
+
 		world = Create<World>(GetSelf());
-		world->Start();
+		world->Start(frame);
 
 		ui = Create<UIManager>(GetSelf());
 		ui->Prepare();
@@ -35,40 +39,40 @@ bool Engine::Start()
 	bool bFinish = false;
 	while (!bFinish)
 	{
-		Loop(bFinish);
+		Loop(frame, bFinish);
+
+		// Reset frame data
+		frame = {};
 	}
 
 	return true;
 }
 
-void Engine::Loop(bool& bFinish)
+void Engine::Loop(Frame& frame, bool& bFinish)
 {
-	Frame frame = {};
+	ZoneScopedNC("Game", 0x459bd1);
+
+	frameTime.Tick();
+
 	{
-		ZoneScopedNC("Game", 0x459bd1);
-
-		frameTime.Tick();
-
+		ZoneScopedNC("Input", 0x459bd1);
+		// Process window and input events
+		SDL_PumpEvents();
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
 		{
-			ZoneScopedNC("Input", 0x459bd1);
-			// Process window and input events
-			SDL_PumpEvents();
-			SDL_Event event;
-			while (SDL_PollEvent(&event))
-			{
-				ui->OnSDLEvent(&event);
-				if (event.type == SDL_QUIT)
-					bFinish = true;
-				else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == renderer->GetWindowId())
-					bFinish = true;
-			}
+			ui->OnSDLEvent(&event);
+			if (event.type == SDL_QUIT)
+				bFinish = true;
+			else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == renderer->GetWindowId())
+				bFinish = true;
 		}
-
-		renderer->PreTick();
-
-		world->Tick(frame, frameTime.deltaTime);
-		ui->Tick(frameTime.deltaTime);
 	}
+
+	renderer->PreTick();
+
+	world->Tick(frame, frameTime.deltaTime);
+	ui->Tick(frameTime.deltaTime);
 
 	// Rendering
 	renderer->Render(frame);

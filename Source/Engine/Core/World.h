@@ -10,6 +10,9 @@
 #include "Rendering/RenderCommand.h"
 #include "Core/Assets/AssetPtr.h"
 
+#include "Gameplay/Components/CMesh.h"
+#include "Gameplay/Components/CTransform.h"
+
 
 class World : public Object {
 	CLASS(World, Object)
@@ -26,7 +29,9 @@ class World : public Object {
 
 public:
 
-	void Start() {
+	void Start(Frame& frame) {
+		currentFrame = &frame;
+
 		assetManager = Create<AssetManager>(GetSelf());
 
 		scene = { "scene.meta" };
@@ -35,9 +40,13 @@ public:
 		ecsManager = Create<ECSManager>(GetSelf());
 		ecsManager->BeginPlay();
 
-		// Test entities
+		// Test entities. Move to Scene
 		ecsManager->CreateEntity(TX("MyEntity"));
-		ecsManager->CreateEntity(TX("MyOtherEntity"));
+		EntityId b = ecsManager->CreateEntity(TX("MyOtherEntity"));
+		ecsManager->Assign<CTransform>(b);
+		ecsManager->Assign<CMesh>(b);
+
+		currentFrame = nullptr;
 	}
 
 	void Tick(Frame& frame, float deltaTime) {
@@ -46,6 +55,8 @@ public:
 
 		scene->Tick(deltaTime);
 		ecsManager->Tick(deltaTime);
+
+		currentFrame = nullptr;
 	}
 
 	void EndPlay() {
@@ -67,11 +78,16 @@ public:
 
 
 	// RENDER COMMANDS
-	Frame& GetFrame() { return *currentFrame; }
+	Frame& GetFrame() {
+		assert(currentFrame && "Frame is only available on start-up or tick");
+		return *currentFrame;
+	}
 
 	template<typename Command, typename ...Args>
 	void QueueRender(Args... args) {
 		static_assert(eastl::is_base_of<RenderCommand, Command>::value, "Command type must inherit RenderCommand");
+
+		assert(currentFrame && "Commands can only be scheduled on start-up or tick");
 
 		GetFrame().ScheduleCommand(
 			eastl::make_shared<Command>(eastl::forward<Args>(args)...)

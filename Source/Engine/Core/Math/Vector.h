@@ -30,3 +30,5 @@ using v3_u32 = Eigen::Matrix<u32, 3, 1>;
 using v4_u32 = Eigen::Matrix<u32, 4, 1>;
 
 using Quat = Eigen::Quaternion<float, Eigen::DontAlign>;
+
+using Matrix4f = Eigen::Matrix4f;

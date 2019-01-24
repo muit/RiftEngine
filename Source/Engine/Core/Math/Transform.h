@@ -46,13 +46,31 @@ struct Transform {
 
 	bool Serialize(class Archive& ar, const char* name);
 
-	Matrix GetTransformationMatrix() {
-		Matrix matrix{};
-		matrix.pretranslate(location)
-			.prerotate(rotation)
-			.scale(scale);
-		return eastl::move(matrix);
+
+	Matrix ToWorldMatrix() const {
+		return Eigen::Translation3f(location) * rotation.normalized().toRotationMatrix() * Scaling(scale);
 	}
+
+	Matrix ToLocalMatrix() const {
+		return ToWorldMatrix().inverse();
+	}
+
+	v3 LocationToWorld(const v3& inLocation) const {
+		return ToWorldMatrix() * inLocation;
+	}
+
+	v3 LocationToLocal(const v3& inLocation) const {
+		return ToWorldMatrix().inverse() * inLocation;
+	}
+
+	v3 DirectionToWorld(const v3& direction) const {
+		return ToWorldMatrix().linear() * direction;
+	}
+
+	v3 DirectionToLocal(const v3& direction) const {
+		return ToWorldMatrix().inverse().linear() * direction;
+	}
+
 
 #if WITH_EDITOR
 	static class Class* GetDetailsWidgetClass();

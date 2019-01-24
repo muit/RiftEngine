@@ -13,4 +13,8 @@ class CMesh : public Component {
 	STRUCT(CMesh, Component)
 
 	TAssetPtr<Model> model;
+
+	CMesh() : Super(), model{"MyModel.obj.meta"} {
+		model.LoadOrCreate();
+	}
 };

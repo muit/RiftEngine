@@ -335,7 +335,7 @@ public:
            OtherModeIsAffineCompact = OtherMode == int(AffineCompact)
     };
 
-    if(ModeIsAffineCompact == OtherModeIsAffineCompact)
+    if constexpr (ModeIsAffineCompact == OtherModeIsAffineCompact)
     {
       // We need the block expression because the code is compiled for all
       // combinations of transformations and will trigger a compile time error
@@ -343,7 +343,7 @@ public:
       m_matrix.template block<Dim,Dim+1>(0,0) = other.matrix().template block<Dim,Dim+1>(0,0);
       makeAffine();
     }
-    else if(OtherModeIsAffineCompact)
+    else if (OtherModeIsAffineCompact)
     {
       typedef typename Transform<Scalar,Dim,OtherMode,OtherOptions>::MatrixType OtherMatrixType;
       internal::transform_construct_from_matrix<OtherMatrixType,Mode,Options,Dim,HDim>::run(this, other.matrix());

@@ -26,8 +26,9 @@ public:
 
 
 	Frame() : id(idCounter++), time(DateTime::Now()) {}
-	Frame(const Frame& other) = delete;
-	Frame& operator=(const Frame& other) = delete;
+	Frame(Frame&& other) = default;
+	Frame& operator=(Frame&& other) = default;
+
 
 	void ScheduleCommand(eastl::shared_ptr<RenderCommand>&& command) {
 		commands.Add(command);

@@ -22,15 +22,7 @@ void SRenderMeshes::Tick(float /*deltaTime*/)
 	{
 		if (!c.model.IsNull())
 		{
-			if (!c.model.IsValid())
-			{
-				c.model.Load();
-				world->QueueRender<LoadMeshCommand>(0, c.model->GetMeshData());
-			}
-
 			world->QueueRender<DrawMeshCommand>(0, t.transform);
-
-			// #TODO: Unload models if needed
 		}
 	});
 

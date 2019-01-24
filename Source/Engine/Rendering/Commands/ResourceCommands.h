@@ -95,19 +95,9 @@ public:
 		MeshData::TriangleBuffer triangles{ mesh.GetTriangles() };
 
 		TransformToWorld(vertices);
-		TransformToCamera(vertices);
-		TransformToScreen(vertices);
-		BackFaceCulling(vertices, triangles);
-
-		Draw(vertices, triangles, Color::Cyan);
 	}
 
 private:
 
 	void TransformToWorld(MeshData::VertexBuffer& vertices);
-	void TransformToCamera(MeshData::VertexBuffer& vertices);
-	void TransformToScreen(MeshData::VertexBuffer& vertices);
-	void BackFaceCulling(MeshData::VertexBuffer& vertices, MeshData::TriangleBuffer& triangles);
-
-	void Draw(MeshData::VertexBuffer& vertices, MeshData::TriangleBuffer& triangles, Color color);
 };
