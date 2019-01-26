@@ -13,28 +13,28 @@ public:
 	float fov;
 	float nearZ;
 	float farZ;
-	float aspect;
 	Transform transform;
 
 
 	CameraData()
-		: fov{ 60.f }
-		, nearZ{ 0.1f }
-		, farZ{ 1000.f }
-		, aspect{ 1.f }
+		: fov{ 20.f }
+		, nearZ{ 5.f }
+		, farZ{ 15.f }
 		, transform{}
 	{}
 
 
-	Matrix4f GetPerspectiveMatrix() {
-		const float depth_length = farZ - nearZ;
-		const float tanHalfFov = std::tan(fov * 0.5f * Math::DEGTORAD);
+	Matrix4f GetPerspectiveMatrix(const v2_u32& screenSize) {
+		const float depth_length = 1.f / (farZ - nearZ);
+		const float scale = 1.f / std::tan(fov * 0.5f * Math::DEGTORAD);
 
-		Matrix4f matrix{};
-		matrix(0, 0) = 1.f / (aspect * tanHalfFov);
-		matrix(1, 1) = 1.f / tanHalfFov;
-		matrix(2, 2) = -(nearZ + farZ)       / depth_length;
-		matrix(2, 3) = -(2.f * nearZ * farZ) / depth_length;
+		const float aspect = float(screenSize.x()) / float(screenSize.y());
+
+		Matrix4f matrix{ Matrix4f::Zero() };
+		matrix(0, 0) = scale / aspect;
+		matrix(1, 1) = scale;
+		matrix(2, 2) = -(nearZ + farZ) * depth_length;
+		matrix(2, 3) = -2.f * nearZ * farZ * depth_length;
 		matrix(3, 2) = -1.f;
 		return matrix;
 	}

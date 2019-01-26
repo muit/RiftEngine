@@ -8,6 +8,7 @@
 #include "../Data/MeshData.h"
 #include "../Renderer.h"
 #include "../Frame.h"
+#include "../Rasterizer.h"
 
 
 // #TODO: Commands should be able to receive many orders of the same type.
@@ -88,25 +89,12 @@ public:
 
 	DrawMeshCommand(u32 id, Transform transform) : id(id), transform(transform) {}
 
-	virtual void Execute(FrameRender& render, Frame& frame) override {
-		const MeshData& mesh = render.resources.Get<ResourceType::Mesh>(id);
-
-		// Vertices over which we will operate
-		MeshData::VertexBuffer vertices{ mesh.GetVertices() };
-		MeshData::TriangleBuffer triangles{ mesh.GetTriangles() };
-
-		TransformToCamera(render, vertices);
-		TransformToViewport(vertices);
-
-		BackfaceCulling(vertices, triangles);
-		RenderTriangles(render, vertices, triangles);
-	}
+	virtual void Execute(FrameRender& render, Frame& frame) override;
 
 private:
 
-	void TransformToCamera(FrameRender& render, MeshData::VertexBuffer& vertices);
-	void TransformToViewport(MeshData::VertexBuffer& vertices);
+	void TransformToScreen(FrameRender& render, const VertexBuffer& vertices, VertexBufferI32& outVertices);
 
-	void BackfaceCulling(const MeshData::VertexBuffer& vertices, MeshData::TriangleBuffer& triangles);
-	void RenderTriangles(FrameRender& render, const MeshData::VertexBuffer& vertices, const MeshData::TriangleBuffer& triangles);
+	void BackfaceCulling(const VertexBufferI32& vertices, TriangleBuffer& triangles);
+	void RenderTriangles(FrameRender& render, const VertexBufferI32& vertices, const TriangleBuffer& triangles);
 };

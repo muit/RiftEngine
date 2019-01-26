@@ -9,5 +9,5 @@ class CCamera : public Component {
 	STRUCT(CCamera, Component)
 
 	PROP(float, fov)
-	float fov = 60;
+	float fov = 20;
 };

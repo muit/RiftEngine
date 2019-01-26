@@ -5,11 +5,11 @@
 #include "Rasterizer.h"
 
 
-void Rasterizer::FillConvexPolygon(const VertexBuffer& vertices, const u32* indicesBegin, const u32* indicesEnd, const Color& color)
+void Rasterizer::FillConvexPolygon(const VertexBufferI32& vertices, const u32* indicesBegin, const u32* indicesEnd, const Color& color)
 {
 	// Se cachean algunos valores de i32erés:
 
-	u32 pitch = target->Size().x();
+	u32 pitch = target.Size().x();
 	i32* offsetCache0Index = this->offsetCache0;
 	i32* offsetCache1Index = this->offsetCache1;
 	const u32* indices_back = indicesEnd - 1;
@@ -108,25 +108,25 @@ void Rasterizer::FillConvexPolygon(const VertexBuffer& vertices, const u32* indi
 		if (o0 < o1)
 		{
 			while (o0 < o1)
-				target->Buffer()[o0++] = color;
+				target.Buffer()[o0++] = color;
 
 			if (o0 > end_offset) break;
 		}
 		else
 		{
 			while (o1 < o0)
-				target->Buffer()[o1++] = color;
+				target.Buffer()[o1++] = color;
 
 			if (o1 > end_offset) break;
 		}
 	}
 }
 
-void Rasterizer::FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u32* const indicesBegin, const u32* const indicesEnd, const Color& color)
+void Rasterizer::FillConvexPolygonZBuffer(const VertexBufferI32& vertices, const u32* const indicesBegin, const u32* const indicesEnd, const Color& color)
 {
 	// Se cachean algunos valores de interés:
 
-	i32 pitch = target->Size().x();
+	i32 pitch = target.Size().x();
 	i32* offsetCache0Index = this->offsetCache0;
 	i32* offsetCache1Index = this->offsetCache1;
 	i32* zCache0Index = this->zCache0;
@@ -252,7 +252,7 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u3
 			{
 				if (z0 < zBuffer[o0]) // #Fix: Array out of bounds here
 				{
-					target->Buffer()[o0] = color;
+					target.Buffer()[o0] = color;
 					zBuffer[o0] = z0;
 				}
 
@@ -262,32 +262,103 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u3
 
 			if (o0 > end_offset) break;
 		}
-		else
-			if (o1 < o0)
+		else if (o1 < o0)
+		{
+			i32 z_step = (z0 - z1) / (o0 - o1);
+
+			while (o1 < o0)
 			{
-				i32 z_step = (z0 - z1) / (o0 - o1);
-
-				while (o1 < o0)
+				if (z1 < zBuffer[o1])
 				{
-					if (z1 < zBuffer[o1])
-					{
-						target->Buffer()[o1] = color;
-						zBuffer[o1] = z1;
-					}
-
-					z1 += z_step;
-					o1++;
+					target.Buffer()[o1] = color;
+					zBuffer[o1] = z1;
 				}
 
-				if (o1 > end_offset) break;
+				z1 += z_step;
+				o1++;
 			}
+
+			if (o1 > end_offset) break;
+		}
 	}
 }
 
-void Rasterizer::FillVertexBuffer(const VertexBuffer& vertices, const TriangleBuffer& triangles, const Color& color)
+void Rasterizer::FillTriangle(const VertexBufferI32& vertices, const v3_u32& triangle)
+{
+	float triangleDepth;
+	box2_i32 bounds = GetTriangleBounds(vertices, triangle, triangleDepth);
+
+	if (triangleDepth < 0.f)
+		return;
+
+	// Frustum culling by limiting bounds
+	bounds.Cut(viewportBounds);
+
+	for (i32 rasterX = bounds.min.x(); rasterX <= bounds.max.x(); ++rasterX)
+	{
+		for (i32 rasterY = bounds.min.y(); rasterY <= bounds.max.y(); ++rasterY)
+		{
+			const v2_i32 pixel = { rasterX, rasterY };
+			if (IsPixelInsideTriangle(vertices, triangle, pixel))
+			{
+				//target[pixel] = Color::Cyan;
+			}
+		}
+	}
+}
+
+void Rasterizer::FillVertexBuffer(const VertexBufferI32& vertices, const TriangleBuffer& triangles, const Color& color)
 {
 	for (const auto& triangle : triangles)
 	{
+		//FillTriangle(vertices, triangle);
 		FillConvexPolygonZBuffer(vertices, triangle.data(), triangle.data() + 3, color);
 	}
+}
+
+box2_i32 Rasterizer::GetTriangleBounds(const VertexBufferI32& vertices, const v3_u32& triangle, float& depth) const
+{
+	static const box2_i32 minimumBounds{
+		{ std::numeric_limits<i32>::max(), std::numeric_limits<i32>::max() },
+		{ std::numeric_limits<i32>::min(), std::numeric_limits<i32>::min() }
+	};
+	box2_i32 bounds = minimumBounds;
+
+	depth = 0.f;
+	for (u32 i = 0; i < 3; ++i)
+	{
+		const v3_i32& vertex = vertices[triangle[i]];
+		bounds.ExtendPoint(
+			vertices[triangle[i]].head<2>()
+		);
+
+		depth += vertex.z();
+	}
+	// Average depth
+	depth *= 0.333f;
+
+	return bounds;
+}
+
+bool Rasterizer::IsPixelInsideTriangle(const VertexBufferI32& vertices, const v3_u32& triangle, const v2_i32& pixel) const
+{
+	float u, v, w;
+	{// Barycentric Coordinates
+		const v2_i32 vertex0{ vertices[triangle[0]].head<2>() };
+
+		const v2_i32 p0 = vertices[triangle[1]].head<2>() - vertex0;
+		const v2_i32 p1 = vertices[triangle[2]].head<2>() - vertex0;
+		const v2_i32 p2 = pixel                           - vertex0;
+
+		const i32 d00 = p0.dot(p0);
+		const i32 d01 = p0.dot(p1);
+		const i32 d11 = p1.dot(p1);
+		const i32 d20 = p2.dot(p0);
+		const i32 d21 = p2.dot(p1);
+		i32 denom = d00 * d11 - d01 * d01;
+		v = (d11 * d20 - d01 * d21) / denom;
+		w = (d00 * d21 - d01 * d20) / denom;
+		u = 1.0f - v - w;
+	}
+	return u >= 0 && v >= 0 && u + v <= 1.0;
 }

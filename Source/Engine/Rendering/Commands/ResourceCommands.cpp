@@ -4,35 +4,54 @@
 #include "Core/Math/Vector.h"
 
 
-void DrawMeshCommand::TransformToCamera(FrameRender& render, MeshData::VertexBuffer& vertices)
+void DrawMeshCommand::Execute(FrameRender& render, Frame& frame)
+{
+	const MeshData& mesh = render.resources.Get<ResourceType::Mesh>(id);
+
+	TriangleBuffer triangles{ mesh.GetTriangles() };
+
+	VertexBufferI32 vertices{ (u32)mesh.GetVertices().Size() };
+	TransformToScreen(render, mesh.GetVertices(), vertices);
+
+	BackfaceCulling(vertices, triangles);
+	RenderTriangles(render, vertices, triangles);
+}
+
+void DrawMeshCommand::TransformToScreen(FrameRender& render, const VertexBuffer& vertices, VertexBufferI32& outVertices)
 {
 	ZoneScoped("TransformToCamera");
-	const Matrix4f worldToCamera = render.camera.GetPerspectiveMatrix();
+	const Matrix4f worldToCamera = render.camera.GetPerspectiveMatrix(render.GetRenderSize());
 	const Transform::Matrix toWorld = transform.ToWorldMatrix();
 
 	// Viewport transform
-	v3 halfScreen{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 0.f };
-	const Eigen::Translation3f translateViewport(halfScreen);
-	halfScreen.z() = 100000000.f;
-	Transform::Matrix toViewport = translateViewport * Scaling(halfScreen);
+	Transform::Matrix toViewport = Eigen::Translation3f{ v3{
+		float(render.GetRenderSize().x() / 2),
+		float(render.GetRenderSize().y() / 2),
+		0.f
+	} } * Scaling( v3{
+		float(render.GetRenderSize().x() / 2),
+		float(render.GetRenderSize().y() / 2),
+		100000000.f
+	});
 
 
-	Matrix4f finalTransform = toViewport * worldToCamera * toWorld.matrix();
+	Matrix4f finalTransform = worldToCamera * toWorld.matrix();
 
-	for (auto& vertex : vertices)
+	for (i32 i = 0; i < vertices.Size(); ++i)
 	{
 		v4 vertex4; // Not declared outside. Would cause cache misses
-		vertex4 << vertex, 1;
-		vertex = (finalTransform * vertex4).head<3>();
+		vertex4 << vertices[i], 1.f;
+		vertex4 = finalTransform * vertex4;
+
+		const float divisor = 1.f / vertex4[3];
+
+		v3_i32 v;
+		v = (toViewport * vertex4.head<3>() * divisor).cast<i32>();
+		outVertices[i] = v;
 	}
-
 }
 
-void DrawMeshCommand::TransformToViewport(MeshData::VertexBuffer& vertices)
-{
-}
-
-void DrawMeshCommand::BackfaceCulling(const MeshData::VertexBuffer& vertices, MeshData::TriangleBuffer& triangles)
+void DrawMeshCommand::BackfaceCulling(const VertexBufferI32& vertices, TriangleBuffer& triangles)
 {
 	ZoneScoped("BackfaceCulling");
 
@@ -41,9 +60,9 @@ void DrawMeshCommand::BackfaceCulling(const MeshData::VertexBuffer& vertices, Me
 	{
 		const v3_u32& triangle = triangles[i];
 
-		const v3& v0 = vertices[triangle.x()];
-		const v3& v1 = vertices[triangle.y()];
-		const v3& v2 = vertices[triangle.z()];
+		const v3_i32& v0 = vertices[triangle.x()];
+		const v3_i32& v1 = vertices[triangle.y()];
+		const v3_i32& v2 = vertices[triangle.z()];
 
 		// Se asumen coordenadas proyectadas y polígonos definidos en sentido horario.
 		// Se comprueba a qué lado de la línea que pasa por v0 y v1 queda el punto v2:
@@ -58,7 +77,7 @@ void DrawMeshCommand::BackfaceCulling(const MeshData::VertexBuffer& vertices, Me
 	}
 }
 
-void DrawMeshCommand::RenderTriangles(FrameRender& render, const MeshData::VertexBuffer& vertices, const MeshData::TriangleBuffer& triangles)
+void DrawMeshCommand::RenderTriangles(FrameRender& render, const TArray<v3_i32>& vertices, const TriangleBuffer& triangles)
 {
 	ZoneScoped("RasterizeTriangles");
 	render.rasterizer.FillVertexBuffer(vertices, triangles, Color::Blue);

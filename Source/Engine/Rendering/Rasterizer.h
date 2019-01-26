@@ -10,11 +10,8 @@
 
 class Rasterizer
 {
-	using VertexBuffer = MeshData::VertexBuffer;
-	using TriangleBuffer = MeshData::TriangleBuffer;
-
-
-	TextureData* target;
+	box2_i32 viewportBounds;
+	TextureData& target;
 
 	int offsetCache0[1082];
 	int offsetCache1[1082];
@@ -27,35 +24,41 @@ class Rasterizer
 
 public:
 
-	Rasterizer()
-		: target{nullptr}
+	Rasterizer(TextureData& target)
+		: target{target}
 		, zBuffer{}
 	{}
 
-	void RebindTexture(TextureData& inTarget)
+	void Clear()
 	{
-		target = &inTarget;
 		// Update zBuffer
-		zBuffer.Resize(target->Buffer().Size(), eastl::numeric_limits<i32>::max());
+		zBuffer.Empty(false);
+		zBuffer.Resize(target.Buffer().Size(), eastl::numeric_limits<i32>::max());
+
+		viewportBounds = {};
+		viewportBounds.ExtendPoint(target.Size().cast<i32>());
+
 	}
 
-	const TextureData& GetTargetTexture() const
-	{
-		return *target;
-	}
+	void FillConvexPolygon(const VertexBufferI32& vertices, const u32* indicesBegin, const u32* indicesEnd, const Color& color);
 
-public:
+	void FillConvexPolygonZBuffer(const VertexBufferI32& vertices, const u32* indicesBegin, const u32* indicesEnd, const Color& color);
 
-	void FillConvexPolygon(const VertexBuffer& vertices, const u32* indicesBegin, const u32* indicesEnd, const Color& color);
+	void FillTriangle(const VertexBufferI32& vertices, const v3_u32& triangle);
 
-	void FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u32* indicesBegin, const u32* indicesEnd, const Color& color);
+	void FillVertexBuffer(const VertexBufferI32& vertices, const TriangleBuffer& triangles, const Color& color);
 
-	void FillVertexBuffer(const VertexBuffer& vertices, const TriangleBuffer& triangles, const Color& color);
+
+	const TextureData& GetTargetTexture() const { return target; }
 
 private:
 
 	template< typename VALUE_TYPE, size_t SHIFT >
 	void Interpolate(i32* cache, i32 v0, i32 v1, i32 yMin, i32 yMax);
+
+	// Triangle operations
+	box2_i32 GetTriangleBounds(const VertexBufferI32& vertices, const v3_u32& triangle, float& depth) const;
+	bool IsPixelInsideTriangle(const VertexBufferI32& vertices, const v3_u32& triangle, const v2_i32& pixel) const;
 };
 
 

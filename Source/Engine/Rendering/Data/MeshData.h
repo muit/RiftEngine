@@ -9,12 +9,12 @@
 #include "Core/Containers/Array.h"
 
 
-struct MeshData {
-	using VertexBuffer = TArray<v3>;
-	using Triangle = v3_u32;
-	using TriangleBuffer = TArray<Triangle>;
+using VertexBuffer = TArray<v3>;
+using VertexBufferI32 = TArray<v3_i32>;
+using Triangle = v3_u32;
+using TriangleBuffer = TArray<Triangle>;
 
-private:
+struct MeshData {
 
 	VertexBuffer vertices;
 	TriangleBuffer triangles;

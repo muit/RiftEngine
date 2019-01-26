@@ -43,7 +43,9 @@ public:
 		// Test entities. Move to Scene
 		ecsManager->CreateEntity(TX("MyEntity"));
 		EntityId b = ecsManager->CreateEntity(TX("MyOtherEntity"));
-		ecsManager->Assign<CTransform>(b);
+		Transform& t = ecsManager->Assign<CTransform>(b).transform;
+		t.location = { 0, 0, -10 };
+		t.scale = { 0.2f, 0.2f, 0.2f };
 		ecsManager->Assign<CMesh>(b);
 
 		currentFrame = nullptr;

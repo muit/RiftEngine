@@ -51,11 +51,16 @@ struct FrameRender {
 	Rasterizer rasterizer;
 
 
-	FrameRender() = default;
+	FrameRender()
+		: baseColor{}
+		, camera {}
+		, resources{}
+		, rasterizer{ baseColor }
+	{}
 
 	void NewFrame(v2_u32 viewportSize) {
 		baseColor.Resize(viewportSize, Color::Red);
-		rasterizer.RebindTexture(baseColor);
+		rasterizer.Clear();
 	}
 
 	void DrawImage(const v2_u32& position, const TextureData& texture);
