@@ -127,10 +127,10 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBufferI32& vertices, const
 	// Se cachean algunos valores de interés:
 
 	i32 pitch = target.Size().x();
-	i32* offsetCache0Index = this->offsetCache0;
-	i32* offsetCache1Index = this->offsetCache1;
-	i32* zCache0Index = this->zCache0;
-	i32* zCache1Index = this->zCache1;
+	i32* offsetCache0Index = offsetCache0;
+	i32* offsetCache1Index = offsetCache1;
+	i32* zCache0Index = zCache0;
+	i32* zCache1Index = zCache1;
 	const u32* indicesBack = indicesEnd - 1;
 
 	// Se busca el vértice de inicio (el que tiene menor Y) y el de terminación (el que tiene mayor Y):
@@ -342,7 +342,7 @@ box2_i32 Rasterizer::GetTriangleBounds(const VertexBufferI32& vertices, const v3
 
 bool Rasterizer::IsPixelInsideTriangle(const VertexBufferI32& vertices, const v3_u32& triangle, const v2_i32& pixel) const
 {
-	float u, v, w;
+	i32 u, v, w;
 	{// Barycentric Coordinates
 		const v2_i32 vertex0{ vertices[triangle[0]].head<2>() };
 
@@ -358,7 +358,7 @@ bool Rasterizer::IsPixelInsideTriangle(const VertexBufferI32& vertices, const v3
 		i32 denom = d00 * d11 - d01 * d01;
 		v = (d11 * d20 - d01 * d21) / denom;
 		w = (d00 * d21 - d01 * d20) / denom;
-		u = 1.0f - v - w;
+		u = 1 - v - w;
 	}
-	return u >= 0 && v >= 0 && u + v <= 1.0;
+	return u >= 0 && v >= 0 && u + v <= 1;
 }

@@ -3,8 +3,8 @@
 #include "CoreEngine.h"
 #include <EASTL/unordered_map.h>
 
-#include "TextureData.h"
-#include "MeshData.h"
+#include "Data/TextureData.h"
+#include "Data/MeshData.h"
 
 struct Resources {
     eastl::unordered_map<u32, TextureData> textures;

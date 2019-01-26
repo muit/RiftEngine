@@ -3,28 +3,28 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
-// This file implements a vector (array-like container), much like the C++ 
+// This file implements a vector (array-like container), much like the C++
 // std::vector class.
 // The primary distinctions between this vector and std::vector are:
 //    - vector has a couple extension functions that increase performance.
-//    - vector can contain objects with alignment requirements. std::vector 
+//    - vector can contain objects with alignment requirements. std::vector
 //      cannot do so without a bit of tedious non-portable effort.
 //    - vector supports debug memory naming natively.
 //    - vector is easier to read, debug, and visualize.
 //    - vector is savvy to an environment that doesn't have exception handling,
 //      as is sometimes the case with console or embedded environments.
-//    - vector has less deeply nested function calls and allows the user to 
+//    - vector has less deeply nested function calls and allows the user to
 //      enable forced inlining in debug builds in order to reduce bloat.
 //    - vector<bool> is a vector of boolean values and not a bit vector.
 //    - vector guarantees that memory is contiguous and that vector::iterator
 //      is nothing more than a pointer to T.
-//    - vector has an explicit data() method for obtaining a pointer to storage 
-//      which is safe to call even if the block is empty. This avoids the 
-//      common &v[0], &v.front(), and &*v.begin() constructs that trigger false 
+//    - vector has an explicit data() method for obtaining a pointer to storage
+//      which is safe to call even if the block is empty. This avoids the
+//      common &v[0], &v.front(), and &*v.begin() constructs that trigger false
 //      asserts in STL debugging modes.
 //    - vector data is guaranteed to be contiguous.
-//    - vector has a set_capacity() function which frees excess capacity. 
-//      The only way to do this with std::vector is via the cryptic non-obvious 
+//    - vector has a set_capacity() function which frees excess capacity.
+//      The only way to do this with std::vector is via the cryptic non-obvious
 //      trick of using: vector<SomeClass>(x).swap(x);
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -97,12 +97,12 @@ namespace eastl
 	/// VectorBase
 	///
 	/// The reason we have a VectorBase class is that it makes exception handling
-	/// simpler to implement because memory allocation is implemented entirely 
+	/// simpler to implement because memory allocation is implemented entirely
 	/// in this class. If a user creates a vector which needs to allocate
 	/// memory in the constructor, VectorBase handles it. If an exception is thrown
-	/// by the allocator then the exception throw jumps back to the user code and 
-	/// no try/catch code need be written in the vector or VectorBase constructor. 
-	/// If an exception is thrown in the vector (not VectorBase) constructor, the 
+	/// by the allocator then the exception throw jumps back to the user code and
+	/// no try/catch code need be written in the vector or VectorBase constructor.
+	/// If an exception is thrown in the vector (not VectorBase) constructor, the
 	/// destructor for VectorBase will be called automatically (and free the allocated
 	/// memory) before the execution jumps back to the user code.
 	/// However, if the vector class were to handle both allocation and initialization
@@ -110,14 +110,14 @@ namespace eastl
 	/// for all pathways that allocate memory. This increases code size and decreases
 	/// performance and makes the code a little harder read and maintain.
 	///
-	/// The C++ standard (15.2 paragraph 2) states: 
+	/// The C++ standard (15.2 paragraph 2) states:
 	///    "An object that is partially constructed or partially destroyed will
 	///     have destructors executed for all its fully constructed subobjects,
 	///     that is, for subobjects for which the constructor has been completed
 	///     execution and the destructor has not yet begun execution."
 	///
-	/// The C++ standard (15.3 paragraph 11) states: 
-	///    "The fully constructed base classes and members of an object shall 
+	/// The C++ standard (15.3 paragraph 11) states:
+	///    "The fully constructed base classes and members of an object shall
 	///     be destroyed before entering the handler of a function-try-block
 	///     of a constructor or destructor for that block."
 	///
@@ -185,10 +185,10 @@ namespace eastl
 		typedef const T*                                      const_pointer;
 		typedef T&                                            reference;
 		typedef const T&                                      const_reference;  // Maintainer note: We want to leave iterator defined as T* -- at least in release builds -- as this gives some algorithms an advantage that optimizers cannot get around.
-		typedef T*                                            iterator;         // Note: iterator is simply T* right now, but this will likely change in the future, at least for debug builds. 
-		typedef const T*                                      const_iterator;   //       Do not write code that relies on iterator being T*. The reason it will 
+		typedef T*                                            iterator;         // Note: iterator is simply T* right now, but this will likely change in the future, at least for debug builds.
+		typedef const T*                                      const_iterator;   //       Do not write code that relies on iterator being T*. The reason it will
 		typedef eastl::reverse_iterator<iterator>             reverse_iterator; //       change in the future is that a debugging iterator system will be created.
-		typedef eastl::reverse_iterator<const_iterator>       const_reverse_iterator;    
+		typedef eastl::reverse_iterator<const_iterator>       const_reverse_iterator;
 		typedef typename base_type::size_type                 size_type;
 		typedef typename base_type::difference_type           difference_type;
 		typedef typename base_type::allocator_type            allocator_type;
@@ -398,7 +398,7 @@ namespace eastl
 
 	template <typename T, typename Allocator>
 	inline VectorBase<T, Allocator>::VectorBase()
-		: mpBegin(NULL), 
+		: mpBegin(NULL),
 		  mpEnd(NULL),
 		  mCapacityAllocator(NULL, allocator_type(EASTL_VECTOR_DEFAULT_NAME))
 	{
@@ -407,7 +407,7 @@ namespace eastl
 
 	template <typename T, typename Allocator>
 	inline VectorBase<T, Allocator>::VectorBase(const allocator_type& allocator)
-		: mpBegin(NULL), 
+		: mpBegin(NULL),
 		  mpEnd(NULL),
 		  mCapacityAllocator(NULL, allocator)
 	{
@@ -463,8 +463,8 @@ namespace eastl
 				EASTL_FAIL_MSG("vector::DoAllocate -- improbably large request.");
 		#endif
 
-		// If n is zero, then we allocate no memory and just return nullptr. 
-		// This is fine, as our default ctor initializes with NULL pointers. 
+		// If n is zero, then we allocate no memory and just return nullptr.
+		// This is fine, as our default ctor initializes with NULL pointers.
 		if(EASTL_LIKELY(n))
 		{
 			auto* p = (T*)allocate_memory(internalAllocator(), n * sizeof(T), EASTL_ALIGN_OF(T), 0);
@@ -482,7 +482,7 @@ namespace eastl
 	inline void VectorBase<T, Allocator>::DoFree(T* p, size_type n)
 	{
 		if(p)
-			EASTLFree(internalAllocator(), p, n * sizeof(T)); 
+			EASTLFree(internalAllocator(), p, n * sizeof(T));
 	}
 
 
@@ -565,7 +565,7 @@ namespace eastl
 	{
 		if (internalAllocator() == x.internalAllocator()) // If allocators are equivalent...
 			DoSwap(x);
-		else 
+		else
 		{
 			this_type temp(eastl::move(*this)); // move construct so we don't require the use of copy-ctors that prevent the use of move-only types.
 			temp.swap(x);
@@ -604,9 +604,9 @@ namespace eastl
 	{
 		if(this != &x) // If not assigning to self...
 		{
-			// If (EASTL_ALLOCATOR_COPY_ENABLED == 1) and the current contents are allocated by an 
-			// allocator that's unequal to x's allocator, we need to reallocate our elements with 
-			// our current allocator and reallocate it with x's allocator. If the allocators are 
+			// If (EASTL_ALLOCATOR_COPY_ENABLED == 1) and the current contents are allocated by an
+			// allocator that's unequal to x's allocator, we need to reallocate our elements with
+			// our current allocator and reallocate it with x's allocator. If the allocators are
 			// equal then we can use a more optimal algorithm that doesn't reallocate our elements
 			// but instead can copy them in place.
 
@@ -652,7 +652,7 @@ namespace eastl
 			DoClearCapacity(); // To consider: Are we really required to clear here? x is going away soon and will clear itself in its dtor.
 			swap(x);           // member swap handles the case that x has a different allocator than our allocator by doing a copy.
 		}
-		return *this; 
+		return *this;
 	}
 
 
@@ -664,11 +664,11 @@ namespace eastl
 
 
 	template <typename T, typename Allocator>
-	template <typename InputIterator>                              
+	template <typename InputIterator>
 	inline void vector<T, Allocator>::assign(InputIterator first, InputIterator last)
 	{
 		// It turns out that the C++ std::vector<int, int> specifies a two argument
-		// version of assign that takes (int size, int value). These are not iterators, 
+		// version of assign that takes (int size, int value). These are not iterators,
 		// so we need to do a template compiler trick to do the right thing.
 		DoAssign<InputIterator, false>(first, last, is_integral<InputIterator>());
 	}
@@ -928,8 +928,8 @@ namespace eastl
 	inline typename vector<T, Allocator>::reference
 	vector<T, Allocator>::at(size_type n)
 	{
-		// The difference between at() and operator[] is it signals 
-		// the requested position is out of range by throwing an 
+		// The difference between at() and operator[] is it signals
+		// the requested position is out of range by throwing an
 		// out_of_range exception.
 
 		#if EASTL_EXCEPTIONS_ENABLED
@@ -1061,7 +1061,7 @@ namespace eastl
 			const size_type newSize = (size_type)(mpEnd - mpBegin) + 1;
 			reserve(newSize);
 		}
- 
+
 		return mpEnd++;
 	}
 
@@ -1081,7 +1081,7 @@ namespace eastl
 
 	template <typename T, typename Allocator>
 	template<class... Args>
-	inline typename vector<T, Allocator>::iterator 
+	inline typename vector<T, Allocator>::iterator
 	vector<T, Allocator>::emplace(const_iterator position, Args&&... args)
 	{
 		const ptrdiff_t n = position - mpBegin; // Save this because we might reallocate.
@@ -1137,7 +1137,7 @@ namespace eastl
 	}
 
 
-	template <typename T, typename Allocator>       
+	template <typename T, typename Allocator>
 	inline typename vector<T, Allocator>::iterator
 	vector<T, Allocator>::insert(const_iterator position, value_type&& value)
 	{
@@ -1166,7 +1166,7 @@ namespace eastl
 	}
 
 
-	template <typename T, typename Allocator>       
+	template <typename T, typename Allocator>
 	inline typename vector<T, Allocator>::iterator
 	vector<T, Allocator>::insert(const_iterator position, std::initializer_list<value_type> ilist)
 	{
@@ -1186,7 +1186,7 @@ namespace eastl
 		#endif
 
 		// C++11 stipulates that position is const_iterator, but the return value is iterator.
-		iterator destPosition = const_cast<value_type*>(position);        
+		iterator destPosition = const_cast<value_type*>(position);
 
 		if((position + 1) < mpEnd)
 			eastl::move(destPosition + 1, mpEnd, destPosition);
@@ -1198,20 +1198,20 @@ namespace eastl
 
 	template <typename T, typename Allocator>
 	inline typename vector<T, Allocator>::iterator
-	vector<T, Allocator>::erase(const_iterator first, const_iterator last)
+	vector<T, Allocator>::erase(const_iterator first, const_iterator lastIt)
 	{
 		#if EASTL_ASSERT_ENABLED
-			if(EASTL_UNLIKELY((first < mpBegin) || (first > mpEnd) || (last < mpBegin) || (last > mpEnd) || (last < first)))
+			if(EASTL_UNLIKELY((first < mpBegin) || (first > mpEnd) || (lastIt < mpBegin) || (lastIt > mpEnd) || (lastIt < first)))
 				EASTL_FAIL_MSG("vector::erase -- invalid position");
 		#endif
- 
-		if (first != last)
+
+		if (first != lastIt)
 		{
-			iterator const position = const_cast<value_type*>(eastl::move(const_cast<value_type*>(last), const_cast<value_type*>(mpEnd), const_cast<value_type*>(first)));
+			iterator const position = const_cast<value_type*>(eastl::move(const_cast<value_type*>(lastIt), const_cast<value_type*>(mpEnd), const_cast<value_type*>(first)));
 			eastl::destruct(position, mpEnd);
-			mpEnd -= (last - first);
+			mpEnd -= (lastIt - first);
 		}
- 
+
 		return const_cast<value_type*>(first);
 	}
 
@@ -1250,7 +1250,7 @@ namespace eastl
 
 	template <typename T, typename Allocator>
 	template <typename>
-	inline typename vector<T, Allocator>::iterator 
+	inline typename vector<T, Allocator>::iterator
 	vector<T, Allocator>::erase_first_unsorted(const T& value)
 	{
 		iterator it = eastl::find(begin(), end(), value);
@@ -1263,7 +1263,7 @@ namespace eastl
 
 	template <typename T, typename Allocator>
 	template <typename>
-	inline typename vector<T, Allocator>::reverse_iterator 
+	inline typename vector<T, Allocator>::reverse_iterator
 	vector<T, Allocator>::erase_last(const T& value)
 	{
 		reverse_iterator it = eastl::find(rbegin(), rend(), value);
@@ -1276,7 +1276,7 @@ namespace eastl
 
 	template <typename T, typename Allocator>
 	template <typename>
-	inline typename vector<T, Allocator>::reverse_iterator 
+	inline typename vector<T, Allocator>::reverse_iterator
 	vector<T, Allocator>::erase_last_unsorted(const T& value)
 	{
 		reverse_iterator it = eastl::find(rbegin(), rend(), value);
@@ -1329,20 +1329,20 @@ namespace eastl
 	template <typename T, typename Allocator>
 	inline void vector<T, Allocator>::reset_lose_memory() EA_NOEXCEPT
 	{
-		// The reset function is a special extension function which unilaterally 
-		// resets the container to an empty state without freeing the memory of 
-		// the contained objects. This is useful for very quickly tearing down a 
+		// The reset function is a special extension function which unilaterally
+		// resets the container to an empty state without freeing the memory of
+		// the contained objects. This is useful for very quickly tearing down a
 		// container built into scratch memory.
 		mpBegin = mpEnd = internalCapacityPtr() = NULL;
 	}
 
 
 	// swap exchanges the contents of two containers. With respect to the containers allocators,
-	// the C11++ Standard (23.2.1/7) states that the behavior of a call to a container's swap function 
-	// is undefined unless the objects being swapped have allocators that compare equal or 
+	// the C11++ Standard (23.2.1/7) states that the behavior of a call to a container's swap function
+	// is undefined unless the objects being swapped have allocators that compare equal or
 	// allocator_traits<allocator_type>::propagate_on_container_swap::value is true (propagate_on_container_swap
 	// is false by default). EASTL doesn't have allocator_traits and so this doesn't directly apply,
-	// but EASTL has the effective behavior of propagate_on_container_swap = false for all allocators. 
+	// but EASTL has the effective behavior of propagate_on_container_swap = false for all allocators.
 	template <typename T, typename Allocator>
 	inline void vector<T, Allocator>::swap(this_type& x)
 	{
@@ -1358,8 +1358,8 @@ namespace eastl
 	#else
 		// NOTE(rparolin): The previous implementation required T to be copy-constructible in the fall-back case where
 		// allocators with unique instances copied elements.  This was an unnecessary restriction and prevented the common
-		// usage of vector with non-copyable types (eg. eastl::vector<non_copyable> or eastl::vector<unique_ptr>). 
-		// 
+		// usage of vector with non-copyable types (eg. eastl::vector<non_copyable> or eastl::vector<unique_ptr>).
+		//
 		// The previous implementation violated the following requirements of vector::swap so the fall-back code has
 		// been removed.  EASTL implicitly defines 'propagate_on_container_swap = false' therefore the fall-back case is
 		// undefined behaviour.  We simply swap the contents and the allocator as that is the common expectation of
@@ -1384,7 +1384,7 @@ namespace eastl
 	inline typename vector<T, Allocator>::pointer
 	vector<T, Allocator>::DoRealloc(size_type n, ForwardIterator first, ForwardIterator last, should_copy_tag)
 	{
-		T* const p = DoAllocate(n); // p is of type T* but is not constructed. 
+		T* const p = DoAllocate(n); // p is of type T* but is not constructed.
 		eastl::uninitialized_copy_ptr(first, last, p); // copy-constructs p from [first,last).
 		return p;
 	}
@@ -1395,7 +1395,7 @@ namespace eastl
 	inline typename vector<T, Allocator>::pointer
 	vector<T, Allocator>::DoRealloc(size_type n, ForwardIterator first, ForwardIterator last, should_move_tag)
 	{
-		T* const p = DoAllocate(n); // p is of type T* but is not constructed. 
+		T* const p = DoAllocate(n); // p is of type T* but is not constructed.
 		eastl::uninitialized_move_ptr_if_noexcept(first, last, p); // move-constructs p from [first,last).
 		return p;
 	}
@@ -1710,10 +1710,10 @@ namespace eastl
 
 
 	template <typename T, typename Allocator>
-	void vector<T, Allocator>::DoClearCapacity() // This function exists because set_capacity() currently indirectly requires value_type to be default-constructible, 
-	{                                            // and some functions that need to clear our capacity (e.g. operator=) aren't supposed to require default-constructibility. 
+	void vector<T, Allocator>::DoClearCapacity() // This function exists because set_capacity() currently indirectly requires value_type to be default-constructible,
+	{                                            // and some functions that need to clear our capacity (e.g. operator=) aren't supposed to require default-constructibility.
 		clear();
-		this_type temp(eastl::move(*this));  // This is the simplest way to accomplish this, 
+		this_type temp(eastl::move(*this));  // This is the simplest way to accomplish this,
 		swap(temp);             // and it is as efficient as any other.
 	}
 
@@ -1831,8 +1831,8 @@ namespace eastl
 	template<typename... Args>
 	void vector<T, Allocator>::DoInsertValue(const_iterator position, Args&&... args)
 	{
-		// To consider: It's feasible that the args is from a value_type comes from within the current sequence itself and 
-		// so we need to be sure to handle that case. This is different from insert(position, const value_type&) because in 
+		// To consider: It's feasible that the args is from a value_type comes from within the current sequence itself and
+		// so we need to be sure to handle that case. This is different from insert(position, const value_type&) because in
 		// this case value is potentially being modified.
 
 		#if EASTL_ASSERT_ENABLED
@@ -1871,7 +1871,7 @@ namespace eastl
 			#if EASTL_EXCEPTIONS_ENABLED
 				pointer pNewEnd = pNewData;
 				try
-				{   // To do: We are not handling exceptions properly below.  In particular we don't want to 
+				{   // To do: We are not handling exceptions properly below.  In particular we don't want to
 					// call eastl::destruct on the entire range if only the first part of the range was costructed.
 					::new((void*)(pNewData + nPosSize)) value_type(eastl::forward<Args>(args)...);              // Because the old data is potentially being moved rather than copied, we need to move.
 					pNewEnd = NULL;                                                                             // Set to NULL so that in catch we can tell the exception occurred during the next call.
@@ -1888,7 +1888,7 @@ namespace eastl
 					throw;
 				}
 			#else
-				::new((void*)(pNewData + nPosSize)) value_type(eastl::forward<Args>(args)...);                  // Because the old data is potentially being moved rather than copied, we need to move 
+				::new((void*)(pNewData + nPosSize)) value_type(eastl::forward<Args>(args)...);                  // Because the old data is potentially being moved rather than copied, we need to move
 				pointer pNewEnd = eastl::uninitialized_move_ptr_if_noexcept(mpBegin, destPosition, pNewData);   // the value first, because it might possibly be a reference to the old data being moved.
 				pNewEnd = eastl::uninitialized_move_ptr_if_noexcept(destPosition, mpEnd, ++pNewEnd);            // Question: with exceptions disabled, do we asssume all operations are noexcept and thus there's no need for uninitialized_move_ptr_if_noexcept?
 			#endif

@@ -181,8 +181,8 @@ public:
 	 * @return number of deleted items
 	 */
 	i32 RemoveIf(eastl::function<bool(const Type&)>&& callback) {
-		i32 lastSize = Size();
-		vector.erase(eastl::remove_if(v.begin(), v.end(), callback), v.end());
+		const i32 lastSize = Size();
+		vector.erase(eastl::remove_if(vector.begin(), vector.end(), callback), vector.end());
 		return lastSize - Size();
 	}
 

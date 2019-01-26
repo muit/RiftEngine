@@ -61,4 +61,4 @@ DECLARE_REFLECTION_TYPE(Transform);
 
 
 template <typename T1, typename T2>
-using Pair = eastl::pair<T1, T2>;
+using TPair = eastl::pair<T1, T2>;

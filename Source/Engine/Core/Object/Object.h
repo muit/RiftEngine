@@ -72,3 +72,7 @@ public:
 
 	virtual Ptr<World> GetWorld() const;
 };
+
+
+template <typename Type>
+using IsObject = eastl::is_convertible<Type, Object>;

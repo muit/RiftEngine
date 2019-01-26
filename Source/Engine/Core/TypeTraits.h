@@ -83,3 +83,17 @@ inline constexpr bool IsReflectableType() {
 
 	return false;
 }
+
+template <bool B, class T = void>
+using EnableIf = eastl::enable_if<B, T>;
+
+template <bool B, class T = void>
+using DisableIf = eastl::disable_if<B, T>;
+
+
+template <bool B, class T = void>
+using EnableIfT = eastl::enable_if_t<B, T>;
+
+template <bool B, class T = void>
+using DisableIfT = eastl::disable_if_t<B, T>;
+

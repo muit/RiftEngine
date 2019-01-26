@@ -13,13 +13,14 @@ class Rasterizer
 	box2_i32 viewportBounds;
 	TextureData& target;
 
-	int offsetCache0[1082];
-	int offsetCache1[1082];
-
-	int zCache0[1082];
-	int zCache1[1082];
-
 	TArray<i32> zBuffer;
+
+	i32 offsetCache0[1082];
+	i32 offsetCache1[1082];
+
+	i32 zCache0[1082];
+	i32 zCache1[1082];
+
 
 
 public:
@@ -27,6 +28,10 @@ public:
 	Rasterizer(TextureData& target)
 		: target{target}
 		, zBuffer{}
+		, offsetCache0{}
+		, offsetCache1{}
+		, zCache0{}
+		, zCache1{}
 	{}
 
 	void Clear()
