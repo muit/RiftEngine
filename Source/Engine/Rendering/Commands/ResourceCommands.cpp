@@ -20,31 +20,28 @@ void DrawMeshCommand::Execute(FrameRender& render, Frame& frame)
 void DrawMeshCommand::TransformToScreen(FrameRender& render, const VertexBuffer& vertices, VertexBufferI32& outVertices)
 {
 	ZoneScoped("TransformToCamera");
+
 	const Matrix4f worldToCamera = render.camera.GetPerspectiveMatrix(render.GetRenderSize());
 	const Transform::Matrix toWorld = transform.ToWorldMatrix();
+	Matrix4f cameraTransform = worldToCamera * toWorld.matrix();
 
 	// Viewport transform
-	Transform::Matrix toViewport = Eigen::Translation3f{ v3{
-		float(render.GetRenderSize().x() / 2),
-		float(render.GetRenderSize().y() / 2),
-		0.f
-	} } * Scaling( v3{
-		float(render.GetRenderSize().x() / 2),
-		float(render.GetRenderSize().y() / 2),
-		100000000.f
-	});
+	v3 halfScreen{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 0.f };
+	const Eigen::Translation3f translateViewport(halfScreen);
+	halfScreen.z() = 100000000.f;
+	Transform::Matrix toViewport = translateViewport * Scaling(halfScreen);
 
-
-	Matrix4f finalTransform = worldToCamera * toWorld.matrix();
 
 	for (i32 i = 0; i < vertices.Size(); ++i)
 	{
-		v4 vertex4; // Not declared outside. Would cause cache misses
+		// Transform to camera perspective
+		v4 vertex4;
 		vertex4 << vertices[i], 1.f;
-		vertex4 = finalTransform * vertex4;
+		vertex4 = cameraTransform * vertex4;
 
 		const float divisor = 1.f / vertex4[3];
 
+		// Transform to viewport
 		v3_i32 v;
 		v = (toViewport * vertex4.head<3>() * divisor).cast<i32>();
 		outVertices[i] = v;
@@ -80,5 +77,6 @@ void DrawMeshCommand::BackfaceCulling(const VertexBufferI32& vertices, TriangleB
 void DrawMeshCommand::RenderTriangles(FrameRender& render, const TArray<v3_i32>& vertices, const TriangleBuffer& triangles)
 {
 	ZoneScoped("RasterizeTriangles");
-	render.rasterizer.FillVertexBuffer(vertices, triangles, Color::Blue);
+	// #FIX: Temporally disabled due to crash on rasterizer buffer
+	//render.rasterizer.FillVertexBuffer(vertices, triangles, Color::Blue);
 }
