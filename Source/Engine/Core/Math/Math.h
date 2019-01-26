@@ -15,7 +15,8 @@ struct Math
 	static constexpr float BIG_NUMBER{ 3.4e+38f };
 	static constexpr float EULER{ 2.71828182845904523536f };
 
-	static constexpr float RADTODEG = 180.f/PI;
+	static constexpr float RADTODEG = 180.f / PI;
+	static constexpr float DEGTORAD = PI / 180.f;
 
 
 	template<typename Type>

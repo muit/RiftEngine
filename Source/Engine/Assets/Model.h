@@ -4,7 +4,7 @@
 
 #include "CoreObject.h"
 #include "Core/Assets/AssetData.h"
-#include "Rendering/MeshData.h"
+#include "Rendering/Data/MeshData.h"
 
 
 class Model : public AssetData

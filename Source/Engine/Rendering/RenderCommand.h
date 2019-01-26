@@ -4,6 +4,7 @@
 
 #include "CoreEngine.h"
 #include "Core/Math/Transform.h"
+#include "Data/CameraData.h"
 
 
 /**
@@ -21,12 +22,12 @@ public:
 
 class CameraCommand : public RenderCommand {
 
-	Transform cameraTransform;
+	CameraData camera;
 
 
 public:
 
-	CameraCommand(Transform cameraTransform) : cameraTransform{cameraTransform} {}
+	CameraCommand(CameraData&& camera) : camera{camera} {}
 
 	virtual void Execute(struct FrameRender& render, Frame& frame) override;
 };

@@ -6,8 +6,8 @@
 
 #include <EASTL/unordered_map.h>
 
-#include "TextureData.h"
-#include "MeshData.h"
+#include "Data/TextureData.h"
+#include "Data/MeshData.h"
 
 
 enum class ResourceType : u8 {

@@ -9,8 +9,9 @@
 
 #include "Core/Misc/DateTime.h"
 #include "RenderCommand.h"
-#include "TextureData.h"
+#include "Data/TextureData.h"
 #include "Resources.h"
+#include "Rasterizer.h"
 
 
 struct Frame {
@@ -39,18 +40,26 @@ public:
 	u16 Id() const { return id; }
 };
 
+
 // Where all render data is stored. Gets reused every frame.
 struct FrameRender {
-
 	TextureData baseColor;
 
+	CameraData camera;
 	Resources resources;
 
-	Transform camera;
+	Rasterizer rasterizer;
 
 
 	FrameRender() = default;
 
+	void NewFrame(v2_u32 viewportSize) {
+		baseColor.Resize(viewportSize, Color::Red);
+		rasterizer.RebindTexture(baseColor);
+	}
+
 	void DrawImage(const v2_u32& position, const TextureData& texture);
+
+	v2_u32 GetRenderSize() const { return baseColor.Size(); }
 };
 

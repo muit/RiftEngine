@@ -9,7 +9,7 @@ void Rasterizer::FillConvexPolygon(const VertexBuffer& vertices, const u32* indi
 {
 	// Se cachean algunos valores de i32erés:
 
-	u32 pitch = target.Size().x();
+	u32 pitch = target->Size().x();
 	i32* offsetCache0Index = this->offsetCache0;
 	i32* offsetCache1Index = this->offsetCache1;
 	const u32* indices_back = indicesEnd - 1;
@@ -108,14 +108,14 @@ void Rasterizer::FillConvexPolygon(const VertexBuffer& vertices, const u32* indi
 		if (o0 < o1)
 		{
 			while (o0 < o1)
-				target.Buffer()[o0++] = color;
+				target->Buffer()[o0++] = color;
 
 			if (o0 > end_offset) break;
 		}
 		else
 		{
 			while (o1 < o0)
-				target.Buffer()[o1++] = color;
+				target->Buffer()[o1++] = color;
 
 			if (o1 > end_offset) break;
 		}
@@ -126,7 +126,7 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u3
 {
 	// Se cachean algunos valores de interés:
 
-	i32 pitch = target.Size().x();
+	i32 pitch = target->Size().x();
 	i32* offsetCache0Index = this->offsetCache0;
 	i32* offsetCache1Index = this->offsetCache1;
 	i32* zCache0Index = this->zCache0;
@@ -250,10 +250,10 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u3
 
 			while (o0 < o1)
 			{
-				if (z0 < z_buffer[o0])
+				if (z0 < zBuffer[o0]) // #Fix: Array out of bounds here
 				{
-					target.Buffer()[o0] = color;
-					z_buffer[o0] = z0;
+					target->Buffer()[o0] = color;
+					zBuffer[o0] = z0;
 				}
 
 				z0 += z_step;
@@ -269,10 +269,10 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u3
 
 				while (o1 < o0)
 				{
-					if (z1 < z_buffer[o1])
+					if (z1 < zBuffer[o1])
 					{
-						target.Buffer()[o1] = color;
-						z_buffer[o1] = z1;
+						target->Buffer()[o1] = color;
+						zBuffer[o1] = z1;
 					}
 
 					z1 += z_step;
@@ -281,5 +281,13 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u3
 
 				if (o1 > end_offset) break;
 			}
+	}
+}
+
+void Rasterizer::FillVertexBuffer(const VertexBuffer& vertices, const TriangleBuffer& triangles, const Color& color)
+{
+	for (const auto& triangle : triangles)
+	{
+		FillConvexPolygonZBuffer(vertices, triangle.data(), triangle.data() + 3, color);
 	}
 }

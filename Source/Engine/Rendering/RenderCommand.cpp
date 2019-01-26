@@ -7,5 +7,5 @@
 void CameraCommand::Execute(FrameRender& render, Frame& frame)
 {
 	// Store camera transform matrix
-	render.camera = cameraTransform;
+	render.camera = eastl::move(camera);
 }

@@ -2,8 +2,6 @@
 
 #include "SRenderCamera.h"
 #include "Core/World.h"
-#include "Gameplay/Components/CCamera.h"
-#include "Gameplay/Components/CTransform.h"
 #include "Gameplay/Components/CEditorCamera.h"
 
 
@@ -11,7 +9,7 @@ void SRenderCamera::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
 
-	Transform cameraTransform {};
+	CameraData cameraData;
 
 	if (GetWorld()->IsEditor())
 	{
@@ -22,7 +20,10 @@ void SRenderCamera::Tick(float deltaTime)
 			EntityId cameraEntity = *view.begin();
 
 			if (ECS()->IsValid(cameraEntity)) {
-				cameraTransform = view.get<CTransform>(cameraEntity).transform;
+				cameraData = GetCameraData(
+					view.get<CTransform>(cameraEntity).transform,
+					&view.get<CCamera>(cameraEntity)
+				);
 			}
 		}
 	}
@@ -35,11 +36,14 @@ void SRenderCamera::Tick(float deltaTime)
 			EntityId cameraEntity = *view.begin();
 
 			if (ECS()->IsValid(cameraEntity)) {
-				cameraTransform = view.get<CTransform>(cameraEntity).transform;
+				cameraData = GetCameraData(
+					view.get<CTransform>(cameraEntity).transform,
+					&view.get<CEditorCamera>(cameraEntity)
+				);
 			}
 		}
 	}
 
 	// Render camera
-	GetWorld()->QueueRender<CameraCommand>(cameraTransform);
+	GetWorld()->QueueRender<CameraCommand>(cameraData);
 }

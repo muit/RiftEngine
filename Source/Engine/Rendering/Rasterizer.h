@@ -4,15 +4,17 @@
 
 #pragma once
 
-#include "TextureData.h"
-#include "MeshData.h"
+#include "Data/TextureData.h"
+#include "Data/MeshData.h"
 
 
 class Rasterizer
 {
 	using VertexBuffer = MeshData::VertexBuffer;
+	using TriangleBuffer = MeshData::TriangleBuffer;
 
-	TextureData& target;
+
+	TextureData* target;
 
 	int offsetCache0[1082];
 	int offsetCache1[1082];
@@ -20,21 +22,26 @@ class Rasterizer
 	int zCache0[1082];
 	int zCache1[1082];
 
-	TArray<i32> z_buffer;
+	TArray<i32> zBuffer;
+
 
 public:
 
-	Rasterizer(TextureData& target)
-		: target{target}
-		, z_buffer{}
+	Rasterizer()
+		: target{nullptr}
+		, zBuffer{}
+	{}
+
+	void RebindTexture(TextureData& inTarget)
 	{
-		// Prepare zBuffer
-		z_buffer.Resize(target.Buffer().Size(), eastl::numeric_limits<i32>::max());
+		target = &inTarget;
+		// Update zBuffer
+		zBuffer.Resize(target->Buffer().Size(), eastl::numeric_limits<i32>::max());
 	}
 
 	const TextureData& GetTargetTexture() const
 	{
-		return target;
+		return *target;
 	}
 
 public:
@@ -42,6 +49,8 @@ public:
 	void FillConvexPolygon(const VertexBuffer& vertices, const u32* indicesBegin, const u32* indicesEnd, const Color& color);
 
 	void FillConvexPolygonZBuffer(const VertexBuffer& vertices, const u32* indicesBegin, const u32* indicesEnd, const Color& color);
+
+	void FillVertexBuffer(const VertexBuffer& vertices, const TriangleBuffer& triangles, const Color& color);
 
 private:
 

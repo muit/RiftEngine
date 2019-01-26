@@ -108,7 +108,7 @@ void Renderer::Render(Frame& frame)
 		ZoneScopedNC("World", 0x94d145);
 
 		// Clear texture to Red
-		render.baseColor.Resize(viewportSize, Color::Red);
+		render.NewFrame(viewportSize);
 
 		Log::Message("Executing Render Commands: %i", frame.commands.Size());
 		frame.ExecuteCommands(render);

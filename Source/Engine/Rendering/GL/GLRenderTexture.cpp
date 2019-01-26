@@ -1,7 +1,7 @@
 // © 2019 Miguel Fernández Arce - All rights reserved
 
 #include "GLRenderTexture.h"
-#include "../TextureData.h"
+#include "../Data/TextureData.h"
 
 
 const String GLRenderTexture::vertexShader {

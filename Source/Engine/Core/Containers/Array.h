@@ -169,7 +169,7 @@ public:
 		if (IsValidIndex(index))
 		{
 			const i32 lastSize = Size();
-			Swap(index, lastSize - 1)
+			Swap(index, lastSize - 1);
 			vector.pop_back();
 			return lastSize - Size() > 0;
 		}
@@ -186,12 +186,7 @@ public:
 		return lastSize - Size();
 	}
 
-	void Swap(i32 firstIndex, i32 secondIndex) {
-		if (size() > 1 && firstIndex != secondIndex && IsValidIndex(firstIndex) && IsValidIndex(secondIndex))
-		{
-			eastl::swap(vector.begin() + firstIndex, vector.begin() + secondIndex);
-		}
-	}
+	void Swap(i32 firstIndex, i32 secondIndex);
 
 	void Empty(const bool shouldShrink = true) {
 		vector.clear();
@@ -264,3 +259,13 @@ private:
 	FORCEINLINE void CopyFrom(const TArray& other) { vector = other.vector; }
 	FORCEINLINE void MoveFrom(TArray&& other) { vector = eastl::move(other.vector); }
 };
+
+
+template<typename Type, typename Allocator /*= EASTLAllocatorType*/>
+void TArray<Type, Allocator>::Swap(i32 firstIndex, i32 secondIndex)
+{
+	if (Size() > 1 && firstIndex != secondIndex && IsValidIndex(firstIndex) && IsValidIndex(secondIndex))
+	{
+		eastl::iter_swap(vector.begin() + firstIndex, vector.begin() + secondIndex);
+	}
+}

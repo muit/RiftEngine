@@ -4,8 +4,8 @@
 
 #include "CoreEngine.h"
 #include "../RenderCommand.h"
-#include "../TextureData.h"
-#include "../MeshData.h"
+#include "../Data/TextureData.h"
+#include "../Data/MeshData.h"
 #include "../Renderer.h"
 #include "../Frame.h"
 
@@ -61,7 +61,7 @@ public:
 	MeshData mesh;
 
 
-	LoadMeshCommand(u32 id, MeshData texture) : id(id), mesh{ eastl::move(mesh) } {}
+	LoadMeshCommand(u32 id, MeshData mesh) : id(id), mesh{ eastl::move(mesh) } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
 		render.resources.Load(id, eastl::move(mesh));
@@ -85,6 +85,7 @@ public:
 	u32 id;
 	Transform transform;
 
+
 	DrawMeshCommand(u32 id, Transform transform) : id(id), transform(transform) {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
@@ -94,10 +95,18 @@ public:
 		MeshData::VertexBuffer vertices{ mesh.GetVertices() };
 		MeshData::TriangleBuffer triangles{ mesh.GetTriangles() };
 
-		TransformToWorld(vertices);
+		TransformToCamera(render, vertices);
+		TransformToViewport(vertices);
+
+		BackfaceCulling(vertices, triangles);
+		RenderTriangles(render, vertices, triangles);
 	}
 
 private:
 
-	void TransformToWorld(MeshData::VertexBuffer& vertices);
+	void TransformToCamera(FrameRender& render, MeshData::VertexBuffer& vertices);
+	void TransformToViewport(MeshData::VertexBuffer& vertices);
+
+	void BackfaceCulling(const MeshData::VertexBuffer& vertices, MeshData::TriangleBuffer& triangles);
+	void RenderTriangles(FrameRender& render, const MeshData::VertexBuffer& vertices, const MeshData::TriangleBuffer& triangles);
 };
