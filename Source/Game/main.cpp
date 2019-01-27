@@ -6,6 +6,7 @@
 #include <Core/Engine.h>
 #include <Core/Events/Broadcast.h>
 
+
 void DoOne() { Log::Message("One"); }
 
 class AA {
@@ -15,33 +16,32 @@ public:
 
 class MyObject : public Object {
 	CLASS(MyObject, Object)
-
 public:
-	void DoTwo() { Log::Message("Two"); }
+	void DoThree() { Log::Message("Three"); }
 };
 
 
 int main(int, char**)
 {
-	Broadcast bc{};
-
-	auto handleOne = bc.Bind(&DoOne);
-
-	AA a;
-	bc.Bind(&a, &AA::DoTwo);
-
 	{
-		GlobalPtr<MyObject> b = Create<MyObject>();
+		// Events demo
+		Broadcast bc{};
 
-		bc.Bind(b.AsPtr(), &MyObject::DoTwo);
+		EventHandle handleOne = bc.Bind(&DoOne);
+		AA a;
+		bc.Bind(&a, &AA::DoTwo);
+		{
+			GlobalPtr<MyObject> b = Create<MyObject>();
+
+			bc.Bind(b.AsPtr(), &MyObject::DoThree);
+			bc.DoBroadcast();
+		}
+		// Object has been deleted here. Third bind wont get called
 		bc.DoBroadcast();
 
 		bc.Unbind(handleOne);
+		bc.UnbindAll(&a);
 	}
-	// Object has been deleted here. Third bind wont get called
-	bc.DoBroadcast();
-
-	bc.UnbindAll(&a);
 
 	Engine::StartEngine();
 

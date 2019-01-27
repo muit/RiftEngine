@@ -33,11 +33,6 @@ void SEditorCamera::Tick(float deltaTime)
 	{
 		// Rotate camera each frame
 		t.transform.location += v3{0, 0.01f, 0};
-		/*v3 rotation = t.transform.GetRotationDegrees();
-		rotation.x() += 5.f * deltaTime;
-		t.transform.SetRotationDegrees(rotation);*/
-
-		//Log::Message("Camera Rotation: (%f, %f, %f)", rotation.x(), rotation.y(), rotation.z());
 	});
 }
 

@@ -16,19 +16,6 @@ public:
 	PROP(String, displayName, DetailsEdit)
 	String displayName;
 
-	PROP(Name, someName, DetailsEdit)
-	Name someName;
-
-	PROP(i32, aNumber, DetailsEdit)
-	i32 aNumber;
-
-	PROP(u8, anotherNumber, DetailsEdit | Transient)
-	u8 anotherNumber;
-
-	PROP(v3, myVector, DetailsEdit)
-	v3 myVector;
-
-
 	PROP(Transform, transform, DetailsEdit)
 	Transform transform;
 
