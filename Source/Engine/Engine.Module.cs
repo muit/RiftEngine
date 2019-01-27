@@ -11,6 +11,7 @@ class EngineModule : BaseModule
         base.ConfigureAll(conf, target);
 
         conf.AddPublicDependency<SDL2Library>(target);
+        conf.AddPublicDependency<AssimpLibrary>(target);
 
         conf.SolutionFolder = "RiftEngine";
         //conf.IncludePaths.Add(@"[project.SharpmakeCsPath]/Core");

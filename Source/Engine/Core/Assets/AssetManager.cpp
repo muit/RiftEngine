@@ -45,7 +45,8 @@ Ptr<AssetData> AssetManager::LoadOrCreate(const AssetInfo& info, Class* assetTyp
 	if (info.IsNull() || !FileSystem::IsAssetPath(info.GetSPath()))
 		return {};
 
-	if(Ptr<AssetData> loadedAsset = Load(info))
+	Ptr<AssetData> loadedAsset = Load(info);
+	if(loadedAsset)
 	{
 		return loadedAsset;
 	}

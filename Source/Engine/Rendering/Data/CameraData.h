@@ -17,7 +17,7 @@ public:
 
 
 	CameraData()
-		: fov{ 20.f }
+		: fov{ 60.f } // Obtained from camera
 		, nearZ{ 5.f }
 		, farZ{ 15.f }
 		, transform{}

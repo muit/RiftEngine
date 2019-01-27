@@ -21,15 +21,15 @@ void DrawMeshCommand::TransformToScreen(FrameRender& render, const VertexBuffer&
 {
 	ZoneScoped("TransformToCamera");
 
-	const Matrix4f worldToCamera = render.camera.GetPerspectiveMatrix(render.GetRenderSize());
+	const Matrix4f toProjection = render.camera.GetPerspectiveMatrix(render.GetRenderSize());
+	const Transform::Matrix toCamera = render.camera.transform.ToLocalMatrix();
 	const Transform::Matrix toWorld = transform.ToWorldMatrix();
-	Matrix4f cameraTransform = worldToCamera * toWorld.matrix();
+	Matrix4f cameraTransform = toProjection * (toCamera * toWorld).matrix();
 
 	// Viewport transform
-	v3 halfScreen{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 0.f };
-	const Eigen::Translation3f translateViewport(halfScreen);
-	halfScreen.z() = 100000000.f;
-	Transform::Matrix toViewport = translateViewport * Scaling(halfScreen);
+	v3 translate{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 0.f };
+	v3 scale{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 100000000.f };
+	Transform::Matrix toViewport = Eigen::Translation3f(translate) * Scaling(scale);
 
 
 	for (i32 i = 0; i < vertices.Size(); ++i)
@@ -43,7 +43,7 @@ void DrawMeshCommand::TransformToScreen(FrameRender& render, const VertexBuffer&
 
 		// Transform to viewport
 		v3_i32 v;
-		v = (toViewport * vertex4.head<3>() * divisor).cast<i32>();
+		v = (toViewport * (vertex4.head<3>() * divisor)).cast<i32>();
 		outVertices[i] = v;
 	}
 }
@@ -77,6 +77,5 @@ void DrawMeshCommand::BackfaceCulling(const VertexBufferI32& vertices, TriangleB
 void DrawMeshCommand::RenderTriangles(FrameRender& render, const TArray<v3_i32>& vertices, const TriangleBuffer& triangles)
 {
 	ZoneScoped("RasterizeTriangles");
-	// #FIX: Temporally disabled due to crash on rasterizer buffer
-	//render.rasterizer.FillVertexBuffer(vertices, triangles, Color::Blue);
+	render.rasterizer.FillVertexBuffer(vertices, triangles, Color::Blue);
 }

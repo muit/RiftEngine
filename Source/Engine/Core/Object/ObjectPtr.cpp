@@ -40,8 +40,8 @@ void BaseWeakPtr::Set(const BaseGlobalPtr* inGlobal)
 
 	// Bind into new owner
 	if (globalPtr) {
-		globalPtr->weaks.push_back(this);
-		id = (u32)globalPtr->weaks.size() - 1;
+		globalPtr->weaks.Add(this);
+		id = (u32)globalPtr->weaks.Size() - 1;
 	}
 }
 

@@ -5,123 +5,6 @@
 #include "Rasterizer.h"
 
 
-void Rasterizer::FillConvexPolygon(const VertexBufferI32& vertices, const u32* indicesBegin, const u32* indicesEnd, const Color& color)
-{
-	// Se cachean algunos valores de i32erés:
-
-	u32 pitch = target.Size().x();
-	i32* offsetCache0Index = this->offsetCache0;
-	i32* offsetCache1Index = this->offsetCache1;
-	const u32* indices_back = indicesEnd - 1;
-
-	// Se busca el vértice de inicio (el que tiene menor Y) y el de terminación (el que tiene mayor Y):
-	const u32* startIndex = indicesBegin;
-	i32 startY = vertices[*startIndex][1];
-
-	const u32* endIndex = indicesBegin;
-	i32 endY = startY;
-
-	for (const u32* it = startIndex; ++it < indicesEnd; )
-	{
-		i32 currentY = vertices[*it][1];
-
-		if (currentY < startY)
-		{
-			startY = currentY;
-			startIndex = it;
-		}
-		else
-			if (currentY > endY)
-			{
-				endY = currentY;
-				endIndex = it;
-			}
-	}
-
-	// Se cachean las coordenadas X de los lados que van desde el vértice con Y menor al
-	// vértice con Y mayor en sentido antihorario:
-
-	const u32* cIndex = startIndex;
-	const u32* nextIndex = (startIndex > indicesBegin) ? startIndex - 1 : indices_back;
-
-	i32 y0 = vertices[*cIndex][1];
-	i32 y1 = vertices[*nextIndex][1];
-	i32 o0 = vertices[*cIndex][0] + y0 * pitch;
-	i32 o1 = vertices[*nextIndex][0] + y1 * pitch;
-
-	while (true)
-	{
-		Interpolate< i64, 32 >(offsetCache0Index, o0, o1, y0, y1);
-
-		cIndex = (cIndex == indicesBegin) ? indices_back : cIndex - 1;
-
-		if (cIndex == endIndex)
-			break;
-
-		nextIndex = (nextIndex == indicesBegin) ? indices_back : nextIndex - 1;
-
-		y0 = y1;
-		y1 = vertices[*nextIndex][1];
-		o0 = o1;
-		o1 = vertices[*nextIndex][0] + y1 * pitch;
-	}
-
-	i32 end_offset = o1;
-
-	// Se cachean las coordenadas X de los lados que van desde el vértice con Y menor al
-	// vértice con Y mayor en sentido horario:
-
-	cIndex = startIndex;
-	nextIndex = startIndex < indices_back ? startIndex + 1 : indicesBegin;
-
-	y0 = vertices[*cIndex][1];
-	y1 = vertices[*nextIndex][1];
-	o0 = vertices[*cIndex][0] + y0 * pitch;
-	o1 = vertices[*nextIndex][0] + y1 * pitch;
-
-	while (true)
-	{
-		Interpolate<i64, 32>(offsetCache1Index, o0, o1, y0, y1);
-
-		if (cIndex == indices_back) cIndex = indicesBegin; else cIndex++;
-		if (cIndex == endIndex) break;
-		if (nextIndex == indices_back) nextIndex = indicesBegin; else nextIndex++;
-
-		y0 = y1;
-		y1 = vertices[*nextIndex][1];
-		o0 = o1;
-		o1 = vertices[*nextIndex][0] + y1 * pitch;
-	}
-
-	if (o1 > end_offset) end_offset = o1;
-
-	// Se rellenan las scanlines desde la que tiene menor Y hasta la que tiene mayor Y:
-
-	offsetCache0Index += startY;
-	offsetCache1Index += startY;
-
-	for (i32 y = startY; y < endY; y++)
-	{
-		o0 = *offsetCache0Index++;
-		o1 = *offsetCache1Index++;
-
-		if (o0 < o1)
-		{
-			while (o0 < o1)
-				target.Buffer()[o0++] = color;
-
-			if (o0 > end_offset) break;
-		}
-		else
-		{
-			while (o1 < o0)
-				target.Buffer()[o1++] = color;
-
-			if (o1 > end_offset) break;
-		}
-	}
-}
-
 void Rasterizer::FillConvexPolygonZBuffer(const VertexBufferI32& vertices, const u32* const indicesBegin, const u32* const indicesEnd, const Color& color)
 {
 	// Se cachean algunos valores de interés:
@@ -283,7 +166,7 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBufferI32& vertices, const
 	}
 }
 
-void Rasterizer::FillTriangle(const VertexBufferI32& vertices, const v3_u32& triangle)
+void Rasterizer::FillTriangle(const VertexBufferI32& vertices, const v3_u32& triangle, const Color& color)
 {
 	float triangleDepth;
 	box2_i32 bounds = GetTriangleBounds(vertices, triangle, triangleDepth);
@@ -291,19 +174,9 @@ void Rasterizer::FillTriangle(const VertexBufferI32& vertices, const v3_u32& tri
 	if (triangleDepth < 0.f)
 		return;
 
-	// Frustum culling by limiting bounds
-	bounds.Cut(viewportBounds);
-
-	for (i32 rasterX = bounds.min.x(); rasterX <= bounds.max.x(); ++rasterX)
-	{
-		for (i32 rasterY = bounds.min.y(); rasterY <= bounds.max.y(); ++rasterY)
-		{
-			const v2_i32 pixel = { rasterX, rasterY };
-			if (IsPixelInsideTriangle(vertices, triangle, pixel))
-			{
-				//target[pixel] = Color::Cyan;
-			}
-		}
+	// Frustum culling by bounds
+	if (viewportBounds.Contains(bounds)) {
+		FillConvexPolygonZBuffer(vertices, triangle.data(), triangle.data() + 3, color);
 	}
 }
 
@@ -311,8 +184,8 @@ void Rasterizer::FillVertexBuffer(const VertexBufferI32& vertices, const Triangl
 {
 	for (const auto& triangle : triangles)
 	{
-		//FillTriangle(vertices, triangle);
-		FillConvexPolygonZBuffer(vertices, triangle.data(), triangle.data() + 3, color);
+		// Just for demo purposes, triangles have random colors
+		FillTriangle(vertices, triangle, Color::MakeRandomColor());
 	}
 }
 

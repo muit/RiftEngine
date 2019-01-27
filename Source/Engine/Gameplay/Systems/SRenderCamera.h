@@ -15,7 +15,7 @@ class SRenderCamera : public System {
 
 private:
 
-	CameraData GetCameraData(const Transform& transform, const CCamera* camera) const {
+	NOINLINE CameraData GetCameraData(const Transform& transform, const CCamera* camera) const {
 		CameraData data {};
 		data.fov = camera->fov;
 		data.transform = transform;

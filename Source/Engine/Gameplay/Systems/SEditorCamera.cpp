@@ -12,7 +12,9 @@ void SEditorCamera::BeginPlay()
 	Super::BeginPlay();
 
 	camera = ECS()->CreateEntity({ "EditorCamera" });
-	ECS()->Assign<CTransform>(camera).transform.location = {0, 0, 0};
+	auto& t = ECS()->Assign<CTransform>(camera).transform;
+	t.location = { 10, 3, 10 };
+	t.SetRotationDegrees({ -22.5f, 22.5f, 180 });
 	ECS()->Assign<CEditorCamera>(camera);
 }
 
@@ -22,9 +24,9 @@ void SEditorCamera::Tick(float deltaTime)
 	.each([deltaTime](const EntityId e, CTransform& t, CEditorCamera& c)
 	{
 		// Rotate camera each frame
-		t.transform.location += v3{0, 0, -2} * deltaTime;
+		t.transform.location += v3{0, 0.01f, 0};
 		/*v3 rotation = t.transform.GetRotationDegrees();
-		rotation.z() += 5.f * deltaTime;
+		rotation.x() += 5.f * deltaTime;
 		t.transform.SetRotationDegrees(rotation);*/
 
 		//Log::Message("Camera Rotation: (%f, %f, %f)", rotation.x(), rotation.y(), rotation.z());

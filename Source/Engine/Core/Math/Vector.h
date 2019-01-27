@@ -66,8 +66,7 @@ struct box {
 		}
 	}
 
-
-	// Limit this bounds by another
+	// Extend this bounds by another
 	inline void Extend(const box& other) {
 		for (u32 i = 0; i < Dimensions; ++i)
 		{
@@ -78,6 +77,17 @@ struct box {
 				max[i] = other.max[i];
 			}
 		}
+	}
+
+	// Limit this bounds by another
+	FORCEINLINE bool Contains(const box& other) {
+		for (u32 i = 0; i < Dimensions; ++i)
+		{
+			if (other.min[i] < min[i] || other.max[i] > max[i]) {
+				return false;
+			}
+		}
+		return true;
 	}
 };
 

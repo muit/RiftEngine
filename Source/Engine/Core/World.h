@@ -45,8 +45,9 @@ public:
 		EntityId b = ecsManager->CreateEntity(TX("MyOtherEntity"));
 		Transform& t = ecsManager->Assign<CTransform>(b).transform;
 		t.location = { 0, 0, -10 };
+		t.SetRotationDegrees({ 0,0,0 });
 		t.scale = { 0.2f, 0.2f, 0.2f };
-		ecsManager->Assign<CMesh>(b);
+		ecsManager->Assign<CMesh>(b, TAssetPtr<Model>{"Terrain.obj.meta"});
 
 		currentFrame = nullptr;
 	}

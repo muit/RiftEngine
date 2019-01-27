@@ -14,7 +14,8 @@ class CMesh : public Component {
 
 	TAssetPtr<Model> model;
 
-	CMesh() : Super(), model{"MyModel.obj.meta"} {
+	CMesh() : Super(), model{} {}
+	CMesh(TAssetPtr<Model> model) : Super(), model{model} {
 		model.LoadOrCreate();
 	}
 };

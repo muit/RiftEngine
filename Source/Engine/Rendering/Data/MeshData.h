@@ -11,12 +11,14 @@
 
 using VertexBuffer = TArray<v3>;
 using VertexBufferI32 = TArray<v3_i32>;
+using NormalsBuffer = TArray<v3>;
 using Triangle = v3_u32;
 using TriangleBuffer = TArray<Triangle>;
 
 struct MeshData {
 
 	VertexBuffer vertices;
+	NormalsBuffer normals;
 	TriangleBuffer triangles;
 
 
@@ -63,7 +65,13 @@ public:
 		}
 	{}
 
+	void FromAssimpScene(const struct aiScene* scene);
 
 	FORCEINLINE const VertexBuffer& GetVertices() const { return vertices; }
 	FORCEINLINE const TriangleBuffer& GetTriangles() const { return triangles; }
+
+private:
+
+	void ProcessNode(struct aiNode *node, const struct aiScene* scene);
+	void ProcessMesh(struct aiMesh *mesh, const struct aiScene* scene);
 };

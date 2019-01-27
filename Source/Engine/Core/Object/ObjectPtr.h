@@ -4,7 +4,6 @@
 #include "CoreEngine.h"
 
 #include <EASTL/weak_ptr.h>
-#include <EASTL/vector.h>
 
 #include "Core/Platform/Platform.h"
 #include "Core/Object/BaseObject.h"
@@ -18,7 +17,7 @@ class BaseGlobalPtr {
 	friend BaseWeakPtr;
 
 	/** MEMBERS */
-	mutable eastl::vector<BaseWeakPtr*> weaks;
+	mutable TArray<BaseWeakPtr*> weaks;
 
 protected:
 
@@ -177,9 +176,13 @@ protected:
 		// Remove old weak ptr
 		if (globalPtr != nullptr)
 		{
-			const auto it = globalPtr->weaks.begin() + id;
-			if (it < globalPtr->weaks.end())
-				globalPtr->weaks.erase(it);
+			globalPtr->weaks.RemoveAt(id);
+
+			// All weaks after this one have id - 1
+			for (i32 i = id; i < globalPtr->weaks.Size(); ++i)
+			{
+				--globalPtr->weaks[i]->id;
+			}
 		}
 	}
 };
