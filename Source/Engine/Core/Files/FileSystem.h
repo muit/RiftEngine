@@ -2,13 +2,18 @@
 
 #pragma once
 
-#include "EngineTypes.h"
-#include "Core/Serialization/Archive.h"
+#include "CoreEngine.h"
 #include <filesystem>
+#include <nlohmann/json.hpp>
+#include "Core/Strings/String.h"
+
 
 namespace fs = std::filesystem;
 
 using Path = fs::path;
+using json = nlohmann::json;
+
+class Archive;
 
 class FileSystem
 {
@@ -18,7 +23,9 @@ public:
 	static FORCEINLINE bool FileExists(const String& path)                     { return FileExists  (FromString(path));         }
 	static FORCEINLINE bool FolderExists(const String& path)                   { return FolderExists(FromString(path));         }
 	static FORCEINLINE bool LoadJsonFile(const String& path, json& result)     { return LoadJsonFile(FromString(path), result); }
-	static FORCEINLINE bool SaveJsonFile(const String& path, const json& data) { return SaveJsonFile(FromString(path), data);   }
+	static FORCEINLINE bool SaveJsonFile(const String& path, const json& data, i32 indent = -1) {
+		return SaveJsonFile(FromString(path), data, indent);
+	}
 
 	static FORCEINLINE String GetAssetsPathStr() { return ToString(GetAssetsPath()); }
 
@@ -32,7 +39,7 @@ public:
 
 
 	static bool LoadJsonFile(Path path, json& result);
-	static bool SaveJsonFile(Path path, const json& data);
+	static bool SaveJsonFile(Path path, const json& data, i32 indent = -1);
 
 	static Path GetAssetsPath();
 

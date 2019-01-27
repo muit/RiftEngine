@@ -12,6 +12,7 @@
 #include "Core/Math/Color.h"
 #include "Core/Math/Vector.h"
 #include "Core/Math/Transform.h"
+#include "Core/Assets/AssetInfo.h"
 
 
 #define DECLARE_REFLECTION_TYPE(Type)\
@@ -51,6 +52,7 @@ DECLARE_REFLECTION_TYPE(v3);
 DECLARE_REFLECTION_TYPE(v2_u32);
 DECLARE_REFLECTION_TYPE(Quat);
 DECLARE_REFLECTION_TYPE(Transform);
+DECLARE_REFLECTION_TYPE(AssetInfo);
 
 
 /** To registry a new native type:

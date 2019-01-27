@@ -11,11 +11,19 @@ void SEditorCamera::BeginPlay()
 {
 	Super::BeginPlay();
 
-	camera = ECS()->CreateEntity({ "EditorCamera" });
-	auto& t = ECS()->Assign<CTransform>(camera).transform;
-	t.location = { 10, 3, 10 };
-	t.SetRotationDegrees({ -22.5f, 22.5f, 180 });
-	ECS()->Assign<CEditorCamera>(camera);
+
+	// If there's no camera, create one
+	auto view = ECS()->View<CEditorCamera>();
+	if (view.empty())
+	{
+		camera = ECS()->CreateEntity({ "EditorCamera" });
+
+		auto& t = ECS()->Assign<CTransform>(camera).transform;
+		t.location = { 10, 3, 10 };
+		t.SetRotationDegrees({ -22.5f, 22.5f, 180 });
+
+		ECS()->Assign<CEditorCamera>(camera);
+	}
 }
 
 void SEditorCamera::Tick(float deltaTime)

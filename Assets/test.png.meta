@@ -1,1 +1,4 @@
-{"asset_type":"Texture","name":"MyTexture"}
+{
+  "asset_type": "Texture",
+  "name": "MyTexture"
+}

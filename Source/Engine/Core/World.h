@@ -34,20 +34,22 @@ public:
 
 		assetManager = Create<AssetManager>(GetSelf());
 
+
+		ecsManager = Create<ECSManager>(GetSelf());
+
 		scene = { "scene.meta" };
 		scene.LoadOrCreate();
 
-		ecsManager = Create<ECSManager>(GetSelf());
 		ecsManager->BeginPlay();
 
 		// Test entities. Move to Scene
-		ecsManager->CreateEntity(TX("MyEntity"));
+		/*ecsManager->CreateEntity(TX("MyEntity"));
 		EntityId b = ecsManager->CreateEntity(TX("MyOtherEntity"));
 		Transform& t = ecsManager->Assign<CTransform>(b).transform;
 		t.location = { 0, 0, -10 };
 		t.SetRotationDegrees({ 0,0,0 });
 		t.scale = { 0.2f, 0.2f, 0.2f };
-		ecsManager->Assign<CMesh>(b, TAssetPtr<Model>{"Terrain.obj.meta"});
+		ecsManager->Assign<CMesh>(b, TAssetPtr<Model>{"Terrain.obj.meta"});*/
 
 		currentFrame = nullptr;
 	}
@@ -56,7 +58,6 @@ public:
 		ZoneScopedNC("World", 0x459bd1);
 		currentFrame = &frame;
 
-		scene->Tick(deltaTime);
 		ecsManager->Tick(deltaTime);
 
 		currentFrame = nullptr;

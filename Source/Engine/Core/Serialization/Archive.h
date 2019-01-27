@@ -128,6 +128,7 @@ public:
 	// Starts an object by name
 	virtual void BeginObject(const String& name) { BeginObject(name.c_str()); };
 	virtual void BeginObject(const char* name) = 0;
+	virtual bool HasObject(const char* name) = 0;
 
 	// Starts an object by index (Array)
 	virtual void BeginObject(u32 index) = 0;
@@ -136,9 +137,9 @@ public:
 	FORCEINLINE bool IsLoading() { return bLoads; }
 	FORCEINLINE bool IsSaving() { return !bLoads; }
 
-private:
-
 	virtual void SerializeArraySize(u32& Size) = 0;
+
+private:
 
 	/**
 	 * Selection of Serialize call.
@@ -165,14 +166,16 @@ class JsonArchive : public Archive {
 	json baseData;
 	eastl::stack<json*> depthData;
 
+	const bool bBeautify;
 
 public:
 
 	//Save Constructor
-	JsonArchive()
+	JsonArchive(const bool bBeautify = true)
 		: Archive(false)
 		, baseData()
 		, depthData{}
+		, bBeautify{bBeautify}
 	{}
 
 	// Load constructor
@@ -180,39 +183,54 @@ public:
 		: Archive(true)
 		, baseData(data)
 		, depthData{}
+		, bBeautify{ false }
 	{}
 
 	virtual ~JsonArchive() = default;
 
-	String GetDataString() const { return baseData.dump(); }
+	String GetDataString() const { return baseData.dump(GetIndent()); }
 	const json& GetData() const { return baseData; }
+
+	i32 GetIndent() const { return bBeautify ? 2 : -1; }
 
 private:
 
 	virtual void Serialize(const char* name, u8& val) override {
 		if (IsLoading())
-			val = Data()[name].get<u8>();
+		{
+			json& field = Data()[name];
+			val = field.is_number_unsigned() ? field.get<u8>() : 0;
+		}
 		else
 			Data()[name] = val;
 	}
 
 	virtual void Serialize(const char* name, i32& val) override {
 		if (IsLoading())
-			val = Data()[name].get<i32>();
+		{
+			json& field = Data()[name];
+			val = field.is_number_integer() ? field.get<i32>() : 0;
+		}
 		else
 			Data()[name] = val;
 	}
 
 	virtual void Serialize(const char* name, u32& val) override {
 		if (IsLoading())
-			val = Data()[name].get<u32>();
+		{
+			json& field = Data()[name];
+			val = field.is_number_unsigned() ? field.get<u32>() : 0;
+		}
 		else
 			Data()[name] = val;
 	}
 
 	virtual void Serialize(const char* name, float& val) override {
 		if (IsLoading())
-			val = Data()[name].get<float>();
+		{
+			json& field = Data()[name];
+			val = field.is_number_float() ? field.get<float>() : 0.f;
+		}
 		else
 			Data()[name] = val;
 	}
@@ -220,9 +238,8 @@ private:
 	virtual void Serialize(const char* name, String& val) override {
 		if (IsLoading())
 		{
-			const auto field = Data()[name];
-			if(field.is_string())
-				val = field.get<String>();
+			json& field = Data()[name];
+			val = field.is_string() ? field.get<String>() : String{};
 		}
 		else
 			Data()[name] = val;
@@ -238,6 +255,10 @@ private:
 		depthData.push(&Data()[name]);
 	}
 
+	virtual bool HasObject(const char* name) override {
+		return Data().find(name) != Data().end();
+	}
+
 	virtual void BeginObject(u32 index) override {
 		depthData.push(&Data()[index]);
 	}
@@ -247,13 +268,16 @@ private:
 	}
 
 	virtual void SerializeArraySize(u32& size) override {
+		json& data = Data();
 		if (IsLoading())
 		{
-			size = (u32)Data().size();
+			size = data.is_null()? 0 : (u32)data.size();
 		}
 		else
 		{
-			json::array_t* ptr = Data().get_ptr<json::array_t*>();
+			if(!data.is_array())
+				data = json::array();
+			json::array_t* ptr = data.get_ptr<json::array_t*>();
 			ptr->reserve((size_t)size);
 		}
 	};

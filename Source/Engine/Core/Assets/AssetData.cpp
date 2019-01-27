@@ -34,7 +34,7 @@ bool AssetData::SaveToPath(const Name& path)
 	ar("asset_type", className);
 	Serialize(ar);
 
-	return FileSystem::SaveJsonFile(spath, ar.GetData());
+	return FileSystem::SaveJsonFile(spath, ar.GetData(), ar.GetIndent());
 }
 
 bool AssetData::Save()

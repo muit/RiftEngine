@@ -10,13 +10,19 @@
 template <typename T>
 struct BaseClassTraits { enum {
 	HasCustomSerialize = false,
-	HasDetailsWidget = false
+	HasDetailsWidget = false,
+	HasPostSerialize = false
 };};
 
 /** Custom traits go here */
 #define DEFINE_CLASS_TRAITS(Class, ...)\
 template <>\
 struct ClassTraits<Class> : public BaseClassTraits<Class> {\
+	enum {__VA_ARGS__};\
+}
+#define DEFINE_TEMPLATE_CLASS_TRAITS(Class, ...)\
+template <typename T>\
+struct ClassTraits<Class<T>> : public BaseClassTraits<Class<T>> {\
 	enum {__VA_ARGS__};\
 }
 
@@ -77,9 +83,21 @@ inline constexpr bool IsArrayType() {
 }
 
 template<typename T>
+inline constexpr bool IsAssetType() {
+	// Check if we are dealing with a TArray
+	if constexpr (HasItemType<T>::value)
+		return eastl::is_same<TAssetPtr<typename T::ItemType>, T>::value;
+
+	return false;
+}
+
+template<typename T>
 inline constexpr bool IsReflectableType() {
 	if constexpr (IsArrayType<T>())
 		return IsReflectableType<typename T::ItemType>();
+
+	if constexpr (IsAssetType<T>())
+		return true;
 
 	return false;
 }

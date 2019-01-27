@@ -32,6 +32,6 @@ public:
 	PROP(Transform, transform, DetailsEdit)
 	Transform transform;
 
-	void Tick(float /*deltaTime*/) {
-	}
+
+	virtual bool Serialize(class Archive& ar) override;
 };

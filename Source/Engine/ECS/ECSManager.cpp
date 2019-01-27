@@ -8,6 +8,7 @@
 #include "Gameplay/Components/CTransform.h"
 #include "Gameplay/Components/CMesh.h"
 #include "Gameplay/Components/CCamera.h"
+#include "Gameplay/Components/CEditorCamera.h"
 #include "Gameplay/Systems/SEditorCamera.h"
 #include "Gameplay/Systems/SRenderMeshes.h"
 #include "Gameplay/Systems/SRenderCamera.h"
@@ -17,31 +18,53 @@ bool ECSManager::Serialize(Archive& ar)
 {
 	bool bResult = Super::Serialize(ar);
 
-	if (ar.IsSaving())
+	ar.BeginObject("entities");
+	if (ar.IsLoading())
 	{
-		Archive* arPtr = &ar;
-		registry.each([this, arPtr](EntityId entity) {
-			SerializeEntity(*arPtr, entity);
-		});
+		registry.reset();
+
+		u32 size;
+		ar.SerializeArraySize(size);
+
+		registry.reserve(size);
+
+		for (u32 i = 0; i < size; ++i)
+		{
+			ar.BeginObject(i);
+			{
+				EntityId entity = registry.create();
+				SerializeEntity(ar, entity);
+			}
+			ar.EndObject();
+		}
 	}
 	else
 	{
-		registry.reset();
+		u32 size = (u32)registry.alive();
+		ar.SerializeArraySize(size);
+
+		u32 i = 0;
+		Archive* arPtr = &ar;
+		registry.each([this, arPtr, i](EntityId entity) mutable {
+			arPtr->BeginObject(i);
+			{
+				SerializeEntity(*arPtr, entity);
+			}
+			arPtr->EndObject();
+			++i;
+		});
 	}
+	ar.EndObject();
 
 	return bResult;
 }
 
-void ECSManager::SerializeEntity(Archive& ar, const EntityId& entity)
+void ECSManager::SerializeEntity(Archive& ar, EntityId entity)
 {
-	ar.BeginObject("components");
-	{
-		SerializeComponent<CEntity>(ar, entity);
-		SerializeComponent<CTransform>(ar, entity);
-		SerializeComponent<CMesh>(ar, entity);
-		SerializeComponent<CCamera>(ar, entity);
-	}
-	ar.EndObject();
+	SerializeComponent<CEntity>(ar, entity);
+	SerializeComponent<CTransform>(ar, entity);
+	SerializeComponent<CMesh>(ar, entity);
+	SerializeComponent<CEditorCamera>(ar, entity);
 }
 
 void ECSManager::RegistrySystems()

@@ -10,11 +10,13 @@ class CEntity : public Component {
 
 public:
 
-	CEntity(Name name) : id{ Guid::New() }, name{name} {}
-
 	PROP(Guid, id, DetailsEdit | SaveGame)
 	Guid id;
 
 	PROP(Name, name, DetailsEdit | SaveGame)
 	Name name;
+
+
+	CEntity() : id{ Guid::New() }, name{} {}
+	CEntity(Name name) : id{ Guid::New() }, name{ name } {}
 };

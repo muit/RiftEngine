@@ -85,19 +85,36 @@ public:
 
 	virtual bool Serialize(Archive& ar) override;
 
-	void SerializeEntity(Archive& ar, const EntityId& entity);
+	void SerializeEntity(Archive& ar, EntityId entity);
 
 private:
 
 	template<typename CompType>
 	void SerializeComponent(Archive& ar, const EntityId& entity) {
 		static_assert(eastl::is_convertible< CompType, Component >::value, "Type is not a Component!");
-		if (registry.has<CompType>(entity))
+
+		if (ar.IsLoading())
+		{
+			ar.BeginObject(CompType::StaticStruct()->GetSName());
+			{
+				CompType& comp = Assign<CompType>(entity);
+				comp.SerializeReflection(ar);
+
+				if constexpr (ClassTraits<CompType>::HasPostSerialize)
+					comp.PostSerialize(true);
+			}
+			ar.EndObject();
+		}
+		// Saving
+		else if (registry.has<CompType>(entity))
 		{
 			ar.BeginObject(CompType::StaticStruct()->GetSName());
 			{
 				CompType& comp = registry.get<CompType>(entity);
 				comp.SerializeReflection(ar);
+
+				if constexpr (ClassTraits<CompType>::HasPostSerialize)
+					comp.PostSerialize(false);
 			}
 			ar.EndObject();
 		}
@@ -120,11 +137,14 @@ public:
 		}
 	}
 
-	template<typename... Component>
+	template<typename... Components>
 	auto View() {
-		return registry.view<Component...>();
+		return registry.view<Components...>();
 	};
 
+	u32 GetEntityCount() {
+		return (i32)registry.size();
+	};
 
 private:
 

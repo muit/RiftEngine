@@ -2,6 +2,8 @@
 
 #include "EditorManager.h"
 #include "imgui/imgui_stl.h"
+#include "Core/Object/Object.h"
+#include "Assets/Scene.h"
 
 
 #if WITH_EDITOR
@@ -73,7 +75,11 @@ void EditorManager::TickMainNavBar()
 		if (ImGui::BeginMenu("File"))
 		{
 			if (ImGui::MenuItem("Open Scene")) {}
-			if (ImGui::MenuItem("Save Scene", "CTRL+S", false, false)) {}
+			if (ImGui::MenuItem("Save Scene", "CTRL+S")) {
+				TAssetPtr<Scene> scene = GetWorld()->GetActiveScene();
+				if(scene)
+					scene->Save();
+			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Exit")) {}
 			ImGui::EndMenu();

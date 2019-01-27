@@ -2,15 +2,15 @@
 
 #pragma once
 
-#include "CoreObject.h"
+#include "CoreEngine.h"
 #include "Core/Files/FileSystem.h"
+#include "Core/Strings/Name.h"
 
 
-class AssetInfo : public Object
+class AssetInfo
 {
-	CLASS(AssetInfo, Object)
-
 public:
+
 	AssetInfo() : id(Name::None()) {}
 	AssetInfo(Name id) : id(id) {}
 
@@ -30,4 +30,10 @@ public:
 
 	inline const Name& GetPath()    const { return id; }
 	inline const String& GetSPath() const { return id.ToString(); }
+
+	inline bool Serialize(class Archive& ar, const char* name);
 };
+
+DEFINE_CLASS_TRAITS(AssetInfo,
+	HasCustomSerialize = true
+);

@@ -9,6 +9,7 @@
 #include "AssetInfo.h"
 #include "AssetData.h"
 #include "AssetManager.h"
+#include "../Serialization/Archive.h"
 
 
 template<class T>
@@ -16,12 +17,12 @@ class TAssetPtr : public AssetInfo
 {
 	static_assert(eastl::is_base_of<AssetData, T>::value, "AssetPtr type must inherit from AssetData");
 
-private:
-
 	mutable Ptr<T> cachedAsset;
 
 
 public:
+
+	using ItemType = T;
 
 	TAssetPtr() : AssetInfo(), cachedAsset{} {}
 	TAssetPtr(Name id)
@@ -93,4 +94,13 @@ public:
 	operator bool() const { return IsValid(); };
 	Ptr<T> operator*()  const { return Get(); }
 	Ptr<T> operator->() const { return Get(); }
+
+	FORCEINLINE bool Serialize(Archive& ar, const char* inName)
+	{
+		ar(inName, id);
+	}
 };
+
+DEFINE_TEMPLATE_CLASS_TRAITS(TAssetPtr,
+	HasCustomSerialize = true
+);
