@@ -35,9 +35,9 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> render
 
 		case SDL_MOUSEWHEEL:
 			if (Math::Abs(event.wheel.x) > 0)
-				RegistryAxis(EAxis::MouseX, (float)event.wheel.x);
+				UpdateAxis(EAxis::MouseX, (float)event.wheel.x);
 			if (Math::Abs(event.wheel.y) > 0)
-				RegistryAxis(EAxis::MouseY, (float)event.wheel.y);
+				UpdateAxis(EAxis::MouseY, (float)event.wheel.y);
 			break;
 		}
 
