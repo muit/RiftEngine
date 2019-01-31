@@ -26,7 +26,7 @@ bool Engine::Start()
 		if (!renderer->Initialize())
 			return false;
 
-
+		input = Create<InputManager>();
 
 		world = Create<World>(GetSelf());
 		world->Start(frame);
@@ -54,20 +54,7 @@ void Engine::Loop(Frame& frame, bool& bFinish)
 
 	frameTime.Tick();
 
-	{
-		ZoneScopedNC("Input", 0x459bd1);
-		// Process window and input events
-		SDL_PumpEvents();
-		SDL_Event event;
-		while (SDL_PollEvent(&event))
-		{
-			ui->OnSDLEvent(&event);
-			if (event.type == SDL_QUIT)
-				bFinish = true;
-			else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == renderer->GetWindowId())
-				bFinish = true;
-		}
-	}
+	bFinish = input->Tick(frameTime.deltaTime, ui, renderer);
 
 	renderer->PreTick();
 

@@ -10,6 +10,7 @@
 #include "System.h"
 
 #include "Gameplay/Components/CEntity.h"
+#include "Core/Events/Broadcast.h"
 
 
 using EntityId = u32;
@@ -57,13 +58,16 @@ public:
 
 	EntityId CreateEntity(Name entityName)
 	{
-		EntityId ent = registry.create();
-		Assign<CEntity>(ent, entityName);
-		return ent;
+		EntityId entity = registry.create();
+		Assign<CEntity>(entity, entityName);
+
+		onEntityCreated.DoBroadcast(entity);
+		return entity;
 	}
 
 	void DestroyEntity(EntityId entity)
 	{
+		onEntityDestroyed.DoBroadcast(entity);
 		registry.destroy(entity);
 	}
 
@@ -189,4 +193,15 @@ public:
 			return comp->GetStruct() == C::StaticStruct();
 		});
 	}
+
+
+private:
+
+	Broadcast<EntityId> onEntityCreated;
+	Broadcast<EntityId> onEntityDestroyed;
+
+public:
+
+	const Broadcast<EntityId>& OnEntityCreated() const { return onEntityCreated; }
+	const Broadcast<EntityId>& OnEntityDestroyed() const { return onEntityDestroyed; }
 };

@@ -6,14 +6,9 @@
 #include "EventHandle.h"
 
 
-class BaseBroadcast {
-protected:
-	BaseBroadcast() = default;
-};
-
-
 template<typename... Params>
-class Broadcast : public BaseBroadcast {
+class Broadcast {
+protected:
 
 	using Method = void(Params...);
 	using Function = eastl::function<void(Params...)>;
@@ -34,9 +29,8 @@ class Broadcast : public BaseBroadcast {
 		Ptr<Object> object;
 	};
 
-
-	TArray<RawListener> rawListeners;
-	TArray<ObjListener> objListeners;
+	mutable TArray<RawListener> rawListeners;
+	mutable TArray<ObjListener> objListeners;
 
 
 public:
@@ -62,10 +56,10 @@ public:
 	// #TODO: Scoped binding
 
 	/** Binds an static function. Must be unbinded manually. */
-	EventHandle Bind(Function method) {
+	EventHandle Bind(Function method) const {
 		if (method)
 		{
-			EventHandle handle {};
+			EventHandle handle{};
 			rawListeners.Add({ handle.Id(), eastl::move(method), nullptr });
 			return handle;
 		}
@@ -73,7 +67,7 @@ public:
 	}
 
 	/** Binds an static function. Must be unbinded manually. */
-	EventHandle Bind(MethodPtr method) {
+	EventHandle Bind(MethodPtr method) const {
 		if (method)
 		{
 			EventHandle handle{};
@@ -85,7 +79,7 @@ public:
 
 	/** Binds a member function. Must be unbinded manually (unless its an Object). */
 	template<typename Type>
-	EventHandle Bind(Type* instance, MemberMethodPtr<Type> method) {
+	EventHandle Bind(Type* instance, MemberMethodPtr<Type> method) const {
 		if (instance && method)
 		{
 			if constexpr (IsObject<Type>::value)
@@ -94,7 +88,7 @@ public:
 			}
 			else
 			{
-				EventHandle handle {};
+				EventHandle handle{};
 				rawListeners.Add({ handle.Id(), std::bind(method, instance), instance });
 				return handle;
 			}
@@ -104,7 +98,7 @@ public:
 
 	/** Binds an object's function. Gets unbinded when the objects is destroyed */
 	template<typename Type>
-	EventHandle Bind(Ptr<Type> object, MemberMethodPtr<Type> method) {
+	EventHandle Bind(Ptr<Type> object, MemberMethodPtr<Type> method) const {
 		if (object && method)
 		{
 			EventHandle handle{};
@@ -114,7 +108,7 @@ public:
 		return EventHandle::Invalid();
 	}
 
-	bool Unbind(const EventHandle& handle)
+	bool Unbind(const EventHandle& handle) const
 	{
 		if (!handle) return false;
 
@@ -123,7 +117,7 @@ public:
 		}) > 0;
 	}
 
-	bool UnbindAll(Ptr<Object> object) {
+	bool UnbindAll(Ptr<Object> object) const {
 		if (object)
 		{
 			return objListeners.RemoveIf([object](const auto& listener) {
@@ -134,7 +128,7 @@ public:
 	}
 
 	template<typename Type>
-	bool UnbindAll(Type* instance) {
+	bool UnbindAll(Type* instance) const {
 		if (instance)
 		{
 			if constexpr (IsObject<Type>::value)

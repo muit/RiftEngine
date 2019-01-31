@@ -113,7 +113,7 @@ public:
 	}
 
 	i32 FindIndex(eastl::function<bool(const Type&)> cb) const {
-		Iterator found = FindIt(eastl::move(cb));
+		ConstIterator found = FindIt(eastl::move(cb));
 		if (found != vector.end())
 		{
 			return (i32)eastl::distance(vector.begin(), found);

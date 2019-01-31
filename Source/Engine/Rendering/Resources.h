@@ -20,8 +20,11 @@ struct Resources {
 
 private:
 
-	eastl::unordered_map<u32, TextureData> textures;
-	eastl::unordered_map<u32, MeshData> meshes;
+	using TextureMap = eastl::unordered_map<u32, TextureData>;
+	using MeshMap    = eastl::unordered_map<u32, MeshData>;
+
+	TextureMap textures;
+	MeshMap meshes;
 
 public:
 
@@ -49,12 +52,16 @@ public:
 	template<ResourceType type>
 	auto Get(u32 id) -> eastl::enable_if_t<type == ResourceType::Texture, const TextureData&>
 	{
-		return textures.at(id);
+		TextureMap::const_iterator it = textures.find(id);
+		assert(it != textures.end() && "Tried to access an unloaded resource.");
+		return it->second;
 	}
 
 	template<ResourceType type>
 	auto Get(u32 id) -> eastl::enable_if_t<type == ResourceType::Mesh, const MeshData&>
 	{
-		return meshes.at(id);
+		MeshMap::const_iterator it = meshes.find(id);
+		assert(it != meshes.end() && "Tried to access an unloaded resource.");
+		return it->second;
 	}
 };

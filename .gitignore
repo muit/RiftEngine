@@ -1,4 +1,5 @@
 
+#Don't ignore thirdparty binaries
 !Source/**/*.exe
 !Source/**/*.dll
 !Source/**/*.lib
@@ -15,3 +16,4 @@
 .va
 
 !Programs/**/*
+!Assets/**/*.*

@@ -7,6 +7,7 @@
 #include <tracy/Tracy.hpp>
 
 #include "Core/World.h"
+#include "Input/InputManager.h"
 #include "UI/UIManager.h"
 #include "Misc/Time.h"
 
@@ -16,6 +17,7 @@ class Engine : public Object {
 
 	FrameTime frameTime;
 	GlobalPtr<World> world;
+	GlobalPtr<InputManager> input;
 	GlobalPtr<UIManager> ui;
 	GlobalPtr<Renderer> renderer;
 
