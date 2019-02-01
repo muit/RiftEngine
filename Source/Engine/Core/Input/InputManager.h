@@ -22,39 +22,31 @@ private:
 	struct AxisStates {
 		TArray<EAxis> axis;
 		TArray<float> values;
-		TArray<bool> dirtyness;
+		TArray<bool> changed;
 
 		AxisBroadcast onAllAxis;
 		TArray<AxisBroadcast> onAxis;
 
-		i32 Add(EAxis a, float value)
-		{
-			axis.Add(a);
-			values.Add(value);
-			dirtyness.Add(true);
-			onAxis.AddDefaulted();
-
-			return axis.Size() - 1;
-		}
+		i32 Add(EAxis a, float value);
 	};
 
 	struct KeyStates {
 		TArray<EKey> keys;
 		TArray<EKeyPressState> states;
-		TArray<bool> dirtyness;
 
-		i32 Add(EKey key)
-		{
-			keys.Add(key);
-			states.Add(EKeyPressState::None);
-			dirtyness.Add(true);
+		i32 Add(EKey key, EKeyPressState state);
+	};
 
-			return keys.Size() - 1;
-		}
+	struct ModifierStates {
+		TArray<EKeyModifier> mods;
+		TArray<EKeyPressState> states;
+
+		i32 Add(EKeyModifier mod, EKeyPressState state);
 	};
 
 	AxisStates axisStates;
 	KeyStates keyStates;
+	ModifierStates modStates;
 
 
 	/** Allows complex flag key combinations. E.g: W | UpArrow */
@@ -71,7 +63,12 @@ public:
 private:
 
 	void UpdateAxis(EAxis axis, float value);
+
+	void UpdatePressedKeys();
 	void UpdateKey(EKey key, EKeyPressState state);
+
+	void UpdatePressedMods();
+	void UpdateMod(EKeyModifier mod, EKeyPressState state);
 
 	void NotifyAllAxis();
 	void NotifyAllKeys();

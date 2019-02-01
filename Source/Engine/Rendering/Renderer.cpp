@@ -110,7 +110,7 @@ void Renderer::Render(Frame& frame)
 		// Clear texture to Red
 		render.NewFrame(viewportSize);
 
-		Log::Message("Executing Render Commands: %i", frame.commands.Size());
+		//Log::Message("Executing Render Commands: %i", frame.commands.Size());
 		frame.ExecuteCommands(render);
 
 		// Render final base color into screen

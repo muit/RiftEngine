@@ -11,11 +11,11 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> render
 	ZoneScopedNC("Input", 0x459bd1);
 
 	// Mark all axis not dirty
-	axisStates.dirtyness.Empty(false);
-	axisStates.dirtyness.Resize(axisStates.axis.Size(), false);
+	axisStates.changed.Empty(false);
+	axisStates.changed.Resize(axisStates.axis.Size(), false);
 
-	keyStates.dirtyness.Empty(false);
-	keyStates.dirtyness.Resize(keyStates.keys.Size(), false);
+	UpdatePressedKeys();
+	UpdatePressedMods();
 
 	bool bFinish = false;
 	SDL_PumpEvents();
@@ -39,6 +39,48 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> render
 			if (Math::Abs(event.wheel.y) > 0)
 				UpdateAxis(EAxis::MouseY, (float)event.wheel.y);
 			break;
+
+		case SDL_MOUSEBUTTONDOWN:
+			if (event.button.button == SDL_BUTTON_LEFT)
+				UpdateKey(EKey::MouseLeft, EKeyPressState::Press);
+			if (event.button.button == SDL_BUTTON_RIGHT)
+				UpdateKey(EKey::MouseRight, EKeyPressState::Press);
+			if (event.button.button == SDL_BUTTON_MIDDLE)
+				UpdateKey(EKey::MouseCenter, EKeyPressState::Press);
+			break;
+
+		case SDL_KEYDOWN:
+		case SDL_KEYUP:
+			EKeyPressState state = (event.type == SDL_KEYDOWN) ? EKeyPressState::Press : EKeyPressState::Released;
+			const SDL_Keymod sdlModState = SDL_GetModState();
+
+			// Automatic casting to Rift keys
+			const EKey key = (EKey)event.key.keysym.scancode;
+
+			switch (key)
+			{
+			case EKey::LShift:
+				UpdateMod(EKeyModifier::LShift, state);
+				break;
+			case EKey::RShift:
+				UpdateMod(EKeyModifier::RShift, state);
+				break;
+			case EKey::LCtrl:
+				UpdateMod(EKeyModifier::LCtrl, state);
+				break;
+			case EKey::RCtrl:
+				UpdateMod(EKeyModifier::RCtrl, state);
+				break;
+			case EKey::LAlt:
+				UpdateMod(EKeyModifier::LAlt, state);
+				break;
+			case EKey::RAlt:
+				UpdateMod(EKeyModifier::RAlt, state);
+				break;
+			default:
+				UpdateKey(key, state);
+			};
+			break;
 		}
 
 		// #TODO: Detect keys
@@ -58,20 +100,92 @@ void InputManager::UpdateAxis(EAxis axis, float value)
 	else
 	{
 		axisStates.values[i] = value;
-		axisStates.dirtyness[i] = true;
+		axisStates.changed[i] = true;
 	}
+}
+
+void InputManager::UpdatePressedKeys()
+{
+	for (i32 i = 0; i < keyStates.states.Size(); ++i)
+	{
+		switch (keyStates.states[i])
+		{
+		case EKeyPressState::Press:
+			keyStates.states[i] = EKeyPressState::Pressed;
+			break;
+
+		case EKeyPressState::Released:
+			keyStates.keys.RemoveAt(i, false);
+			keyStates.states.RemoveAt(i, false);
+			--i;
+			break;
+		}
+	}
+	keyStates.keys.Shrink();
+	keyStates.states.Shrink();
 }
 
 void InputManager::UpdateKey(EKey key, EKeyPressState state)
 {
+	i32 i = keyStates.keys.FindIndex(key);
+	if (i == NO_INDEX)
+		keyStates.Add(key, state);
+	else
+	{
+		EKeyPressState& currentState = keyStates.states[i];
 
+		// Can only be pressed when creating the state
+		if (state != EKeyPressState::Press)
+		{
+			currentState = state;
+		}
+	}
+}
+
+void InputManager::UpdatePressedMods()
+{
+	for (i32 i = 0; i < modStates.states.Size(); ++i)
+	{
+		switch (modStates.states[i])
+		{
+		case EKeyPressState::Press:
+			modStates.states[i] = EKeyPressState::Pressed;
+			break;
+
+		case EKeyPressState::Released:
+			modStates.mods.RemoveAt(i, false);
+			modStates.states.RemoveAt(i, false);
+			--i;
+			break;
+		}
+	}
+	modStates.mods.Shrink();
+	modStates.states.Shrink();
+}
+
+
+void InputManager::UpdateMod(EKeyModifier mod, EKeyPressState state)
+{
+	i32 i = modStates.mods.FindIndex(mod);
+	if (i == NO_INDEX)
+		modStates.Add(mod, state);
+	else
+	{
+		EKeyPressState& currentState = modStates.states[i];
+
+		// Can only be pressed when creating the state
+		if (state != EKeyPressState::Press)
+		{
+			currentState = state;
+		}
+	}
 }
 
 void InputManager::NotifyAllAxis()
 {
 	for (i32 i = 0; i < axisStates.axis.Size(); ++i)
 	{
-		if (axisStates.dirtyness[i])
+		if (axisStates.changed[i])
 		{
 			const EAxis& axis = axisStates.axis[i];
 			const float& finalValue = axisStates.values[i];
@@ -83,7 +197,19 @@ void InputManager::NotifyAllAxis()
 }
 
 void InputManager::NotifyAllKeys()
-{}
+{
+
+	for (i32 i = 0; i < keyStates.keys.Size(); ++i)
+	{
+		const EKey& key = keyStates.keys[i];
+		EKeyPressState state = keyStates.states[i];
+
+		if (state == EKeyPressState::Pressed)
+			onKeyPressed.DoBroadcast(key, EKeyModifier::None);
+		else
+			onKey.DoBroadcast(key, EKeyModifier::None, state);
+	}
+}
 
 const KeyBroadcast& InputManager::OnKey(EKey keys) const
 {
@@ -107,4 +233,30 @@ const KeyPressedBroadcast& InputManager::OnKeyPressed(EKey keys) const
 		id = keyPressedBindings.Add({ keys, {} });
 	}
 	return keyPressedBindings[id].second;
+}
+
+i32 InputManager::AxisStates::Add(EAxis a, float value)
+{
+	axis.Add(a);
+	values.Add(value);
+	changed.Add(true);
+	onAxis.AddDefaulted();
+
+	return axis.Size() - 1;
+}
+
+i32 InputManager::KeyStates::Add(EKey key, EKeyPressState state)
+{
+	keys.Add(key);
+	states.Add(state);
+
+	return keys.Size() - 1;
+}
+
+i32 InputManager::ModifierStates::Add(EKeyModifier mod, EKeyPressState state)
+{
+	mods.Add(mod);
+	states.Add(state);
+
+	return mods.Size() - 1;
 }

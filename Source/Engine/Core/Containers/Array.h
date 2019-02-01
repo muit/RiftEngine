@@ -141,9 +141,12 @@ public:
 	 * Delete all items that match another provided item
 	 * @return number of deleted items
 	 */
-	i32 Remove(const Type& item) {
+	i32 Remove(const Type& item, const bool shouldShrink = true) {
 		const i32 lastSize = Size();
 		eastl::remove(vector.begin(), vector.end(), item);
+
+		if (shouldShrink) Shrink();
+
 		return lastSize - Size();
 	}
 
@@ -151,11 +154,14 @@ public:
 	 * Delete item at index
 	 * @return true if removed
 	 */
-	bool RemoveAt(i32 index) {
+	bool RemoveAt(i32 index, const bool shouldShrink = true) {
 		if (IsValidIndex(index))
 		{
 			const i32 lastSize = Size();
 			vector.erase(vector.begin() + index);
+
+			if (shouldShrink) Shrink();
+
 			return lastSize - Size() > 0;
 		}
 		return false;
@@ -165,12 +171,15 @@ public:
 	 * Delete item at index. Doesn't preserve order but its considerably faster
 	 * @return true if removed
 	 */
-	bool RemoveAtSwap(i32 index) {
+	bool RemoveAtSwap(i32 index, const bool shouldShrink = true) {
 		if (IsValidIndex(index))
 		{
 			const i32 lastSize = Size();
 			Swap(index, lastSize - 1);
 			vector.pop_back();
+
+			if (shouldShrink) Shrink();
+
 			return lastSize - Size() > 0;
 		}
 		return false;
@@ -180,9 +189,12 @@ public:
 	 * Delete all items that match a delegate
 	 * @return number of deleted items
 	 */
-	i32 RemoveIf(eastl::function<bool(const Type&)>&& callback) {
+	i32 RemoveIf(eastl::function<bool(const Type&)>&& callback, const bool shouldShrink = true) {
 		const i32 lastSize = Size();
 		vector.erase(eastl::remove_if(vector.begin(), vector.end(), callback), vector.end());
+
+		if (shouldShrink) Shrink();
+
 		return lastSize - Size();
 	}
 
@@ -190,9 +202,11 @@ public:
 
 	void Empty(const bool shouldShrink = true) {
 		vector.clear();
-		if(shouldShrink)
-			vector.shrink_to_fit();
+
+		if (shouldShrink) Shrink();
 	}
+
+	void Shrink() { vector.shrink_to_fit(); }
 
 	FORCEINLINE i32 Size() const { return (i32)vector.size(); }
 

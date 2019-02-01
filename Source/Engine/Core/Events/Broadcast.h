@@ -66,17 +66,6 @@ public:
 		return EventHandle::Invalid();
 	}
 
-	/** Binds an static function. Must be unbinded manually. */
-	EventHandle Bind(MethodPtr method) const {
-		if (method)
-		{
-			EventHandle handle{};
-			rawListeners.Add({ handle.Id(), eastl::move(method), nullptr });
-			return handle;
-		}
-		return EventHandle::Invalid();
-	}
-
 	/** Binds a member function. Must be unbinded manually (unless its an Object). */
 	template<typename Type>
 	EventHandle Bind(Type* instance, MemberMethodPtr<Type> method) const {
