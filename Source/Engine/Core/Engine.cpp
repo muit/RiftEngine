@@ -27,9 +27,6 @@ bool Engine::Start()
 			return false;
 
 		input = Create<InputManager>();
-		input->OnKey().Bind([](EKey key, EKeyModifier mod, EKeyPressState state) {
-			Log::Message("%i", key);
-		});
 
 
 		world = Create<World>(GetSelf());

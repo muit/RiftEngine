@@ -82,8 +82,6 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> render
 			};
 			break;
 		}
-
-		// #TODO: Detect keys
 	}
 
 	NotifyAllAxis();
@@ -198,41 +196,52 @@ void InputManager::NotifyAllAxis()
 
 void InputManager::NotifyAllKeys()
 {
-
 	for (i32 i = 0; i < keyStates.keys.Size(); ++i)
 	{
 		const EKey& key = keyStates.keys[i];
 		EKeyPressState state = keyStates.states[i];
 
 		if (state == EKeyPressState::Pressed)
+		{
 			onKeyPressed.DoBroadcast(key, EKeyModifier::None);
+
+			const i32 id = FindKeyPressedActionIndex(key, EKeyModifier::None);
+			if (id != NO_INDEX) {
+				keyPressedActions[id].event.DoBroadcast(key, EKeyModifier::None);
+			}
+		}
 		else
+		{
 			onKey.DoBroadcast(key, EKeyModifier::None, state);
+
+			const i32 id = FindKeyActionIndex(key, EKeyModifier::None);
+			if (id != NO_INDEX) {
+				keyActions[id].event.DoBroadcast(key, EKeyModifier::None, state);
+			}
+		}
 	}
 }
 
-const KeyBroadcast& InputManager::OnKey(EKey keys) const
+const KeyBroadcast& InputManager::OnKey(EKey key, EKeyModifier mods) const
 {
 	// If binding doesn't exist, create it
-	i32 id = keyBindings.FindIndex([keys](const auto& binding) {
-		return binding.first == keys;
-	});
+	i32 id = FindKeyActionIndex(key, mods);
+
 	if (id == NO_INDEX) {
-		id = keyBindings.Add({ keys, {} });
+		id = keyActions.Add({ key, mods, {} });
 	}
-	return keyBindings[id].second;
+	return keyActions[id].event;
 }
 
-const KeyPressedBroadcast& InputManager::OnKeyPressed(EKey keys) const
+const KeyPressedBroadcast& InputManager::OnKeyPressed(EKey key, EKeyModifier mods) const
 {
 	// If binding doesn't exist, create it
-	i32 id = keyPressedBindings.FindIndex([keys](const auto& binding) {
-		return binding.first == keys;
-	});
+	i32 id = FindKeyPressedActionIndex(key, mods);
+
 	if (id == NO_INDEX) {
-		id = keyPressedBindings.Add({ keys, {} });
+		id = keyPressedActions.Add({ key, mods, {} });
 	}
-	return keyPressedBindings[id].second;
+	return keyPressedActions[id].event;
 }
 
 i32 InputManager::AxisStates::Add(EAxis a, float value)

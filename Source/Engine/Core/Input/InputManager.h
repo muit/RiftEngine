@@ -19,6 +19,7 @@ private:
 
 	/** Input State */
 
+	/** Keeps the state of an axis */
 	struct AxisStates {
 		TArray<EAxis> axis;
 		TArray<float> values;
@@ -30,6 +31,7 @@ private:
 		i32 Add(EAxis a, float value);
 	};
 
+	/** Keeps the state of a key */
 	struct KeyStates {
 		TArray<EKey> keys;
 		TArray<EKeyPressState> states;
@@ -37,6 +39,7 @@ private:
 		i32 Add(EKey key, EKeyPressState state);
 	};
 
+	/** Keeps the state of a modifier. TODO: Calculate mods flag */
 	struct ModifierStates {
 		TArray<EKeyModifier> mods;
 		TArray<EKeyPressState> states;
@@ -50,8 +53,18 @@ private:
 
 
 	/** Allows complex flag key combinations. E.g: W | UpArrow */
-	mutable TArray<TPair<EKey, KeyBroadcast>> keyBindings;
-	mutable TArray<TPair<EKey, KeyPressedBroadcast>> keyPressedBindings;
+	struct KeyAction {
+		EKey key;
+		EKeyModifier mods;
+		KeyBroadcast event;
+	};
+	struct KeyPressedAction {
+		EKey key;
+		EKeyModifier mods;
+		KeyPressedBroadcast event;
+	};
+	mutable TArray<KeyAction>        keyActions;
+	mutable TArray<KeyPressedAction> keyPressedActions;
 
 	KeyBroadcast onKey;
 	KeyPressedBroadcast onKeyPressed;
@@ -82,14 +95,14 @@ public:
 	const KeyBroadcast& OnKey() const { return onKey; }
 
 	/** Called once when any of the provided keys is pressed down or up */
-	const KeyBroadcast& OnKey(EKey keys) const;
+	const KeyBroadcast& OnKey(EKey key, EKeyModifier mods = EKeyModifier::None) const;
 
 
 	/** Called every tick if any of the provided keys is pressed */
 	const KeyPressedBroadcast& OnKeyPressed() const { return onKeyPressed; }
 
 	/** Called every tick if any of the provided keys is pressed */
-	const KeyPressedBroadcast& OnKeyPressed(EKey keys) const;
+	const KeyPressedBroadcast& OnKeyPressed(EKey key, EKeyModifier mods = EKeyModifier::None) const;
 
 
 	const AxisBroadcast& OnAxis() const { return axisStates.onAllAxis; }
@@ -98,5 +111,21 @@ public:
 		if (i == NO_INDEX)
 			i = axisStates.Add(axis, 0.f);
 
-		return axisStates.onAxis[i]; }
+		return axisStates.onAxis[i];
+	}
+
+
+private:
+
+	i32 FindKeyActionIndex(EKey key, EKeyModifier) const {
+		return keyActions.FindIndex([key](const auto& action) {
+			return action.key == key;
+		});
+	}
+
+	i32 FindKeyPressedActionIndex(EKey key, EKeyModifier) const {
+		return keyPressedActions.FindIndex([key](const auto& action) {
+			return action.key == key;
+		});
+	}
 };

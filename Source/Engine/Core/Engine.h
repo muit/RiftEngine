@@ -44,8 +44,12 @@ private:
 	}
 
 
-	/** STATIC */
 public:
+
+	Ptr<InputManager> Input() { return input; }
+
+
+	/** STATIC */
 
 	static void StartEngine()
 	{

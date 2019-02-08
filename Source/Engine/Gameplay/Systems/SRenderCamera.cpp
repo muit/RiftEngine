@@ -9,11 +9,11 @@ void SRenderCamera::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
 
-	CameraData cameraData;
+	CameraData cameraData{};
 
 	if (GetWorld()->IsEditor())
 	{
-		// Use first entity with Transform and Camera
+		// Use first editor camera
 		auto view = ECS()->View<CTransform, CEditorCamera>();
 		if (!view.empty())
 		{
@@ -29,7 +29,7 @@ void SRenderCamera::Tick(float deltaTime)
 	}
 	else
 	{
-		// Use first editor camera
+		// Use first entity with Transform and Camera
 		auto view = ECS()->View<CTransform, CCamera>();
 		if (!view.empty())
 		{

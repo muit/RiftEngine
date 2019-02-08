@@ -73,7 +73,7 @@ public:
 		{
 			if constexpr (IsObject<Type>::value)
 			{
-				return Bind(instance->GetSelf(), method);
+				return Bind(instance->GetSelf().Cast<Type>(), method);
 			}
 			else
 			{
@@ -99,7 +99,8 @@ public:
 
 	bool Unbind(const EventHandle& handle) const
 	{
-		if (!handle) return false;
+		if (!handle)
+			return false;
 
 		return rawListeners.RemoveIf([handle](const auto& listener) {
 			return listener.id == handle.Id();
