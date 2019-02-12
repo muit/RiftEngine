@@ -31,9 +31,9 @@ bool ECSManager::Serialize(Archive& ar)
 		for (u32 i = 0; i < size; ++i)
 		{
 			ar.BeginObject(i);
+			if (ar.IsObjectValid())
 			{
-				EntityId entity = registry.create();
-				SerializeEntity(ar, entity);
+				SerializeEntity(ar, CreateEntity(""));
 			}
 			ar.EndObject();
 		}
@@ -45,13 +45,18 @@ bool ECSManager::Serialize(Archive& ar)
 
 		u32 i = 0;
 		Archive* arPtr = &ar;
-		registry.each([this, arPtr, i](EntityId entity) mutable {
-			arPtr->BeginObject(i);
+		registry.each([this, arPtr, i](EntityId entity) mutable
+		{
+			CEntity& entityComp = registry.get<CEntity>(entity);
+			if (!entityComp.bTransient)
 			{
-				SerializeEntity(*arPtr, entity);
+				arPtr->BeginObject(i);
+				{
+					SerializeEntity(*arPtr, entity);
+				}
+				arPtr->EndObject();
+				++i;
 			}
-			arPtr->EndObject();
-			++i;
 		});
 	}
 	ar.EndObject();

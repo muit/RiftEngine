@@ -1,5 +1,4 @@
 {
-  "aNumber": 0,
   "asset_type": "Scene",
   "displayName": "My Scene",
   "entities": [
@@ -36,63 +35,9 @@
           }
         }
       }
-    },
-    {
-      "CEntity": {
-        "id": {
-          "a": 84003,
-          "b": 3605628,
-          "c": 2784028112,
-          "d": 3714376648
-        },
-        "name": "MyEntity"
-      }
-    },
-    {
-      "CEditorCamera": {
-        "fov": 60.0
-      },
-      "CEntity": {
-        "id": {
-          "a": 41,
-          "b": 3605628,
-          "c": 1507408112,
-          "d": 3586714648
-        },
-        "name": "EditorCamera"
-      },
-      "CMesh": {
-        "model": ""
-      },
-      "CTransform": {
-        "transform": {
-          "location": {
-            "x": 10.0,
-            "y": 3.0,
-            "z": 10.0
-          },
-          "rotation": {
-            "w": 0.038060192,
-            "x": 0.19134173,
-            "y": 0.1913417,
-            "z": 0.9619397
-          },
-          "scale": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0
-          }
-        }
-      }
     }
   ],
-  "myVector": {
-    "x": 0.0,
-    "y": 0.0,
-    "z": 0.0
-  },
   "name": "",
-  "someName": "",
   "transform": {
     "location": {
       "x": 0.0,

@@ -44,6 +44,8 @@ public:
 		return *this;
 	}
 
+	virtual void Serialize(const char* name, bool& val) = 0;
+
 	virtual void Serialize(const char* name, u8& val) = 0;
 
 	virtual void Serialize(const char* name, i32& val) = 0;
@@ -129,6 +131,7 @@ public:
 	virtual void BeginObject(const String& name) { BeginObject(name.c_str()); };
 	virtual void BeginObject(const char* name) = 0;
 	virtual bool HasObject(const char* name) = 0;
+	virtual bool IsObjectValid() = 0;
 
 	// Starts an object by index (Array)
 	virtual void BeginObject(u32 index) = 0;
@@ -195,10 +198,20 @@ public:
 
 private:
 
+	virtual void Serialize(const char* name, bool& val) override {
+		if (IsLoading())
+		{
+			const json& field = Data()[name];
+			val = field.is_boolean() ? field.get<bool>() : false;
+		}
+		else
+			Data()[name] = val;
+	}
+
 	virtual void Serialize(const char* name, u8& val) override {
 		if (IsLoading())
 		{
-			json& field = Data()[name];
+			const json& field = Data()[name];
 			val = field.is_number_unsigned() ? field.get<u8>() : 0;
 		}
 		else
@@ -208,7 +221,7 @@ private:
 	virtual void Serialize(const char* name, i32& val) override {
 		if (IsLoading())
 		{
-			json& field = Data()[name];
+			const json& field = Data()[name];
 			val = field.is_number_integer() ? field.get<i32>() : 0;
 		}
 		else
@@ -218,7 +231,7 @@ private:
 	virtual void Serialize(const char* name, u32& val) override {
 		if (IsLoading())
 		{
-			json& field = Data()[name];
+			const json& field = Data()[name];
 			val = field.is_number_unsigned() ? field.get<u32>() : 0;
 		}
 		else
@@ -228,7 +241,7 @@ private:
 	virtual void Serialize(const char* name, float& val) override {
 		if (IsLoading())
 		{
-			json& field = Data()[name];
+			const json& field = Data()[name];
 			val = field.is_number_float() ? field.get<float>() : 0.f;
 		}
 		else
@@ -238,7 +251,7 @@ private:
 	virtual void Serialize(const char* name, String& val) override {
 		if (IsLoading())
 		{
-			json& field = Data()[name];
+			const json& field = Data()[name];
 			val = field.is_string() ? field.get<String>() : String{};
 		}
 		else
@@ -261,6 +274,10 @@ private:
 
 	virtual void BeginObject(u32 index) override {
 		depthData.push(&Data()[index]);
+	}
+
+	virtual bool IsObjectValid() override {
+		return !Data().is_null();
 	}
 
 	virtual void EndObject() override {

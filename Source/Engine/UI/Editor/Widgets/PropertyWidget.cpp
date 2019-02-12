@@ -5,6 +5,7 @@
 #if WITH_EDITOR
 
 #include "Core/Reflection/Runtime/TPropertyHandle.h"
+#include "Properties/BoolPropertyWidget.h"
 #include "Properties/UInt8PropertyWidget.h"
 #include "Properties/Int32PropertyWidget.h"
 #include "Properties/FloatPropertyWidget.h"
@@ -34,6 +35,9 @@ GlobalPtr<PropertyWidget> PropertyWidget::NewPropertyWidget(const eastl::shared_
 		}
 		else if (auto propUInt8 = eastl::dynamic_pointer_cast<TPropertyHandle<u8>>(prop)) {
 			return New<UInt8PropertyWidget>(propUInt8);
+		}
+		else if (auto propBool = eastl::dynamic_pointer_cast<TPropertyHandle<bool>>(prop)) {
+			return New<BoolPropertyWidget>(propBool);
 		}
 		else if (auto propName = eastl::dynamic_pointer_cast<TPropertyHandle<Name>>(prop)) {
 			return New<NamePropertyWidget>(propName);

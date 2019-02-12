@@ -56,10 +56,10 @@ public:
 	 * Begin ENTITIES
 	 */
 
-	EntityId CreateEntity(Name entityName)
+	EntityId CreateEntity(Name entityName, bool bTransient = false)
 	{
 		EntityId entity = registry.create();
-		Assign<CEntity>(entity, entityName);
+		Assign<CEntity>(entity, entityName, bTransient);
 
 		onEntityCreated.DoBroadcast(entity);
 		return entity;
@@ -79,6 +79,9 @@ public:
 	template<typename C, typename... Args>
 	C& Assign(EntityId entity, Args... args)
 	{
+		if (registry.has<C>(entity))
+			return registry.replace<C>(entity, eastl::forward<Args>(args)...);
+
 		return registry.assign<C>(entity, eastl::forward<Args>(args)...);
 	}
 
@@ -100,6 +103,7 @@ private:
 		if (ar.IsLoading())
 		{
 			ar.BeginObject(CompType::StaticStruct()->GetSName());
+			if(ar.IsObjectValid())
 			{
 				CompType& comp = Assign<CompType>(entity);
 				comp.SerializeReflection(ar);

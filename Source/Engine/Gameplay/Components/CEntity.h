@@ -16,7 +16,14 @@ public:
 	PROP(Name, name, DetailsEdit | SaveGame)
 	Name name;
 
+	PROP(bool, bTransient, Transient)
+	bool bTransient;
 
-	CEntity() : id{ Guid::New() }, name{} {}
-	CEntity(Name name) : id{ Guid::New() }, name{ name } {}
+
+	CEntity() : id{ Guid::New() }, name{}, bTransient{false} {}
+	CEntity(Name name, bool bTransient)
+		: id{ Guid::New() }
+		, name{ name }
+		, bTransient{bTransient}
+	{}
 };

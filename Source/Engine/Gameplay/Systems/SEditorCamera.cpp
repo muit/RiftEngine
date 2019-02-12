@@ -15,7 +15,7 @@ void SEditorCamera::BeginPlay()
 
 	input = GEngine->Input();
 
-	// #TODO: "Input Actions" implementation for better syntax and avoiding multiple binds
+	// #TODO: "Input Actions" implementation for better syntax and avoiding multiple bindings
 	onW = input->OnKeyPressed(EKey::W).Bind([this](EKey, EKeyModifier) {
 		OnMoveForward(1.f);
 	});
@@ -35,7 +35,7 @@ void SEditorCamera::BeginPlay()
 	auto view = ECS()->View<CEditorCamera>();
 	if (view.empty())
 	{
-		camera = ECS()->CreateEntity({ "EditorCamera" });
+		camera = ECS()->CreateEntity({ "EditorCamera" }, true);
 
 		auto& t = ECS()->Assign<CTransform>(camera).transform;
 		t.location = { 10, 3, 10 };
