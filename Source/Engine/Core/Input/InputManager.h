@@ -5,6 +5,7 @@
 
 #include "../Events/Broadcast.h"
 #include "Keys.h"
+#include "Actions.h"
 
 
 using KeyBroadcast = Broadcast<EKey, EKeyModifier, EKeyPressState>;
@@ -51,20 +52,9 @@ private:
 	KeyStates keyStates;
 	ModifierStates modStates;
 
-
-	/** Allows complex flag key combinations. E.g: W | UpArrow */
-	struct KeyAction {
-		EKey key;
-		EKeyModifier mods;
-		KeyBroadcast event;
-	};
-	struct KeyPressedAction {
-		EKey key;
-		EKeyModifier mods;
-		KeyPressedBroadcast event;
-	};
-	mutable TArray<KeyAction>        keyActions;
-	mutable TArray<KeyPressedAction> keyPressedActions;
+	/** Actions allow complex flag key combinations. E.g: W | UpArrow */
+	mutable TArray<TriggerAction> triggerActions;
+	mutable TArray<AxisAction>    axisActions;
 
 	KeyBroadcast onKey;
 	KeyPressedBroadcast onKeyPressed;
@@ -90,6 +80,12 @@ public:
 
 
 	/** EVENTS */
+
+	TriggerAction& CreateTriggerAction(Name name, TArray<TriggerAction::KeyBinding>&& bindings) const;
+
+	TriggerAction* FindTriggerAction(Name name) const;
+
+	TriggerAction& GetTriggerAction(Name name) const { return *FindTriggerAction(name); }
 
 	/** Called once when any key is pressed down or up */
 	const KeyBroadcast& OnKey() const { return onKey; }

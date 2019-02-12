@@ -222,6 +222,33 @@ void InputManager::NotifyAllKeys()
 	}
 }
 
+TriggerAction& InputManager::CreateTriggerAction(Name name, TArray<TriggerAction::KeyBinding>&& bindings) const
+{
+	if (name.IsNone())
+		name = { "Invalid" };
+
+	TriggerAction* currentAction = FindTriggerAction(name);
+	if (!currentAction)
+	{
+		triggerActions.Add({ name });
+		currentAction = &triggerActions.Last();
+	}
+
+	currentAction->bindings = bindings;
+
+	return *currentAction;
+}
+
+TriggerAction* InputManager::FindTriggerAction(Name name) const
+{
+	if (name.IsNone())
+		return false;
+
+	return triggerActions.Find([name](const TriggerAction& action) {
+		return action.name == name;
+	});
+}
+
 const KeyBroadcast& InputManager::OnKey(EKey key, EKeyModifier mods) const
 {
 	// If binding doesn't exist, create it
