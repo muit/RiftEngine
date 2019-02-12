@@ -17,10 +17,10 @@ void SEditorCamera::BeginPlay()
 
 	// #TODO: "Input Actions" implementation for better syntax and avoiding multiple bindings
 	onW = input->OnKeyPressed(EKey::W).Bind([this](EKey, EKeyModifier) {
-		OnMoveForward(1.f);
+		OnMoveForward(-1.f);
 	});
 	onS = input->OnKeyPressed(EKey::S).Bind([this](EKey, EKeyModifier) {
-		OnMoveForward(-1.f);
+		OnMoveForward(1.f);
 	});
 
 	onA = input->OnKeyPressed(EKey::A).Bind([this](EKey, EKeyModifier) {
@@ -67,7 +67,7 @@ void SEditorCamera::OnMoveForward(float delta)
 	{
 		// #TODO: Make delta time accessible from here
 		// Rotate camera each frame
-		t.transform.location += v3{ 0, delta * 0.05f, 0 };
+		t.transform.location += v3{ 0, 0, delta * 0.05f };
 	});
 }
 
@@ -78,6 +78,6 @@ void SEditorCamera::OnMoveSide(float delta)
 		.each([delta](const EntityId e, CTransform& t, CEditorCamera& c)
 	{
 		// #TODO: Make delta time accessible from here
-		t.transform.location += v3{ delta * 5.f, 0, 0 };
+		t.transform.location += v3{ delta * 0.05f, 0, 0 };
 	});
 }
