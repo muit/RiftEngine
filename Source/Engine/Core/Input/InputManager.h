@@ -18,7 +18,7 @@ class InputManager : public Object {
 
 private:
 
-	/** Input State */
+	/** BEGIN INPUT STATE */
 
 	/** Keeps the state of an axis */
 	struct AxisStates {
@@ -51,6 +51,8 @@ private:
 	AxisStates axisStates;
 	KeyStates keyStates;
 	ModifierStates modStates;
+	/** END INPUT STATE */
+
 
 	/** Actions allow complex flag key combinations. E.g: W | UpArrow */
 	mutable TArray<TriggerAction> triggerActions;

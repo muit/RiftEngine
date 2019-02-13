@@ -7,10 +7,9 @@
 #include "Keys.h"
 
 
-using KeyBroadcast = Broadcast<EKey, EKeyModifier, EKeyPressState>;
-using KeyPressedBroadcast = Broadcast<EKey, EKeyModifier>;
-using AxisBroadcast = Broadcast<EAxis, float>;
-
+using KeyBroadcast = Broadcast<EKeyPressState>;
+using KeyPressedBroadcast = Broadcast<>;
+using AxisBroadcast = Broadcast<float>;
 
 
 struct TriggerAction {
@@ -25,6 +24,29 @@ struct TriggerAction {
 	KeyBroadcast event;
 	KeyPressedBroadcast pressedEvent;
 };
+
+
 struct AxisAction {
+private:
+
+	struct BaseBinding {
+		EKeyModifier mods;
+		float multiplier = 1.f;
+	};
+
+public:
+
+	struct KeyBinding : public BaseBinding {
+		EKey key;
+	};
+
+	struct AxisBinding : public BaseBinding {
+		EAxis axis;
+	};
+
 	Name name;
+	TArray<AxisBinding> axisBindings;
+	TArray<KeyBinding> keyBindings;
+
+	AxisBroadcast event;
 };

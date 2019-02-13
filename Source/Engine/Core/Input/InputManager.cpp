@@ -104,6 +104,14 @@ void InputManager::UpdateAxis(EAxis axis, float value)
 
 void InputManager::UpdatePressedKeys()
 {
+	for (const auto& action : triggerActions) {
+		for (const auto& binding : action.bindings)
+		{
+
+		}
+	}
+
+
 	for (i32 i = 0; i < keyStates.states.Size(); ++i)
 	{
 		switch (keyStates.states[i])
