@@ -15,21 +15,17 @@ class SEditorCamera : public System {
 
 	EntityId camera;
 
-	EventHandle onW;
-	EventHandle onS;
-	EventHandle onA;
-	EventHandle onD;
+	EventHandle onForward;
+	EventHandle onSide;
 
 public:
 
 	SEditorCamera() : Super() {}
 
 	virtual void BeginPlay() override;
-	virtual void Tick(float /*deltaTime*/) override;
 	virtual void BeforeDestroy() override;
 
 private:
 
-	void OnMoveForward(float delta);
-	void OnMoveSide(float delta);
+	void OnMove(v3 delta);
 };

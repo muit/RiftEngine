@@ -21,32 +21,46 @@ struct TriggerAction {
 	Name name;
 	TArray<KeyBinding> bindings;
 
-	KeyBroadcast event;
-	KeyPressedBroadcast pressedEvent;
+private:
+
+	KeyBroadcast ev;
+
+
+public:
+
+	TriggerAction(Name name = Name::None()) : name(name), bindings{}, ev{} {}
+
+	KeyBroadcast& OnUpdate() { return ev; }
 };
 
 
 struct AxisAction {
-private:
-
-	struct BaseBinding {
+	struct KeyBinding {
+		EKey key;
 		EKeyModifier mods;
 		float multiplier = 1.f;
 	};
 
-public:
-
-	struct KeyBinding : public BaseBinding {
-		EKey key;
-	};
-
-	struct AxisBinding : public BaseBinding {
+	struct AxisBinding {
 		EAxis axis;
+		EKeyModifier mods;
+		float multiplier = 1.f;
 	};
 
 	Name name;
 	TArray<AxisBinding> axisBindings;
 	TArray<KeyBinding> keyBindings;
 
-	AxisBroadcast event;
+	float lastFrameValue;
+
+private:
+
+	AxisBroadcast ev;
+
+
+public:
+
+	AxisAction(Name name = Name::None()) : name(name), axisBindings{}, keyBindings{}, lastFrameValue{0.f}, ev{} {}
+
+	AxisBroadcast& OnUpdate() { return ev; }
 };

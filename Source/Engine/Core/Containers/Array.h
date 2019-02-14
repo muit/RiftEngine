@@ -122,11 +122,14 @@ public:
 	}
 
 	Type* Find(const Type& item) const {
+		Type* const it = FindIt(item);
+		return it != end() ? it : nullptr;
 		return FindIt(item);
 	}
 
 	Type* Find(eastl::function<bool(const Type&)> cb) const {
-		return FindIt(eastl::move(cb));
+		Type* const it = FindIt(eastl::move(cb));
+		return it != end() ? it : nullptr;
 	}
 
 	bool Contains(const Type& item) const {

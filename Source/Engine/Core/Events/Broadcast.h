@@ -35,7 +35,7 @@ protected:
 
 public:
 
-	Broadcast() = default;
+	Broadcast() : rawListeners{}, objListeners{} {}
 
 	/** Broadcast to all binded functions */
 	void DoBroadcast(const Params&... params) {

@@ -5,10 +5,10 @@
 
 
 enum class EKeyPressState : u8 {
-	None,
+	Released, // Key is not pressed
 	Press, // The key has been pressed this frame
-	Pressed, // Key is being keept pressed
-	Released // Key has been released this frame
+	Pressed, // Key is being kept pressed
+	Release // Key has been released this frame
 };
 
 enum class EKeyModifier : u8 {
@@ -387,12 +387,15 @@ enum class EKey : u64 {
 
 	MouseRight = 300,
 	MouseCenter = 301,
-	MouseLeft = 302
+	MouseLeft = 302,
+
+	Max = 303
 };
 
 enum class EAxis : u8 {
 	MouseX,
-	MouseY
+	MouseY,
+	Max
 };
 
 

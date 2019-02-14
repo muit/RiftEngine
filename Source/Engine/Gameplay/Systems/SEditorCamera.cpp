@@ -15,19 +15,20 @@ void SEditorCamera::BeginPlay()
 
 	input = GEngine->Input();
 
-	// #TODO: "Input Actions" implementation for better syntax and avoiding multiple bindings
-	onW = input->OnKeyPressed(EKey::W).Bind([this](EKey, EKeyModifier) {
-		OnMoveForward(-1.f);
-	});
-	onS = input->OnKeyPressed(EKey::S).Bind([this](EKey, EKeyModifier) {
-		OnMoveForward(1.f);
+	onForward = input->CreateAxisAction({ "Forward" }, {
+		{ EKey::W, EKeyModifier::None, -1.f },
+		{ EKey::S, EKeyModifier::None,  1.f }
+	}, {})
+	.Bind([this](float value) {
+		OnMove({ 0.f, 0.f, value });
 	});
 
-	onA = input->OnKeyPressed(EKey::A).Bind([this](EKey, EKeyModifier) {
-		OnMoveSide(1.f);
-	});
-	onD = input->OnKeyPressed(EKey::D).Bind([this](EKey, EKeyModifier) {
-		OnMoveSide(-1.f);
+	onSide = input->CreateAxisAction({ "Side" }, {
+		{ EKey::A, EKeyModifier::None,  1.f },
+		{ EKey::D, EKeyModifier::None, -1.f }
+	}, {})
+	.Bind([this](float value) {
+		OnMove({ value, 0.f, 0.f });
 	});
 
 
@@ -45,39 +46,23 @@ void SEditorCamera::BeginPlay()
 	}
 }
 
-void SEditorCamera::Tick(float deltaTime)
-{
-}
-
 void SEditorCamera::BeforeDestroy()
 {
-	GEngine->Input()->OnKeyPressed(EKey::W).Unbind(onW);
-	GEngine->Input()->OnKeyPressed(EKey::S).Unbind(onS);
-	GEngine->Input()->OnKeyPressed(EKey::A).Unbind(onA);
-	GEngine->Input()->OnKeyPressed(EKey::D).Unbind(onD);
+	// #TODO: Find a better syntax
+	GEngine->Input()->FindAxisAction({ "Forward" })->Unbind(onForward);
+	GEngine->Input()->FindAxisAction({ "Side" })->Unbind(onSide);
 
 	ECS()->DestroyEntity(camera);
 	Super::BeforeDestroy();
 }
 
-void SEditorCamera::OnMoveForward(float delta)
-{
-	ECS()->View<CTransform, CEditorCamera>()
-		.each([delta](const EntityId e, CTransform& t, CEditorCamera& c)
-	{
-		// #TODO: Make delta time accessible from here
-		// Rotate camera each frame
-		t.transform.location += v3{ 0, 0, delta * 0.05f };
-	});
-}
-
-void SEditorCamera::OnMoveSide(float delta)
+void SEditorCamera::OnMove(v3 delta)
 {
 	// #TODO: Move to tick with a cached move vector
 	ECS()->View<CTransform, CEditorCamera>()
 		.each([delta](const EntityId e, CTransform& t, CEditorCamera& c)
 	{
 		// #TODO: Make delta time accessible from here
-		t.transform.location += v3{ delta * 0.05f, 0, 0 };
+		t.transform.location += delta * 0.05f;
 	});
 }

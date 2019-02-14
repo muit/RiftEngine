@@ -8,11 +8,6 @@
 #include "Actions.h"
 
 
-using KeyBroadcast = Broadcast<EKey, EKeyModifier, EKeyPressState>;
-using KeyPressedBroadcast = Broadcast<EKey, EKeyModifier>;
-using AxisBroadcast = Broadcast<EAxis, float>;
-
-
 class InputManager : public Object {
 	CLASS(InputManager, Object)
 
@@ -22,22 +17,24 @@ private:
 
 	/** Keeps the state of an axis */
 	struct AxisStates {
-		TArray<EAxis> axis;
 		TArray<float> values;
-		TArray<bool> changed;
 
-		AxisBroadcast onAllAxis;
-		TArray<AxisBroadcast> onAxis;
+		AxisStates() : values{ (i32)EAxis::Max } {}
 
-		i32 Add(EAxis a, float value);
+		float& operator[](EAxis key) {
+			return values[(i32)key];
+		}
 	};
 
 	/** Keeps the state of a key */
 	struct KeyStates {
-		TArray<EKey> keys;
 		TArray<EKeyPressState> states;
 
-		i32 Add(EKey key, EKeyPressState state);
+		KeyStates() : states{ (i32)EKey::Max } {}
+
+		EKeyPressState& operator[](EKey key) {
+			return states[(i32)key];
+		}
 	};
 
 	/** Keeps the state of a modifier. TODO: Calculate mods flag */
@@ -67,13 +64,15 @@ public:
 
 private:
 
-	void UpdateAxis(EAxis axis, float value);
-
 	void UpdatePressedKeys();
+	void UpdatePressedMods();
+	void ResetAxis();
+
 	void UpdateKey(EKey key, EKeyPressState state);
 
-	void UpdatePressedMods();
 	void UpdateMod(EKeyModifier mod, EKeyPressState state);
+
+	void UpdateAxis(EAxis axis, float value);
 
 	void NotifyAllAxis();
 	void NotifyAllKeys();
@@ -83,47 +82,9 @@ public:
 
 	/** EVENTS */
 
-	TriggerAction& CreateTriggerAction(Name name, TArray<TriggerAction::KeyBinding>&& bindings) const;
+	KeyBroadcast& CreateTriggerAction(Name actionName, TArray<TriggerAction::KeyBinding>&& bindings) const;
+	KeyBroadcast* FindTriggerAction(Name actionName) const;
 
-	TriggerAction* FindTriggerAction(Name name) const;
-
-	TriggerAction& GetTriggerAction(Name name) const { return *FindTriggerAction(name); }
-
-	/** Called once when any key is pressed down or up */
-	const KeyBroadcast& OnKey() const { return onKey; }
-
-	/** Called once when any of the provided keys is pressed down or up */
-	const KeyBroadcast& OnKey(EKey key, EKeyModifier mods = EKeyModifier::None) const;
-
-
-	/** Called every tick if any of the provided keys is pressed */
-	const KeyPressedBroadcast& OnKeyPressed() const { return onKeyPressed; }
-
-	/** Called every tick if any of the provided keys is pressed */
-	const KeyPressedBroadcast& OnKeyPressed(EKey key, EKeyModifier mods = EKeyModifier::None) const;
-
-
-	const AxisBroadcast& OnAxis() const { return axisStates.onAllAxis; }
-	const AxisBroadcast& OnAxis(EAxis axis) {
-		i32 i = axisStates.axis.FindIndex(axis);
-		if (i == NO_INDEX)
-			i = axisStates.Add(axis, 0.f);
-
-		return axisStates.onAxis[i];
-	}
-
-
-private:
-
-	i32 FindKeyActionIndex(EKey key, EKeyModifier) const {
-		return keyActions.FindIndex([key](const auto& action) {
-			return action.key == key;
-		});
-	}
-
-	i32 FindKeyPressedActionIndex(EKey key, EKeyModifier) const {
-		return keyPressedActions.FindIndex([key](const auto& action) {
-			return action.key == key;
-		});
-	}
+	AxisBroadcast& CreateAxisAction(Name actionName, TArray<AxisAction::KeyBinding>&& keyBindings, TArray<AxisAction::AxisBinding>&& axisBindings) const;
+	AxisBroadcast* FindAxisAction(Name actionName) const;
 };

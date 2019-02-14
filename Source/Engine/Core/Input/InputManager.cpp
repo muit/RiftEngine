@@ -11,11 +11,10 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> render
 	ZoneScopedNC("Input", 0x459bd1);
 
 	// Mark all axis not dirty
-	axisStates.changed.Empty(false);
-	axisStates.changed.Resize(axisStates.axis.Size(), false);
 
 	UpdatePressedKeys();
 	UpdatePressedMods();
+	ResetAxis();
 
 	bool bFinish = false;
 	SDL_PumpEvents();
@@ -51,7 +50,7 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> render
 
 		case SDL_KEYDOWN:
 		case SDL_KEYUP:
-			EKeyPressState state = (event.type == SDL_KEYDOWN) ? EKeyPressState::Press : EKeyPressState::Released;
+			EKeyPressState state = (event.type == SDL_KEYDOWN) ? EKeyPressState::Press : EKeyPressState::Release;
 			const SDL_Keymod sdlModState = SDL_GetModState();
 
 			// Automatic casting to Rift keys
@@ -90,60 +89,18 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> render
 	return bFinish;
 }
 
-void InputManager::UpdateAxis(EAxis axis, float value)
-{
-	i32 i = axisStates.axis.FindIndex(axis);
-	if (i == NO_INDEX)
-		axisStates.Add(axis, value);
-	else
-	{
-		axisStates.values[i] = value;
-		axisStates.changed[i] = true;
-	}
-}
-
 void InputManager::UpdatePressedKeys()
 {
-	for (const auto& action : triggerActions) {
-		for (const auto& binding : action.bindings)
-		{
-
-		}
-	}
-
-
-	for (i32 i = 0; i < keyStates.states.Size(); ++i)
+	for (auto& state : keyStates.states)
 	{
-		switch (keyStates.states[i])
+		switch (state)
 		{
 		case EKeyPressState::Press:
-			keyStates.states[i] = EKeyPressState::Pressed;
+			state = EKeyPressState::Pressed;
 			break;
-
-		case EKeyPressState::Released:
-			keyStates.keys.RemoveAt(i, false);
-			keyStates.states.RemoveAt(i, false);
-			--i;
+		case EKeyPressState::Release:
+			state = EKeyPressState::Released;
 			break;
-		}
-	}
-	keyStates.keys.Shrink();
-	keyStates.states.Shrink();
-}
-
-void InputManager::UpdateKey(EKey key, EKeyPressState state)
-{
-	i32 i = keyStates.keys.FindIndex(key);
-	if (i == NO_INDEX)
-		keyStates.Add(key, state);
-	else
-	{
-		EKeyPressState& currentState = keyStates.states[i];
-
-		// Can only be pressed when creating the state
-		if (state != EKeyPressState::Press)
-		{
-			currentState = state;
 		}
 	}
 }
@@ -169,6 +126,29 @@ void InputManager::UpdatePressedMods()
 	modStates.states.Shrink();
 }
 
+void InputManager::ResetAxis()
+{
+	// Efficiently set all values to 0
+	axisStates.values.Empty(false);
+	axisStates.values.Resize((i32)EAxis::Max, 0.f);
+}
+
+void InputManager::UpdateKey(EKey key, EKeyPressState state)
+{
+	EKeyPressState& currentState = keyStates[key];
+
+	// Cant set press/release twice
+	if ((state == EKeyPressState::Press   && currentState != EKeyPressState::Pressed) ||
+		(state == EKeyPressState::Release && currentState != EKeyPressState::Released))
+	{
+		currentState = state;
+	}
+}
+
+void InputManager::UpdateAxis(EAxis axis, float value)
+{
+	axisStates[axis] = value;
+}
 
 void InputManager::UpdateMod(EKeyModifier mod, EKeyPressState state)
 {
@@ -189,112 +169,116 @@ void InputManager::UpdateMod(EKeyModifier mod, EKeyPressState state)
 
 void InputManager::NotifyAllAxis()
 {
-	for (i32 i = 0; i < axisStates.axis.Size(); ++i)
-	{
-		if (axisStates.changed[i])
-		{
-			const EAxis& axis = axisStates.axis[i];
-			const float& finalValue = axisStates.values[i];
+	for (auto& action : axisActions) {
+		float value = 0.0f;
 
-			axisStates.onAllAxis.DoBroadcast(axis, finalValue);
-			axisStates.onAxis[i].DoBroadcast(axis, finalValue);
+		for (const auto& keyBinding : action.keyBindings)
+		{
+			if (keyStates[keyBinding.key] != EKeyPressState::Released)
+			{
+				value += keyBinding.multiplier;
+			}
+		}
+
+		for (const auto& axisBinding : action.axisBindings)
+		{
+			value += axisStates[axisBinding.axis] * axisBinding.multiplier;
+		}
+
+		// If value is not close to 0
+		if (Math::Abs(value) > Math::SMALL_NUMBER)
+		{
+			action.OnUpdate().DoBroadcast(value);
+			action.lastFrameValue = value;
+		}
+		else if (action.lastFrameValue != 0.f)
+		{
+			// Ensure value ends up being pure 0
+			action.OnUpdate().DoBroadcast(0.f);
+			action.lastFrameValue = 0.f;
 		}
 	}
 }
 
 void InputManager::NotifyAllKeys()
 {
-	for (i32 i = 0; i < keyStates.keys.Size(); ++i)
-	{
-		const EKey& key = keyStates.keys[i];
-		EKeyPressState state = keyStates.states[i];
+	for (auto& action : triggerActions) {
+		EKeyPressState state{ EKeyPressState::Released };
 
-		if (state == EKeyPressState::Pressed)
+		for (const auto& binding : action.bindings)
 		{
-			onKeyPressed.DoBroadcast(key, EKeyModifier::None);
-
-			const i32 id = FindKeyPressedActionIndex(key, EKeyModifier::None);
-			if (id != NO_INDEX) {
-				keyPressedActions[id].event.DoBroadcast(key, EKeyModifier::None);
-			}
+			state = Math::Max(state, keyStates[binding.key]);
 		}
-		else
-		{
-			onKey.DoBroadcast(key, EKeyModifier::None, state);
 
-			const i32 id = FindKeyActionIndex(key, EKeyModifier::None);
-			if (id != NO_INDEX) {
-				keyActions[id].event.DoBroadcast(key, EKeyModifier::None, state);
-			}
+		if (state != EKeyPressState::Released)
+		{
+			action.OnUpdate().DoBroadcast(state);
 		}
 	}
 }
 
-TriggerAction& InputManager::CreateTriggerAction(Name name, TArray<TriggerAction::KeyBinding>&& bindings) const
+KeyBroadcast& InputManager::CreateTriggerAction(Name actionName, TArray<TriggerAction::KeyBinding>&& bindings) const
 {
-	if (name.IsNone())
-		name = { "Invalid" };
+	if (actionName.IsNone())
+		actionName = { "Invalid" };
 
-	TriggerAction* currentAction = FindTriggerAction(name);
+	TriggerAction* currentAction = triggerActions.Find([actionName](const TriggerAction& action) {
+		return action.name == actionName;
+	});
+
 	if (!currentAction)
 	{
-		triggerActions.Add({ name });
+		triggerActions.Add({ actionName });
 		currentAction = &triggerActions.Last();
 	}
 
-	currentAction->bindings = bindings;
+	currentAction->bindings = eastl::move(bindings);
 
-	return *currentAction;
+	return currentAction->OnUpdate();
 }
 
-TriggerAction* InputManager::FindTriggerAction(Name name) const
+KeyBroadcast* InputManager::FindTriggerAction(Name actionName) const
 {
-	if (name.IsNone())
-		return false;
+	if (actionName.IsNone())
+		return nullptr;
 
-	return triggerActions.Find([name](const TriggerAction& action) {
-		return action.name == name;
+	auto* foundAction = triggerActions.Find([actionName](const TriggerAction& action) {
+		return action.name == actionName;
 	});
+
+	return foundAction? &foundAction->OnUpdate() : nullptr;
 }
 
-const KeyBroadcast& InputManager::OnKey(EKey key, EKeyModifier mods) const
+AxisBroadcast& InputManager::CreateAxisAction(Name actionName, TArray<AxisAction::KeyBinding>&& keyBindings, TArray<AxisAction::AxisBinding>&& axisBindings) const
 {
-	// If binding doesn't exist, create it
-	i32 id = FindKeyActionIndex(key, mods);
+	if (actionName.IsNone())
+		actionName = { "Invalid" };
 
-	if (id == NO_INDEX) {
-		id = keyActions.Add({ key, mods, {} });
+	AxisAction* currentAction = axisActions.Find([actionName](const AxisAction& action) {
+		return action.name == actionName;
+	});
+
+	if (!currentAction)
+	{
+		axisActions.Add({ actionName });
+		currentAction = &axisActions.Last();
 	}
-	return keyActions[id].event;
+
+	currentAction->keyBindings = eastl::move(keyBindings);
+	currentAction->axisBindings = eastl::move(axisBindings);
+
+	return currentAction->OnUpdate();
 }
 
-const KeyPressedBroadcast& InputManager::OnKeyPressed(EKey key, EKeyModifier mods) const
+AxisBroadcast* InputManager::FindAxisAction(Name actionName) const
 {
-	// If binding doesn't exist, create it
-	i32 id = FindKeyPressedActionIndex(key, mods);
+	if (actionName.IsNone())
+		return nullptr;
 
-	if (id == NO_INDEX) {
-		id = keyPressedActions.Add({ key, mods, {} });
-	}
-	return keyPressedActions[id].event;
-}
-
-i32 InputManager::AxisStates::Add(EAxis a, float value)
-{
-	axis.Add(a);
-	values.Add(value);
-	changed.Add(true);
-	onAxis.AddDefaulted();
-
-	return axis.Size() - 1;
-}
-
-i32 InputManager::KeyStates::Add(EKey key, EKeyPressState state)
-{
-	keys.Add(key);
-	states.Add(state);
-
-	return keys.Size() - 1;
+	auto* foundAction = axisActions.Find([actionName](const AxisAction& action) {
+		return action.name == actionName;
+	});
+	return foundAction ? &foundAction->OnUpdate() : nullptr;
 }
 
 i32 InputManager::ModifierStates::Add(EKeyModifier mod, EKeyPressState state)
