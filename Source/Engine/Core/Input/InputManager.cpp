@@ -149,7 +149,7 @@ void InputManager::ResetAxis()
 {
 	// Efficiently set all values to 0
 	axisStates.values.Empty(false);
-	axisStates.values.Resize((i32)EAxis::Max, 0.f);
+	axisStates.values.Assign((i32)EAxis::Max, 0.f);
 }
 
 void InputManager::UpdateKey(EKey key, EKeyPressState state)

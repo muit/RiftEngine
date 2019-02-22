@@ -15,7 +15,8 @@ class SEditorCamera : public System {
 
 	EntityId camera;
 
-	float moveSpeed = 10.f;
+	float forwardSpeed = 10.f;
+	float sideSpeed = 5.f;
 	float rotateSpeed = 5.f;
 
 	bool bRotatingMode = false;

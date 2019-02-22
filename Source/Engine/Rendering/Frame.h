@@ -59,7 +59,8 @@ struct FrameRender {
 	{}
 
 	void NewFrame(v2_u32 viewportSize) {
-		baseColor.Resize(viewportSize, Color::Red);
+		ZoneScopedNC("NewFrame", 0x94d145);
+		baseColor.Assign(viewportSize, Color::Red);
 		rasterizer.Clear();
 	}
 

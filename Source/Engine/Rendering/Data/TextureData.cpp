@@ -21,10 +21,10 @@ void TextureData::FromSurface(SDL_Surface* surface)
 		u32* const pixels = (u32*)surface->pixels;
 
 		// Copy pixels
-		buffer.Resize(pixelCount);
+		buffer.Reserve(pixelCount);
 		for (u32 i = 0; i < pixelCount; ++i)
 		{
-			buffer[i] = Color{ pixels[i] };
+			buffer.Add(Color{ pixels[i] });
 		}
 
 		if (reformated) {

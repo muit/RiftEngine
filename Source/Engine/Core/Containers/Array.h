@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <EASTL/vector.h>
 #include <EASTL/functional.h>
+#include <tracy/Tracy.hpp>
 
 #include "Core/Platform/Platform.h"
 
@@ -34,7 +35,8 @@ public:
 
 	TArray() : vector{} {}
 
-	TArray(u32 DefaultSize) : vector{ DefaultSize } {}
+	TArray(u32 defaultSize) : vector{ defaultSize } {}
+	TArray(u32 defaultSize, const Type& defaultValue) : vector{ defaultSize, defaultValue } {}
 	TArray(std::initializer_list<Type> initList) : vector{initList} {}
 
 	TArray(TArray<Type>&& other) { MoveFrom(eastl::move(other)); }
@@ -51,8 +53,10 @@ public:
 
 	void Reserve(i32 sizeNum) { vector.reserve(sizeNum); }
 
-	void Resize(i32 sizeNum) { vector.resize(sizeNum); }
-	void Resize(i32 sizeNum, const Type& value) { vector.resize(sizeNum, value); }
+	void Assign(i32 sizeNum, const Type& value) {
+		ZoneScopedN("Resize"); // Around 10ms with 1920x1080size FIX ME
+		vector.assign(sizeNum, value);
+	}
 
 	i32 Add(Type&& item) {
 		vector.push_back(eastl::move(item));
@@ -203,10 +207,21 @@ public:
 
 	void Swap(i32 firstIndex, i32 secondIndex);
 
+	/** Empty the array.
+	 * @param shouldShrink false will not free memory
+	 */
 	void Empty(const bool shouldShrink = true) {
 		vector.clear();
 
-		if (shouldShrink) Shrink();
+		if (shouldShrink)
+			Shrink();
+	}
+
+	/** Empty the array keeping a desired size of reserved memory */
+	void Empty(i32 sizeNum) {
+		ZoneScopedN("Empty (Size)");
+		Empty(false);
+		Reserve(sizeNum);
 	}
 
 	void Shrink() { vector.shrink_to_fit(); }

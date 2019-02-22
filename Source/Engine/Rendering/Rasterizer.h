@@ -35,13 +35,12 @@ public:
 
 	void Clear()
 	{
+		ZoneScopedNC("Rasterizer Clear", 0x94d145);
 		// Update zBuffer
-		zBuffer.Empty(false);
-		zBuffer.Resize(target.Buffer().Size(), eastl::numeric_limits<i32>::max());
+		zBuffer.Assign(target.Buffer().Size(), eastl::numeric_limits<i32>::max());
 
 		viewportBounds = {};
 		viewportBounds.ExtendPoint(target.Size().cast<i32>());
-
 	}
 
 	void FillConvexPolygon(const VertexBufferI32& vertices, const u32* indicesBegin, const u32* indicesEnd, const Color& color);
