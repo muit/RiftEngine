@@ -8,6 +8,7 @@
 #include "Core/Object/ObjectPtr.h"
 
 #include <fstream>
+#include "EngineTypes.h"
 
 
 using json = nlohmann::json;

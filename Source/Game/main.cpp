@@ -18,6 +18,7 @@ class MyObject : public Object {
 	CLASS(MyObject, Object)
 public:
 	void DoThree() { Log::Message("Three"); }
+	void DoThreeFloat(float val) { Log::Message("Three %f", val); }
 };
 
 
@@ -33,7 +34,7 @@ int main(int, char**)
 		{
 			GlobalPtr<MyObject> b = Create<MyObject>();
 
-			bc.Bind(b.AsPtr(), &MyObject::DoThree);
+			bc.Bind(*b, &MyObject::DoThree);
 			bc.DoBroadcast();
 		}
 		// Object has been deleted here. Third bind wont get called
@@ -41,7 +42,22 @@ int main(int, char**)
 
 		bc.Unbind(handleOne);
 		bc.UnbindAll(&a);
+
+
+		Broadcast<float> cc{};
+		bc.Bind(&a, &AA::DoTwo);
+		{
+			GlobalPtr<MyObject> b = Create<MyObject>();
+
+			cc.Bind(*b, &MyObject::DoThreeFloat);
+			cc.DoBroadcast(5.f);
+		}
 	}
+
+	Quat q = Quat::LookAt({ 0, 0, 0 }, { 1, 0, 0 });
+	Rotator r = q.ToRotator();
+
+	v3 v = q.GetForward();
 
 	Engine::StartEngine();
 

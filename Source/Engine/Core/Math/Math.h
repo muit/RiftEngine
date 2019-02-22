@@ -9,14 +9,17 @@
 struct Math
 {
 	static constexpr float PI{ 3.14159265358979323846f };
+	static constexpr float HALF_PI = PI * 0.5f;
+	static constexpr float INV_PI = 1 / PI;
+	static constexpr float RADTODEG = 180.f / PI;
+	static constexpr float DEGTORAD = PI / 180.f;
+
 	static constexpr float SMALL_NUMBER{ 1.e-4f };
 	static constexpr float SMALLER_NUMBER{ 0.00001f };
 	static constexpr float VERY_SMALL_NUMBER{ 1.e-8f };
 	static constexpr float BIG_NUMBER{ 3.4e+38f };
 	static constexpr float EULER{ 2.71828182845904523536f };
 
-	static constexpr float RADTODEG = 180.f / PI;
-	static constexpr float DEGTORAD = PI / 180.f;
 
 
 	template<typename Type>
@@ -188,4 +191,85 @@ struct Math
 	static float Fmod(float a, float b) {
 		return std::fmod(a, b);
 	}
+
+	/**
+	* Computes the sine and cosine of a scalar value.
+	*
+	* @param ScalarSin	Pointer to where the Sin result should be stored
+	* @param ScalarCos	Pointer to where the Cos result should be stored
+	* @param Value  input angles
+	*/
+	static FORCEINLINE void SinCos(float* ScalarSin, float* ScalarCos, float  Value)
+	{
+		// Map Value to y in [-pi,pi], x = 2*pi*quotient + remainder.
+		float quotient = (INV_PI*0.5f)*Value;
+		if (Value >= 0.0f)
+		{
+			quotient = (float)((int)(quotient + 0.5f));
+		}
+		else
+		{
+			quotient = (float)((int)(quotient - 0.5f));
+		}
+		float y = Value - (2.0f*PI)*quotient;
+
+		// Map y to [-pi/2,pi/2] with sin(y) = sin(Value).
+		float sign;
+		if (y > HALF_PI)
+		{
+			y = PI - y;
+			sign = -1.0f;
+		}
+		else if (y < -HALF_PI)
+		{
+			y = -PI - y;
+			sign = -1.0f;
+		}
+		else
+		{
+			sign = +1.0f;
+		}
+
+		float y2 = y * y;
+
+		// 11-degree minimax approximation
+		*ScalarSin = (((((-2.3889859e-08f * y2 + 2.7525562e-06f) * y2 - 0.00019840874f) * y2 + 0.0083333310f) * y2 - 0.16666667f) * y2 + 1.0f) * y;
+
+		// 10-degree minimax approximation
+		float p = ((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f;
+		*ScalarCos = sign * p;
+	}
+
+	static float Atan2(float Y, float X);
+
+	// Note:  We use FASTASIN_HALF_PI instead of HALF_PI inside of FastASin(), since it was the value that accompanied the minimax coefficients below.
+	// It is important to use exactly the same value in all places inside this function to ensure that FastASin(0.0f) == 0.0f.
+	// For comparison:
+	//		HALF_PI				== 1.57079632679f == 0x3fC90FDB
+	//		FASTASIN_HALF_PI	== 1.5707963050f  == 0x3fC90FDA
+#define FASTASIN_HALF_PI (1.5707963050f)
+	/**
+	* Computes the ASin of a scalar value.
+	*
+	* @param Value  input angle
+	* @return ASin of Value
+	*/
+	static FORCEINLINE float FastAsin(float Value)
+	{
+		// Clamp input to [-1,1].
+		bool nonnegative = (Value >= 0.0f);
+		float x = Math::Abs(Value);
+		float omx = 1.0f - x;
+		if (omx < 0.0f)
+		{
+			omx = 0.0f;
+		}
+		float root = Math::Sqrt(omx);
+		// 7-degree minimax approximation
+		float result = ((((((-0.0012624911f * x + 0.0066700901f) * x - 0.0170881256f) * x + 0.0308918810f) * x - 0.0501743046f) * x + 0.0889789874f) * x - 0.2145988016f) * x + FASTASIN_HALF_PI;
+		result *= root;  // acos(|x|)
+		// acos(x) = pi - acos(-x) when x < 0, asin(x) = pi/2 - acos(x)
+		return (nonnegative ? FASTASIN_HALF_PI - result : result - FASTASIN_HALF_PI);
+	}
+#undef FASTASIN_HALF_PI
 };

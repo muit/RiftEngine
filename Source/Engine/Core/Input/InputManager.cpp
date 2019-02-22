@@ -32,11 +32,21 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> render
 			bFinish = true;
 			break;
 
+		case SDL_MOUSEMOTION: {
+			v2_i32 pos{};
+			SDL_GetRelativeMouseState(&pos.x(), &pos.y());
+			if (Math::Abs(pos.x()) > 0)
+				UpdateAxis(EAxis::MouseX, (float)pos.x());
+			if (Math::Abs(pos.y()) > 0)
+				UpdateAxis(EAxis::MouseY, (float)pos.y());
+			break;
+		}
+
 		case SDL_MOUSEWHEEL:
 			if (Math::Abs(event.wheel.x) > 0)
-				UpdateAxis(EAxis::MouseX, (float)event.wheel.x);
+				UpdateAxis(EAxis::MouseWheelX, (float)event.wheel.x);
 			if (Math::Abs(event.wheel.y) > 0)
-				UpdateAxis(EAxis::MouseY, (float)event.wheel.y);
+				UpdateAxis(EAxis::MouseWheelY, (float)event.wheel.y);
 			break;
 
 		case SDL_MOUSEBUTTONDOWN:
@@ -46,6 +56,15 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> render
 				UpdateKey(EKey::MouseRight, EKeyPressState::Press);
 			if (event.button.button == SDL_BUTTON_MIDDLE)
 				UpdateKey(EKey::MouseCenter, EKeyPressState::Press);
+			break;
+
+		case SDL_MOUSEBUTTONUP:
+			if (event.button.button == SDL_BUTTON_LEFT)
+				UpdateKey(EKey::MouseLeft, EKeyPressState::Release);
+			if (event.button.button == SDL_BUTTON_RIGHT)
+				UpdateKey(EKey::MouseRight, EKeyPressState::Release);
+			if (event.button.button == SDL_BUTTON_MIDDLE)
+				UpdateKey(EKey::MouseCenter, EKeyPressState::Release);
 			break;
 
 		case SDL_KEYDOWN:
@@ -191,12 +210,12 @@ void InputManager::NotifyAllAxis()
 			action.OnUpdate().DoBroadcast(value);
 			action.lastFrameValue = value;
 		}
-		else if (action.lastFrameValue != 0.f)
+		/*else if (action.lastFrameValue != 0.f)
 		{
 			// Ensure value ends up being pure 0
 			action.OnUpdate().DoBroadcast(0.f);
 			action.lastFrameValue = 0.f;
-		}
+		}*/
 	}
 }
 

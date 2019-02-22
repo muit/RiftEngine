@@ -385,9 +385,9 @@ enum class EKey : u64 {
 
 	 /* Add any other keys here. */
 
-	MouseRight = 300,
+	MouseLeft = 300,
 	MouseCenter = 301,
-	MouseLeft = 302,
+	MouseRight = 302,
 
 	Max = 303
 };
@@ -395,6 +395,8 @@ enum class EKey : u64 {
 enum class EAxis : u8 {
 	MouseX,
 	MouseY,
+	MouseWheelX,
+	MouseWheelY,
 	Max
 };
 

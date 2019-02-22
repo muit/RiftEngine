@@ -15,21 +15,32 @@ void SEditorCamera::BeginPlay()
 
 	input = GEngine->Input();
 
-	onForward = input->CreateAxisAction({ "Forward" }, {
+	input->CreateTriggerAction({ "ViewportMoveMode" }, {
+		{ EKey::MouseRight, EKeyModifier::None },
+	})
+	.Bind(this, &SEditorCamera::ViewportMoveMode);
+
+	input->CreateAxisAction({ "MoveForward" }, {
 		{ EKey::W, EKeyModifier::None, -1.f },
 		{ EKey::S, EKeyModifier::None,  1.f }
 	}, {})
-	.Bind([this](float value) {
-		OnMove({ 0.f, 0.f, value });
-	});
+	.Bind(this, &SEditorCamera::MoveForward);
 
-	onSide = input->CreateAxisAction({ "Side" }, {
-		{ EKey::A, EKeyModifier::None,  1.f },
-		{ EKey::D, EKeyModifier::None, -1.f }
+	input->CreateAxisAction({ "MoveRight" }, {
+		{ EKey::A, EKeyModifier::None, -1.f },
+		{ EKey::D, EKeyModifier::None,  1.f }
 	}, {})
-	.Bind([this](float value) {
-		OnMove({ value, 0.f, 0.f });
-	});
+	.Bind(this, &SEditorCamera::MoveRight);
+
+	input->CreateAxisAction({ "TurnUp" }, {}, {
+		{ EAxis::MouseY, EKeyModifier::None, 1.f }
+	})
+	.Bind(this, &SEditorCamera::TurnUp);
+
+	input->CreateAxisAction({ "TurnRight" }, {}, {
+		{ EAxis::MouseX, EKeyModifier::None, -1.f }
+	})
+	.Bind(this, &SEditorCamera::TurnRight);
 
 
 	// If there's no camera, create one
@@ -39,30 +50,78 @@ void SEditorCamera::BeginPlay()
 		camera = ECS()->CreateEntity({ "EditorCamera" }, true);
 
 		auto& t = ECS()->Assign<CTransform>(camera).transform;
-		t.location = { 10, 3, 10 };
-		t.SetRotationDegrees({ -22.5f, 22.5f, 180 });
+		t.location = { 0, 0, 0 };
+		t.SetRotation({ 0.f, 0.f, 0.f });
 
 		ECS()->Assign<CEditorCamera>(camera);
 	}
 }
 
+void SEditorCamera::Tick(float deltaTime)
+{
+	const v3 finalRotateDelta = rotationDelta * rotateSpeed * deltaTime;
+	const v3 finalMoveDelta = movementDelta * moveSpeed * deltaTime;
+
+	ECS()->View<CTransform, CEditorCamera>()
+		.each([deltaTime, finalRotateDelta, finalMoveDelta](const auto e, CTransform& t, auto& c)
+	{
+		// #FIX: X is threated as Z
+
+		// Use LookAt Rotation(A-B)
+		Rotator rotation = t.transform.GetRotation();
+		rotation += finalRotateDelta;
+		t.transform.SetRotation(rotation);
+
+		// Rotate movement towards angle
+		t.transform.location += t.transform.rotation * finalMoveDelta;
+	});
+
+	rotationDelta = v3::Zero();
+	movementDelta = v3::Zero();
+}
+
 void SEditorCamera::BeforeDestroy()
 {
-	// #TODO: Find a better syntax
-	GEngine->Input()->FindAxisAction({ "Forward" })->Unbind(onForward);
-	GEngine->Input()->FindAxisAction({ "Side" })->Unbind(onSide);
-
 	ECS()->DestroyEntity(camera);
 	Super::BeforeDestroy();
 }
 
-void SEditorCamera::OnMove(v3 delta)
+void SEditorCamera::ViewportMoveMode(EKeyPressState state)
 {
-	// #TODO: Move to tick with a cached move vector
-	ECS()->View<CTransform, CEditorCamera>()
-		.each([delta](const EntityId e, CTransform& t, CEditorCamera& c)
+	switch (state) {
+	case EKeyPressState::Press:
+		bRotatingMode = true;
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+		break;
+	case EKeyPressState::Release:
+		bRotatingMode = false;
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+		break;
+	}
+}
+
+void SEditorCamera::MoveForward(float delta)
+{
+	movementDelta += v3{0.f, 0.f, delta};
+}
+
+void SEditorCamera::MoveRight(float delta)
+{
+	movementDelta += v3{delta, 0.f, 0.f};
+}
+
+void SEditorCamera::TurnUp(float delta)
+{
+	if (bRotatingMode)
 	{
-		// #TODO: Make delta time accessible from here
-		t.transform.location += delta * 0.05f;
-	});
+		rotationDelta += v3{ delta, 0.f, 0.f };
+	}
+}
+
+void SEditorCamera::TurnRight(float delta)
+{
+	if (bRotatingMode)
+	{
+		rotationDelta += v3{ 0.f, 0.f, delta };
+	}
 }

@@ -21,27 +21,16 @@ struct Transform {
 	Transform(v3 location) : location{ location }, rotation{ Quat::Identity() }, scale{ v3::Ones() } {};
 
 
-	FORCEINLINE v3 GetRotationRadians() {
-		// #REFACTOR: Angle operations should go else where
-		return rotation.toRotationMatrix().eulerAngles(0, 1, 2) + v3::Zero(); // + 0 removed -0 errors
-	}
-	FORCEINLINE v3 GetRotationDegrees() {
-		return GetRotationRadians() * Math::RADTODEG;
+	FORCEINLINE Rotator GetRotation() {
+		return rotation.ToRotator();
 	}
 
 	//v3 GetWorldLocation(const Transform& parent) { return location; }
 	//v3 GetWorldRotation() { return value.rotation(); }
 	//v3 GetWorldScale()    { return value.rotation(); }
 
-	void SetRotationRadians(const v3& angles) {
-		rotation = Eigen::AngleAxisf(angles.x(), v3::UnitX())
-				 * Eigen::AngleAxisf(angles.y(), v3::UnitY())
-				 * Eigen::AngleAxisf(angles.z(), v3::UnitZ());
-	}
-
-	void SetRotationDegrees(v3 angles) {
-		angles /= Math::RADTODEG;
-		SetRotationRadians(angles);
+	void SetRotation(const Rotator& angles) {
+		rotation = Quat::FromRotator(angles);
 	}
 
 	bool Serialize(class Archive& ar, const char* name);
@@ -69,6 +58,10 @@ struct Transform {
 
 	v3 DirectionToLocal(const v3& direction) const {
 		return ToWorldMatrix().inverse().linear() * direction;
+	}
+
+	v3 GetForward() const {
+		return rotation.GetForward();
 	}
 
 

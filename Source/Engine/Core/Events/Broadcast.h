@@ -77,9 +77,9 @@ public:
 			}
 			else
 			{
-				EventHandle handle{};
-				rawListeners.Add({ handle.Id(), std::bind(method, instance), instance });
-				return handle;
+				return Bind([instance, method](Params... params) {
+					(instance->*method)(params...);
+				});
 			}
 		}
 		return EventHandle::Invalid();
@@ -90,8 +90,13 @@ public:
 	EventHandle Bind(Ptr<Type> object, MemberMethodPtr<Type> method) const {
 		if (object && method)
 		{
+			Type* const instance = *object;
+			Function func = [instance, method](Params... params) {
+				(instance->*method)(params...);
+			};
+
 			EventHandle handle{};
-			objListeners.Add({ handle.Id(), std::bind(method, *object), object });
+			objListeners.Add({ handle.Id(), std::move(func), object });
 			return handle;
 		}
 		return EventHandle::Invalid();
