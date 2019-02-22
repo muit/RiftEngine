@@ -37,13 +37,12 @@ bool Engine::Start()
 	}
 
 	frameTime = {};
+	frameTime.SetFPSCap(60);
+
 	bool bFinish = false;
 	while (!bFinish)
 	{
 		Loop(frame, bFinish);
-
-		// Reset frame data
-		frame = {};
 	}
 
 	return true;
@@ -51,20 +50,24 @@ bool Engine::Start()
 
 void Engine::Loop(Frame& frame, bool& bFinish)
 {
-	ZoneScopedNC("Game", 0x459bd1);
-
 	frameTime.Tick();
 
-	bFinish = input->Tick(frameTime.deltaTime, ui, renderer);
+	bFinish = input->Tick(frameTime.GetDeltaTime(), ui, renderer);
 
 	renderer->PreTick();
 
-	world->Tick(frame, frameTime.deltaTime);
-	ui->Tick(frameTime.deltaTime);
+	{
+		ZoneScopedNC("Game", 0x459bd1);
+		world->Tick(frame, frameTime.GetDeltaTime());
+		ui->Tick(frameTime.GetDeltaTime());
+	}
 
 	// Rendering
 	renderer->Render(frame);
 
-	renderer->Sleep();
+	// Reset frame data
+	frame = {};
+
+	frameTime.PostTick();
 	FrameMark;
 }

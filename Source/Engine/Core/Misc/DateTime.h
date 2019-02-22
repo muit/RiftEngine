@@ -77,7 +77,7 @@ struct DateTime
 public:
 
 	/** Default constructor (no initialization). */
-	DateTime() { }
+	DateTime() : time{} { }
 
 	/**
 	 * Creates and initializes a new instance with the specified number of ticks.

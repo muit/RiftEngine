@@ -60,7 +60,10 @@ struct FrameRender {
 
 	void NewFrame(v2_u32 viewportSize) {
 		ZoneScopedNC("NewFrame", 0x94d145);
-		baseColor.Assign(viewportSize, Color::Red);
+		//Clean screen?
+		baseColor.Clear(viewportSize); /* Yes  +- 6ms */
+		/*baseColor.Resize(viewportSize); No          */
+
 		rasterizer.Clear();
 	}
 

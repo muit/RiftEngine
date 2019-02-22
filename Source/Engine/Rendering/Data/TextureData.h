@@ -21,13 +21,18 @@ public:
 
 	TextureData(v2_u32 inSize = v2_u32::Zero()) : size{inSize}, buffer { inSize.x() * inSize.y() } {}
 
-	void Assign(v2_u32 inSize, const Color& clearColor) {
+	void Resize(v2_u32 inSize) {
 		size = inSize;
-		buffer.Assign(size.x() * size.y(), clearColor);
+		buffer.Resize(size.x() * size.y());
 	}
 
 	void Fill(const Color& color) {
-		Assign(size, color);
+		Clear(size, color);
+	}
+
+	void Clear(v2_u32 inSize, Color color = Color::Black) {
+		size = inSize;
+		buffer.Assign(size.x() * size.y(), color);
 	}
 
 	void FromSurface(struct SDL_Surface* surface);

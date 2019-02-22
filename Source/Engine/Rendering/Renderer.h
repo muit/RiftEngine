@@ -40,7 +40,7 @@ public:
 
 	void Render(Frame& frame);
 
-	void Sleep();
+	void SwapWindow();
 
 	virtual void BeforeDestroy() override;
 

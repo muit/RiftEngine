@@ -51,13 +51,6 @@ public:
 		return *this;
 	}
 
-	void Reserve(i32 sizeNum) { vector.reserve(sizeNum); }
-
-	void Assign(i32 sizeNum, const Type& value) {
-		ZoneScopedN("Resize"); // Around 10ms with 1920x1080size FIX ME
-		vector.assign(sizeNum, value);
-	}
-
 	i32 Add(Type&& item) {
 		vector.push_back(eastl::move(item));
 		return Size() - 1;
@@ -80,24 +73,39 @@ public:
 		return Size() - 1;
 	}
 
+
+	void Reserve(i32 sizeNum) { vector.reserve(sizeNum); }
+	void Resize(i32 sizeNum) {
+		vector.resize(sizeNum);
+	}
+
+	void Assign(i32 sizeNum, const Type& value) {
+		ZoneScopedN("Assign");
+		vector.assign(sizeNum, value);
+	}
+
+	void AssignAll(const Type& value) {
+		Assign(Size(), value);
+	}
+
 	void Insert(i32 index, Type&& item) {
 		vector.insert(vector.begin() + index, eastl::move(item));
 	}
 
-	void Insert(i32 index, const Type& item) {
-		vector.insert(vector.begin() + index, item);
-	}
-
-	void InsertDefaulted(i32 index, i32 count) {
+	void Insert(i32 index, const Type& item, i32 count = 1) {
 		if (IsValidIndex(index))
 		{
-			vector.reserve(vector.size() + count);
-			for (i32 i = 0; i < count; ++i)
-			{
-				Insert(index + i, {});
-			}
+			if (count == 1)
+				vector.insert(vector.begin() + index, item);
+			else
+				vector.insert(vector.begin() + index, count, item);
 		}
 	}
+
+	void InsertDefaulted(i32 index, i32 count = 1) {
+		Insert(index, {}, count);
+	}
+
 
 	FORCEINLINE Iterator FindIt(const Type& item) const {
 		return const_cast<Iterator>(eastl::find(vector.begin(), vector.end(), item));
@@ -210,18 +218,13 @@ public:
 	/** Empty the array.
 	 * @param shouldShrink false will not free memory
 	 */
-	void Empty(const bool shouldShrink = true) {
+	void Empty(const bool shouldShrink = true, i32 sizeNum = 0) {
 		vector.clear();
 
 		if (shouldShrink)
 			Shrink();
-	}
-
-	/** Empty the array keeping a desired size of reserved memory */
-	void Empty(i32 sizeNum) {
-		ZoneScopedN("Empty (Size)");
-		Empty(false);
-		Reserve(sizeNum);
+		else if(sizeNum > 0)
+			Reserve(sizeNum);
 	}
 
 	void Shrink() { vector.shrink_to_fit(); }

@@ -50,7 +50,7 @@ bool Renderer::Initialize()
 		return false;
 
 	gl_context = SDL_GL_CreateContext(window);
-	SDL_GL_SetSwapInterval(1); // Enable vsync
+	SDL_GL_SetSwapInterval(0); // 1 Enables vsync
 
 
 	//Setup GL and UI
@@ -128,11 +128,13 @@ void Renderer::Render(Frame& frame)
 			ImGui::RenderPlatformWindowsDefault();
 		}
 	}
+
+	SwapWindow();
 }
 
-void Renderer::Sleep()
+void Renderer::SwapWindow()
 {
-	ZoneScopedNC("Sleep", 0xD15545);
+	ZoneScopedNC("Swap & VSync", 0xD15545);
 	SDL_GL_SwapWindow(window);
 }
 

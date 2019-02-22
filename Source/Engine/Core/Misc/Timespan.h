@@ -412,9 +412,10 @@ public:
 	 * @return Number of days.
 	 * @see GetDays
 	 */
-	double GetTotalDays() const
+	template<typename PrecisionType = float>
+	PrecisionType GetTotalDays() const
 	{
-		return std::chrono::duration<double, date::days::period>(duration).count();
+		return std::chrono::duration<PrecisionType, date::days::period>(duration).count();
 	}
 
 	/**
@@ -423,9 +424,10 @@ public:
 	 * @return Number of hours.
 	 * @see GetHours
 	 */
-	double GetTotalHours() const
+	template<typename PrecisionType = float>
+	PrecisionType GetTotalHours() const
 	{
-		return std::chrono::duration<double, std::chrono::hours::period>(duration).count();
+		return std::chrono::duration<PrecisionType, std::chrono::hours::period>(duration).count();
 	}
 
 	/**
@@ -434,9 +436,10 @@ public:
 	 * @return Number of microseconds.
 	 * @see GetFractionMicro
 	 */
-	double GetTotalMicroseconds() const
+	template<typename PrecisionType = float>
+	PrecisionType GetTotalMicroseconds() const
 	{
-		return std::chrono::duration<double, std::chrono::microseconds::period>(duration).count();
+		return std::chrono::duration<PrecisionType, std::chrono::microseconds::period>(duration).count();
 	}
 
 	/**
@@ -445,9 +448,10 @@ public:
 	 * @return Number of milliseconds.
 	 * @see GetFractionMilli
 	 */
-	double GetTotalMilliseconds() const
+	template<typename PrecisionType = float>
+	PrecisionType GetTotalMilliseconds() const
 	{
-		return std::chrono::duration<double, std::chrono::milliseconds::period>(duration).count();
+		return std::chrono::duration<PrecisionType, std::chrono::milliseconds::period>(duration).count();
 	}
 
 	/**
@@ -456,9 +460,10 @@ public:
 	 * @return Number of minutes.
 	 * @see GetMinutes
 	 */
-	double GetTotalMinutes() const
+	template<typename PrecisionType = float>
+	PrecisionType GetTotalMinutes() const
 	{
-		return std::chrono::duration<double, std::chrono::minutes::period>(duration).count();
+		return std::chrono::duration<PrecisionType, std::chrono::minutes::period>(duration).count();
 	}
 
 	/**
@@ -467,9 +472,10 @@ public:
 	 * @return Number of seconds.
 	 * @see GetSeconds
 	 */
-	double GetTotalSeconds() const
+	template<typename PrecisionType = float>
+	PrecisionType GetTotalSeconds() const
 	{
-		return std::chrono::duration<double, std::chrono::seconds::period>(duration).count();
+		return std::chrono::duration<PrecisionType, std::chrono::seconds::period>(duration).count();
 	}
 
 	/**
