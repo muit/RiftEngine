@@ -30,8 +30,11 @@ struct GLRenderTexture {
 		BuildFrame(initialWidth, initialHeight);
 	}
 
-	GLRenderTexture(GLRenderTexture&& other) { MoveFrom(eastl::move(other)); }
-	GLRenderTexture& operator=(GLRenderTexture&& other) { MoveFrom(eastl::move(other)); }
+	GLRenderTexture(GLRenderTexture&& other) { MoveFrom(MoveTemp(other)); }
+	GLRenderTexture& operator=(GLRenderTexture&& other) {
+		MoveFrom(MoveTemp(other));
+		return *this;
+	}
 
 
 	void Draw(v2_u32 size, const TextureData& buffer);

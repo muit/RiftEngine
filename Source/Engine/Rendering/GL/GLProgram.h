@@ -22,6 +22,7 @@ struct GLProgram {
 	GLProgram& operator=(GLProgram&& other) {
 		programId = other.programId;
 		other.programId = 0;
+		return *this;
 	}
 
 	~GLProgram() {

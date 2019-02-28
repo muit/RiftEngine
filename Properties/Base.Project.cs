@@ -27,7 +27,7 @@ class BaseProject : Project
 
         if(target.Optimization == Optimization.Release)
         {
-            conf.Options.Add(Sharpmake.Options.Vc.General.TreatWarningsAsErrors.Enable);
+            //conf.Options.Add(Sharpmake.Options.Vc.General.TreatWarningsAsErrors.Enable);
         }
         else if(target.Optimization == Optimization.Debug)
         {

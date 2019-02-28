@@ -98,6 +98,7 @@ public:
 	FORCEINLINE bool Serialize(Archive& ar, const char* inName)
 	{
 		ar(inName, id);
+		return true;
 	}
 };
 

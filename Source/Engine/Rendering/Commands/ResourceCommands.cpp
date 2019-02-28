@@ -74,10 +74,10 @@ void DrawMeshCommand::OperateVertexShader(FrameRender& render, const VertexBuffe
 			LinearColor lightColor = ambientLight.color * ambientLight.intensity;
 
 			// Apply directional lights
-			for (i32 i = 0; i < render.lighting.directionals.Size(); ++i)
+			for (i32 j = 0; j < render.lighting.directionals.Size(); ++j)
 			{
-				const DirectionalLightData& directional = render.lighting.directionals[i];
-				const v3& forward = directionalForwards[i];
+				const DirectionalLightData& directional = render.lighting.directionals[j];
+				const v3& forward = directionalForwards[j];
 
 				const float NoL = forward.dot(normal);
 				lightColor += (directional.color * -NoL * directional.intensity);
@@ -144,10 +144,11 @@ void DrawMeshCommand::BackfaceCulling(const VertexBufferI32& vertices, TriangleB
 
 		if (lookingFront)
 		{
-			triangles.RemoveAtSwap(i);
+			triangles.RemoveAtSwap(i, false);
 			--i;
 		}
 	}
+	triangles.Shrink();
 }
 
 void DrawMeshCommand::RenderTriangles(FrameRender& render, const TArray<v3_i32>& vertices, const TriangleBuffer& triangles, const LColorBuffer& colors)

@@ -42,18 +42,18 @@
           "a": 137406,
           "b": 3605628,
           "c": 2784028112,
-          "d": 3714376648
+          "d": 3714372648
         },
         "name": "Car Terrain"
       },
       "CMesh": {
-        "model": "car_terrain.obj.meta"
+        "model": "car_terrain.fbx.meta"
       },
       "CTransform": {
         "transform": {
           "location": {
             "x": 0.0,
-            "y": 20.0,
+            "y": 13.0,
             "z": 0.0
           },
           "scale": {

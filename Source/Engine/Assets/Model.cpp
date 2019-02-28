@@ -27,7 +27,7 @@ bool Model::PostLoad()
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			Log::Warning("ASSIMP: %s", importer.GetErrorString());
+			Log::Warning("Could not load model: %s", importer.GetErrorString());
 			return false;
 		}
 
