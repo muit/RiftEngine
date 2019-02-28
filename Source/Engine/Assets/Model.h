@@ -11,13 +11,18 @@ class Model : public AssetData
 {
 	CLASS(Model, AssetData)
 
+	static i32 idCounter;
+	i32 id;
 
 	MeshData data;
 
 
 public:
 
+	Model() : Super(), id{++idCounter} {}
+
 	virtual bool PostLoad() override;
 
+	FORCEINLINE i32 GetId() { return id; }
 	FORCEINLINE const MeshData& GetMeshData() const { return data; }
 };

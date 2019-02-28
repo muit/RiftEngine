@@ -20,9 +20,9 @@ void SRenderMeshes::Tick(float /*deltaTime*/)
 	ECS()->View<CTransform, CMesh>().each(
 	[world](const EntityId e, CTransform& t, CMesh& c)
 	{
-		if (!c.model.IsNull())
+		if (c.model.IsValid())
 		{
-			world->QueueRender<DrawMeshCommand>(0, t.transform);
+			world->QueueRender<DrawMeshCommand>(c.model->GetId(), t.transform);
 		}
 	});
 

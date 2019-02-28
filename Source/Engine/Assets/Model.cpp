@@ -11,6 +11,8 @@
 #include "Rendering/Commands/ResourceCommands.h"
 
 
+i32 Model::idCounter = 0;
+
 bool Model::PostLoad()
 {
 	Super::PostLoad();
@@ -31,7 +33,7 @@ bool Model::PostLoad()
 
 		data.FromAssimpScene(scene);
 
-		GetWorld()->QueueRender<LoadMeshCommand>(0, data);
+		GetWorld()->QueueRender<LoadMeshCommand>(GetId(), data);
 		return true;
 	}
 

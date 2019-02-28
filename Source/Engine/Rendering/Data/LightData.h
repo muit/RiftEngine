@@ -8,18 +8,22 @@
 #include "Core/Math/Color.h"
 #include "Core/Containers/Array.h"
 
-
-struct DirectionalLightData {
+struct BaseLightData {
 	LinearColor color;
 	float intensity;
+
+	BaseLightData() = default;
+};
+
+using AmbientLightData = BaseLightData;
+
+struct DirectionalLightData : public BaseLightData {
 	Quat rotation;
 
 	DirectionalLightData() = default;
 };
 
-struct PointLightData {
-	LinearColor color;
-	float intensity;
+struct PointLightData : public BaseLightData {
 	float radius;
 	v3 position;
 

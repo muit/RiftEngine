@@ -51,32 +51,48 @@ void DrawMeshCommand::TransformToWorld(FrameRender& render, VertexBuffer& vertic
 
 void DrawMeshCommand::OperateVertexShader(FrameRender& render, const VertexBuffer& worldVertices, const NormalsBuffer& normals, LColorBuffer& colors)
 {
-	// #TODO: We should stack all directional lights here into one
-
 	if (render.lighting.directionals.Size() > 0)
 	{
-		// Copy to make it local (therefore faster)
-		DirectionalLightData directional = render.lighting.directionals[0];
-		v3 dirForward = directional.rotation.GetForward();
-		dirForward.normalize();
+		AmbientLightData ambientLight {Color::White, 0.5f};
 
+		// Cache all directional directions
+		TArray<v3> directionalForwards;
+		directionalForwards.Reserve(render.lighting.directionals.Size());
+		for (i32 i = 0; i < render.lighting.directionals.Size(); ++i)
+		{
+			v3 dirForward = render.lighting.directionals[i].rotation.GetForward();
+			dirForward.normalize();
+			directionalForwards.Add(dirForward);
+		}
+
+		// For each vertex
 		for (i32 i = 0; i < worldVertices.Size(); ++i)
 		{
 			const v3& normal = normals[i];
 
-			LinearColor& color = colors[i];
+			// Calculate ambient light
+			LinearColor lightColor = ambientLight.color * ambientLight.intensity;
 
-			// Apply directional
-			const float NoL = dirForward.dot(normal);
-			color *= (directional.color * -NoL * directional.intensity);
+			// Apply directional lights
+			for (i32 i = 0; i < render.lighting.directionals.Size(); ++i)
+			{
+				const DirectionalLightData& directional = render.lighting.directionals[i];
+				const v3& forward = directionalForwards[i];
 
-			// Apply points
+				const float NoL = forward.dot(normal);
+				lightColor += (directional.color * -NoL * directional.intensity);
+			}
+
+			// Apply point lights
 			/*{
 				const v3& vertex = worldVertices[i];
 
 				const float NoL = (vertex - point.location).dot(normals[i]);
 				color += point.color * -NoL * point.intensity;
 			}*/
+
+			// Apply light to vertex color
+			colors[i] *= lightColor;
 		}
 	}
 }
@@ -126,7 +142,7 @@ void DrawMeshCommand::BackfaceCulling(const VertexBufferI32& vertices, TriangleB
 
 		const bool lookingFront = ((v1.x() - v0.x()) * (v2.y() - v0.y()) - (v2.x() - v0.x()) * (v1.y() - v0.y()) > 0.f);
 
-		if (!lookingFront)
+		if (lookingFront)
 		{
 			triangles.RemoveAtSwap(i);
 			--i;

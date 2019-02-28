@@ -21,14 +21,14 @@ void SEditorCamera::BeginPlay()
 	.Bind(this, &SEditorCamera::ViewportMoveMode);
 
 	input->CreateAxisAction({ "MoveForward" }, {
-		{ EKey::W, EKeyModifier::None, -1.f },
-		{ EKey::S, EKeyModifier::None,  1.f }
+		{ EKey::W, EKeyModifier::None,  1.f },
+		{ EKey::S, EKeyModifier::None, -1.f }
 	}, {})
 	.Bind(this, &SEditorCamera::MoveForward);
 
 	input->CreateAxisAction({ "MoveRight" }, {
-		{ EKey::A, EKeyModifier::None, -1.f },
-		{ EKey::D, EKeyModifier::None,  1.f }
+		{ EKey::A, EKeyModifier::None,  1.f },
+		{ EKey::D, EKeyModifier::None, -1.f }
 	}, {})
 	.Bind(this, &SEditorCamera::MoveRight);
 
