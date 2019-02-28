@@ -57,13 +57,26 @@ void DrawMeshCommand::OperateVertexShader(FrameRender& render, const VertexBuffe
 	{
 		// Copy to make it local (therefore faster)
 		DirectionalLightData directional = render.lighting.directionals[0];
-		v3 dir = directional.rotation.GetForward();
-		dir.normalize();
+		v3 dirForward = directional.rotation.GetForward();
+		dirForward.normalize();
 
 		for (i32 i = 0; i < worldVertices.Size(); ++i)
 		{
-			float NoL = dir.dot(normals[i]);
-			colors[i] *= (directional.color *  NoL).GetClamped();
+			const v3& normal = normals[i];
+
+			LinearColor& color = colors[i];
+
+			// Apply directional
+			const float NoL = dirForward.dot(normal);
+			color *= (directional.color * -NoL * directional.intensity);
+
+			// Apply points
+			/*{
+				const v3& vertex = worldVertices[i];
+
+				const float NoL = (vertex - point.location).dot(normals[i]);
+				color += point.color * -NoL * point.intensity;
+			}*/
 		}
 	}
 }
@@ -81,7 +94,6 @@ void DrawMeshCommand::TransformToScreen(FrameRender& render, const VertexBuffer&
 	v3 scale{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 100000000.f };
 	Transform::Matrix toViewport = Eigen::Translation3f(translate) * Scaling(scale);
 
-	v3_i32 v;
 	for (i32 i = 0; i < worldVertices.Size(); ++i)
 	{
 		// Transform to camera perspective
@@ -92,8 +104,7 @@ void DrawMeshCommand::TransformToScreen(FrameRender& render, const VertexBuffer&
 		const float divisor = 1.f / vertex4[3];
 
 		// Transform to viewport
-		v = (toViewport * (vertex4.head<3>() * divisor)).cast<i32>();
-		screenVertices[i] = v;
+		screenVertices[i] = (toViewport * (vertex4.head<3>() * divisor)).cast<i32>();
 	}
 }
 
