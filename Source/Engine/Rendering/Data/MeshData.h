@@ -69,6 +69,7 @@ public:
 
 	FORCEINLINE const VertexBuffer& GetVertices() const { return vertices; }
 	FORCEINLINE const TriangleBuffer& GetTriangles() const { return triangles; }
+	FORCEINLINE const NormalsBuffer& GetNormals() const { return normals; }
 
 private:
 

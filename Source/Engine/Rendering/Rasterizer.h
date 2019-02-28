@@ -49,7 +49,7 @@ public:
 
 	void FillTriangle(const VertexBufferI32& vertices, const v3_u32& triangle, const Color& color);
 
-	void FillVertexBuffer(const VertexBufferI32& vertices, const TriangleBuffer& triangles, const Color& color);
+	void FillVertexBuffer(const VertexBufferI32& vertices, const TriangleBuffer& triangles, const LColorBuffer& vertexColors);
 
 
 	const TextureData& GetTargetTexture() const { return target; }

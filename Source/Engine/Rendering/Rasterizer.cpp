@@ -180,12 +180,18 @@ void Rasterizer::FillTriangle(const VertexBufferI32& vertices, const v3_u32& tri
 	}
 }
 
-void Rasterizer::FillVertexBuffer(const VertexBufferI32& vertices, const TriangleBuffer& triangles, const Color& color)
+void Rasterizer::FillVertexBuffer(const VertexBufferI32& vertices, const TriangleBuffer& triangles, const LColorBuffer& vertexColors)
 {
 	for (const auto& triangle : triangles)
 	{
+		const LinearColor& c0 = vertexColors[triangle[0]];
+		const LinearColor& c1 = vertexColors[triangle[1]];
+		const LinearColor& c2 = vertexColors[triangle[2]];
+
+		const Color color = LinearColor::LerpUsingHSV(LinearColor::LerpUsingHSV(c0, c1, 0.5f), c2, 0.5f).ToColor(true);
+
 		// Just for demo purposes, triangles have random colors
-		FillTriangle(vertices, triangle, Color::MakeRandomColor());
+		FillTriangle(vertices, triangle, color);
 	}
 }
 

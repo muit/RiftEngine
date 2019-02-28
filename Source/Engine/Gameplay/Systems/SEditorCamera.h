@@ -17,7 +17,7 @@ class SEditorCamera : public System {
 
 	float forwardSpeed = 10.f;
 	float sideSpeed = 5.f;
-	float rotateSpeed = 5.f;
+	float rotateSpeed = 10.f;
 
 	bool bRotatingMode = false;
 	v3 movementDelta{ v3::Zero() };

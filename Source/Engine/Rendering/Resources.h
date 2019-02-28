@@ -20,20 +20,21 @@ struct Resources {
 
 private:
 
-	using TextureMap = eastl::unordered_map<u32, TextureData>;
-	using MeshMap    = eastl::unordered_map<u32, MeshData>;
+	using TextureMap          = eastl::unordered_map<u32, TextureData>;
+	using MeshMap             = eastl::unordered_map<u32, MeshData>;
 
 	TextureMap textures;
 	MeshMap meshes;
 
+
 public:
 
-	void Load(u32 id, TextureData&& texture) {
-		textures.insert_or_assign(id, texture);
+	void Load(u32 id, TextureData&& data) {
+		textures.insert_or_assign(id, data);
 	}
 
-	void Load(u32 id, MeshData&& mesh) {
-		meshes.insert_or_assign(id, mesh);
+	void Load(u32 id, MeshData&& data) {
+		meshes.insert_or_assign(id, data);
 	}
 
 	template<ResourceType type>

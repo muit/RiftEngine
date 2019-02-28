@@ -12,8 +12,11 @@
  * They contain the state of the render data no matter which frame is being rendered.
  */
 class RenderCommand {
-public:
+protected:
 
+	RenderCommand() = default;
+
+public:
 	virtual ~RenderCommand() {}
 
 	virtual void Execute(struct FrameRender& render, struct Frame& frame) = 0;

@@ -9,9 +9,12 @@
 #include "Gameplay/Components/CMesh.h"
 #include "Gameplay/Components/CCamera.h"
 #include "Gameplay/Components/CEditorCamera.h"
+#include "Gameplay/Components/CPointLight.h"
+#include "Gameplay/Components/CDirectionalLight.h"
 #include "Gameplay/Systems/SEditorCamera.h"
 #include "Gameplay/Systems/SRenderMeshes.h"
 #include "Gameplay/Systems/SRenderCamera.h"
+#include "Gameplay/Systems/SLighting.h"
 
 
 bool ECSManager::Serialize(Archive& ar)
@@ -33,7 +36,8 @@ bool ECSManager::Serialize(Archive& ar)
 			ar.BeginObject(i);
 			if (ar.IsObjectValid())
 			{
-				SerializeEntity(ar, CreateEntity(""));
+				EntityId entity = CreateEntity("");
+				SerializeEntity(ar, entity);
 			}
 			ar.EndObject();
 		}
@@ -70,6 +74,8 @@ void ECSManager::SerializeEntity(Archive& ar, EntityId entity)
 	SerializeComponent<CTransform>(ar, entity);
 	SerializeComponent<CMesh>(ar, entity);
 	SerializeComponent<CEditorCamera>(ar, entity);
+	SerializeComponent<CPointLight>(ar, entity);
+	SerializeComponent<CDirectionalLight>(ar, entity);
 }
 
 void ECSManager::RegistrySystems()
@@ -79,6 +85,7 @@ void ECSManager::RegistrySystems()
 
 	// Rendering
 	RegistrySystem<SRenderCamera>();
+	RegistrySystem<SLighting>();
 	RegistrySystem<SRenderMeshes>();
 }
 

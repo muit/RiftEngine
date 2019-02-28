@@ -93,8 +93,12 @@ public:
 
 private:
 
-	void TransformToScreen(FrameRender& render, const VertexBuffer& vertices, VertexBufferI32& outVertices);
+	void TransformToWorld(FrameRender& render, VertexBuffer& vertices, NormalsBuffer& normals);
+
+	void OperateVertexShader(FrameRender& render, const VertexBuffer& worldVertices, const NormalsBuffer& normals, LColorBuffer& colors);
+
+	void TransformToScreen(FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices);
 
 	void BackfaceCulling(const VertexBufferI32& vertices, TriangleBuffer& triangles);
-	void RenderTriangles(FrameRender& render, const VertexBufferI32& vertices, const TriangleBuffer& triangles);
+	void RenderTriangles(FrameRender& render, const VertexBufferI32& vertices, const TriangleBuffer& triangles, const LColorBuffer& colors);
 };

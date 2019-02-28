@@ -35,6 +35,43 @@
           }
         }
       }
+    },
+    {
+      "CEntity": {
+        "id": {
+          "a": 137406,
+          "b": 3605628,
+          "c": 2784028112,
+          "d": 3714373648
+        },
+        "name": "Directional Light"
+      },
+      "CTransform": {
+        "transform": {
+          "location": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "w": 1.0,
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        }
+      },
+      "CDirectionalLight": {
+        "color": {
+          "r": 255, "g": 255, "b": 255
+        },
+        "intensity": 1.0
+      }
     }
   ],
   "name": "",

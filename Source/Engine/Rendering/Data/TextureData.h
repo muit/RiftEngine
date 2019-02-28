@@ -9,9 +9,10 @@
 #include "Core/Containers/Array.h"
 
 
-struct TextureData {
-	using ColorBuffer = TArray<Color>;
+using ColorBuffer = TArray<Color>;
+using LColorBuffer = TArray<LinearColor>;
 
+struct TextureData {
 private:
 	v2_u32 size;
 	ColorBuffer buffer;

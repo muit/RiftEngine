@@ -9,42 +9,91 @@ void DrawMeshCommand::Execute(FrameRender& render, Frame& frame)
 	const MeshData& mesh = render.resources.Get<ResourceType::Mesh>(id);
 
 	TriangleBuffer triangles{ mesh.GetTriangles() };
+	NormalsBuffer normals = mesh.GetNormals();
 
-	VertexBufferI32 vertices{ (u32)mesh.GetVertices().Size() };
-	TransformToScreen(render, mesh.GetVertices(), vertices);
+	// Reserve same size
+	u32 verticesCount = (u32)mesh.GetVertices().Size();
 
-	BackfaceCulling(vertices, triangles);
-	RenderTriangles(render, vertices, triangles);
+	// Vertex shader params
+	VertexBuffer vertices{ mesh.GetVertices() };
+	LColorBuffer  colors { verticesCount, LinearColor::Green};
+
+	VertexBufferI32 screenVertices{ verticesCount };
+
+	TransformToWorld(render, vertices, normals);
+
+	OperateVertexShader(render, vertices, normals, colors);
+
+	TransformToScreen(render, vertices, screenVertices);
+
+	BackfaceCulling(screenVertices, triangles);
+	RenderTriangles(render, screenVertices, triangles, colors);
 }
 
-void DrawMeshCommand::TransformToScreen(FrameRender& render, const VertexBuffer& vertices, VertexBufferI32& outVertices)
+void DrawMeshCommand::TransformToWorld(FrameRender& render, VertexBuffer& vertices, NormalsBuffer& normals)
+{
+	ZoneScoped("TransformToWorld");
+
+	const Transform::Matrix toWorld = transform.ToWorldMatrix();
+	const auto toWorldLinear = toWorld.linear();
+
+	for (i32 i = 0; i < vertices.Size(); ++i)
+	{
+		// Vertices to world
+		auto& vertex = vertices[i];
+		vertex = toWorld * vertex;
+
+		// Normals to world
+		v3& normal = normals[i];
+		normal = toWorldLinear * normal;
+	}
+}
+
+void DrawMeshCommand::OperateVertexShader(FrameRender& render, const VertexBuffer& worldVertices, const NormalsBuffer& normals, LColorBuffer& colors)
+{
+	// #TODO: We should stack all directional lights here into one
+
+	if (render.lighting.directionals.Size() > 0)
+	{
+		// Copy to make it local (therefore faster)
+		DirectionalLightData directional = render.lighting.directionals[0];
+		v3 dir = directional.rotation.GetForward();
+		dir.normalize();
+
+		for (i32 i = 0; i < worldVertices.Size(); ++i)
+		{
+			float NoL = dir.dot(normals[i]);
+			colors[i] *= (directional.color *  NoL).GetClamped();
+		}
+	}
+}
+
+void DrawMeshCommand::TransformToScreen(FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices)
 {
 	ZoneScoped("TransformToCamera");
 
 	const Matrix4f toProjection = render.camera.GetPerspectiveMatrix(render.GetRenderSize());
 	const Transform::Matrix toCamera = render.camera.transform.ToLocalMatrix();
-	const Transform::Matrix toWorld = transform.ToWorldMatrix();
-	Matrix4f cameraTransform = toProjection * (toCamera * toWorld).matrix();
+	Matrix4f cameraTransform = toProjection * (toCamera).matrix();
 
 	// Viewport transform
 	v3 translate{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 0.f };
 	v3 scale{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 100000000.f };
 	Transform::Matrix toViewport = Eigen::Translation3f(translate) * Scaling(scale);
 
-
-	for (i32 i = 0; i < vertices.Size(); ++i)
+	v3_i32 v;
+	for (i32 i = 0; i < worldVertices.Size(); ++i)
 	{
 		// Transform to camera perspective
 		v4 vertex4;
-		vertex4 << vertices[i], 1.f;
+		vertex4 << worldVertices[i], 1.f;
 		vertex4 = cameraTransform * vertex4;
 
 		const float divisor = 1.f / vertex4[3];
 
 		// Transform to viewport
-		v3_i32 v;
 		v = (toViewport * (vertex4.head<3>() * divisor)).cast<i32>();
-		outVertices[i] = v;
+		screenVertices[i] = v;
 	}
 }
 
@@ -74,8 +123,8 @@ void DrawMeshCommand::BackfaceCulling(const VertexBufferI32& vertices, TriangleB
 	}
 }
 
-void DrawMeshCommand::RenderTriangles(FrameRender& render, const TArray<v3_i32>& vertices, const TriangleBuffer& triangles)
+void DrawMeshCommand::RenderTriangles(FrameRender& render, const TArray<v3_i32>& vertices, const TriangleBuffer& triangles, const LColorBuffer& colors)
 {
 	ZoneScoped("RasterizeTriangles");
-	render.rasterizer.FillVertexBuffer(vertices, triangles, Color::Blue);
+	render.rasterizer.FillVertexBuffer(vertices, triangles, colors);
 }

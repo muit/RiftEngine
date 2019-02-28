@@ -12,6 +12,7 @@
 #include "Data/TextureData.h"
 #include "Resources.h"
 #include "Rasterizer.h"
+#include "Data/LightData.h"
 
 
 struct Frame {
@@ -46,6 +47,8 @@ struct FrameRender {
 	TextureData baseColor;
 
 	CameraData camera;
+
+	LightingRender lighting;
 	Resources resources;
 
 	Rasterizer rasterizer;
@@ -65,6 +68,9 @@ struct FrameRender {
 		/*baseColor.Resize(viewportSize); No          */
 
 		rasterizer.Clear();
+
+		lighting.directionals.Empty();
+		lighting.points.Empty();
 	}
 
 	void DrawImage(const v2_u32& position, const TextureData& texture);

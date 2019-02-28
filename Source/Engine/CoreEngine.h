@@ -2,3 +2,6 @@
 #pragma once
 
 #include "Core/Platform/Platform.h"
+#include "EASTL/internal/move_help.h"
+
+#define MoveTemp(x) eastl::move(x)

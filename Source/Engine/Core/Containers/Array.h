@@ -7,6 +7,7 @@
 #include <EASTL/functional.h>
 #include <tracy/Tracy.hpp>
 
+#include "CoreEngine.h"
 #include "Core/Platform/Platform.h"
 
 
@@ -39,9 +40,9 @@ public:
 	TArray(u32 defaultSize, const Type& defaultValue) : vector{ defaultSize, defaultValue } {}
 	TArray(std::initializer_list<Type> initList) : vector{initList} {}
 
-	TArray(TArray<Type>&& other) { MoveFrom(eastl::move(other)); }
+	TArray(TArray<Type>&& other) { MoveFrom(MoveTemp(other)); }
 	TArray<Type>& operator=(TArray<Type>&& other) {
-		MoveFrom(eastl::move(other));
+		MoveFrom(MoveTemp(other));
 		return *this;
 	}
 
@@ -52,7 +53,7 @@ public:
 	}
 
 	i32 Add(Type&& item) {
-		vector.push_back(eastl::move(item));
+		vector.push_back(MoveTemp(item));
 		return Size() - 1;
 	}
 
@@ -73,6 +74,26 @@ public:
 		return Size() - 1;
 	}
 
+	void Append(const TArray<Type>& other) {
+		if (other.Size() > 0)
+		{
+			if (Size() <= 0)
+				CopyFrom(other)
+			else
+				vector.insert(vector.end(), other.begin(), other.end());
+		}
+	}
+
+	void Append(TArray<Type>&& other) {
+		if (other.Size() > 0)
+		{
+			if (Size() <= 0)
+				MoveFrom(MoveTemp(other));
+			else
+				vector.insert(vector.end(), other.begin(), other.end());
+		}
+	}
+
 
 	void Reserve(i32 sizeNum) { vector.reserve(sizeNum); }
 	void Resize(i32 sizeNum) {
@@ -80,7 +101,6 @@ public:
 	}
 
 	void Assign(i32 sizeNum, const Type& value) {
-		ZoneScopedN("Assign");
 		vector.assign(sizeNum, value);
 	}
 
