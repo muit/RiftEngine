@@ -21,8 +21,13 @@ void SLighting::Tick(float deltaTime)
 	auto dirView = ECS()->View<CTransform, CDirectionalLight>();
 
 	directionals.Reserve((i32)dirView.size());
-	dirView.each([&directionals](EntityId e, CTransform& t, CDirectionalLight& light)
+	dirView.each([deltaTime, &directionals](EntityId e, CTransform& t, CDirectionalLight& light)
 	{
+		// Rotate the light
+		Rotator r = t.transform.GetRotation();
+		r.z() += 5.f * deltaTime;
+		t.transform.SetRotation(r);
+
 		directionals.Add({
 			LinearColor{ light.color },
 			light.intensity,

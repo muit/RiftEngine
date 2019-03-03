@@ -6,6 +6,7 @@
 
 #include <EASTL/queue.h>
 #include <EASTL/shared_ptr.h>
+#include <taskflow/taskflow.hpp>
 
 #include "Core/Misc/DateTime.h"
 #include "RenderCommand.h"
@@ -51,13 +52,16 @@ struct FrameRender {
 	LightingRender lighting;
 	Resources resources;
 
-	Rasterizer rasterizer;
+	std::shared_ptr<tf::Taskflow::Executor> threadPool;
 
+	Rasterizer rasterizer;
 
 	FrameRender()
 		: baseColor{}
 		, camera {}
+		, lighting{}
 		, resources{}
+		, threadPool{ std::make_shared<tf::Taskflow::Executor>(4) }
 		, rasterizer{ baseColor }
 	{}
 

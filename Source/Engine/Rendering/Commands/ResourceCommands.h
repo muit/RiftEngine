@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreEngine.h"
+#include <taskflow/taskflow.hpp>
+
 #include "../RenderCommand.h"
 #include "../Data/TextureData.h"
 #include "../Data/MeshData.h"
@@ -10,6 +12,10 @@
 #include "../Frame.h"
 #include "../Rasterizer.h"
 
+using TaskFlow = tf::Taskflow;
+using Task = tf::Task;
+
+using EmptyFunc = eastl::function<void()>;
 
 // #TODO: Commands should be able to receive many orders of the same type.
 // E.g: Draw all this meshes
@@ -93,12 +99,11 @@ public:
 
 private:
 
-	void TransformToWorld(FrameRender& render, VertexBuffer& vertices, NormalsBuffer& normals);
+	EmptyFunc VertexToWorld(VertexBuffer& vertices);
+	EmptyFunc NormalToWorld(NormalsBuffer& normals);
+	EmptyFunc OperateVertexShader(FrameRender& render, const VertexBuffer& worldVertices, const NormalsBuffer& normals, LColorBuffer& colors);
+	EmptyFunc TransformToScreen(FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices);
+	EmptyFunc BackfaceCulling(const VertexBufferI32& vertices, TriangleBuffer& triangles);
 
-	void OperateVertexShader(FrameRender& render, const VertexBuffer& worldVertices, const NormalsBuffer& normals, LColorBuffer& colors);
-
-	void TransformToScreen(FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices);
-
-	void BackfaceCulling(const VertexBufferI32& vertices, TriangleBuffer& triangles);
 	void RenderTriangles(FrameRender& render, const VertexBufferI32& vertices, const TriangleBuffer& triangles, const LColorBuffer& colors);
 };

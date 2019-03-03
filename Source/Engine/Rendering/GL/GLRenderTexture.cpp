@@ -83,8 +83,8 @@ void GLRenderTexture::BuildFrame(u32 width, u32 height)
 
 void GLRenderTexture::Draw(v2_u32 size, const TextureData& buffer)
 {
-	ZoneScopedNC("RenderToGPU", 0x94d145);
-	glViewport(0, 0, size.x(), size.y());
+	ZoneScopedNC("Render To GPU", 0x94d145);
+	//glViewport(0, 0, size.x(), size.y());
 	shaderProgram.Use();
 
 

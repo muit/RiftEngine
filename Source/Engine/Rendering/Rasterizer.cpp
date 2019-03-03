@@ -133,7 +133,7 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBufferI32& vertices, const
 
 			while (o0 < o1)
 			{
-				if (z0 < zBuffer[o0]) // #Fix: Array out of bounds here
+				if (z0 < zBuffer[o0])
 				{
 					target.Buffer()[o0] = color;
 					zBuffer[o0] = z0;
@@ -191,7 +191,7 @@ void Rasterizer::FillVertexBuffer(const VertexBufferI32& vertices, const Triangl
 		const Color color = LinearColor::LerpUsingHSV(LinearColor::LerpUsingHSV(c0, c1, 0.5f), c2, 0.5f).ToColor(true);
 
 		// Just for demo purposes, triangles have random colors
-		FillTriangle(vertices, triangle, color);
+		FillTriangle(vertices, triangle, Color::MakeRandomColor());
 	}
 }
 

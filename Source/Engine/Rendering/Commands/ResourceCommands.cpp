@@ -1,11 +1,15 @@
 // © 2019 Miguel Fernández Arce - All rights reserved
 
 #include "ResourceCommands.h"
+
 #include "Core/Math/Vector.h"
 
+EA_DISABLE_VC_WARNING(4267)
 
 void DrawMeshCommand::Execute(FrameRender& render, Frame& frame)
 {
+	ZoneScopedN("Draw Mesh");
+
 	const MeshData& mesh = render.resources.Get<ResourceType::Mesh>(id);
 
 	TriangleBuffer triangles{ mesh.GetTriangles() };
@@ -20,44 +24,77 @@ void DrawMeshCommand::Execute(FrameRender& render, Frame& frame)
 
 	VertexBufferI32 screenVertices{ verticesCount };
 
-	TransformToWorld(render, vertices, normals);
+	TaskFlow flow{ render.threadPool };
 
-	OperateVertexShader(render, vertices, normals, colors);
+	tf::Task wVertexTask = flow.emplace(VertexToWorld(vertices));
+	tf::Task wNormalTask = flow.emplace(NormalToWorld(normals));
+	tf::Task sVertexTask         = flow.emplace(TransformToScreen(render, vertices, screenVertices));
+	tf::Task backfaceCullingTask = flow.emplace(BackfaceCulling(screenVertices, triangles));
+	tf::Task vertexShaderTask    = flow.emplace(OperateVertexShader(render, vertices, normals, colors));
 
-	TransformToScreen(render, vertices, screenVertices);
+	// Build async graph
+	{
+		wVertexTask.precede(sVertexTask);
+		wVertexTask.precede(vertexShaderTask);
+		wNormalTask.precede(vertexShaderTask);
 
-	BackfaceCulling(screenVertices, triangles);
+		sVertexTask.precede(backfaceCullingTask);
+	}
+
+	flow.wait_for_all();
+
 	RenderTriangles(render, screenVertices, triangles, colors);
 }
 
-void DrawMeshCommand::TransformToWorld(FrameRender& render, VertexBuffer& vertices, NormalsBuffer& normals)
+EmptyFunc DrawMeshCommand::VertexToWorld(VertexBuffer& vertices)
 {
-	ZoneScoped("TransformToWorld");
+	const Transform t = transform;
 
-	const Transform::Matrix toWorld = transform.ToWorldMatrix();
-	const auto toWorldLinear = toWorld.linear();
-
-	for (i32 i = 0; i < vertices.Size(); ++i)
+	return [&vertices, t]()
 	{
-		// Vertices to world
-		auto& vertex = vertices[i];
-		vertex = toWorld * vertex;
+		ZoneScopedN("Vertices to world");
+		const Transform::Matrix toWorld = t.ToWorldMatrix();
 
-		// Normals to world
-		v3& normal = normals[i];
-		normal = toWorldLinear * normal;
-	}
+		for (i32 i = 0; i < vertices.Size(); ++i)
+		{
+			// Vertices to world
+			v3& vertex = vertices[i];
+			vertex = toWorld * vertex;
+		}
+	};
 }
 
-void DrawMeshCommand::OperateVertexShader(FrameRender& render, const VertexBuffer& worldVertices, const NormalsBuffer& normals, LColorBuffer& colors)
-{
-	if (render.lighting.directionals.Size() > 0)
-	{
-		AmbientLightData ambientLight {Color::White, 0.5f};
 
-		// Cache all directional directions
+EmptyFunc DrawMeshCommand::NormalToWorld(NormalsBuffer& normals)
+{
+	const Transform t = transform;
+
+	return [&normals, t]()
+	{
+		ZoneScopedN("Normals to world");
+
+		const auto toWorldLinear = t.ToWorldMatrix().linear();
+		for (i32 i = 0; i < normals.Size(); ++i)
+		{
+			// Normals to world
+			v3& normal = normals[i];
+			normal = toWorldLinear * normal;
+		}
+	};
+}
+
+EmptyFunc DrawMeshCommand::OperateVertexShader(FrameRender& render, const VertexBuffer& worldVertices, const NormalsBuffer& normals, LColorBuffer& colors)
+{
+	return [&render, &worldVertices, &normals, &colors]()
+	{
+		ZoneScopedN("Vertex Shader");
+
+		AmbientLightData ambientLight{ Color::White, 0.1f };
+
+		// Cache all directional light directions
 		TArray<v3> directionalForwards;
 		directionalForwards.Reserve(render.lighting.directionals.Size());
+
 		for (i32 i = 0; i < render.lighting.directionals.Size(); ++i)
 		{
 			v3 dirForward = render.lighting.directionals[i].rotation.GetForward();
@@ -66,12 +103,13 @@ void DrawMeshCommand::OperateVertexShader(FrameRender& render, const VertexBuffe
 		}
 
 		// For each vertex
+		LinearColor lightColor;
 		for (i32 i = 0; i < worldVertices.Size(); ++i)
 		{
 			const v3& normal = normals[i];
 
 			// Calculate ambient light
-			LinearColor lightColor = ambientLight.color * ambientLight.intensity;
+			lightColor = ambientLight.color * ambientLight.intensity;
 
 			// Apply directional lights
 			for (i32 j = 0; j < render.lighting.directionals.Size(); ++j)
@@ -94,65 +132,68 @@ void DrawMeshCommand::OperateVertexShader(FrameRender& render, const VertexBuffe
 			// Apply light to vertex color
 			colors[i] *= lightColor;
 		}
-	}
+	};
 }
 
-void DrawMeshCommand::TransformToScreen(FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices)
+EmptyFunc DrawMeshCommand::TransformToScreen(FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices)
 {
-	ZoneScoped("TransformToCamera");
-
-	const Matrix4f toProjection = render.camera.GetPerspectiveMatrix(render.GetRenderSize());
-	const Transform::Matrix toCamera = render.camera.transform.ToLocalMatrix();
-	Matrix4f cameraTransform = toProjection * (toCamera).matrix();
-
-	// Viewport transform
-	v3 translate{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 0.f };
-	v3 scale{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 100000000.f };
-	Transform::Matrix toViewport = Eigen::Translation3f(translate) * Scaling(scale);
-
-	for (i32 i = 0; i < worldVertices.Size(); ++i)
+	return [&render, &worldVertices, &screenVertices]()
 	{
-		// Transform to camera perspective
+		ZoneScopedN("Transform To Camera");
+
+		// Viewport transform
+		const v3 translate{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 0.f };
+		const v3 scale{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 100000000.f };
+		const Transform::Matrix toViewport = Eigen::Translation3f(translate) * Scaling(scale);
+
+		const Matrix4f toProjection{ render.camera.GetPerspectiveMatrix(render.GetRenderSize()) };
+		const Matrix4f toCamera = render.camera.transform.ToLocalMatrix().matrix();
+
+		const Matrix4f cameraTransform{ toViewport * toProjection * toCamera };
+
+
 		v4 vertex4;
-		vertex4 << worldVertices[i], 1.f;
-		vertex4 = cameraTransform * vertex4;
+		for (i32 i = 0; i < worldVertices.Size(); ++i)
+		{
+			// Transform: camera -> projection -> viewport
+			vertex4 << worldVertices[i], 1.f;
+			vertex4 = cameraTransform * vertex4;
 
-		const float divisor = 1.f / vertex4[3];
-
-		// Transform to viewport
-		screenVertices[i] = (toViewport * (vertex4.head<3>() * divisor)).cast<i32>();
-	}
+			screenVertices[i] = (vertex4.head<3>() / vertex4.w()).cast<i32>();
+		}
+	};
 }
 
-void DrawMeshCommand::BackfaceCulling(const VertexBufferI32& vertices, TriangleBuffer& triangles)
+EmptyFunc DrawMeshCommand::BackfaceCulling(const VertexBufferI32& vertices, TriangleBuffer& triangles)
 {
-	ZoneScoped("BackfaceCulling");
+	return [&vertices, &triangles]() {
+		ZoneScopedN("Backface Culling");
 
-	// Remove all triangles that don't look towards the camera
-	for (i32 i = 0; i < triangles.Size(); ++i)
-	{
-		const v3_u32& triangle = triangles[i];
-
-		const v3_i32& v0 = vertices[triangle.x()];
-		const v3_i32& v1 = vertices[triangle.y()];
-		const v3_i32& v2 = vertices[triangle.z()];
-
-		// Se asumen coordenadas proyectadas y polígonos definidos en sentido horario.
-		// Se comprueba a qué lado de la línea que pasa por v0 y v1 queda el punto v2:
-
-		const bool lookingFront = ((v1.x() - v0.x()) * (v2.y() - v0.y()) - (v2.x() - v0.x()) * (v1.y() - v0.y()) > 0.f);
-
-		if (lookingFront)
+		// Remove all triangles that don't look towards the camera
+		for (i32 i = 0; i < triangles.Size(); ++i)
 		{
-			triangles.RemoveAtSwap(i, false);
-			--i;
+			const v3_u32& triangle = triangles[i];
+
+			const v3_i32& v0 = vertices[triangle.x()];
+			const v3_i32& v1 = vertices[triangle.y()];
+			const v3_i32& v2 = vertices[triangle.z()];
+
+			const bool lookingFront = ((v1.x() - v0.x()) * (v2.y() - v0.y()) - (v2.x() - v0.x()) * (v1.y() - v0.y()) > 0.f);
+
+			if (lookingFront)
+			{
+				triangles.RemoveAtSwap(i, false);
+				--i;
+			}
 		}
-	}
-	triangles.Shrink();
+		triangles.Shrink();
+	};
 }
 
 void DrawMeshCommand::RenderTriangles(FrameRender& render, const TArray<v3_i32>& vertices, const TriangleBuffer& triangles, const LColorBuffer& colors)
 {
-	ZoneScoped("RasterizeTriangles");
+	ZoneScopedN("Rasterize Triangles");
 	render.rasterizer.FillVertexBuffer(vertices, triangles, colors);
 }
+
+EA_RESTORE_VC_WARNING()  // warning: 4267

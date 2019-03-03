@@ -25,7 +25,6 @@ public class AssimpLibrary : Project
         conf.SolutionFolder = "RiftEngine/ThirdParty";
         conf.IncludePaths.Add("[project.BasePath]");
         conf.ProjectPath = "[project.SharpmakeCsPath]/../../../Binaries/Assimp";
-        conf.PrecompHeader = "SDL.h";
 
         conf.TargetLibraryPath = "[project.SharpmakeCsPath]/lib/[target.Platform]";
         conf.TargetCopyFiles.Add(@"[project.SharpmakeCsPath]/lib/[target.Platform]/assimp.dll");

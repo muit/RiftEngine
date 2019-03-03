@@ -10,10 +10,10 @@
           "c": 2784028112,
           "d": 3714376648
         },
-        "name": "Terrain"
+        "name": "Piramid"
       },
       "CMesh": {
-        "model": "Terrain.obj.meta"
+        "model": "piramid.obj.meta"
       },
       "CTransform": {
         "transform": {
@@ -44,10 +44,10 @@
           "c": 2784028112,
           "d": 3714372648
         },
-        "name": "Car Terrain"
+        "name": "Terrain"
       },
       "CMesh": {
-        "model": "car_terrain.fbx.meta"
+        "model": "terrain.fbx.meta"
       },
       "CTransform": {
         "transform": {
@@ -56,10 +56,16 @@
             "y": 13.0,
             "z": 0.0
           },
+          "rotation": {
+            "w": 0.707,
+            "x": 0.0,
+            "y": 0.707,
+            "z": 0.0
+          },
           "scale": {
-            "x": 0.01,
-            "y": 0.01,
-            "z": 0.01
+            "x": 0.02,
+            "y": 0.02,
+            "z": 0.02
           }
         }
       }
