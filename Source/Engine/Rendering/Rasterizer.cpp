@@ -175,8 +175,8 @@ void Rasterizer::FillTriangle(const VertexBufferI32& vertices, const v3_u32& tri
 		return;
 
 	// Frustum culling by bounds
-	if (viewportBounds.Contains(bounds)) {
-
+	if (viewportBounds.Contains(bounds))
+	{
 		const LinearColor& c0 = vertexColors[triangle[0]];
 		const LinearColor& c1 = vertexColors[triangle[1]];
 		const LinearColor& c2 = vertexColors[triangle[2]];
