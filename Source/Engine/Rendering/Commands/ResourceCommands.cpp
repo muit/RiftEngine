@@ -12,6 +12,7 @@ void DrawMeshCommand::Execute(FrameRender& render, Frame& frame)
 
 	const MeshData& mesh = render.resources.Get<ResourceType::Mesh>(id);
 
+	// #TODO: Cache operation buffers on resources
 	TriangleBuffer triangles{ mesh.GetTriangles() };
 	NormalsBuffer normals = mesh.GetNormals();
 
@@ -20,7 +21,7 @@ void DrawMeshCommand::Execute(FrameRender& render, Frame& frame)
 
 	// Vertex shader params
 	VertexBuffer vertices{ mesh.GetVertices() };
-	LColorBuffer  colors { verticesCount, LinearColor::Green};
+	LColorBuffer  colors{ verticesCount, { color } };
 
 	VertexBufferI32 screenVertices{ verticesCount };
 
@@ -113,7 +114,7 @@ TaskLambda DrawMeshCommand::OperateVertexShader(FrameRender& render, const Verte
 	{
 		ZoneScopedN("Vertex Shader");
 
-		AmbientLightData ambientLight{ Color::White, 0.1f };
+		AmbientLightData ambientLight{ Color::White, 0.8f };
 
 		// Cache all directional light directions
 		TArray<v3> directionalForwards;

@@ -22,7 +22,7 @@ void SRenderMeshes::Tick(float /*deltaTime*/)
 	{
 		if (c.model.IsValid())
 		{
-			world->QueueRender<DrawMeshCommand>(c.model->GetId(), t.transform);
+			world->QueueRender<DrawMeshCommand>(c.model->GetId(), t.transform, c.color);
 		}
 	});
 

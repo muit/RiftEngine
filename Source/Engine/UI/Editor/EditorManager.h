@@ -33,10 +33,12 @@ class EditorManager : public Object {
 public:
 
 	EditorManager() : Super() {
-		sceneEntities = Widget::CreateStandalone<SceneEntities>();
 
 		details = Widget::CreateStandalone<Details>();
 		details->SetObject(GetWorld()->GetActiveScene().Get());
+
+		sceneEntities = Widget::CreateStandalone<SceneEntities>();
+		sceneEntities->sceneDetailsWindow = details;
 
 		memory = Widget::CreateStandalone<MemoryDebugger>();
 		assetBrowser = Widget::CreateStandalone<AssetBrowser>();

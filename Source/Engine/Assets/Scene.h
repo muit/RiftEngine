@@ -16,9 +16,6 @@ public:
 	PROP(String, displayName, DetailsEdit)
 	String displayName;
 
-	PROP(Transform, transform, DetailsEdit)
-	Transform transform;
-
 
 	virtual bool Serialize(class Archive& ar) override;
 };

@@ -25,7 +25,8 @@ void SLighting::Tick(float deltaTime)
 	{
 		// Rotate the light
 		Rotator r = t.transform.GetRotation();
-		r.z() += 5.f * deltaTime;
+		r.x() += 10.f * deltaTime;
+		r.z() += 1.f * deltaTime;
 		t.transform.SetRotation(r);
 
 		directionals.Add({

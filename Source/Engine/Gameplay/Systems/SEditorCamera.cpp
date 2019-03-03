@@ -47,10 +47,10 @@ void SEditorCamera::BeginPlay()
 	auto view = ECS()->View<CEditorCamera>();
 	if (view.empty())
 	{
-		camera = ECS()->CreateEntity({ "EditorCamera" }, true);
+		camera = ECS()->CreateEntity({ "EditorCamera" });
 
 		auto& t = ECS()->Assign<CTransform>(camera).transform;
-		t.location = { 0, 0, 0 };
+		t.location = { 0, 0, -5 };
 		t.SetRotation({ 90.f, 0.f, 0.f });
 
 		ECS()->Assign<CEditorCamera>(camera);

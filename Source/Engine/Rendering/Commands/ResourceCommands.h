@@ -92,9 +92,10 @@ class DrawMeshCommand : public RenderCommand {
 public:
 	u32 id;
 	Transform transform;
+	Color color;
 
 
-	DrawMeshCommand(u32 id, Transform transform) : id(id), transform(transform) {}
+	DrawMeshCommand(u32 id, Transform transform, Color color) : id(id), transform(transform), color(color) {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override;
 

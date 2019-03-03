@@ -15,6 +15,9 @@ class CMesh : public Component {
 	PROP(TAssetPtr<Model>, model)
 	TAssetPtr<Model> model;
 
+	PROP(Color, color)
+	Color color;
+
 
 	CMesh() : Super(), model{} {}
 	CMesh(TAssetPtr<Model> model) : Super(), model{ model } {

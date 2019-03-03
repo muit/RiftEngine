@@ -8,6 +8,7 @@
 #include "UI/Editor/Widgets/PropertyWidget.h"
 
 #include "ECS/ECSManager.h"
+#include "Details.h"
 
 
 class SceneEntities : public EditorWindow {
@@ -18,6 +19,9 @@ class SceneEntities : public EditorWindow {
 	TArray<EntityId> selectedEntities;
 
 public:
+
+	Ptr<Details> sceneDetailsWindow;
+
 
 	SceneEntities() : Super(), filter{} {}
 

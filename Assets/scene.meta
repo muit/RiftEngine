@@ -3,74 +3,15 @@
   "displayName": "My Scene",
   "entities": [
     {
-      "CEntity": {
-        "id": {
-          "a": 137406,
-          "b": 3605628,
-          "c": 2784028112,
-          "d": 3714376648
+      "CDirectionalLight": {
+        "color": {
+          "a": 255,
+          "b": 255,
+          "g": 255,
+          "r": 255
         },
-        "name": "Piramid"
+        "intensity": 0.1
       },
-      "CMesh": {
-        "model": "piramid.obj.meta"
-      },
-      "CTransform": {
-        "transform": {
-          "location": {
-            "x": 0.0,
-            "y": 15.0,
-            "z": 0.0
-          },
-          "rotation": {
-            "w": 1.0,
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "scale": {
-            "x": 0.9,
-            "y": 0.9,
-            "z": 0.9
-          }
-        }
-      }
-    },
-    {
-      "CEntity": {
-        "id": {
-          "a": 137406,
-          "b": 3605628,
-          "c": 2784028112,
-          "d": 3714372648
-        },
-        "name": "Terrain"
-      },
-      "CMesh": {
-        "model": "terrain.fbx.meta"
-      },
-      "CTransform": {
-        "transform": {
-          "location": {
-            "x": 0.0,
-            "y": 13.0,
-            "z": 0.0
-          },
-          "rotation": {
-            "w": 0.707,
-            "x": 0.0,
-            "y": 0.707,
-            "z": 0.0
-          },
-          "scale": {
-            "x": 0.02,
-            "y": 0.02,
-            "z": 0.02
-          }
-        }
-      }
-    },
-    {
       "CEntity": {
         "id": {
           "a": 137406,
@@ -88,43 +29,190 @@
             "z": 0.0
           },
           "rotation": {
-            "w": 1.0,
+            "w": 0.23218462,
+            "x": -0.3226116,
+            "y": 0.74477905,
+            "z": -0.53601885
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          }
+        }
+      }
+    },
+    {
+      "CEntity": {
+        "id": {
+          "a": 137406,
+          "b": 3605628,
+          "c": 2784028112,
+          "d": 3714372648
+        },
+        "name": "Terrain"
+      },
+      "CMesh": {
+        "model": "Models/terrain.fbx.meta",
+        "color": { "a": 255, "b": 0, "g": 255, "r": 0 }
+      },
+      "CTransform": {
+        "transform": {
+          "location": {
             "x": 0.0,
+            "y": 13.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "w": 0.707,
+            "x": -0.707,
             "y": 0.0,
             "z": 0.0
           },
           "scale": {
-            "x": 1,
-            "y": 1,
-            "z": 1
+            "x": 0.2,
+            "y": 0.2,
+            "z": 0.2
           }
         }
+      }
+    },
+    {
+      "CEntity": {
+        "id": { "a": 137406, "b": 3605628, "c": 2784028112, "d": 3714376648 },
+        "name": "Piramid"
       },
-      "CDirectionalLight": {
-        "color": {
-          "r": 255, "g": 255, "b": 255
+      "CMesh": {
+        "model": "Models/piramid.obj.meta",
+        "color": { "a": 255, "b": 0, "g": 0, "r": 128 }
+      },
+      "CTransform": {
+        "transform": {
+          "location": { "x": 8.0, "y": 18.0, "z": 0.0 },
+          "rotation": { "w": 0.707, "x": -0.707, "y": 0.0, "z": 0.0 },
+          "scale": { "x": 0.2, "y": 0.5, "z": 0.2 }
+        }
+      }
+    },
+    {
+      "CEntity": {
+        "id": { "a": 137406, "b": 3605628, "c": 2784028112, "d": 3734376648 },
+        "name": "Piramid"
+      },
+      "CMesh": {
+        "model": "Models/piramid.obj.meta",
+        "color": { "a": 255, "b": 0, "g": 0, "r": 128 }
+      },
+      "CTransform": {
+        "transform": {
+          "location": { "x": 6.0, "y": 18.0, "z": 0.0 },
+          "rotation": { "w": 0.707, "x": -0.707, "y": 0.0, "z": 0.0 },
+          "scale": { "x": 0.2, "y": 0.5, "z": 0.2 }
+        }
+      }
+    },
+    {
+      "CEntity": {
+        "id": { "a": 137406, "b": 3605628, "c": 2784028112, "d": 3514376648 },
+        "name": "Piramid"
+      },
+      "CMesh": {
+        "model": "Models/piramid.obj.meta",
+        "color": { "a": 255, "b": 0, "g": 0, "r": 128 }
+      },
+      "CTransform": {
+        "transform": {
+          "location": { "x": 4.0, "y": 18.0, "z": 0.0 },
+          "rotation": { "w": 0.707, "x": -0.707, "y": 0.0, "z": 0.0 },
+          "scale": { "x": 0.2, "y": 0.5, "z": 0.2 }
+        }
+      }
+    },
+    {
+      "CEntity": {
+        "id": { "a": 137406, "b": 3305628, "c": 2784028112, "d": 3714376648 },
+        "name": "Piramid"
+      },
+      "CMesh": {
+        "model": "Models/piramid.obj.meta",
+        "color": { "a": 255, "b": 0, "g": 0, "r": 128 }
+      },
+      "CTransform": {
+        "transform": {
+          "location": { "x": 8.0, "y": 16.0, "z": 0.0 },
+          "rotation": { "w": 0.707, "x": -0.707, "y": 0.0, "z": 0.0 },
+          "scale": { "x": 0.2, "y": 0.5, "z": 0.2 }
+        }
+      }
+    },
+    {
+      "CEntity": {
+        "id": { "a": 137406, "b": 3405628, "c": 2784028112, "d": 3734376648 },
+        "name": "Piramid"
+      },
+      "CMesh": {
+        "model": "Models/piramid.obj.meta",
+        "color": { "a": 255, "b": 0, "g": 0, "r": 128 }
+      },
+      "CTransform": {
+        "transform": {
+          "location": { "x": 6.0, "y": 16.0, "z": 0.0 },
+          "rotation": { "w": 0.707, "x": -0.707, "y": 0.0, "z": 0.0 },
+          "scale": { "x": 0.2, "y": 0.5, "z": 0.2 }
+        }
+      }
+    },
+    {
+      "CEntity": {
+        "id": { "a": 137406, "b": 3505628, "c": 2784028112, "d": 3514376648 },
+        "name": "Piramid"
+      },
+      "CMesh": {
+        "model": "Models/piramid.obj.meta",
+        "color": { "a": 255, "b": 0, "g": 0, "r": 128 }
+      },
+      "CTransform": {
+        "transform": {
+          "location": { "x": 4.0, "y": 16.0, "z": 0.0 },
+          "rotation": { "w": 0.707, "x": -0.707, "y": 0.0, "z": 0.0 },
+          "scale": { "x": 0.2, "y": 0.5, "z": 0.2 }
+        }
+      }
+    },
+    {
+      "CEditorCamera": {
+        "fov": 60.0
+      },
+      "CEntity": {
+        "id": {
+          "a": 404694,
+          "b": 3612706,
+          "c": 460397024,
+          "d": 2623020080
         },
-        "intensity": 1.0
+        "name": "EditorCamera"
+      },
+      "CTransform": {
+        "transform": {
+          "location": {
+            "x": 18.039312,
+            "y": 17.161846,
+            "z": -8.310745
+          },
+          "rotation": {
+            "w": 0.5618241,
+            "x": -0.30735114,
+            "y": -0.36861175,
+            "z": 0.67380583
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          }
+        }
       }
     }
   ],
-  "name": "",
-  "transform": {
-    "location": {
-      "x": 0.0,
-      "y": 0.0,
-      "z": 0.0
-    },
-    "rotation": {
-      "w": 0.038060192,
-      "x": 0.19134173,
-      "y": 0.1913417,
-      "z": 0.9619397
-    },
-    "scale": {
-      "x": 1.0,
-      "y": 1.0,
-      "z": 1.0
-    }
-  }
+  "name": ""
 }
