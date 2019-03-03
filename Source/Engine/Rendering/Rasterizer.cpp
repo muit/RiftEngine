@@ -166,7 +166,7 @@ void Rasterizer::FillConvexPolygonZBuffer(const VertexBufferI32& vertices, const
 	}
 }
 
-void Rasterizer::FillTriangle(const VertexBufferI32& vertices, const v3_u32& triangle, const Color& color)
+void Rasterizer::FillTriangle(const VertexBufferI32& vertices, const v3_u32& triangle, const LColorBuffer& vertexColors)
 {
 	float triangleDepth;
 	box2_i32 bounds = GetTriangleBounds(vertices, triangle, triangleDepth);
@@ -176,6 +176,13 @@ void Rasterizer::FillTriangle(const VertexBufferI32& vertices, const v3_u32& tri
 
 	// Frustum culling by bounds
 	if (viewportBounds.Contains(bounds)) {
+
+		const LinearColor& c0 = vertexColors[triangle[0]];
+		const LinearColor& c1 = vertexColors[triangle[1]];
+		const LinearColor& c2 = vertexColors[triangle[2]];
+
+		const Color color = LinearColor::LerpUsingHSV(LinearColor::LerpUsingHSV(c0, c1, 0.5f), c2, 0.5f).ToColor(true);
+
 		FillConvexPolygonZBuffer(vertices, triangle.data(), triangle.data() + 3, color);
 	}
 }
@@ -184,14 +191,8 @@ void Rasterizer::FillVertexBuffer(const VertexBufferI32& vertices, const Triangl
 {
 	for (const auto& triangle : triangles)
 	{
-		const LinearColor& c0 = vertexColors[triangle[0]];
-		const LinearColor& c1 = vertexColors[triangle[1]];
-		const LinearColor& c2 = vertexColors[triangle[2]];
-
-		const Color color = LinearColor::LerpUsingHSV(LinearColor::LerpUsingHSV(c0, c1, 0.5f), c2, 0.5f).ToColor(true);
-
 		// Just for demo purposes, triangles have random colors
-		FillTriangle(vertices, triangle, color);
+		FillTriangle(vertices, triangle, vertexColors);
 	}
 }
 

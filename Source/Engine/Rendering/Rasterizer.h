@@ -47,7 +47,7 @@ public:
 
 	void FillConvexPolygonZBuffer(const VertexBufferI32& vertices, const u32* indicesBegin, const u32* indicesEnd, const Color& color);
 
-	void FillTriangle(const VertexBufferI32& vertices, const v3_u32& triangle, const Color& color);
+	void FillTriangle(const VertexBufferI32& vertices, const v3_u32& triangle, const LColorBuffer& vertexColors);
 
 	void FillVertexBuffer(const VertexBufferI32& vertices, const TriangleBuffer& triangles, const LColorBuffer& vertexColors);
 
