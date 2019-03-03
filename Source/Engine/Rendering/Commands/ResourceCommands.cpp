@@ -46,44 +46,68 @@ void DrawMeshCommand::Execute(FrameRender& render, Frame& frame)
 	RenderTriangles(render, screenVertices, triangles, colors);
 }
 
-EmptyFunc DrawMeshCommand::VertexToWorld(VertexBuffer& vertices)
+SubTaskLambda DrawMeshCommand::VertexToWorld(VertexBuffer& vertices)
 {
 	const Transform t = transform;
 
-	return [&vertices, t]()
+	return [&vertices, t](tf::SubflowBuilder& sbf)
 	{
-		ZoneScopedN("Vertices to world");
-		const Transform::Matrix toWorld = t.ToWorldMatrix();
+		ZoneScopedN("Vertices to world: Splitter");
 
-		for (i32 i = 0; i < vertices.Size(); ++i)
+		const i32 size = vertices.Size();
+		const i32 halfSize = size / 3;
+
+		// Split execution between 3 threads
+		sbf.parallel_for(0, size, halfSize,
+		[&vertices, t, halfSize](const i32 startIndex)
 		{
-			// Vertices to world
-			v3& vertex = vertices[i];
-			vertex = toWorld * vertex;
-		}
+			ZoneScopedN("Vertices to world");
+			const Transform::Matrix toWorld = t.ToWorldMatrix();
+
+			const i32 endIndex = Math::Min(startIndex + halfSize, vertices.Size());
+
+			for (i32 i = startIndex; i < endIndex; ++i)
+			{
+				// Vertices to world
+				v3& vertex = vertices[i];
+				vertex = toWorld * vertex;
+			}
+		});
 	};
 }
 
 
-EmptyFunc DrawMeshCommand::NormalToWorld(NormalsBuffer& normals)
+SubTaskLambda DrawMeshCommand::NormalToWorld(NormalsBuffer& normals)
 {
 	const Transform t = transform;
 
-	return [&normals, t]()
+	return [&normals, t](tf::SubflowBuilder& sbf)
 	{
-		ZoneScopedN("Normals to world");
+		ZoneScopedN("Normals to world: Splitter");
 
-		const auto toWorldLinear = t.ToWorldMatrix().linear();
-		for (i32 i = 0; i < normals.Size(); ++i)
+		const i32 size = normals.Size();
+		const i32 halfSize = size / 3;
+
+		// Split execution between 3 threads
+		sbf.parallel_for(0, size, halfSize,
+		[&normals, t, halfSize](const i32 startIndex)
 		{
-			// Normals to world
-			v3& normal = normals[i];
-			normal = toWorldLinear * normal;
-		}
+			ZoneScopedN("Normals to world");
+			const auto toWorldLinear = t.ToWorldMatrix().linear();
+
+			const i32 endIndex = Math::Min(startIndex + halfSize, normals.Size());
+
+			for (i32 i = startIndex; i < endIndex; ++i)
+			{
+				// Normals to world
+				v3& normal = normals[i];
+				normal = toWorldLinear * normal;
+			}
+		});
 	};
 }
 
-EmptyFunc DrawMeshCommand::OperateVertexShader(FrameRender& render, const VertexBuffer& worldVertices, const NormalsBuffer& normals, LColorBuffer& colors)
+TaskLambda DrawMeshCommand::OperateVertexShader(FrameRender& render, const VertexBuffer& worldVertices, const NormalsBuffer& normals, LColorBuffer& colors)
 {
 	return [&render, &worldVertices, &normals, &colors]()
 	{
@@ -135,21 +159,45 @@ EmptyFunc DrawMeshCommand::OperateVertexShader(FrameRender& render, const Vertex
 	};
 }
 
-EmptyFunc DrawMeshCommand::TransformToScreen(FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices)
+SubTaskLambda DrawMeshCommand::TransformToScreen(FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices)
 {
-	return [&render, &worldVertices, &screenVertices]()
+	return [&render, &worldVertices, &screenVertices](tf::SubflowBuilder& sbf)
 	{
-		ZoneScopedN("Transform To Camera");
-
+		ZoneScopedN("Transform To Camera: Splitter");
 		// Viewport transform
 		const v3 translate{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 0.f };
 		const v3 scale{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 100000000.f };
-		const Transform::Matrix toViewport = Eigen::Translation3f(translate) * Scaling(scale);
 
+		const Transform::Matrix toViewport = Eigen::Translation3f(translate) * Scaling(scale);
 		const Matrix4f toProjection{ render.camera.GetPerspectiveMatrix(render.GetRenderSize()) };
 		const Matrix4f toCamera = render.camera.transform.ToLocalMatrix().matrix();
 
 		const Matrix4f cameraTransform{ toViewport * toProjection * toCamera };
+
+
+		const i32 size = worldVertices.Size();
+		const i32 halfSize = size / 3;
+
+		// Split execution between 3 threads
+		sbf.parallel_for(0, size, halfSize,
+		[cameraTransform, &worldVertices, &screenVertices, halfSize](const i32 startIndex)
+		{
+			ZoneScopedN("Transform To Camera");
+
+			const i32 endIndex = Math::Min(startIndex + halfSize, worldVertices.Size());
+
+			v4 vertex4;
+			for (i32 i = startIndex; i < endIndex; ++i)
+			{
+				// Transform: camera -> projection -> viewport
+				vertex4 << worldVertices[i], 1.f;
+				vertex4 = cameraTransform * vertex4;
+
+				screenVertices[i] = (vertex4.head<3>() / vertex4.w()).cast<i32>();
+			}
+		});
+
+
 
 
 		v4 vertex4;
@@ -164,7 +212,7 @@ EmptyFunc DrawMeshCommand::TransformToScreen(FrameRender& render, const VertexBu
 	};
 }
 
-EmptyFunc DrawMeshCommand::BackfaceCulling(const VertexBufferI32& vertices, TriangleBuffer& triangles)
+TaskLambda DrawMeshCommand::BackfaceCulling(const VertexBufferI32& vertices, TriangleBuffer& triangles)
 {
 	return [&vertices, &triangles]() {
 		ZoneScopedN("Backface Culling");

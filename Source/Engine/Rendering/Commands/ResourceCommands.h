@@ -15,7 +15,8 @@
 using TaskFlow = tf::Taskflow;
 using Task = tf::Task;
 
-using EmptyFunc = eastl::function<void()>;
+using TaskLambda = eastl::function<void()>;
+using SubTaskLambda = eastl::function<void(tf::SubflowBuilder&)>;
 
 // #TODO: Commands should be able to receive many orders of the same type.
 // E.g: Draw all this meshes
@@ -99,11 +100,11 @@ public:
 
 private:
 
-	EmptyFunc VertexToWorld(VertexBuffer& vertices);
-	EmptyFunc NormalToWorld(NormalsBuffer& normals);
-	EmptyFunc OperateVertexShader(FrameRender& render, const VertexBuffer& worldVertices, const NormalsBuffer& normals, LColorBuffer& colors);
-	EmptyFunc TransformToScreen(FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices);
-	EmptyFunc BackfaceCulling(const VertexBufferI32& vertices, TriangleBuffer& triangles);
+	SubTaskLambda VertexToWorld(VertexBuffer& vertices);
+	SubTaskLambda NormalToWorld(NormalsBuffer& normals);
+	TaskLambda    OperateVertexShader(FrameRender& render, const VertexBuffer& worldVertices, const NormalsBuffer& normals, LColorBuffer& colors);
+	SubTaskLambda TransformToScreen(FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices);
+	TaskLambda    BackfaceCulling(const VertexBufferI32& vertices, TriangleBuffer& triangles);
 
 	void RenderTriangles(FrameRender& render, const VertexBufferI32& vertices, const TriangleBuffer& triangles, const LColorBuffer& colors);
 };

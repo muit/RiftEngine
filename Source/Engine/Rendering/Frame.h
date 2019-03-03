@@ -61,7 +61,7 @@ struct FrameRender {
 		, camera {}
 		, lighting{}
 		, resources{}
-		, threadPool{ std::make_shared<tf::Taskflow::Executor>(4) }
+		, threadPool{ std::make_shared<tf::Taskflow::Executor>(6) }
 		, rasterizer{ baseColor }
 	{}
 
