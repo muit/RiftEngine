@@ -26,8 +26,8 @@ void DrawMeshCommand::Execute(FrameRender& render, Frame& frame)
 
 	TaskFlow flow{ render.threadPool };
 
-	tf::Task wVertexTask = flow.emplace(VertexToWorld(vertices));
-	tf::Task wNormalTask = flow.emplace(NormalToWorld(normals));
+	tf::Task wVertexTask         = flow.emplace(VertexToWorld(vertices));
+	tf::Task wNormalTask         = flow.emplace(NormalToWorld(normals));
 	tf::Task sVertexTask         = flow.emplace(TransformToScreen(render, vertices, screenVertices));
 	tf::Task backfaceCullingTask = flow.emplace(BackfaceCulling(screenVertices, triangles));
 	tf::Task vertexShaderTask    = flow.emplace(OperateVertexShader(render, vertices, normals, colors));

@@ -37,7 +37,7 @@ public:
 	{
 		ZoneScopedNC("Rasterizer Clear", 0x94d145);
 		// Update zBuffer
-		zBuffer.Assign(target.Buffer().Size(), eastl::numeric_limits<i32>::max());
+		zBuffer.Assign(target.Buffer().Size(), eastl::numeric_limits<i32>::min());
 
 		viewportBounds = {};
 		viewportBounds.ExtendPoint(target.Size().cast<i32>());
