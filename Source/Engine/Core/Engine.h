@@ -10,12 +10,16 @@
 #include "Input/InputManager.h"
 #include "UI/UIManager.h"
 #include "Misc/Time.h"
+#include "MultiThreading.h"
 
 
 class Engine : public Object {
 	CLASS(Engine, Object)
 
 	FrameTime frameTime;
+
+	TaskSystem taskSystem;
+
 	GlobalPtr<World> world;
 	GlobalPtr<InputManager> input;
 	GlobalPtr<UIManager> ui;
@@ -48,6 +52,7 @@ public:
 
 	Ptr<InputManager> Input() { return input; }
 
+	TaskSystem& Tasks() { return taskSystem; }
 
 	/** STATIC */
 

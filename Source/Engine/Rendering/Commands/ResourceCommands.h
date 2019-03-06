@@ -11,12 +11,8 @@
 #include "../Renderer.h"
 #include "../Frame.h"
 #include "../Rasterizer.h"
+#include "Core/MultiThreading.h"
 
-using TaskFlow = tf::Taskflow;
-using Task = tf::Task;
-
-using TaskLambda = eastl::function<void()>;
-using SubTaskLambda = eastl::function<void(tf::SubflowBuilder&)>;
 
 // #TODO: Commands should be able to receive many orders of the same type.
 // E.g: Draw all this meshes
@@ -104,7 +100,7 @@ private:
 	SubTaskLambda VertexToWorld(VertexBuffer& vertices);
 	SubTaskLambda NormalToWorld(NormalsBuffer& normals);
 	TaskLambda    OperateVertexShader(FrameRender& render, const VertexBuffer& worldVertices, const NormalsBuffer& normals, LColorBuffer& colors);
-	SubTaskLambda TransformToScreen(FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices);
+	SubTaskLambda TransformToScreen(const FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices);
 	TaskLambda    BackfaceCulling(const VertexBufferI32& vertices, TriangleBuffer& triangles);
 
 	void RenderTriangles(FrameRender& render, const VertexBufferI32& vertices, const TriangleBuffer& triangles, const LColorBuffer& colors);

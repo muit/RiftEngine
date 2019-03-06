@@ -2,9 +2,10 @@
 
 #include "ResourceCommands.h"
 
+#include "Core/Engine.h"
 #include "Core/Math/Vector.h"
 
-EA_DISABLE_VC_WARNING(4267)
+
 
 void DrawMeshCommand::Execute(FrameRender& render, Frame& frame)
 {
@@ -25,13 +26,14 @@ void DrawMeshCommand::Execute(FrameRender& render, Frame& frame)
 
 	VertexBufferI32 screenVertices{ verticesCount };
 
-	TaskFlow flow{ render.threadPool };
 
-	tf::Task wVertexTask         = flow.emplace(VertexToWorld(vertices));
-	tf::Task wNormalTask         = flow.emplace(NormalToWorld(normals));
-	tf::Task sVertexTask         = flow.emplace(TransformToScreen(render, vertices, screenVertices));
-	tf::Task backfaceCullingTask = flow.emplace(BackfaceCulling(screenVertices, triangles));
-	tf::Task vertexShaderTask    = flow.emplace(OperateVertexShader(render, vertices, normals, colors));
+	TaskFlow flow = GEngine->Tasks().CreateFlow();
+
+	Task wVertexTask         = flow.emplace(VertexToWorld(vertices));
+	Task wNormalTask         = flow.emplace(NormalToWorld(normals));
+	Task sVertexTask         = flow.emplace(TransformToScreen(render, vertices, screenVertices));
+	Task backfaceCullingTask = flow.emplace(BackfaceCulling(screenVertices, triangles));
+	Task vertexShaderTask    = flow.emplace(OperateVertexShader(render, vertices, normals, colors));
 
 	// Build async graph
 	{
@@ -160,18 +162,19 @@ TaskLambda DrawMeshCommand::OperateVertexShader(FrameRender& render, const Verte
 	};
 }
 
-SubTaskLambda DrawMeshCommand::TransformToScreen(FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices)
+SubTaskLambda DrawMeshCommand::TransformToScreen(const FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices)
 {
 	return [&render, &worldVertices, &screenVertices](tf::SubflowBuilder& sbf)
 	{
 		ZoneScopedN("Transform To Camera: Splitter");
+
 		// Viewport transform
 		const v3 translate{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 0.f };
 		const v3 scale{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 100000000.f };
 
 		const Transform::Matrix toViewport = Eigen::Translation3f(translate) * Scaling(scale);
-		const Matrix4f toProjection{ render.camera.GetPerspectiveMatrix(render.GetRenderSize()) };
-		const Matrix4f toCamera = render.camera.transform.ToLocalMatrix().matrix();
+		const Matrix4f toProjection{ render.Camera().GetPerspectiveMatrix(render.GetRenderSize()) };
+		const Matrix4f toCamera    { render.Camera().transform.ToLocalMatrix().matrix()           };
 
 		const Matrix4f cameraTransform{ toViewport * toProjection * toCamera };
 
@@ -197,19 +200,6 @@ SubTaskLambda DrawMeshCommand::TransformToScreen(FrameRender& render, const Vert
 				screenVertices[i] = (vertex4.head<3>() / vertex4.w()).cast<i32>();
 			}
 		});
-
-
-
-
-		v4 vertex4;
-		for (i32 i = 0; i < worldVertices.Size(); ++i)
-		{
-			// Transform: camera -> projection -> viewport
-			vertex4 << worldVertices[i], 1.f;
-			vertex4 = cameraTransform * vertex4;
-
-			screenVertices[i] = (vertex4.head<3>() / vertex4.w()).cast<i32>();
-		}
 	};
 }
 
@@ -244,5 +234,3 @@ void DrawMeshCommand::RenderTriangles(FrameRender& render, const TArray<v3_i32>&
 	ZoneScopedN("Rasterize Triangles");
 	render.rasterizer.FillVertexBuffer(vertices, triangles, colors);
 }
-
-EA_RESTORE_VC_WARNING()  // warning: 4267

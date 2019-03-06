@@ -24,7 +24,7 @@ public:
 	{}
 
 
-	Matrix4f GetPerspectiveMatrix(const v2_u32& screenSize) {
+	Matrix4f GetPerspectiveMatrix(const v2_u32& screenSize) const {
 		const float depth_length = 1.f / (farZ - nearZ);
 		const float scale = 1.f / std::tan(fov * 0.5f * Math::DEGTORAD);
 

@@ -52,8 +52,6 @@ struct FrameRender {
 	LightingRender lighting;
 	Resources resources;
 
-	std::shared_ptr<tf::Taskflow::Executor> threadPool;
-
 	Rasterizer rasterizer;
 
 	FrameRender()
@@ -61,7 +59,6 @@ struct FrameRender {
 		, camera {}
 		, lighting{}
 		, resources{}
-		, threadPool{ std::make_shared<tf::Taskflow::Executor>(6) }
 		, rasterizer{ baseColor }
 	{}
 
@@ -80,5 +77,9 @@ struct FrameRender {
 	void DrawImage(const v2_u32& position, const TextureData& texture);
 
 	v2_u32 GetRenderSize() const { return baseColor.Size(); }
+
+
+	FORCEINLINE CameraData& Camera() { return camera; }
+	FORCEINLINE const CameraData& Camera() const { return camera; }
 };
 
