@@ -11,6 +11,7 @@
 #include "Resources.h"
 #include "RenderCommand.h"
 #include "GL/GLRenderTexture.h"
+#include "Interface/RenderingInterface.h"
 
 
 #define SCREEN_WIDTH 1280
@@ -24,6 +25,8 @@ class Renderer : public Object {
 	SDL_Window* window;
 	SDL_GLContext gl_context;
 	const char* glslVersion;
+
+	RenderingInterface RI;
 
 	GLRenderTexture glRenderTexture;
 	FrameRender render;
@@ -49,6 +52,5 @@ public:
 		return window ? SDL_GetWindowID(window) : 0;
 	}
 
-
-	void DrawImage(const v2_u32& position, const TextureData& texture);
+	RenderingInterface& GetRI() { return RI; }
 };

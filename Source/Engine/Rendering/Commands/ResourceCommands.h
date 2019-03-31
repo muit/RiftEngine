@@ -27,7 +27,8 @@ public:
 	LoadTextureCommand(u32 id, TextureData texture) : id(id), texture{eastl::move(texture)} {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
-		render.resources.Load(id, eastl::move(texture));
+		// #TODO: Avoid texture data copy by adding dependency on the asset
+		render.resources.Load(id, texture);
 	}
 };
 
@@ -43,16 +44,16 @@ public:
 	}
 };
 
-class DrawTextureCommand : public RenderCommand {
+class Draw2DTextureCommand : public RenderCommand {
 public:
 	u32 id;
 	v2_u32 position;
 
 
-	DrawTextureCommand(u32 id, v2_u32 position) : id{id}, position{position} {}
+	Draw2DTextureCommand(u32 id, v2_u32 position) : id{id}, position{position} {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
-		const TextureData& texture = render.resources.Get<ResourceType::Texture>(id);
+		u32 texture = render.resources.GetGLId<ResourceType::Texture>(id);
 
 		render.DrawImage(position, texture);
 	}

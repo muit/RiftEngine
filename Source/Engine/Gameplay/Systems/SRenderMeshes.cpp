@@ -29,7 +29,7 @@ void SRenderMeshes::Tick(float /*deltaTime*/)
 	if (texture)
 	{
 		world->QueueRender<LoadTextureCommand>(0, texture->GetTextureData());
-		world->QueueRender<DrawTextureCommand>(0, v2_u32{ 10, 20 });
+		world->QueueRender<Draw2DTextureCommand>(0, v2_u32{ 10, 20 });
 	}
 }
 

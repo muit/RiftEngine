@@ -6,6 +6,7 @@
 
 #include <EASTL/unordered_map.h>
 
+#include "Core/Misc/Optional.h"
 #include "Data/TextureData.h"
 #include "Data/MeshData.h"
 
@@ -20,40 +21,50 @@ struct Resources {
 
 private:
 
-	using TextureMap          = eastl::unordered_map<u32, TextureData>;
-	using MeshMap             = eastl::unordered_map<u32, MeshData>;
+	using TextureIdMap = eastl::unordered_map<u32, u32>;
+	using MeshIdMap    = eastl::unordered_map<u32, u32>;
+	using MeshMap_DEPRECATED = eastl::unordered_map<u32, MeshData>;
 
-	TextureMap textures;
-	MeshMap meshes;
-
+	TextureIdMap textures;
+	MeshIdMap meshes;
+	MeshMap_DEPRECATED meshes_DEPRECATED;
 
 public:
 
-	void Load(u32 id, TextureData&& data) {
-		textures.insert_or_assign(id, data);
+	void Load(u32 id, const TextureData& data)
+	{
+		// Send data to opengl and store texture Id
+		textures.insert_or_assign(id, GLTextures::Bind(data));
 	}
 
-	void Load(u32 id, MeshData&& data) {
-		meshes.insert_or_assign(id, data);
+	void Load(u32 id, MeshData&& data)
+	{
+		meshes_DEPRECATED.insert_or_assign(id, data);
 	}
 
 	template<ResourceType type>
-	void Free(u32 id) {
+	void Free(u32 id)
+	{
 		switch(type)
 		{
 		case ResourceType::Texture:
-			textures.erase(id);
+			auto& idIterator = textures.find(id);
+			if (idIterator != textures.end())
+			{
+				GLTextures::Free(idIterator->second);
+				textures.erase(idIterator);
+			}
 			break;
 		case ResourceType::Mesh:
-			meshes.erase(id);
+			meshes_DEPRECATED.erase(id);
 			break;
 		}
 	}
 
 	template<ResourceType type>
-	auto Get(u32 id) -> eastl::enable_if_t<type == ResourceType::Texture, const TextureData&>
+	auto GetGLId(u32 id) -> eastl::enable_if_t<type == ResourceType::Texture, u32>
 	{
-		TextureMap::const_iterator it = textures.find(id);
+		const TextureIdMap::const_iterator it = textures.find(id);
 		assert(it != textures.end() && "Tried to access an unloaded resource.");
 		return it->second;
 	}
@@ -61,8 +72,8 @@ public:
 	template<ResourceType type>
 	auto Get(u32 id) -> eastl::enable_if_t<type == ResourceType::Mesh, const MeshData&>
 	{
-		MeshMap::const_iterator it = meshes.find(id);
-		assert(it != meshes.end() && "Tried to access an unloaded resource.");
+		const MeshMap_DEPRECATED::const_iterator it = meshes_DEPRECATED.find(id);
+		assert(it != meshes_DEPRECATED.end() && "Tried to access an unloaded resource.");
 		return it->second;
 	}
 };
