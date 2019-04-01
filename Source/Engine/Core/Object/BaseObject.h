@@ -26,7 +26,7 @@ public:
 	void Destroy() { BeforeDestroy(); }
 
 	Class* GetClass() const;
-	Ptr<Object> GetSelf() const;
+	Ptr<Object> Self() const;
 
 protected:
 

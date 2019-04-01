@@ -26,7 +26,7 @@ Ptr<AssetData> AssetManager::Load(const AssetInfo& info)
 			return {}; // Asset doesn't have a valid class
 
 		// Create asset from json type
-		GlobalPtr<AssetData> newAsset = assetClass->CreateInstance(GetSelf()).Cast<AssetData>();
+		GlobalPtr<AssetData> newAsset = assetClass->CreateInstance(Self()).Cast<AssetData>();
 
 		if (newAsset->OnLoad(info, data))
 		{
@@ -56,7 +56,7 @@ Ptr<AssetData> AssetManager::LoadOrCreate(const AssetInfo& info, Class* assetTyp
 
 	if (assetType->IsChildOf<AssetData>())
 	{
-		GlobalPtr<AssetData> newAsset = assetType->CreateInstance(GetSelf()).Cast<AssetData>();
+		GlobalPtr<AssetData> newAsset = assetType->CreateInstance(Self()).Cast<AssetData>();
 		if (newAsset->OnCreate(info))
 		{
 			const Ptr<AssetData> newAssetPtr = newAsset;

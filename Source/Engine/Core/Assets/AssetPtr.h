@@ -9,14 +9,16 @@
 #include "AssetInfo.h"
 #include "AssetData.h"
 #include "AssetManager.h"
-#include "../Serialization/Archive.h"
+#include "Core/Serialization/Archive.h"
+#include "../TypeTraits.h"
 
 
 template<class T>
-class TAssetPtr : public AssetInfo
+class TAssetPtr
 {
 	static_assert(eastl::is_base_of<AssetData, T>::value, "AssetPtr type must inherit from AssetData");
 
+	AssetInfo info;
 	mutable Ptr<T> cachedAsset;
 
 
@@ -24,21 +26,33 @@ public:
 
 	using ItemType = T;
 
-	TAssetPtr() : AssetInfo(), cachedAsset{} {}
-	TAssetPtr(Name id)
-		: AssetInfo(id)
-		, cachedAsset{}
-	{}
+	TAssetPtr() : info{}, cachedAsset{} {}
 
-	TAssetPtr(const AssetInfo& other)
-		: AssetInfo(other)
-		, cachedAsset{}
-	{}
+	TAssetPtr(TAssetPtr&& other) { MoveFrom(MoveTemp(other)); }
+	TAssetPtr(const TAssetPtr& other) { CopyFrom(other); }
 
-	TAssetPtr(const TAssetPtr& other)
-		: AssetInfo(other)
-		, cachedAsset{other.cachedAsset}
-	{}
+	TAssetPtr(Name path) : info{ path } {}
+	TAssetPtr(const TCHAR* key) : TAssetPtr(Name{ key }) {}
+	TAssetPtr(const AssetInfo& other) : AssetInfo(other) {}
+	TAssetPtr(Ptr<ItemType> asset) {
+		if (asset)
+		{
+			info = asset->GetInfo();
+			cachedAsset = asset;
+		}
+	}
+
+
+	TAssetPtr& operator=(TAssetPtr&& other)      { MoveFrom(MoveTemp(other)); return *this; }
+	TAssetPtr& operator=(const TAssetPtr& other) { CopyFrom(other); return *this; }
+
+
+	/**
+	 * @returns true if this can never be pointed towards an asset
+	 */
+	const bool IsNull() const {
+		return info.IsNull();
+	}
 
 	/**
 	 * @returns true if this asset is loaded
@@ -57,7 +71,7 @@ public:
 
 		if (auto manager = AssetManager::Get())
 		{
-			cachedAsset = manager->Load(*this).Cast<T>();
+			cachedAsset = manager->Load(info).Cast<T>();
 		}
 		return cachedAsset;
 	}
@@ -72,7 +86,7 @@ public:
 
 		if (auto manager = AssetManager::Get())
 		{
-			cachedAsset = manager->LoadOrCreate(*this, T::StaticClass()).Cast<T>();
+			cachedAsset = manager->LoadOrCreate(info, T::StaticClass()).Cast<T>();
 		}
 		return cachedAsset;
 	}
@@ -86,9 +100,14 @@ public:
 
 		Ptr<AssetManager> manager = AssetManager::Get();
 		if(manager && !cachedAsset)
-			cachedAsset = manager->GetLoadedAsset(id).Cast<T>();
+			cachedAsset = manager->GetLoadedAsset(info).Cast<T>();
 
 		return cachedAsset;
+	}
+
+	void Reset() {
+		info = {};
+		cachedAsset = nullptr;
 	}
 
 	operator bool() const { return IsValid(); };
@@ -97,8 +116,24 @@ public:
 
 	FORCEINLINE bool Serialize(Archive& ar, const char* inName)
 	{
-		ar(inName, id);
+		info.Serialize(ar, inName);
 		return true;
+	}
+
+private:
+
+	void MoveFrom(TAssetPtr&& other)
+	{
+		info = other.info;
+		cachedAsset = other.cachedAsset;
+		other.info = {};
+		other.cachedAsset = nullptr;
+	}
+
+	void CopyFrom(const TAssetPtr& other)
+	{
+		info = other.info;
+		cachedAsset = other.cachedAsset;
 	}
 };
 

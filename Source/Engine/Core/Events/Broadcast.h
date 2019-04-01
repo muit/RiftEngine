@@ -73,7 +73,7 @@ public:
 		{
 			if constexpr (IsObject<Type>::value)
 			{
-				return Bind(instance->GetSelf().Cast<Type>(), method);
+				return Bind(instance->Self().Cast<Type>(), method);
 			}
 			else
 			{

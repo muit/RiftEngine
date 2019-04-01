@@ -160,7 +160,7 @@ private:
 
 	template <typename T>
 	void RegistrySystem() {
-		systems.Add(Create<T>(GetSelf()));
+		systems.Add(Create<T>(Self()));
 	}
 
 

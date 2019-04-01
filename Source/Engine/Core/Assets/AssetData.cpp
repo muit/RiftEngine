@@ -1,7 +1,6 @@
 // © 2019 Miguel Fernández Arce - All rights reserved
 
 #include "AssetData.h"
-#include "Core/Serialization/Archive.h"
 #include "Core/Files/FileSystem.h"
 
 

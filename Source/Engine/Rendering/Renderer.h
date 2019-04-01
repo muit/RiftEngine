@@ -10,8 +10,7 @@
 #include "Frame.h"
 #include "Resources.h"
 #include "RenderCommand.h"
-#include "GL/GLRenderTexture.h"
-#include "Interface/RenderingInterface.h"
+#include "Interface/ScreenTexture.h"
 
 
 #define SCREEN_WIDTH 1280
@@ -26,9 +25,11 @@ class Renderer : public Object {
 	SDL_GLContext gl_context;
 	const char* glslVersion;
 
-	RenderingInterface RI;
+	ScreenTexture glRenderTexture;
 
-	GLRenderTexture glRenderTexture;
+	TArray<Frame> frameCache{2};
+	u32 gameFrameId = 0;
+
 	FrameRender render;
 
 public:
@@ -41,16 +42,28 @@ public:
 
 	void PreTick();
 
-	void Render(Frame& frame);
+	void Render();
 
 	void SwapWindow();
 
 	virtual void BeforeDestroy() override;
 
 
-	u32 GetWindowId() const {
-		return window ? SDL_GetWindowID(window) : 0;
-	}
+	u32 GetWindowId() const { return window ? SDL_GetWindowID(window) : 0; }
 
-	RenderingInterface& GetRI() { return RI; }
+
+	/** Frame being prepared on game thread */
+	Frame& GetGameFrame() { return frameCache[gameFrameId]; }
+	/** Frame being rendered on graphics thread */
+	Frame& GetRenderFrame() { return frameCache[(gameFrameId + 1) % 2]; }
+
+	template<typename Command, typename ...Args>
+	void QueueCommand(Args... args)
+	{
+		static_assert(eastl::is_base_of<RenderCommand, Command>::value, "Command type must inherit RenderCommand");
+
+		GetGameFrame().ScheduleCommand(
+			eastl::make_shared<Command>(eastl::forward<Args>(args)...)
+		);
+	}
 };

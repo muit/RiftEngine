@@ -7,22 +7,25 @@
 #include "Rendering/Data/MeshData.h"
 
 
-class Model : public AssetData
+class Mesh : public AssetData
 {
-	CLASS(Model, AssetData)
+	CLASS(Mesh, AssetData)
 
-	static i32 idCounter;
-	i32 id;
+private:
 
 	MeshData data;
 
 
 public:
 
-	Model() : Super(), id{++idCounter} {}
+	Mesh() : Super() {}
 
 	virtual bool PostLoad() override;
+	virtual void OnUnload() override;
 
-	FORCEINLINE i32 GetId() { return id; }
 	FORCEINLINE const MeshData& GetMeshData() const { return data; }
+
+private:
+
+
 };

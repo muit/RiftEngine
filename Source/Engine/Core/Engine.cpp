@@ -9,8 +9,6 @@ Ptr<Engine> Engine::globalEngine {};
 
 bool Engine::Start()
 {
-	Frame frame = {};
-
 	{
 		ZoneScopedN("Start-Up");
 
@@ -29,10 +27,10 @@ bool Engine::Start()
 		input = Create<InputManager>();
 
 
-		world = Create<World>(GetSelf());
-		world->Start(frame);
+		world = Create<World>(Self());
+		world->Start();
 
-		ui = Create<UIManager>(GetSelf());
+		ui = Create<UIManager>(Self());
 		ui->Prepare();
 	}
 
@@ -42,13 +40,13 @@ bool Engine::Start()
 	bool bFinish = false;
 	while (!bFinish)
 	{
-		Loop(frame, bFinish);
+		Loop(bFinish);
 	}
 
 	return true;
 }
 
-void Engine::Loop(Frame& frame, bool& bFinish)
+void Engine::Loop(bool& bFinish)
 {
 	frameTime.Tick();
 
@@ -58,15 +56,12 @@ void Engine::Loop(Frame& frame, bool& bFinish)
 
 	{
 		ZoneScopedNC("Game", 0x459bd1);
-		world->Tick(frame, frameTime.GetDeltaTime());
+		world->Tick(frameTime.GetDeltaTime());
 		ui->Tick(frameTime.GetDeltaTime());
 	}
 
 	// Rendering
-	renderer->Render(frame);
-
-	// Reset frame data
-	frame = {};
+	renderer->Render();
 
 	frameTime.PostTick();
 	FrameMark;

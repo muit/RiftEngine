@@ -12,10 +12,10 @@ Class* BaseObject::GetClass() const
 	return nullptr;
 }
 
-Ptr<Object> BaseObject::GetSelf() const
+Ptr<Object> BaseObject::Self() const
 {
 	const Object* thisObj = static_cast<const Object*>(this);
 	if (thisObj)
-		return thisObj->GetSelf();
+		return thisObj->Self();
 	return {};
 }

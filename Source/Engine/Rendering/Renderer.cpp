@@ -85,11 +85,17 @@ void Renderer::PreTick()
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
+
+	// Clean frame
+	GetGameFrame() = {};
 }
 
-void Renderer::Render(Frame& frame)
+void Renderer::Render()
 {
 	ZoneScopedNC("Render", 0x94d145);
+
+	// Switch frame buffers
+	gameFrameId = (gameFrameId + 1) % 2;
 
 	ImGui::Render();
 	SDL_GL_MakeCurrent(window, gl_context);
@@ -111,10 +117,7 @@ void Renderer::Render(Frame& frame)
 		render.NewFrame(viewportSize);
 
 		//Log::Message("Executing Render Commands: %i", frame.commands.Size());
-		frame.ExecuteCommands(render);
-
-		// Render final base color into screen
-		glRenderTexture.Draw(viewportSize, render.baseColor);
+		GetRenderFrame().ExecuteCommands(render);
 	}
 
 	{ // UI Render

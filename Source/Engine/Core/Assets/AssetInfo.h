@@ -31,7 +31,7 @@ public:
 	inline const Name& GetPath()    const { return id; }
 	inline const String& GetSPath() const { return id.ToString(); }
 
-	inline bool Serialize(class Archive& ar, const char* name);
+	bool Serialize(class Archive& ar, const char* name);
 };
 
 DEFINE_CLASS_TRAITS(AssetInfo,

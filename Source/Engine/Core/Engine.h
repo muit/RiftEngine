@@ -9,6 +9,7 @@
 #include "Core/World.h"
 #include "Input/InputManager.h"
 #include "UI/UIManager.h"
+#include "Rendering/Renderer.h"
 #include "Misc/Time.h"
 #include "MultiThreading.h"
 
@@ -41,7 +42,7 @@ private:
 
 	bool Start();
 
-	void Loop(Frame& frame, bool& bFinish);
+	void Loop(bool& bFinish);
 
 	void Shutdown() {
 		SDL_Quit();
@@ -51,6 +52,7 @@ private:
 public:
 
 	Ptr<InputManager> Input() { return input; }
+	Ptr<Renderer> GetRenderer() { return renderer; }
 
 	TaskSystem& Tasks() { return taskSystem; }
 
@@ -72,3 +74,10 @@ private:
 };
 
 #define GEngine Engine::GetEngine()
+
+
+template<typename Command, typename ...Args>
+FORCEINLINE void QueueRenderCommand(Args... args)
+{
+	GEngine->GetRenderer()->QueueCommand<Command>(eastl::forward<Args>(args)...);
+}

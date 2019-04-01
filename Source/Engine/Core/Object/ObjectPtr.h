@@ -206,6 +206,7 @@ class Ptr : public BaseWeakPtr
 public:
 
 	Ptr() : BaseWeakPtr() {}
+	Ptr(TYPE_OF_NULLPTR) : BaseWeakPtr() {}
 
 	Ptr(const Ptr<Type>& other) : BaseWeakPtr() {
 		Set(other.GetGlobal());

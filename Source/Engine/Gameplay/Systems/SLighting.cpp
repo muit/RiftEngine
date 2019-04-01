@@ -1,7 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "SLighting.h"
-#include "Core/World.h"
+#include "Core/Engine.h"
 #include "Gameplay/Components/CEditorCamera.h"
 #include "../Components/CDirectionalLight.h"
 #include "../Components/CPointLight.h"
@@ -51,6 +51,6 @@ void SLighting::Tick(float deltaTime)
 	});
 
 	// Render camera
-	GetWorld()->QueueRender<DrawDirectionalLightCommand>(MoveTemp(directionals));
-	GetWorld()->QueueRender<DrawPointLightCommand>(MoveTemp(points));
+	QueueRenderCommand<DrawDirectionalLightCommand>(MoveTemp(directionals));
+	QueueRenderCommand<DrawPointLightCommand>(MoveTemp(points));
 }

@@ -6,9 +6,11 @@
 
 #include <EASTL/unordered_map.h>
 
-#include "Core/Misc/Optional.h"
+#include "Core/Strings/Name.h"
 #include "Data/TextureData.h"
 #include "Data/MeshData.h"
+#include "Interface/Resources/RenderTexture.h"
+#include "Interface/Resources/RenderMesh.h"
 
 
 enum class ResourceType : u8 {
@@ -21,43 +23,40 @@ struct Resources {
 
 private:
 
-	using TextureIdMap = eastl::unordered_map<u32, u32>;
-	using MeshIdMap    = eastl::unordered_map<u32, u32>;
-	using MeshMap_DEPRECATED = eastl::unordered_map<u32, MeshData>;
+	using TextureMap = eastl::unordered_map<Name, RenderTexture>;
+	using MeshMap    = eastl::unordered_map<Name, RenderMesh>;
 
-	TextureIdMap textures;
-	MeshIdMap meshes;
-	MeshMap_DEPRECATED meshes_DEPRECATED;
+	TextureMap textures;
+	MeshMap meshes;
+
 
 public:
 
-	void Load(u32 id, const TextureData& data)
+	void Load(Name id, const TextureData& data)
 	{
-		// Send data to opengl and store texture Id
-		textures.insert_or_assign(id, GLTextures::Bind(data));
+		textures.insert_or_assign(id, RenderTexture{ data });
 	}
 
-	void Load(u32 id, MeshData&& data)
+	void Load(Name id, const MeshData& data)
 	{
-		meshes_DEPRECATED.insert_or_assign(id, data);
+		meshes.insert_or_assign(id, RenderMesh{ data });
 	}
 
 	template<ResourceType type>
-	void Free(u32 id)
+	void Free(Name id)
 	{
-		switch(type)
+		if constexpr (type == ResourceType::Texture)
 		{
-		case ResourceType::Texture:
 			auto& idIterator = textures.find(id);
 			if (idIterator != textures.end())
 			{
 				GLTextures::Free(idIterator->second);
 				textures.erase(idIterator);
 			}
-			break;
-		case ResourceType::Mesh:
+		}
+		else if(type == ResourceType::Mesh)
+		{
 			meshes_DEPRECATED.erase(id);
-			break;
 		}
 	}
 

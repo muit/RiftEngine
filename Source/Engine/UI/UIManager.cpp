@@ -10,7 +10,7 @@ void UIManager::Prepare()
 	ImGui::StyleColorsDark();
 
 #if WITH_EDITOR
-	editor = Create<EditorManager>(GetSelf());
+	editor = Create<EditorManager>(Self());
 #endif
 }
 

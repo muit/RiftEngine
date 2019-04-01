@@ -1,8 +1,8 @@
 // © 2019 Miguel Fernández Arce - All rights reserved
 
-#include "GLProgram.h"
+#include "RenderMaterial.h"
 
-void GLProgram::CompileProgram(const String& vertexCode, const String& fragmentCode)
+void RenderMaterial::CompileProgram(const String& vertexCode, const String& fragmentCode)
 {
 	GLint state = GL_FALSE;
 
@@ -46,7 +46,7 @@ void GLProgram::CompileProgram(const String& vertexCode, const String& fragmentC
 	glDeleteShader(fragmentId);
 }
 
-void GLProgram::LogShaderError(GLint shaderId)
+void RenderMaterial::LogShaderError(GLint shaderId)
 {
 	String message;
 	GLint messageSize;
@@ -58,7 +58,7 @@ void GLProgram::LogShaderError(GLint shaderId)
 	Log::Error(message);
 }
 
-void GLProgram::LogProgramError()
+void RenderMaterial::LogProgramError()
 {
 	String message;
 	GLint messageSize;

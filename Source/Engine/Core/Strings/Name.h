@@ -107,10 +107,9 @@ namespace eastl {
 	struct hash<Name> {
 		size_t operator()(const Name& k) const
 		{
-			// Return the hash of the string
-			static const eastl::hash<String>hasher{};
+			// Return the string pointer as the hash
 			const Name::Id& id = k.GetId();
-			return hasher(*id);
+			return reinterpret_cast<size_t>(id.get_node());
 		}
 	};
 

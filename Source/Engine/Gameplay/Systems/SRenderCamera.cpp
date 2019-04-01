@@ -1,7 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "SRenderCamera.h"
-#include "Core/World.h"
+#include "Core/Engine.h"
 #include "Gameplay/Components/CEditorCamera.h"
 
 
@@ -45,5 +45,5 @@ void SRenderCamera::Tick(float deltaTime)
 	}
 
 	// Render camera
-	GetWorld()->QueueRender<CameraCommand>(cameraData);
+	QueueRenderCommand<CameraCommand>(cameraData);
 }

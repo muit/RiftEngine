@@ -103,11 +103,11 @@ public:
 
 	/** @return The optional value; undefined when IsSet() returns false. */
 	const Type& GetValue() const {
-		assert(IsSet(), TX("Called GetValue() on an unset TOptional. Please either check IsSet() or use Get(DefaultValue) instead."));
+		check(IsSet(), TX("Called GetValue() on an unset TOptional. Please either check IsSet() or use Get(DefaultValue) instead."));
 		return value;
 	}
 	Type& GetValue() {
-		assert(IsSet(), TX("Called GetValue() on an unset TOptional. Please either check IsSet() or use Get(DefaultValue) instead."));
+		check(IsSet(), TX("Called GetValue() on an unset TOptional. Please either check IsSet() or use Get(DefaultValue) instead."));
 		return value;
 	}
 

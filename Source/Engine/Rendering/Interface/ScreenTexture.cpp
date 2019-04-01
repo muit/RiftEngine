@@ -1,10 +1,10 @@
 // © 2019 Miguel Fernández Arce - All rights reserved
 
-#include "GLRenderTexture.h"
+#include "ScreenTexture.h"
 #include "../Data/TextureData.h"
 
 
-const String GLRenderTexture::vertexShader {
+const String ScreenTexture::vertexShader {
 	"#version 330\n\
 	\
 	layout (location = 0) in vec3 vertex_position;\
@@ -19,7 +19,7 @@ const String GLRenderTexture::vertexShader {
 	}"
 };
 
-const String GLRenderTexture::fragmentShader {
+const String ScreenTexture::fragmentShader {
 	"#version 330\n\
 	\
 	uniform sampler2D square2d;\
@@ -34,7 +34,7 @@ const String GLRenderTexture::fragmentShader {
 };
 
 
-void GLRenderTexture::BuildFrame(u32 width, u32 height)
+void ScreenTexture::BuildFrame(u32 width, u32 height)
 {
 	// Create texture
 	{
@@ -81,7 +81,7 @@ void GLRenderTexture::BuildFrame(u32 width, u32 height)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(squareTextureUV), squareTextureUV, GL_STATIC_DRAW);
 }
 
-void GLRenderTexture::Draw(v2_u32 size, const TextureData& buffer)
+void ScreenTexture::Draw(v2_u32 size, const TextureData& buffer)
 {
 	ZoneScopedNC("Render To GPU", 0x94d145);
 	//glViewport(0, 0, size.x(), size.y());
@@ -108,14 +108,14 @@ void GLRenderTexture::Draw(v2_u32 size, const TextureData& buffer)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-GLRenderTexture::~GLRenderTexture()
+ScreenTexture::~ScreenTexture()
 {
 	glDeleteTextures(1, &textureId);
 	glDeleteBuffers(1, &square_vbo0);
 	glDeleteBuffers(1, &square_vbo1);
 }
 
-void GLRenderTexture::MoveFrom(GLRenderTexture&& other)
+void ScreenTexture::MoveFrom(ScreenTexture&& other)
 {
 	textureId = other.textureId;
 	square_vbo0 = other.square_vbo0;

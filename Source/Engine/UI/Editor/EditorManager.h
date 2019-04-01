@@ -53,7 +53,7 @@ public:
 	template<typename EditorType>
 	Ptr<Editor> CreateEditor()
 	{
-		activeEditors.push_back(Create<EditorType>(GetSelf()));
+		activeEditors.push_back(Create<EditorType>(Self()));
 		return activeEditors.back();
 	}
 };

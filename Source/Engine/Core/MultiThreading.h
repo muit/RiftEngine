@@ -2,9 +2,11 @@
 #pragma once
 
 #include "CoreEngine.h"
-#include <memory>
+#include <EASTL/memory.h>
 #include <taskflow/taskflow.hpp>
 #include <tracy/common/TracySystem.hpp>
+
+#include "Strings/String.h"
 
 
 EA_DISABLE_VC_WARNING(4267)

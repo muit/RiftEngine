@@ -7,27 +7,7 @@
 #include "../Serialization/Archive.h"
 
 
-class Object;
 class World;
-
-
-template<class ObjectType>
-static GlobalPtr<ObjectType> Create(Class* objectClass, const Ptr<Object> owner = {}) {
-	static_assert(eastl::is_convertible< ObjectType, Object >::value, "Type is not an Object!");
-
-	if (objectClass)
-	{
-		return objectClass->CreateInstance(owner).Cast<ObjectType>();
-	}
-	return {};
-}
-
-template<class ObjectType>
-static GlobalPtr<ObjectType> Create(const Ptr<BaseObject> owner = {}) {
-	static_assert(eastl::is_convertible< ObjectType, Object >::value, "Type is not an Object!");
-
-	return GlobalPtr<ObjectType>::Create(owner);
-}
 
 
 class Object : public BaseObject {
@@ -62,7 +42,7 @@ public:
 
 	Ptr<Object> GetOwner() const { return owner.Cast<Object>(); }
 
-	Ptr<Object> GetSelf() const { return self.Cast<Object>(); }
+	Ptr<Object> Self() const { return self.Cast<Object>(); }
 
 	Class* GetClass() const { return ownClass; }
 
@@ -74,5 +54,24 @@ public:
 };
 
 
+
 template <typename Type>
 using IsObject = eastl::is_convertible<Type, Object>;
+
+template<class ObjectType>
+static GlobalPtr<ObjectType> Create(Class* objectClass, const Ptr<Object> owner = {}) {
+	static_assert(IsObject<ObjectType>::value, "Type is not an Object!");
+
+	if (objectClass)
+	{
+		return objectClass->CreateInstance(owner).Cast<ObjectType>();
+	}
+	return {};
+}
+
+template<class ObjectType>
+static GlobalPtr<ObjectType> Create(const Ptr<Object> owner = {}) {
+	static_assert(IsObject<ObjectType>::value, "Type is not an Object!");
+
+	return GlobalPtr<ObjectType>::Create(owner);
+}

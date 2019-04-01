@@ -7,25 +7,25 @@
 #include "Core/Log.h"
 
 
-struct GLProgram {
+struct RenderMaterial {
 	GLint programId;
 
-	GLProgram() {}
-	GLProgram(const String& vertexCode, const String& fragmentCode) {
+	RenderMaterial() {}
+	RenderMaterial(const String& vertexCode, const String& fragmentCode) {
 		CompileProgram(vertexCode, fragmentCode);
 		glUseProgram(programId);
 	}
 
-	GLProgram(GLProgram&& other) : programId{other.programId} {
+	RenderMaterial(RenderMaterial&& other) : programId{other.programId} {
 		other.programId = 0;
 	}
-	GLProgram& operator=(GLProgram&& other) {
+	RenderMaterial& operator=(RenderMaterial&& other) {
 		programId = other.programId;
 		other.programId = 0;
 		return *this;
 	}
 
-	~GLProgram() {
+	~RenderMaterial() {
 		glDeleteProgram(programId);
 	}
 

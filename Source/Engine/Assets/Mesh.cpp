@@ -1,25 +1,21 @@
 // © 2019 Miguel Fernández Arce - All rights reserved
 
-#include "Model.h"
+#include "Mesh.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
-#include "Core/World.h"
-#include "Core/Assets/AssetInfo.h"
+#include "Core/Engine.h"
+#include "Core/Assets/AssetPtr.h"
 #include "Rendering/Commands/ResourceCommands.h"
 
 
-i32 Model::idCounter = 0;
-
-bool Model::PostLoad()
+bool Mesh::PostLoad()
 {
-	Super::PostLoad();
-
 	data = {};
 
-	Path rawModelPath = FileSystem::FindRawFile(FileSystem::FromString(Info().GetSPath()));
+	Path rawModelPath = FileSystem::FindRawFile(FileSystem::FromString(GetInfo().GetSPath()));
 	if (!rawModelPath.empty())
 	{
 		Assimp::Importer importer;
@@ -33,9 +29,15 @@ bool Model::PostLoad()
 
 		data.FromAssimpScene(scene);
 
-		GetWorld()->QueueRender<LoadMeshCommand>(GetId(), data);
-		return true;
+		QueueRenderCommand<LoadMeshCommand>(TAssetPtr<Mesh>{ Self().Cast<Mesh>() });
+
+		return Super::PostLoad();
 	}
 
 	return false;
+}
+
+void Mesh::OnUnload()
+{
+	QueueRenderCommand<FreeMeshCommand>(GetInfo());
 }

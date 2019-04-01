@@ -11,7 +11,7 @@ void DrawMeshCommand::Execute(FrameRender& render, Frame& frame)
 {
 	ZoneScopedN("Draw Mesh");
 
-	const MeshData& mesh = render.resources.Get<ResourceType::Mesh>(id);
+	/*const MeshData& mesh = render.resources.Get<ResourceType::Mesh>(id);
 
 	// #TODO: Cache operation buffers on resources
 	TriangleBuffer triangles{ mesh.GetTriangles() };
@@ -46,10 +46,10 @@ void DrawMeshCommand::Execute(FrameRender& render, Frame& frame)
 
 	flow.wait_for_all();
 
-	RenderTriangles(render, screenVertices, triangles, colors);
+	RenderTriangles(render, screenVertices, triangles, colors);*/
 }
 
-SubTaskLambda DrawMeshCommand::VertexToWorld(VertexBuffer& vertices)
+/*SubTaskLambda DrawMeshCommand::VertexToWorld(VertexBuffer& vertices)
 {
 	const Transform t = transform;
 
@@ -154,7 +154,7 @@ TaskLambda DrawMeshCommand::OperateVertexShader(FrameRender& render, const Verte
 
 				const float NoL = (vertex - point.location).dot(normals[i]);
 				color += point.color * -NoL * point.intensity;
-			}*/
+			}*//*
 
 			// Apply light to vertex color
 			colors[i] *= lightColor;
@@ -233,4 +233,4 @@ void DrawMeshCommand::RenderTriangles(FrameRender& render, const TArray<v3_i32>&
 {
 	ZoneScopedN("Rasterize Triangles");
 	render.rasterizer.FillVertexBuffer(vertices, triangles, colors);
-}
+}*/

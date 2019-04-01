@@ -32,12 +32,13 @@ public:
 protected:
 	/** Called after the asset was loaded or created */
 	virtual bool PostLoad() { return true; }
-
+	virtual void BeforeDestroy() override { OnUnload(); }
+	virtual void OnUnload() {}
 
 	/** HELPERS */
 public:
 
-	const AssetInfo& Info() const { return info; }
+	const AssetInfo& GetInfo() const { return info; }
 
 	const Name& GetMetaPath() const { return info.GetPath(); }
 	const Name& GetRawPath() const { return info.GetPath(); }

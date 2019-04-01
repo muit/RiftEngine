@@ -6,21 +6,21 @@
 #include "ECS/ECSManager.h"
 #include "Core/Assets/AssetPtr.h"
 
-#include "Assets/Model.h"
+#include "Assets/Mesh.h"
 
 
 class CMesh : public Component {
 	STRUCT(CMesh, Component)
 
-	PROP(TAssetPtr<Model>, model)
-	TAssetPtr<Model> model;
+	PROP(TAssetPtr<Mesh>, model)
+	TAssetPtr<Mesh> model;
 
 	PROP(Color, color)
 	Color color;
 
 
 	CMesh() : Super(), model{} {}
-	CMesh(TAssetPtr<Model> model) : Super(), model{ model } {
+	CMesh(TAssetPtr<Mesh> model) : Super(), model{ model } {
 		model.LoadOrCreate();
 	}
 

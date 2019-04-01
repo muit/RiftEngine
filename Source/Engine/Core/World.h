@@ -24,18 +24,15 @@ class World : public Object {
 
 	GlobalPtr<ECSManager> ecsManager;
 
-	Frame* currentFrame;
-
 
 public:
 
-	void Start(Frame& frame) {
-		currentFrame = &frame;
+	void Start()
+	{
+		assetManager = Create<AssetManager>(Self());
 
-		assetManager = Create<AssetManager>(GetSelf());
 
-
-		ecsManager = Create<ECSManager>(GetSelf());
+		ecsManager = Create<ECSManager>(Self());
 
 		scene = { "scene.meta" };
 		scene.LoadOrCreate();
@@ -50,17 +47,12 @@ public:
 		t.SetRotationDegrees({ 0,0,0 });
 		t.scale = { 0.2f, 0.2f, 0.2f };
 		ecsManager->Assign<CMesh>(b, TAssetPtr<Model>{"Terrain.obj.meta"});*/
-
-		currentFrame = nullptr;
 	}
 
-	void Tick(Frame& frame, float deltaTime) {
+	void Tick(float deltaTime) {
 		ZoneScopedNC("World", 0x459bd1);
-		currentFrame = &frame;
 
 		ecsManager->Tick(deltaTime);
-
-		currentFrame = nullptr;
 	}
 
 	void EndPlay() {
@@ -77,24 +69,5 @@ public:
 #else
 		return false;
 #endif
-	}
-
-
-
-	// RENDER COMMANDS
-	Frame& GetFrame() {
-		assert(currentFrame && "Frame is only available on start-up or tick");
-		return *currentFrame;
-	}
-
-	template<typename Command, typename ...Args>
-	void QueueRender(Args... args) {
-		static_assert(eastl::is_base_of<RenderCommand, Command>::value, "Command type must inherit RenderCommand");
-
-		assert(currentFrame && "Commands can only be scheduled on start-up or tick");
-
-		GetFrame().ScheduleCommand(
-			eastl::make_shared<Command>(eastl::forward<Args>(args)...)
-		);
 	}
 };

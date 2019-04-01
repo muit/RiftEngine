@@ -12,16 +12,17 @@ class Texture : public AssetData
 {
 	CLASS(Texture, AssetData)
 
-
 private:
 
 	TextureData data;
+
 
 public:
 
 	Texture() : Super() {}
 
 	virtual bool PostLoad() override;
+	virtual void OnUnload() override;
 
 	FORCEINLINE bool IsEmpty() const { return data.Size().x() == 0 && data.Size().y() == 0; }
 	FORCEINLINE const v2_u32& GetSize() const { return data.Size(); }

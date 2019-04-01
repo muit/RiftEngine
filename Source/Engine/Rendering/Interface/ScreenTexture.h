@@ -5,33 +5,33 @@
 #include "CoreEngine.h"
 #include "Core/Strings/String.h"
 #include "Core/Math/Vector.h"
-#include "GLProgram.h"
+#include "Resources/RenderMaterial.h"
 
 struct TextureData;
 
 
-struct GLRenderTexture {
+struct ScreenTexture {
 
 	GLuint textureId;
 
 	GLuint square_vbo0;
 	GLuint square_vbo1;
 
-	GLProgram shaderProgram;
+	RenderMaterial shaderProgram;
 
 
-	GLRenderTexture()
+	ScreenTexture()
 		: textureId{0}
 		, square_vbo0{0}
 		, square_vbo1{0}
 		, shaderProgram{}
 	{}
-	GLRenderTexture(u32 initialWidth, u32 initialHeight) : shaderProgram{ vertexShader, fragmentShader } {
+	ScreenTexture(u32 initialWidth, u32 initialHeight) : shaderProgram{ vertexShader, fragmentShader } {
 		BuildFrame(initialWidth, initialHeight);
 	}
 
-	GLRenderTexture(GLRenderTexture&& other) { MoveFrom(MoveTemp(other)); }
-	GLRenderTexture& operator=(GLRenderTexture&& other) {
+	ScreenTexture(ScreenTexture&& other) { MoveFrom(MoveTemp(other)); }
+	ScreenTexture& operator=(ScreenTexture&& other) {
 		MoveFrom(MoveTemp(other));
 		return *this;
 	}
@@ -39,13 +39,13 @@ struct GLRenderTexture {
 
 	void Draw(v2_u32 size, const TextureData& buffer);
 
-	~GLRenderTexture();
+	~ScreenTexture();
 
 private:
 
 	void BuildFrame(u32 width, u32 height);
 
-	void MoveFrom(GLRenderTexture&& other);
+	void MoveFrom(ScreenTexture&& other);
 
 	// STATIC
 	static const String vertexShader;

@@ -12,10 +12,6 @@
  * They contain the state of the render data no matter which frame is being rendered.
  */
 class RenderCommand {
-protected:
-
-	RenderCommand() = default;
-
 public:
 	virtual ~RenderCommand() {}
 

@@ -5,13 +5,14 @@
 #include "CoreEngine.h"
 #include <taskflow/taskflow.hpp>
 
+#include "Core/MultiThreading.h"
+#include "Core/Assets/AssetPtr.h"
+#include "Assets/Texture.h"
+#include "Assets/Mesh.h"
 #include "../RenderCommand.h"
-#include "../Data/TextureData.h"
-#include "../Data/MeshData.h"
 #include "../Renderer.h"
 #include "../Frame.h"
 #include "../Rasterizer.h"
-#include "Core/MultiThreading.h"
 
 
 // #TODO: Commands should be able to receive many orders of the same type.
@@ -20,89 +21,89 @@
 
 class LoadTextureCommand : public RenderCommand {
 public:
-	u32 id;
-	TextureData texture;
+	TAssetPtr<Texture> asset;
 
 
-	LoadTextureCommand(u32 id, TextureData texture) : id(id), texture{eastl::move(texture)} {}
+	LoadTextureCommand(TAssetPtr<Texture> asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
 		// #TODO: Avoid texture data copy by adding dependency on the asset
-		render.resources.Load(id, texture);
+		//render.resources.Load(id, texture);
 	}
 };
 
 class FreeTextureCommand : public RenderCommand {
 public:
-	u32 id;
+	AssetInfo asset;
 
 
-	FreeTextureCommand(u32 id) : id(id) {}
+	FreeTextureCommand(AssetInfo asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
-		render.resources.Free<ResourceType::Texture>(id);
+		//render.resources.Free<ResourceType::Texture>(asset);
 	}
 };
 
 class Draw2DTextureCommand : public RenderCommand {
 public:
-	u32 id;
+	AssetInfo asset;
 	v2_u32 position;
 
 
-	Draw2DTextureCommand(u32 id, v2_u32 position) : id{id}, position{position} {}
+	Draw2DTextureCommand(AssetInfo asset, v2_u32 position)
+		: asset{asset}, position{position}
+	{}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
-		u32 texture = render.resources.GetGLId<ResourceType::Texture>(id);
+		//u32 texture = render.resources.GetGLId<ResourceType::Texture>(id);
 
-		render.DrawImage(position, texture);
+		//render.DrawImage(position, texture);
 	}
 };
 
 
 class LoadMeshCommand : public RenderCommand {
 public:
-	u32 id;
-	MeshData mesh;
+	TAssetPtr<Mesh> asset;
 
 
-	LoadMeshCommand(u32 id, MeshData mesh) : id(id), mesh{ eastl::move(mesh) } {}
+	LoadMeshCommand(TAssetPtr<Mesh> asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
-		render.resources.Load(id, eastl::move(mesh));
+		//render.resources.Load(asset, eastl::move(mesh));
 	}
 };
 
 class FreeMeshCommand : public RenderCommand {
 public:
-	u32 id;
+	AssetInfo asset;
 
 
-	FreeMeshCommand(u32 id) : id(id) {}
+	FreeMeshCommand(AssetInfo asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
-		render.resources.Free<ResourceType::Mesh>(id);
+		//render.resources.Free<ResourceType::Mesh>(id);
 	}
 };
 
 class DrawMeshCommand : public RenderCommand {
 public:
-	u32 id;
+	AssetInfo asset;
 	Transform transform;
 	Color color;
 
 
-	DrawMeshCommand(u32 id, Transform transform, Color color) : id(id), transform(transform), color(color) {}
+	DrawMeshCommand(AssetInfo asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override;
 
 private:
 
-	SubTaskLambda VertexToWorld(VertexBuffer& vertices);
+	/*SubTaskLambda VertexToWorld(VertexBuffer& vertices);
 	SubTaskLambda NormalToWorld(NormalsBuffer& normals);
 	TaskLambda    OperateVertexShader(FrameRender& render, const VertexBuffer& worldVertices, const NormalsBuffer& normals, LColorBuffer& colors);
 	SubTaskLambda TransformToScreen(const FrameRender& render, const VertexBuffer& worldVertices, VertexBufferI32& screenVertices);
 	TaskLambda    BackfaceCulling(const VertexBufferI32& vertices, TriangleBuffer& triangles);
 
-	void RenderTriangles(FrameRender& render, const VertexBufferI32& vertices, const TriangleBuffer& triangles, const LColorBuffer& colors);
+	void RenderTriangles(FrameRender& render, const VertexBufferI32& vertices, const TriangleBuffer& triangles, const LColorBuffer& colors);*/
 };
