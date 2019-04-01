@@ -8,7 +8,7 @@
 
 #include "Core/Engine.h"
 #include "Core/Assets/AssetPtr.h"
-#include "Rendering/Commands/ResourceCommands.h"
+#include "Rendering/Commands/MeshCommands.h"
 
 
 bool Mesh::PostLoad()

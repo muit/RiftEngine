@@ -7,7 +7,7 @@
 #include "Core/Engine.h"
 #include "Core/Assets/AssetPtr.h"
 #include "Core/Files/FileSystem.h"
-#include "Rendering/Commands/ResourceCommands.h"
+#include "Rendering/Commands/TextureCommands.h"
 
 
 bool Texture::PostLoad()

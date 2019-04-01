@@ -1,13 +1,13 @@
 // © 2019 Miguel Fernández Arce - All rights reserved
 
-#include "ResourceCommands.h"
+#include "MeshCommands.h"
 
 #include "Core/Engine.h"
 #include "Core/Math/Vector.h"
 
 
 
-void DrawMeshCommand::Execute(FrameRender& render, Frame& frame)
+void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 {
 	ZoneScopedN("Draw Mesh");
 

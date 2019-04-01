@@ -1,7 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "SRenderMeshes.h"
-#include "Rendering/Commands/ResourceCommands.h"
+#include "Rendering/Commands/MeshCommands.h"
 #include "Core/Engine.h"
 #include "Gameplay/Components/CTransform.h"
 #include "Gameplay/Components/CMesh.h"

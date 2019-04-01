@@ -7,7 +7,7 @@
 #include "ECS/ECSManager.h"
 #include "Core/Assets/AssetManager.h"
 #include "Rendering/Frame.h"
-#include "Rendering/RenderCommand.h"
+#include "Rendering/Commands/RenderCommand.h"
 #include "Core/Assets/AssetPtr.h"
 
 #include "Gameplay/Components/CMesh.h"

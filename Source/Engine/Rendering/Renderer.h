@@ -9,7 +9,7 @@
 
 #include "Frame.h"
 #include "Resources.h"
-#include "RenderCommand.h"
+#include "Commands/RenderCommand.h"
 #include "Interface/ScreenTexture.h"
 
 

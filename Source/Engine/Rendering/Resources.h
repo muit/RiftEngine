@@ -47,32 +47,27 @@ public:
 	{
 		if constexpr (type == ResourceType::Texture)
 		{
-			auto& idIterator = textures.find(id);
-			if (idIterator != textures.end())
-			{
-				GLTextures::Free(idIterator->second);
-				textures.erase(idIterator);
-			}
+			textures.erase(id);
 		}
 		else if(type == ResourceType::Mesh)
 		{
-			meshes_DEPRECATED.erase(id);
+			meshes.erase(id);
 		}
 	}
 
 	template<ResourceType type>
-	auto GetGLId(u32 id) -> eastl::enable_if_t<type == ResourceType::Texture, u32>
+	auto Get(Name id) -> eastl::enable_if_t<type == ResourceType::Texture, const RenderTexture&>
 	{
-		const TextureIdMap::const_iterator it = textures.find(id);
+		const TextureMap::const_iterator it = textures.find(id);
 		assert(it != textures.end() && "Tried to access an unloaded resource.");
 		return it->second;
 	}
 
 	template<ResourceType type>
-	auto Get(u32 id) -> eastl::enable_if_t<type == ResourceType::Mesh, const MeshData&>
+	auto Get(u32 id) -> eastl::enable_if_t<type == ResourceType::Mesh, const RenderMesh&>
 	{
-		const MeshMap_DEPRECATED::const_iterator it = meshes_DEPRECATED.find(id);
-		assert(it != meshes_DEPRECATED.end() && "Tried to access an unloaded resource.");
+		const MeshMap::const_iterator it = meshes.find(id);
+		assert(it != meshes.end() && "Tried to access an unloaded resource.");
 		return it->second;
 	}
 };

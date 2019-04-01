@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreEngine.h"
-#include "../RenderCommand.h"
+#include "RenderCommand.h"
 #include "../Data/LightData.h"
 #include "../Renderer.h"
 #include "../Frame.h"

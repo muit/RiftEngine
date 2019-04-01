@@ -42,24 +42,8 @@ public:
 		}
 	}
 
-
 	TAssetPtr& operator=(TAssetPtr&& other)      { MoveFrom(MoveTemp(other)); return *this; }
 	TAssetPtr& operator=(const TAssetPtr& other) { CopyFrom(other); return *this; }
-
-
-	/**
-	 * @returns true if this can never be pointed towards an asset
-	 */
-	const bool IsNull() const {
-		return info.IsNull();
-	}
-
-	/**
-	 * @returns true if this asset is loaded
-	 */
-	const bool IsValid() const {
-		return Get().IsValid();
-	}
 
 	/**
 	 * Tries to load this asset if it's not already
@@ -109,6 +93,19 @@ public:
 		info = {};
 		cachedAsset = nullptr;
 	}
+
+	/** @returns true if this can never be pointed towards an asset */
+	const bool IsNull() const {
+		return info.IsNull();
+	}
+
+	/** @returns true if this asset is loaded */
+	const bool IsValid() const {
+		return Get().IsValid();
+	}
+
+	inline const Name& GetPath()    const { return info.GetPath(); }
+	inline const String& GetSPath() const { return info.GetSPath(); }
 
 	operator bool() const { return IsValid(); };
 	Ptr<T> operator*()  const { return Get(); }
