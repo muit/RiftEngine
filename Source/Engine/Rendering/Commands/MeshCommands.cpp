@@ -11,8 +11,15 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 {
 	ZoneScopedN("Draw Mesh");
 
-	/*const MeshData& mesh = render.resources.Get<ResourceType::Mesh>(id);
+	for (const auto& meshAsset : meshes)
+	{
+		const RenderMesh& meshResource = render.resources.Get<ResourceType::Mesh>(meshAsset.GetPath());
 
+		meshResource.Draw();
+	}
+
+
+	/**
 	// #TODO: Cache operation buffers on resources
 	TriangleBuffer triangles{ mesh.GetTriangles() };
 	NormalsBuffer normals = mesh.GetNormals();

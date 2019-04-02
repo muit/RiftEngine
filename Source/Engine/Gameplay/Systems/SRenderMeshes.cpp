@@ -20,7 +20,10 @@ void SRenderMeshes::Tick(float /*deltaTime*/)
 	{
 		if (c.model.IsValid())
 		{
-			//QueueRenderCommand<DrawMeshCommand>(c.model->GetId(), t.transform, c.color);
+			QueueRenderCommand<DrawMeshesCommand>(
+				TArray<AssetInfo>{ c.model },
+				TArray<Transform>{ t.transform }
+			);
 		}
 	});
 

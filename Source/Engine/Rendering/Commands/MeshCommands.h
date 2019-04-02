@@ -33,7 +33,7 @@ public:
 	FreeMeshCommand(AssetInfo asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
-		//render.resources.Free<ResourceType::Mesh>(id);
+		render.resources.Free<ResourceType::Mesh>(asset.GetPath());
 	}
 };
 

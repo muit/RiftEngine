@@ -64,7 +64,7 @@ public:
 	}
 
 	template<ResourceType type>
-	auto Get(u32 id) -> eastl::enable_if_t<type == ResourceType::Mesh, const RenderMesh&>
+	auto Get(Name id) -> eastl::enable_if_t<type == ResourceType::Mesh, const RenderMesh&>
 	{
 		const MeshMap::const_iterator it = meshes.find(id);
 		assert(it != meshes.end() && "Tried to access an unloaded resource.");

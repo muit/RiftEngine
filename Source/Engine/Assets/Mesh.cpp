@@ -30,8 +30,6 @@ bool Mesh::PostLoad()
 		data.FromAssimpScene(scene);
 
 		QueueRenderCommand<LoadMeshCommand>(TAssetPtr<Mesh>{ Self().Cast<Mesh>() });
-
-		Frame& frame = GEngine->GetRenderer()->GetGameFrame();
 		return Super::PostLoad();
 	}
 
