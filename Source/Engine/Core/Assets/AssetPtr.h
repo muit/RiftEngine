@@ -104,6 +104,8 @@ public:
 		return Get().IsValid();
 	}
 
+	AssetInfo GetInfo() { return info; }
+
 	inline const Name& GetPath()    const { return info.GetPath(); }
 	inline const String& GetSPath() const { return info.GetSPath(); }
 

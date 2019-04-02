@@ -21,7 +21,7 @@ void SRenderMeshes::Tick(float /*deltaTime*/)
 		if (c.model.IsValid())
 		{
 			QueueRenderCommand<DrawMeshesCommand>(
-				TArray<AssetInfo>{ c.model },
+				TArray<AssetInfo>{ c.model.GetInfo() },
 				TArray<Transform>{ t.transform }
 			);
 		}
