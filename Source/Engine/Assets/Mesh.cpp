@@ -31,6 +31,7 @@ bool Mesh::PostLoad()
 
 		QueueRenderCommand<LoadMeshCommand>(TAssetPtr<Mesh>{ Self().Cast<Mesh>() });
 
+		Frame& frame = GEngine->GetRenderer()->GetGameFrame();
 		return Super::PostLoad();
 	}
 

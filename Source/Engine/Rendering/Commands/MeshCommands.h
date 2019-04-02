@@ -21,7 +21,7 @@ public:
 	LoadMeshCommand(TAssetPtr<Mesh> asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
-		//render.resources.Load(asset, eastl::move(mesh));
+		render.resources.Load(asset.GetPath(), asset->GetMeshData());
 	}
 };
 

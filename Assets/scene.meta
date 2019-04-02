@@ -53,7 +53,7 @@
         "name": "Terrain"
       },
       "CMesh": {
-        "model": "Models/terrain.fbx.meta",
+        "model": "Meshes/terrain.fbx.meta",
         "color": { "a": 255, "b": 0, "g": 255, "r": 0 }
       },
       "CTransform": {
@@ -83,7 +83,7 @@
         "name": "Piramid"
       },
       "CMesh": {
-        "model": "Models/piramid.obj.meta",
+        "model": "Meshes/piramid.obj.meta",
         "color": { "a": 255, "b": 0, "g": 0, "r": 128 }
       },
       "CTransform": {
@@ -100,7 +100,7 @@
         "name": "Piramid"
       },
       "CMesh": {
-        "model": "Models/piramid.obj.meta",
+        "model": "Meshes/piramid.obj.meta",
         "color": { "a": 255, "b": 0, "g": 0, "r": 128 }
       },
       "CTransform": {
@@ -117,7 +117,7 @@
         "name": "Piramid"
       },
       "CMesh": {
-        "model": "Models/piramid.obj.meta",
+        "model": "Meshes/piramid.obj.meta",
         "color": { "a": 255, "b": 0, "g": 0, "r": 128 }
       },
       "CTransform": {
@@ -134,7 +134,7 @@
         "name": "Piramid"
       },
       "CMesh": {
-        "model": "Models/piramid.obj.meta",
+        "model": "Meshes/piramid.obj.meta",
         "color": { "a": 255, "b": 0, "g": 0, "r": 128 }
       },
       "CTransform": {
@@ -151,7 +151,7 @@
         "name": "Piramid"
       },
       "CMesh": {
-        "model": "Models/piramid.obj.meta",
+        "model": "Meshes/piramid.obj.meta",
         "color": { "a": 255, "b": 0, "g": 0, "r": 128 }
       },
       "CTransform": {
@@ -168,7 +168,7 @@
         "name": "Piramid"
       },
       "CMesh": {
-        "model": "Models/piramid.obj.meta",
+        "model": "Meshes/piramid.obj.meta",
         "color": { "a": 255, "b": 0, "g": 0, "r": 128 }
       },
       "CTransform": {

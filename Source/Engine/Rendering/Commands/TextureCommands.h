@@ -21,8 +21,8 @@ public:
 	LoadTextureCommand(TAssetPtr<Texture> asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
-		// #TODO: Avoid texture data copy by adding dependency on the asset
-		//render.resources.Load(id, texture);
+		// #TODO: Ensure assets stay loaded during this frame
+		render.resources.Load(asset.GetPath(), asset->GetTextureData());
 	}
 };
 

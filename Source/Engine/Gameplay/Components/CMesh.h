@@ -24,9 +24,7 @@ class CMesh : public Component {
 		model.LoadOrCreate();
 	}
 
-	void PostSerialize(bool/* bLoaded*/) {
-		model.Load();
-	}
+	void PostSerialize(bool/* bLoaded*/);
 };
 
 DEFINE_CLASS_TRAITS(CMesh,

@@ -86,16 +86,16 @@ void Renderer::PreTick()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
 
-	// Clean frame
-	GetGameFrame() = {};
 }
 
 void Renderer::Render()
 {
 	ZoneScopedNC("Render", 0x94d145);
 
-	// Switch frame buffers
-	gameFrameId = (gameFrameId + 1) % 2;
+	// Game frame is now render frame and vice versa
+	SwitchFrameBuffer();
+	// Clean game frame
+	GetGameFrame() = {};
 
 	ImGui::Render();
 	SDL_GL_MakeCurrent(window, gl_context);

@@ -57,6 +57,8 @@ public:
 	/** Frame being rendered on graphics thread */
 	Frame& GetRenderFrame() { return frameCache[(gameFrameId + 1) % 2]; }
 
+	void SwitchFrameBuffer() { gameFrameId = (gameFrameId + 1) % 2; }
+
 	template<typename Command, typename ...Args>
 	void QueueCommand(Args... args)
 	{
