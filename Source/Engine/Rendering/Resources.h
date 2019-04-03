@@ -11,11 +11,13 @@
 #include "Data/MeshData.h"
 #include "Interface/Resources/RenderTexture.h"
 #include "Interface/Resources/RenderMesh.h"
+#include "Interface/Resources/RenderMaterial.h"
 
 
 enum class ResourceType : u8 {
 	Texture,
-	Mesh
+	Mesh,
+	Material
 };
 
 
@@ -23,11 +25,13 @@ struct Resources {
 
 private:
 
-	using TextureMap = eastl::unordered_map<Name, RenderTexture>;
-	using MeshMap    = eastl::unordered_map<Name, RenderMesh>;
+	using TextureMap  = eastl::unordered_map<Name, RenderTexture>;
+	using MeshMap     = eastl::unordered_map<Name, RenderMesh>;
+	using MaterialMap = eastl::unordered_map<Name, RenderMaterial>;
 
 	TextureMap textures;
 	MeshMap meshes;
+	MaterialMap materials;
 
 
 public:
@@ -42,6 +46,12 @@ public:
 		meshes.insert_or_assign(id, RenderMesh{ data });
 	}
 
+	void Load(Name id, const String& code)
+	{
+		// #TODO: Parse Fragment / Vertex shader
+		materials.insert_or_assign(id, RenderMaterial{ code, code });
+	}
+
 	template<ResourceType type>
 	void Free(Name id)
 	{
@@ -52,6 +62,10 @@ public:
 		else if(type == ResourceType::Mesh)
 		{
 			meshes.erase(id);
+		}
+		else if (type == ResourceType::Material)
+		{
+			materials.erase(id);
 		}
 	}
 
@@ -68,6 +82,14 @@ public:
 	{
 		const MeshMap::const_iterator it = meshes.find(id);
 		assert(it != meshes.end() && "Tried to access an unloaded resource.");
+		return it->second;
+	}
+
+	template<ResourceType type>
+	auto Get(Name id) -> eastl::enable_if_t<type == ResourceType::Material, const RenderMaterial&>
+	{
+		const MaterialMap::const_iterator it = materials.find(id);
+		assert(it != materials.end() && "Tried to access an unloaded resource.");
 		return it->second;
 	}
 };

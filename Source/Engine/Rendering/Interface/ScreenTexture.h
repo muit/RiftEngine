@@ -12,21 +12,15 @@ struct TextureData;
 
 struct ScreenTexture {
 
-	GLuint textureId;
+	GLuint textureId = 0;
 
-	GLuint square_vbo0;
-	GLuint square_vbo1;
+	GLuint square_vbo0 = 0;
+	GLuint square_vbo1 = 0;
 
-	RenderMaterial shaderProgram;
+	RenderMaterial material;
 
 
-	ScreenTexture()
-		: textureId{0}
-		, square_vbo0{0}
-		, square_vbo1{0}
-		, shaderProgram{}
-	{}
-	ScreenTexture(u32 initialWidth, u32 initialHeight) : shaderProgram{ vertexShader, fragmentShader } {
+	ScreenTexture(u32 initialWidth, u32 initialHeight) : material{ vertexShader, fragmentShader } {
 		BuildFrame(initialWidth, initialHeight);
 	}
 

@@ -10,8 +10,10 @@
 struct RenderMaterial {
 	GLint programId;
 
-	RenderMaterial() {}
-	RenderMaterial(const String& vertexCode, const String& fragmentCode) {
+
+	RenderMaterial() : programId(0) {}
+	RenderMaterial(const String& vertexCode, const String& fragmentCode) : programId(0)
+	{
 		CompileProgram(vertexCode, fragmentCode);
 		glUseProgram(programId);
 	}

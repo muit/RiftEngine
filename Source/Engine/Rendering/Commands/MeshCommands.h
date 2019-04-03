@@ -1,4 +1,4 @@
-// © 2019 Miguel Fernández Arce - All rights reserved
+// ï¿½ 2019 Miguel Fernï¿½ndez Arce - All rights reserved
 
 #pragma once
 
@@ -6,7 +6,6 @@
 
 #include "Core/MultiThreading.h"
 #include "Core/Assets/AssetPtr.h"
-#include "Assets/Texture.h"
 #include "Assets/Mesh.h"
 #include "RenderCommand.h"
 #include "../Renderer.h"

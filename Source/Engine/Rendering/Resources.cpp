@@ -10,13 +10,3 @@
 #include "Interface/Resources/RenderTexture.h"
 #include "Interface/Resources/RenderMesh.h"
 #include "Interface/Resources/RenderMaterial.h"
-
-
-struct Resources {
-
-private:
-
-	eastl::unordered_map<Name, RenderTexture> textures;
-	eastl::unordered_map<Name, RenderMesh> meshes;
-	eastl::unordered_map<u32, RenderMaterial> materials;
-};

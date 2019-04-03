@@ -85,7 +85,7 @@ void ScreenTexture::Draw(v2_u32 size, const TextureData& buffer)
 {
 	ZoneScopedNC("Render To GPU", 0x94d145);
 	//glViewport(0, 0, size.x(), size.y());
-	shaderProgram.Use();
+	material.Use();
 
 
 	glBindTexture(GL_TEXTURE_2D, textureId);
@@ -120,7 +120,7 @@ void ScreenTexture::MoveFrom(ScreenTexture&& other)
 	textureId = other.textureId;
 	square_vbo0 = other.square_vbo0;
 	square_vbo1 = other.square_vbo1;
-	shaderProgram = eastl::move(other.shaderProgram);
+	material = eastl::move(other.material);
 	other.textureId = 0;
 	other.square_vbo0 = 0;
 	other.square_vbo1 = 0;
