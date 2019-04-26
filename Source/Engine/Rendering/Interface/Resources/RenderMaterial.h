@@ -6,17 +6,24 @@
 #include "Core/Strings/String.h"
 #include "Core/Log.h"
 
+#include "../../Data/MaterialData.h"
 
-struct RenderMaterial {
+
+struct RenderMaterial
+{
+
 	GLint programId;
 
 
-	RenderMaterial() : programId(0) {}
-	RenderMaterial(const String& vertexCode, const String& fragmentCode) : programId(0)
+	RenderMaterial() : programId{ 0 } {}
+	RenderMaterial(const String& vertexCode, const String& fragmentCode)
 	{
 		CompileProgram(vertexCode, fragmentCode);
 		glUseProgram(programId);
 	}
+	RenderMaterial(const MaterialData& materialData)
+		: RenderMaterial{ materialData.vertexCode, materialData.fragmentCode }
+	{}
 
 	RenderMaterial(RenderMaterial&& other) : programId{other.programId} {
 		other.programId = 0;

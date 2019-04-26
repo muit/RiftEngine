@@ -21,7 +21,7 @@ public:
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
 		// #TODO: Ensure assets stay loaded during this frame
-		//render.resources.Load(asset.GetPath(), asset->GetMaterialData());
+		render.resources.Load(asset.GetPath(), asset->GetData());
 	}
 };
 
@@ -32,7 +32,8 @@ public:
 
 	FreeMaterialCommand(AssetInfo asset) : asset{ asset } {}
 
-	virtual void Execute(FrameRender& render, Frame& frame) override {
-		render.resources.Free<ResourceType::Material>(asset);
+	virtual void Execute(FrameRender& render, Frame& frame) override
+	{
+		render.resources.Free<ResourceType::Material>(asset.GetPath());
 	}
 };

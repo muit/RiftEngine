@@ -74,6 +74,13 @@ struct CString {
 		return str.size() >= 1 && str.back() == c;
 	}
 
+	static void RemoveFromStart(String& str, size_t size) {
+		str.erase(0, size);
+	}
+	static void RemoveFromEnd(String& str, size_t size) {
+		str.erase(str.size() - 1 - size, size);
+	}
+
 	static i32 Split(const String& str, TArray<String>& tokens, const TCHAR delim)
 	{
 		std::size_t current, previous = 0;
@@ -85,6 +92,18 @@ struct CString {
 		}
 		tokens.Add(str.substr(previous, current - previous));
 		return tokens.Size();
+	}
+
+	static bool Split(const String& str, String& a, String& b, const TCHAR* delim)
+	{
+		const size_t pos = str.find(delim);
+		if(pos != String::npos)
+		{
+			a = str.substr(0, pos);
+			b = str.substr(pos, str.size() - pos);
+			return true;
+		}
+		return false;
 	}
 
 	static String FrontSubstr(const String& str, i32 size) {

@@ -33,7 +33,7 @@ public:
 	FreeTextureCommand(AssetInfo asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
-		render.resources.Free<ResourceType::Texture>(asset);
+		render.resources.Free<ResourceType::Texture>(asset.GetPath());
 	}
 };
 

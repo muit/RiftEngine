@@ -17,14 +17,24 @@ bool Material::PostLoad()
 	Path rawTexturePath = FileSystem::FindRawFile(FileSystem::FromString(GetInfo().GetSPath()));
 	if(!rawTexturePath.empty())
 	{
-		SDL_Surface* rawImg = IMG_Load(FileSystem::ToString(rawTexturePath).c_str());
-		// Copy texture data
-		data.FromSurface(rawImg);
-		SDL_FreeSurface(rawImg);
+		String code;
+		if (!FileSystem::LoadStringFile(rawTexturePath, code))
+		{
+			// Shader file not found or loaded
+			return false;
+		}
 
-		QueueRenderCommand<LoadMaterialCommand>(TAssetPtr<Material>{ Self().Cast<Material>() });
+		if (!data.Parse(code))
+		{
+			// Invalid code
+			return false;
+		}
 
-		return Super::PostLoad();;
+		QueueRenderCommand<LoadMaterialCommand>(
+			TAssetPtr<Material>{ Self<Material>() }
+		);
+
+		return Super::PostLoad();
 	}
 	return false;
 }

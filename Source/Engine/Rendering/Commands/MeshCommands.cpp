@@ -6,7 +6,7 @@
 #include "Core/Math/Vector.h"
 
 // List of batches. One asset with multiple transforms
-using BatchMap = eastl::unordered_map<AssetInfo, TArray<Transform>>;
+using BatchMap = eastl::unordered_map<Name, TArray<Transform>>;
 
 void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 {
@@ -19,19 +19,22 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 	{
 		const auto& mesh = meshes[i];
 
-		auto it = batches.find(mesh);
+		auto it = batches.find(mesh.GetPath());
 		if (it != batches.end())
 		{
-			// Found batch
+			// Found batch, add an instance
 			(*it).second.Add(transforms[i]);
 		}
-		batches.insert({ mesh, TArray<Transform>{ transforms[i] } });
+		else
+		{
+			batches.insert({ mesh.GetPath(), TArray<Transform>{ transforms[i] } });
+		}
 	}
 
 	/** Draw batches */
 	for(const auto& batch : batches)
 	{
-		const RenderMesh& meshResource = render.resources.Get<ResourceType::Mesh>(batch.first.GetPath());
+		const RenderMesh& meshResource = render.resources.Get<ResourceType::Mesh>(batch.first);
 
 		// #TODO: Draw on all transforms
 		meshResource.Draw();

@@ -16,7 +16,8 @@
 #include "Data/LightData.h"
 
 
-struct Frame {
+struct Frame
+{
 private:
 	static u16 idCounter;
 	u16 id;
@@ -44,7 +45,8 @@ public:
 
 
 // Where all render data is stored. Gets reused every frame.
-struct FrameRender {
+struct FrameRender
+{
 	TextureData baseColor;
 
 	CameraData camera;

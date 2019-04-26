@@ -11,18 +11,29 @@
 #include "Core/Log.h"
 
 
+#if PLATFORM_APPLE
+const char* Renderer::glslVersion{ "#version 150" };
+#else
+const char* Renderer::glslVersion{ "#version 130" };
+#endif
+
+Renderer::Renderer()
+	: Super()
+	, window{nullptr}
+{
+
+}
+
 bool Renderer::Initialize()
 {
 #if PLATFORM_APPLE
 	// GL 3.2 Core + GLSL 150
-	glslVersion = "#version 150";
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 #else
 	// GL 3.0 + GLSL 130
-	glslVersion = "#version 130";
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);

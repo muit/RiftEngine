@@ -44,6 +44,9 @@ public:
 
 	Ptr<Object> Self() const { return self.Cast<Object>(); }
 
+	template<typename T>
+	Ptr<T> Self() const { return self.Cast<T>(); }
+
 	Class* GetClass() const { return ownClass; }
 
 

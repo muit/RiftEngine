@@ -7,8 +7,6 @@
 #include <EASTL/unordered_map.h>
 
 #include "Core/Strings/Name.h"
-#include "Data/TextureData.h"
-#include "Data/MeshData.h"
 #include "Interface/Resources/RenderTexture.h"
 #include "Interface/Resources/RenderMesh.h"
 #include "Interface/Resources/RenderMaterial.h"
@@ -46,10 +44,10 @@ public:
 		meshes.insert_or_assign(id, RenderMesh{ data });
 	}
 
-	void Load(Name id, const String& code)
+	void Load(Name id, const MaterialData& data)
 	{
 		// #TODO: Parse Fragment / Vertex shader
-		materials.insert_or_assign(id, RenderMaterial{ code, code });
+		materials.insert_or_assign(id, RenderMaterial{ data });
 	}
 
 	template<ResourceType type>
@@ -59,11 +57,11 @@ public:
 		{
 			textures.erase(id);
 		}
-		else if(type == ResourceType::Mesh)
+		else if constexpr(type == ResourceType::Mesh)
 		{
 			meshes.erase(id);
 		}
-		else if (type == ResourceType::Material)
+		else if constexpr(type == ResourceType::Material)
 		{
 			materials.erase(id);
 		}

@@ -12,6 +12,7 @@
 
 #include "Gameplay/Components/CMesh.h"
 #include "Gameplay/Components/CTransform.h"
+#include "../Assets/Material.h"
 
 
 class World : public Object {
@@ -36,6 +37,10 @@ public:
 
 		scene = { "scene.meta" };
 		scene.LoadOrCreate();
+
+
+		TAssetPtr<Material> mat { "Shaders/default.shader.meta" };
+		mat.Load();
 
 		ecsManager->BeginPlay();
 

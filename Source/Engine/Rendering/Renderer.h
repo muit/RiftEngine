@@ -17,13 +17,15 @@
 #define SCREEN_HEIGHT 720
 
 
-class Renderer : public Object {
+class Renderer : public Object
+{
 	CLASS(Renderer, Object)
 
 
+	static const char* glslVersion;
+
 	SDL_Window* window;
 	SDL_GLContext gl_context;
-	const char* glslVersion;
 
 	ScreenTexture glRenderTexture;
 
@@ -32,9 +34,10 @@ class Renderer : public Object {
 
 	FrameRender render;
 
+
 public:
 
-	Renderer() : Super() {}
+	Renderer();
 
 	bool Initialize();
 

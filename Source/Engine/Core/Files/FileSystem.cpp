@@ -41,6 +41,36 @@ bool FileSystem::SaveJsonFile(Path path, const json& data, i32 indent)
 }
 
 
+bool FileSystem::LoadStringFile(Path path, String& result)
+{
+	if (!SanitizeAssetPath(path) || !fs::exists(path))
+		return false;
+
+	std::ifstream file(path);
+
+	// Clean string and reserve it
+	result = {};
+	file.seekg(0, std::ios::end);
+	result.reserve(file.tellg());
+	file.seekg(0, std::ios::beg);
+
+	// Improve by avoiding this copy from std::string to String
+	std::string str{ std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>() };
+	result.assign(str.data(), str.size());
+
+	return !result.empty();
+}
+
+bool FileSystem::SaveStringFile(Path path, const String& data)
+{
+	if (!SanitizeAssetPath(path))
+		return false;
+
+	std::ofstream file(path);
+	file.write(data.data(), data.size());
+	return true;
+}
+
 Path FileSystem::GetAssetsPath()
 {
 	// Take two folders up. May change for distributed versions / other platforms

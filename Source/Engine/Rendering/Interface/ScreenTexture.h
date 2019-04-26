@@ -20,6 +20,7 @@ struct ScreenTexture {
 	RenderMaterial material;
 
 
+	ScreenTexture() = default;
 	ScreenTexture(u32 initialWidth, u32 initialHeight) : material{ vertexShader, fragmentShader } {
 		BuildFrame(initialWidth, initialHeight);
 	}
@@ -29,7 +30,6 @@ struct ScreenTexture {
 		MoveFrom(MoveTemp(other));
 		return *this;
 	}
-
 
 	void Draw(v2_u32 size, const TextureData& buffer);
 
