@@ -15,6 +15,9 @@
 #include "Core/Assets/AssetInfo.h"
 
 
+template<typename T>
+inline Name GetReflectableName();
+
 #define DECLARE_REFLECTION_TYPE(Type)\
 template<>\
 inline constexpr bool IsReflectableType<Type>() { return true; }\
@@ -22,22 +25,14 @@ template<>\
 inline Name GetReflectableName<Type>() { return { TX(#Type) }; }
 
 
-template<typename T>
-inline Name GetReflectableName() {
-	if constexpr (IsArrayType<T>())
-	{
-		if constexpr (IsReflectableType<typename T::ItemType>()) {
-			String name;
-			name.sprintf(TX("TArray<%s>"), GetReflectableName<typename T::ItemType>().ToString().c_str());
-			return { name };
-		}
-		return TX("TArray<Invalid>");
-	}
-	return TX("Invalid");
-}
-
-
 /** Registry new editor-supported types here and on "EngineTypes.cpp" */
+
+/** To registry a new native type:
+ * 1. Add Definition below
+ * 2. Registry on HandleHelper.cpp
+ * 3. Registry widget creation on PropertyWidget.cpp
+ */
+
 DECLARE_REFLECTION_TYPE(bool);
 DECLARE_REFLECTION_TYPE(u8);
 DECLARE_REFLECTION_TYPE(i32);
@@ -56,12 +51,27 @@ DECLARE_REFLECTION_TYPE(Transform);
 DECLARE_REFLECTION_TYPE(AssetInfo);
 
 
-/** To registry a new native type:
- * 1. Add Definition above
- * 2. Registry on HandleHelper.cpp
- * 3. Registry widget creation on PropertyWidget.cpp
- */
-
-
 template <typename T1, typename T2>
 using TPair = eastl::pair<T1, T2>;
+
+
+template<typename T>
+inline Name GetReflectableName()
+{
+	if constexpr (IsArrayType<T>())
+	{
+		if constexpr (IsReflectableType<typename T::ItemType>())
+		{
+			// TArray<Itemtype> name
+			return { CString::Printf(TX("TArray<%s>"), GetReflectableName<typename T::ItemType>().ToString().c_str()) };
+		}
+		return TX("TArray<Invalid>");
+	}
+	else if constexpr (IsAssetType<T>())
+	{
+		// TAssetPtr<Itemtype> name
+		return { CString::Printf(TX("TAssetPtr<%s>"), GetReflectableName<typename T::ItemType>().ToString().c_str()) };
+	}
+
+	return TX("Invalid");
+}

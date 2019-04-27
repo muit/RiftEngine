@@ -49,7 +49,8 @@ public:
 	 * Tries to load this asset if it's not already
 	 * @returns the loaded asset
 	 */
-	const Ptr<T>& Load() const {
+	const Ptr<T>& Load() const
+	{
 		if(IsNull() || IsValid())
 			return cachedAsset;
 
@@ -64,7 +65,8 @@ public:
 	 * Tries to load this asset and returns a new one if not found
 	 * @returns the loaded asset
 	 */
-	const Ptr<T>& LoadOrCreate() const {
+	const Ptr<T>& LoadOrCreate() const
+	{
 		if (IsNull() || IsValid())
 			return cachedAsset;
 
@@ -78,31 +80,33 @@ public:
 	/**
 	 * @returns the asset if it's valid and loaded
 	 */
-	const Ptr<T>& Get() const {
+	const Ptr<T>& Get() const
+	{
 		if(IsNull())
+		{
 			return cachedAsset; // Cached asset should always be invalid here
+		}
 
 		Ptr<AssetManager> manager = AssetManager::Get();
-		if(manager && !cachedAsset)
+		if (manager && !cachedAsset)
+		{
 			cachedAsset = manager->GetLoadedAsset(info).Cast<T>();
+		}
 
 		return cachedAsset;
 	}
 
-	void Reset() {
+	void Reset()
+	{
 		info = {};
 		cachedAsset = nullptr;
 	}
 
 	/** @returns true if this can never be pointed towards an asset */
-	const bool IsNull() const {
-		return info.IsNull();
-	}
+	const bool IsNull() const { return info.IsNull(); }
 
 	/** @returns true if this asset is loaded */
-	const bool IsValid() const {
-		return Get().IsValid();
-	}
+	const bool IsValid() const { return Get().IsValid(); }
 
 	AssetInfo GetInfo() { return info; }
 
@@ -115,8 +119,7 @@ public:
 
 	FORCEINLINE bool Serialize(Archive& ar, const char* inName)
 	{
-		info.Serialize(ar, inName);
-		return true;
+		return info.Serialize(ar, inName);
 	}
 
 private:

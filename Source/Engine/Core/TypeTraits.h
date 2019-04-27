@@ -94,12 +94,10 @@ inline constexpr bool IsAssetType() {
 template<typename T>
 inline constexpr bool IsReflectableType() {
 	if constexpr (IsArrayType<T>())
+	{
 		return IsReflectableType<typename T::ItemType>();
-
-	if constexpr (IsAssetType<T>())
-		return true;
-
-	return false;
+	}
+	return IsAssetType<T>();
 }
 
 template <bool B, class T = void>

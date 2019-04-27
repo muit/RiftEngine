@@ -16,6 +16,10 @@ private:
 
 	MaterialData data;
 
+	// #TODO: Create Parameters based on shader code
+	PROP(Color, paramColor)
+	Color paramColor;
+
 
 public:
 

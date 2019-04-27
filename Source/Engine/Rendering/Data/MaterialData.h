@@ -13,7 +13,6 @@ public:
 	String vertexCode;
 	String fragmentCode;
 
-
 	MaterialData() = default;
 	MaterialData(String vertexCode, String fragmentCode)
 		: vertexCode{MoveTemp(vertexCode)}
