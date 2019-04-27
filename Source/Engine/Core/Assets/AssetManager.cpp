@@ -6,12 +6,16 @@
 #include "Core/Object/ObjectPtr.h"
 #include "Core/World.h"
 #include "Core/Engine.h"
+#include "Tools/Profiler.h"
 
 
 Ptr<AssetData> AssetManager::Load(const AssetInfo& info)
 {
 	if (info.IsNull() || !FileSystem::IsAssetPath(info.GetSPath()))
 		return {};
+
+	ScopedZone("Asset Load", D19D45);
+	Log::Message("Asset Load: %s", info.GetSPath().c_str());
 
 	json data;
 	if (FileSystem::LoadJsonFile(info.GetPath().ToString(), data))

@@ -5,7 +5,6 @@
 #include <assert.h>
 #include <EASTL/vector.h>
 #include <EASTL/functional.h>
-#include <tracy/Tracy.hpp>
 
 #include "CoreEngine.h"
 #include "Core/Platform/Platform.h"

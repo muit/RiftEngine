@@ -2,23 +2,29 @@
 
 #pragma once
 
-#include "EngineTypes.h"
-#include "SDL_timer.h"
+#include "Time.h"
+#include "Tools/Profiler.h"
 
 
-struct FrameTime
+void FrameTime::Tick()
 {
-	FrameTime() : lastTick(SDL_GetPerformanceCounter()), deltaTime(0.f) {}
+	previousTime = currentTime;
+	currentTime = DateTime::Now();
 
-	u64 currentTick;
-	u64 lastTick;
-	float deltaTime;
+	// Avoid too big delta times
+	realDeltaTime = Math::Min(0.15f, (currentTime - previousTime).GetTotalSeconds());
 
-	void Tick()
+	// Apply time dilation
+	deltaTime = realDeltaTime * timeDilation;
+}
+
+void FrameTime::PostTick()
+{
+	float extraTimeForFPSCAP = minFrameTime - (DateTime::Now() - currentTime).GetTotalSeconds();
+	if (extraTimeForFPSCAP > 0.0f)
 	{
-		lastTick = currentTick;
-		currentTick = SDL_GetPerformanceCounter();
-
-		deltaTime = (currentTick - lastTick) / (float)SDL_GetPerformanceFrequency();
+		// Cap FPS with a delay
+		ScopedZone("Sleep", D15545);
+		SDL_Delay(i32(extraTimeForFPSCAP * 1000.f));
 	}
-};
+}

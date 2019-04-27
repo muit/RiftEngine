@@ -3,14 +3,15 @@
 #include "Engine.h"
 
 #include <SDL_image.h>
+#include "Tools/Profiler.h"
+
 
 Ptr<Engine> Engine::globalEngine {};
-
 
 bool Engine::Start()
 {
 	{
-		ZoneScopedN("Start-Up");
+		ScopedGameZone("Start-Up");
 
 		// Setup SDL
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
@@ -55,7 +56,7 @@ void Engine::Loop(bool& bFinish)
 	renderer->PreTick();
 
 	{
-		ZoneScopedNC("Game", 0x459bd1);
+		ScopedGameZone("Game");
 		world->Tick(frameTime.GetDeltaTime());
 		ui->Tick(frameTime.GetDeltaTime());
 	}

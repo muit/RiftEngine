@@ -4,11 +4,12 @@
 #include "SDL_events.h"
 #include "Rendering/Renderer.h"
 #include "UI/UIManager.h"
+#include "Tools/Profiler.h"
 
 
 bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> renderer)
 {
-	ZoneScopedNC("Input", 0x459bd1);
+	ScopedGameZone("Input");
 
 	// Mark all axis not dirty
 

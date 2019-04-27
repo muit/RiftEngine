@@ -30,6 +30,10 @@ bool Mesh::PostLoad()
 		data.FromAssimpScene(scene);
 
 		QueueRenderCommand<LoadMeshCommand>(TAssetPtr<Mesh>{ Self().Cast<Mesh>() });
+
+		// End by loading material
+		material.Load();
+
 		return Super::PostLoad();
 	}
 

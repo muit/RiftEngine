@@ -54,11 +54,7 @@ public:
 		ecsManager->Assign<CMesh>(b, TAssetPtr<Model>{"Terrain.obj.meta"});*/
 	}
 
-	void Tick(float deltaTime) {
-		ZoneScopedNC("World", 0x459bd1);
-
-		ecsManager->Tick(deltaTime);
-	}
+	void Tick(float deltaTime);
 
 	void EndPlay() {
 		ecsManager->EndPlay();

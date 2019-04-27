@@ -9,6 +9,7 @@
 
 #include "Core/World.h"
 #include "Core/Log.h"
+#include "Tools/Profiler.h"
 
 
 #if PLATFORM_APPLE
@@ -101,7 +102,7 @@ void Renderer::PreTick()
 
 void Renderer::Render()
 {
-	ZoneScopedNC("Render", 0x94d145);
+	ScopedGraphicsZone("Render");
 
 	// Game frame is now render frame and vice versa
 	SwitchFrameBuffer();
@@ -122,7 +123,7 @@ void Renderer::Render()
 
 	// World Render
 	{
-		ZoneScopedNC("World", 0x94d145);
+		ScopedGraphicsZone("World");
 
 		// Clear texture to Red
 		render.NewFrame(viewportSize);
@@ -132,7 +133,8 @@ void Renderer::Render()
 	}
 
 	{ // UI Render
-		ZoneScopedNC("UI", 0x94d145);
+		ScopedGraphicsZone("UI");
+
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		// Update and Render additional Platform Windows
@@ -148,7 +150,7 @@ void Renderer::Render()
 
 void Renderer::SwapWindow()
 {
-	ZoneScopedNC("Swap & VSync", 0xD15545);
+	ScopedZone("Swap & VSync", D15545);
 	SDL_GL_SwapWindow(window);
 }
 

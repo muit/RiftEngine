@@ -4,7 +4,6 @@
 
 #include "CoreObject.h"
 #include "Rendering/Renderer.h"
-#include <tracy/Tracy.hpp>
 
 #include "Core/World.h"
 #include "Input/InputManager.h"

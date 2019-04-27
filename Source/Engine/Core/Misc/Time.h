@@ -19,7 +19,7 @@ protected:
 
 	float timeDilation;
 
-	// In essence 1/FPS_CAP
+	// Value of 1/FPS_CAP
 	float minFrameTime;
 
 public:
@@ -32,39 +32,13 @@ public:
 		, timeDilation(1.f)
 	{}
 
-	void Tick()
-	{
-		previousTime = currentTime;
-		currentTime = DateTime::Now();
+	void Tick();
 
-		// Avoid too big delta times
-		realDeltaTime = Math::Min(0.15f, (currentTime - previousTime).GetTotalSeconds());
+	void PostTick();
 
+	void SetFPSCap(u32 maxFPS) { minFrameTime = 1.f / maxFPS; }
 
-		// Apply time dilation
-		deltaTime = realDeltaTime * timeDilation;
-	}
+	void SetTimeDilation(float newTimeDilation) { timeDilation = newTimeDilation; }
 
-	void PostTick()
-	{
-		float extraTimeForFPSCAP = minFrameTime - (DateTime::Now() - currentTime).GetTotalSeconds();
-		if (extraTimeForFPSCAP > 0.0f)
-		{
-			ZoneScopedNC("Sleep", 0xD15545);
-			// Cap FPS
-			SDL_Delay(i32(extraTimeForFPSCAP * 1000.f));
-		}
-	}
-
-	void SetFPSCap(u32 maxFPS) {
-		minFrameTime = 1.f / maxFPS;
-	}
-
-	void SetTimeDilation(float newTimeDilation) {
-		timeDilation = newTimeDilation;
-	}
-
-	FORCEINLINE float GetDeltaTime() const {
-		return deltaTime;
-	}
+	FORCEINLINE float GetDeltaTime() const { return deltaTime; }
 };
