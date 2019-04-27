@@ -38,9 +38,7 @@ struct RenderMaterial
 		glDeleteProgram(programId);
 	}
 
-	void Use() {
-		glUseProgram(programId);
-	}
+	void Use() { glUseProgram(programId); }
 
 private:
 

@@ -2,6 +2,7 @@
 
 #include "FileSystem.h"
 #include "Core/Serialization/Archive.h"
+#include "Tools/Profiler.h"
 
 
 bool FileSystem::FileExists(const Path& path)
@@ -16,6 +17,8 @@ bool FileSystem::FolderExists(const Path& path)
 
 bool FileSystem::LoadJsonFile(Path path, json& result)
 {
+	ScopedZone("LoadJsonFile", BB45D1);
+
 	if (!SanitizeAssetPath(path) || !fs::exists(path))
 		return false;
 
@@ -28,6 +31,8 @@ bool FileSystem::LoadJsonFile(Path path, json& result)
 
 bool FileSystem::SaveJsonFile(Path path, const json& data, i32 indent)
 {
+	ScopedZone("SaveJsonFile", BB45D1);
+
 	if (!SanitizeAssetPath(path))
 		return false;
 
@@ -43,6 +48,8 @@ bool FileSystem::SaveJsonFile(Path path, const json& data, i32 indent)
 
 bool FileSystem::LoadStringFile(Path path, String& result)
 {
+	ScopedZone("LoadStringFile", BB45D1);
+
 	if (!SanitizeAssetPath(path) || !fs::exists(path))
 		return false;
 
@@ -63,6 +70,8 @@ bool FileSystem::LoadStringFile(Path path, String& result)
 
 bool FileSystem::SaveStringFile(Path path, const String& data)
 {
+	ScopedZone("SaveStringFile", BB45D1);
+
 	if (!SanitizeAssetPath(path))
 		return false;
 

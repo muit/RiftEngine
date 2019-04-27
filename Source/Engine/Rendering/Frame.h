@@ -12,7 +12,6 @@
 #include "Commands/RenderCommand.h"
 #include "Data/TextureData.h"
 #include "Resources.h"
-#include "Rasterizer.h"
 #include "Data/LightData.h"
 
 
@@ -54,14 +53,11 @@ struct FrameRender
 	LightingRender lighting;
 	Resources resources;
 
-	Rasterizer rasterizer;
-
 	FrameRender()
 		: baseColor{}
 		, camera {}
 		, lighting{}
 		, resources{}
-		, rasterizer{ baseColor }
 	{}
 
 	void NewFrame(v2_u32 viewportSize) {
@@ -69,8 +65,6 @@ struct FrameRender
 		//Clean screen?
 		baseColor.Clear(viewportSize); /* Yes  +- 6ms */
 		/*baseColor.Resize(viewportSize); No          */
-
-		rasterizer.Clear();
 
 		lighting.directionals.Empty();
 		lighting.points.Empty();

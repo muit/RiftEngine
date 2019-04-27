@@ -14,14 +14,15 @@
 
 class LoadMaterialCommand : public RenderCommand {
 public:
-	TAssetPtr<Material> asset;
+	AssetInfo asset;
+	MaterialData data;
 
 
-	LoadMaterialCommand(TAssetPtr<Material> asset) : asset{ asset } {}
+	LoadMaterialCommand(AssetInfo asset, MaterialData data) : asset{ asset }, data{data} {}
 
-	virtual void Execute(FrameRender& render, Frame& frame) override {
-		// #TODO: Ensure assets stay loaded during this frame
-		render.resources.Load(asset.GetPath(), asset->GetData());
+	virtual void Execute(FrameRender& render, Frame& frame) override
+	{
+		render.resources.Load(asset.GetPath(), MoveTemp(data));
 	}
 };
 

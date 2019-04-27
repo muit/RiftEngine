@@ -5,15 +5,17 @@
 #include <assimp/mesh.h>
 
 #include "Core/Log.h"
+#include "Tools/Profiler.h"
 
 
 void MeshData::FromAssimpScene(const aiScene* scene)
 {
 	if (scene)
 	{
-		vertices.Empty();
-		normals.Empty();
-		triangles.Empty();
+		ScopedGameZone("Parse mesh data");
+
+		vertices.Empty(false);
+		triangles.Empty(false);
 
 		ProcessNode(scene->mRootNode, scene);
 	}
@@ -37,39 +39,53 @@ void MeshData::ProcessNode(aiNode *node, const aiScene *scene)
 
 void MeshData::ProcessMesh(aiMesh *mesh, const aiScene* scene)
 {
-	const u32 lastVertexIndex = (u32)vertices.Size();
+	// Starting vertex index of this mesh
+	const v3_u32 vertexIndexOffset = v3_u32::Constant((u32)vertices.Size());
 
 	// Process Vertices
 	vertices.Reserve(mesh->mNumVertices);
-	normals.Reserve(mesh->mNumVertices);
-	for (u32 i = 0; i < mesh->mNumVertices; i++)
-	{
-		vertices.Add({
-			mesh->mVertices[i].x,
-			mesh->mVertices[i].y,
-			mesh->mVertices[i].z
-		});
 
-		normals.Add({
-			mesh->mVertices[i].x,
-			mesh->mVertices[i].y,
-			mesh->mVertices[i].z
-		});
+	// If have any UV channel
+	if (mesh->GetNumUVChannels() > 0)
+	{
+		for (u32 i = 0; i < mesh->mNumVertices; ++i)
+		{
+			const aiVector3D& position = mesh->mVertices[i];
+			const aiVector3D& normal = mesh->mNormals[i];
+			const aiVector3D& uv = mesh->mTextureCoords[0][i];
+
+			vertices.Add(Vertex {
+				v3{ position.x, position.y, position.z },
+				v3{ normal.x, normal.y, normal.z },
+				v2 { uv.x, uv.y }
+			});
+		}
+	}
+	else
+	{
+		for (u32 i = 0; i < mesh->mNumVertices; ++i)
+		{
+			const aiVector3D& position = mesh->mVertices[i];
+			const aiVector3D& normal = mesh->mNormals[i];
+
+			vertices.Add(Vertex{
+				v3{ position.x, position.y, position.z },
+				v3{ normal.x, normal.y, normal.z },
+				v2::Zero()
+			});
+		}
 	}
 
 	// Process Triangles
-	vertices.Reserve(mesh->mNumVertices);
-	for (u32 i = 0; i < mesh->mNumFaces; i++)
+	triangles.Reserve(mesh->mNumFaces);
+	for (u32 i = 0; i < mesh->mNumFaces; ++i)
 	{
 		const aiFace& face = mesh->mFaces[i];
 
-		if (face.mNumIndices == 3)
+		if(face.mNumIndices == 3)
 		{
-			triangles.Add({
-				face.mIndices[0] + lastVertexIndex,
-				face.mIndices[1] + lastVertexIndex,
-				face.mIndices[2] + lastVertexIndex
-			});
+			const v3_u32 triangleIndex{ face.mIndices };
+			triangles.Add(triangleIndex + vertexIndexOffset);
 		}
 		else
 		{

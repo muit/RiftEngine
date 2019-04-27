@@ -30,10 +30,7 @@ bool Material::PostLoad()
 			return false;
 		}
 
-		QueueRenderCommand<LoadMaterialCommand>(
-			TAssetPtr<Material>{ Self<Material>() }
-		);
-
+		QueueRenderCommand<LoadMaterialCommand>(GetInfo(), GetData());
 		return Super::PostLoad();
 	}
 	return false;

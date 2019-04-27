@@ -9,6 +9,7 @@
 #include "Core/Engine.h"
 #include "Core/Assets/AssetPtr.h"
 #include "Rendering/Commands/MeshCommands.h"
+#include "../Tools/Profiler.h"
 
 
 bool Mesh::PostLoad()
@@ -19,7 +20,12 @@ bool Mesh::PostLoad()
 	if (!rawModelPath.empty())
 	{
 		Assimp::Importer importer;
-		const aiScene *scene = importer.ReadFile(FileSystem::ToString(rawModelPath).c_str(), aiProcess_Triangulate | aiProcess_FlipUVs);
+		const aiScene* scene;
+		{
+			ScopedZone("Load Mesh File", BB45D1);
+
+			scene = importer.ReadFile(FileSystem::ToString(rawModelPath).c_str(), aiProcess_Triangulate | aiProcess_FlipUVs);
+		}
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
