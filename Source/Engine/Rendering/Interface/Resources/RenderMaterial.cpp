@@ -23,27 +23,45 @@ void RenderMaterial::CompileProgram(const String& vertexCode, const String& frag
 	glCompileShader(vertexId);
 	glCompileShader(fragmentId);
 
+
+	bool bError = false;
 	glGetShaderiv(vertexId, GL_COMPILE_STATUS, &state);
 	if (!state)
+	{
 		LogShaderError(vertexId);
+		bError = true;
+	}
 
 	glGetShaderiv(fragmentId, GL_COMPILE_STATUS, &state);
 	if (!state)
+	{
 		LogShaderError(fragmentId);
+		bError |= true;
+	}
 
-	// Link shaders into a new program
-	programId = glCreateProgram();
-	glAttachShader(programId, vertexId);
-	glAttachShader(programId, fragmentId);
-	glLinkProgram(programId);
+	if (!bError)
+	{
+		// Link shaders into a new program
+		programId = glCreateProgram();
+		glAttachShader(programId, vertexId);
+		glAttachShader(programId, fragmentId);
+		glLinkProgram(programId);
 
-	glGetProgramiv(programId, GL_LINK_STATUS, &state);
-	if (!state)
-		LogProgramError();
+		glGetProgramiv(programId, GL_LINK_STATUS, &state);
+		if (!state)
+		{
+			LogProgramError();
+		}
+	}
 
 	// Free compiled shaders
 	glDeleteShader(vertexId);
 	glDeleteShader(fragmentId);
+
+	parameterIds.Add({
+		"mvp",
+		glGetUniformLocation(programId, "mvp")
+	});
 }
 
 void RenderMaterial::LogShaderError(GLint shaderId)
@@ -53,7 +71,7 @@ void RenderMaterial::LogShaderError(GLint shaderId)
 
 	glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &messageSize);
 	message.resize(messageSize);
-	glGetShaderInfoLog(shaderId, messageSize, NULL, &message.front());
+	glGetShaderInfoLog(shaderId, messageSize, nullptr, &message.front());
 
 	Log::Error(message);
 }
@@ -65,14 +83,14 @@ void RenderMaterial::LogProgramError()
 
 	glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &messageSize);
 	message.resize(messageSize);
-	glGetProgramInfoLog(programId, messageSize, NULL, &message.front());
+	glGetProgramInfoLog(programId, messageSize, nullptr, &message.front());
 
 	Log::Error(message);
 }
 
 bool RenderMaterial::SetFloat(Name Id, float value) const
 {
-	GLuint paramId = glGetUniformLocation(programId, Id.ToString().c_str());
+	const GLint paramId = glGetUniformLocation(programId, Id.ToString().c_str());
 	if (paramId != GL_INVALID_INDEX)
 	{
 		glUniform1fv(paramId, 1, &value);
@@ -83,7 +101,7 @@ bool RenderMaterial::SetFloat(Name Id, float value) const
 
 bool RenderMaterial::SetV3(Name Id, v3 value) const
 {
-	GLuint paramId = glGetUniformLocation(programId, Id.ToString().c_str());
+	const GLint paramId = glGetUniformLocation(programId, Id.ToString().c_str());
 	if (paramId != GL_INVALID_INDEX)
 	{
 		glUniform3fv(paramId, 1, value.data());
@@ -94,8 +112,8 @@ bool RenderMaterial::SetV3(Name Id, v3 value) const
 
 bool RenderMaterial::SetMatrix4f(Name Id, Matrix4f value) const
 {
-	GLuint paramId = glGetUniformLocation(programId, Id.ToString().c_str());
-	if (paramId != GL_INVALID_INDEX)
+	const GLint paramId = glGetUniformLocation(programId, Id.ToString().c_str());
+	if (paramId != -1)
 	{
 		glUniformMatrix4fv(paramId, 1, GL_FALSE, value.data());
 		return true;

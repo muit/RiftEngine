@@ -11,15 +11,22 @@ Ptr<Engine> Engine::globalEngine {};
 bool Engine::Start()
 {
 	{
+		Log::Message("Start-Up");
 		ScopedGameZone("Start-Up");
 
 		// Setup SDL
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
+		{
+			Log::Error("Could not initialize SDL.");
 			return false;
+		}
 
 		u32 imgFlags = IMG_INIT_PNG;
-		if (!IMG_Init(imgFlags) & imgFlags)
+		if (!(IMG_Init(imgFlags) & imgFlags))
+		{
+			Log::Error("Could not initialize SDL Img library.");
 			return false;
+		}
 
 		renderer = Create<Renderer>();
 		if (!renderer->Initialize())
@@ -38,12 +45,14 @@ bool Engine::Start()
 	frameTime = {};
 	frameTime.SetFPSCap(60);
 
+	Log::Message("Start Loop");
 	bool bFinish = false;
 	while (!bFinish)
 	{
 		Loop(bFinish);
 	}
 
+	Log::Message("Closing");
 	return true;
 }
 

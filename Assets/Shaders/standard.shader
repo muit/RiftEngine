@@ -2,18 +2,20 @@
 
 #version 330 core
 
-layout (location = 0) in vec3 vertex_position;
-layout (location = 1) in vec2 vertex_uv;
+layout (location = 0) in vec3 v_position;
+layout (location = 1) in vec2 v_normal;
+layout (location = 2) in vec2 v_uv;
+
+uniform mat4 mvp;
 
 out vec2 uv;
 
-uniform mat4 u_mvp;
-
 void main()
 {
-	gl_Position = u_mvp * vec4(vertex_position, 1.0);
-	uv = vertex_uv;
+	gl_Position = mvp * vec4(v_position, 1.0);
+	uv = v_uv;
 }
+
 
 
 ## FRAGMENT ##
@@ -21,12 +23,8 @@ void main()
 #version 330 core
 
 in vec2 uv;
-layout(location = 0) out vec3 color;
-
-uniform vec3 u_color;
-
 
 void main()
 {
-	color = color;
+	gl_FragColor = vec4(1.0,0.0,0.0, 1.0);
 }

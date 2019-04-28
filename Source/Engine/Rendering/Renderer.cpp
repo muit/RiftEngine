@@ -30,16 +30,12 @@ bool Renderer::Initialize()
 #if PLATFORM_APPLE
 	// GL 3.2 Core + GLSL 150
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 #else
-	// GL 3.0 + GLSL 130
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+#endif
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-#endif
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
 	// Setup window
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -59,13 +55,17 @@ bool Renderer::Initialize()
 #endif
 	);
 	if (!window)
+	{
+		Log::Message("Could not create a window");
 		return false;
+	}
 
 	gl_context = SDL_GL_CreateContext(window);
 	SDL_GL_SetSwapInterval(0); // 1 Enables vsync
 
 	if (gl3wInit() != 0)
 	{
+		Log::Message("Could not initialize OpenGL");
 		return false;
 	}
 
@@ -114,7 +114,7 @@ void Renderer::Render()
 	v2_u32 viewportSize{ (u32)io.DisplaySize.x, (u32)io.DisplaySize.y };
 
 	glViewport(0, 0, viewportSize.x(), viewportSize.y());
-	//glClearColor(0.7f, 0.4f, 0.4f, 1); No need to clear color, CPU rendering takes care of it
+	glClearColor(0.7f, 0.4f, 0.4f, 1);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -123,10 +123,9 @@ void Renderer::Render()
 	{
 		ScopedGraphicsZone("World");
 
-		// Clear texture to Red
+		// Reset render data
 		render.NewFrame(viewportSize);
 
-		//Log::Message("Executing Render Commands: %i", frame.commands.Size());
 		GetRenderFrame().ExecuteCommands(render);
 	}
 
@@ -157,7 +156,7 @@ void Renderer::BeforeDestroy()
 	Super::BeforeDestroy();
 
 	if (window)
+	{
 		SDL_DestroyWindow(window);
-
-	//glDeleteTextures(1, &finalFrameId);
+	}
 }

@@ -60,12 +60,12 @@ public:
 
 	/** STATIC */
 
-	static void StartEngine()
+	static bool StartEngine()
 	{
 		GlobalPtr<Engine> engine{ Create<Engine>() };
 		globalEngine = engine.AsPtr();
 
-		engine->Start();
+		return engine->Start();
 	}
 
 	static Ptr<Engine> GetEngine() { return globalEngine; }

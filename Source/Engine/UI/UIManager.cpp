@@ -6,6 +6,8 @@
 
 void UIManager::Prepare()
 {
+	Log::Message("UI Start-Up");
+
 	// Setup style
 	ImGui::StyleColorsDark();
 

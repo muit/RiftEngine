@@ -13,10 +13,6 @@
 class AssetBrowser : public EditorWindow {
 	CLASS(AssetBrowser, EditorWindow)
 
-	static const TAssetPtr<Texture> tex;
-	json testFile;
-
-
 protected:
 
 	virtual void Build() override;

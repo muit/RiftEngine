@@ -45,8 +45,10 @@ struct MeshDrawInstance
 };
 
 class DrawMeshesCommand : public RenderCommand {
-public:
+
 	TArray<MeshDrawInstance> meshes;
+
+public:
 
 	DrawMeshesCommand(TArray<MeshDrawInstance> meshes)
 		: meshes{ MoveTemp(meshes) }

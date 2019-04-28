@@ -10,11 +10,17 @@
 #include "Core/Strings/Name.h"
 #include "Core/Math/Vector.h"
 
+struct RenderMaterialParameter
+{
+	Name name;
+	GLint id;
+};
 
 struct RenderMaterial
 {
-
 	GLint programId;
+
+	TArray<RenderMaterialParameter> parameterIds;
 
 
 	RenderMaterial() : programId{ 0 } {}

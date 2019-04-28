@@ -11,23 +11,33 @@
 
 Ptr<AssetData> AssetManager::Load(const AssetInfo& info)
 {
+	Log::Message("Loading asset: %s", info.GetSPath().c_str());
+
 	if (info.IsNull() || !FileSystem::IsAssetPath(info.GetSPath()))
+	{
+		Log::Error("Invalid asset path '%s'.", info.GetSPath().c_str());
 		return {};
+	}
 
 	ScopedZone("Asset Load", D19D45);
-	Log::Message("Asset Load: %s", info.GetSPath().c_str());
 
 	json data;
 	if (FileSystem::LoadJsonFile(info.GetPath().ToString(), data))
 	{
 		const auto type{ data["asset_type"] };
 		if (!type.is_string())
+		{
+			Log::Error("Asset 'Type' must be an string.");
 			return {}; // Asset doesn't have a type
+		}
 
 		// Get asset type from json
 		Class* assetClass = AssetData::StaticClass()->FindChildClass(Name{ type });
 		if (!assetClass)
+		{
+			Log::Error("Asset class('%s') not found.", type.get<String>().c_str());
 			return {}; // Asset doesn't have a valid class
+		}
 
 		// Create asset from json type
 		GlobalPtr<AssetData> newAsset = assetClass->CreateInstance(Self()).Cast<AssetData>();
@@ -41,6 +51,8 @@ Ptr<AssetData> AssetManager::Load(const AssetInfo& info)
 			return eastl::move(newAssetPtr);
 		}
 	}
+
+	Log::Error("Loading asset failed");
 	return {};
 }
 

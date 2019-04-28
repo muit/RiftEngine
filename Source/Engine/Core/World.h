@@ -30,24 +30,15 @@ public:
 
 	void Start()
 	{
+		Log::Message("World Start-Up");
+
 		assetManager = Create<AssetManager>(Self());
-
-
-		ecsManager = Create<ECSManager>(Self());
+		ecsManager   = Create<ECSManager>(Self());
 
 		scene = { "scene.meta" };
 		scene.LoadOrCreate();
 
 		ecsManager->BeginPlay();
-
-		// Test entities. Move to Scene
-		/*ecsManager->CreateEntity(TX("MyEntity"));
-		EntityId b = ecsManager->CreateEntity(TX("MyOtherEntity"));
-		Transform& t = ecsManager->Assign<CTransform>(b).transform;
-		t.location = { 0, 0, -10 };
-		t.SetRotationDegrees({ 0,0,0 });
-		t.scale = { 0.2f, 0.2f, 0.2f };
-		ecsManager->Assign<CMesh>(b, TAssetPtr<Model>{"Terrain.obj.meta"});*/
 	}
 
 	void Tick(float deltaTime);

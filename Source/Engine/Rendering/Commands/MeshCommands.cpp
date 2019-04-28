@@ -17,17 +17,35 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 	ScopedGraphicsZone("Draw Mesh Command");
 	TracyGpuZone("Draw Mesh Command");
 
-	MaterialBatchMap batches {};
+	static const Name transformParameter = { "mvp" };
+
+	const Matrix4f toCamera{ render.Camera().transform.ToLocalMatrix().matrix() };
+	const Matrix4f toProjection{ render.Camera().GetPerspectiveMatrix(render.GetRenderSize()) };
+	const Matrix4f cameraTransform{ toProjection * toCamera };
+
+
 
 	/** Prepare batches
 	 * Group them by Material -> Mesh -> Transform
 	 */
+	MaterialBatchMap batches{};
 	{
 		ScopedGraphicsZone("Build Batches");
 		for (const auto& meshInstance : meshes)
 		{
+			const RenderMaterial& materialResource = render.resources.Get<ResourceType::Material>(meshInstance.material.GetPath());
+			const RenderMesh& meshResource = render.resources.Get<ResourceType::Mesh>(meshInstance.mesh.GetPath());
+
+			materialResource.Use();
+			// Update transform on material and draw triangles
+			materialResource.SetMatrix4f(transformParameter, cameraTransform * meshInstance.transform.ToWorldMatrix().matrix());
+
+			meshResource.Bind();
+			meshResource.Draw();
+			RenderMesh::Unbind();
+
 			// Find or add a Material Batch
-			auto it = batches.find(meshInstance.material.GetPath());
+			/*auto it = batches.find(meshInstance.material.GetPath());
 			if (it != batches.end())
 			{
 				auto& meshBatches = it->second;
@@ -60,22 +78,11 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 						}
 					}
 				});
-			}
+			}*/
 		}
 	}
 
 	/** Draw batches */
-	static const Name transformParameter = { "u_mvp" };
-
-	// Viewport transform
-	const v3 translate{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 0.f };
-	const v3 scale{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 100000000.f };
-
-	const Transform::Matrix toViewport = Eigen::Translation3f(translate) * Scaling(scale);
-	const Matrix4f toProjection{ render.Camera().GetPerspectiveMatrix(render.GetRenderSize()) };
-	const Matrix4f toCamera{ render.Camera().transform.ToLocalMatrix().matrix() };
-	const Matrix4f cameraTransform{ toViewport * toProjection * toCamera };
-
 	for(const auto& materialBatch : batches)
 	{
 		ScopedGraphicsZone("Material Batch");
