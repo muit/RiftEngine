@@ -27,8 +27,6 @@ class Renderer : public Object
 	SDL_Window* window;
 	SDL_GLContext gl_context;
 
-	ScreenTexture glRenderTexture;
-
 	TArray<Frame> frameCache{2};
 	u32 gameFrameId = 0;
 

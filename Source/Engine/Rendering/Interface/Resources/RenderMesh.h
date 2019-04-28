@@ -20,7 +20,14 @@ struct RenderMesh
 	RenderMesh(const MeshData& mesh) { Load(mesh); }
 	~RenderMesh() { Free(); }
 
-	void Draw() const;
+	void Bind() const { glBindVertexArray(glVertexArrayId); }
+
+	void Draw() const
+	{
+		glDrawElements(GL_TRIANGLES, trianglesCount, GL_UNSIGNED_INT, 0);
+	}
+
+	static void Unbind() { glBindVertexArray(0); }
 
 private:
 

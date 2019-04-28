@@ -2,12 +2,6 @@
 
 #include "RenderMesh.h"
 
-void RenderMesh::Draw() const
-{
-	glBindVertexArray(glVertexArrayId);
-	glDrawElements(GL_TRIANGLES, trianglesCount, GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
-}
 
 void RenderMesh::Load(const MeshData& mesh)
 {

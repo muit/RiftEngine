@@ -38,10 +38,6 @@ public:
 		scene = { "scene.meta" };
 		scene.LoadOrCreate();
 
-
-		TAssetPtr<Material> mat { "Shaders/default.shader.meta" };
-		mat.Load();
-
 		ecsManager->BeginPlay();
 
 		// Test entities. Move to Scene

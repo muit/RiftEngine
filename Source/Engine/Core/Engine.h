@@ -13,7 +13,8 @@
 #include "MultiThreading.h"
 
 
-class Engine : public Object {
+class Engine : public Object
+{
 	CLASS(Engine, Object)
 
 	FrameTime frameTime;
@@ -24,6 +25,8 @@ class Engine : public Object {
 	GlobalPtr<InputManager> input;
 	GlobalPtr<UIManager> ui;
 	GlobalPtr<Renderer> renderer;
+
+
 
 public:
 

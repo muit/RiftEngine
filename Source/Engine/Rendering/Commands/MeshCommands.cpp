@@ -4,41 +4,106 @@
 
 #include "Core/Engine.h"
 #include "Core/Math/Vector.h"
+#include "Tools/Profiler.h"
+#include "tracy/TracyOpenGL.hpp"
 
-// List of batches. One asset with multiple transforms
-using BatchMap = eastl::unordered_map<Name, TArray<Transform>>;
+
+using MeshTransformMap = eastl::unordered_map<Name, TArray<Transform>>;
+using MaterialBatchMap = eastl::unordered_map<Name, MeshTransformMap>;
+
 
 void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 {
-	ZoneScopedN("Draw Mesh");
+	ScopedGraphicsZone("Draw Mesh Command");
+	TracyGpuZone("Draw Mesh Command");
 
-	BatchMap batches {};
+	MaterialBatchMap batches {};
 
-	/** Prepare batches */
-	for (i32 i = 0; i < meshes.Size(); ++i)
+	/** Prepare batches
+	 * Group them by Material -> Mesh -> Transform
+	 */
 	{
-		const auto& mesh = meshes[i];
+		ScopedGraphicsZone("Build Batches");
+		for (const auto& meshInstance : meshes)
+		{
+			// Find or add a Material Batch
+			auto it = batches.find(meshInstance.material.GetPath());
+			if (it != batches.end())
+			{
+				auto& meshBatches = it->second;
 
-		auto it = batches.find(mesh.GetPath());
-		if (it != batches.end())
-		{
-			// Found batch, add an instance
-			(*it).second.Add(transforms[i]);
-		}
-		else
-		{
-			batches.insert({ mesh.GetPath(), TArray<Transform>{ transforms[i] } });
+				// Find or add a Mesh Batch
+				auto meshIt = meshBatches.find(meshInstance.mesh.GetPath());
+				if (meshIt != meshBatches.end())
+				{
+					// Found batch, add an instance
+					meshIt->second.Add(meshInstance.transform);
+				}
+				else
+				{
+					// New Mesh batch with this meshInstance
+					meshBatches.insert({
+						meshInstance.mesh.GetPath(),
+						TArray<Transform>{ meshInstance.transform }
+					});
+				}
+			}
+			else
+			{
+				// New Material batch with this meshInstance
+				batches.insert({
+					meshInstance.material.GetPath(),
+					MeshTransformMap {
+						{
+							meshInstance.mesh.GetPath(),
+							TArray<Transform>{ meshInstance.transform }
+						}
+					}
+				});
+			}
 		}
 	}
 
 	/** Draw batches */
-	for(const auto& batch : batches)
-	{
-		const RenderMesh& meshResource = render.resources.Get<ResourceType::Mesh>(batch.first);
+	static const Name transformParameter = { "u_mvp" };
 
-		// #TODO: Draw on all transforms
-		meshResource.Draw();
+	// Viewport transform
+	const v3 translate{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 0.f };
+	const v3 scale{ float(render.GetRenderSize().x() / 2), float(render.GetRenderSize().y() / 2), 100000000.f };
+
+	const Transform::Matrix toViewport = Eigen::Translation3f(translate) * Scaling(scale);
+	const Matrix4f toProjection{ render.Camera().GetPerspectiveMatrix(render.GetRenderSize()) };
+	const Matrix4f toCamera{ render.Camera().transform.ToLocalMatrix().matrix() };
+	const Matrix4f cameraTransform{ toViewport * toProjection * toCamera };
+
+	for(const auto& materialBatch : batches)
+	{
+		ScopedGraphicsZone("Material Batch");
+
+		const RenderMaterial& materialResource = render.resources.Get<ResourceType::Material>(materialBatch.first);
+
+		materialResource.Use();
+
+		for (const auto& meshBatch : materialBatch.second)
+		{
+			ScopedGraphicsZone("Mesh Batch");
+
+			const RenderMesh& meshResource = render.resources.Get<ResourceType::Mesh>(meshBatch.first);
+
+			// Bind mesh once
+			meshResource.Bind();
+
+			for (const auto& transform : meshBatch.second)
+			{
+				ScopedGraphicsZone("Transform Mesh Draw");
+
+				// Update transform on material and draw triangles
+				materialResource.SetMatrix4f(transformParameter, cameraTransform * transform.ToWorldMatrix().matrix());
+				meshResource.Draw();
+			}
+		}
 	}
+	RenderMesh::Unbind();
 
 	/**
 	// #TODO: Cache operation buffers on resources

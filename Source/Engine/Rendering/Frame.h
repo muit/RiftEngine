@@ -46,34 +46,28 @@ public:
 // Where all render data is stored. Gets reused every frame.
 struct FrameRender
 {
-	TextureData baseColor;
-
+	v2_u32 viewportSize;
 	CameraData camera;
 
 	LightingRender lighting;
 	Resources resources;
 
 	FrameRender()
-		: baseColor{}
+		: viewportSize{}
 		, camera {}
 		, lighting{}
 		, resources{}
 	{}
 
-	void NewFrame(v2_u32 viewportSize) {
+	void NewFrame(v2_u32 inViewportSize) {
 		ZoneScopedNC("NewFrame", 0x94d145);
-		//Clean screen?
-		baseColor.Clear(viewportSize); /* Yes  +- 6ms */
-		/*baseColor.Resize(viewportSize); No          */
 
+		viewportSize = inViewportSize;
 		lighting.directionals.Empty();
 		lighting.points.Empty();
 	}
 
-	void DrawImage(const v2_u32& position, const TextureData& texture);
-
-	v2_u32 GetRenderSize() const { return baseColor.Size(); }
-
+	v2_u32 GetRenderSize() const { return viewportSize; }
 
 	FORCEINLINE CameraData& Camera() { return camera; }
 	FORCEINLINE const CameraData& Camera() const { return camera; }

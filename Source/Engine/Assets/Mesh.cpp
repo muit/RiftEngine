@@ -38,7 +38,14 @@ bool Mesh::PostLoad()
 		QueueRenderCommand<LoadMeshCommand>(TAssetPtr<Mesh>{ Self().Cast<Mesh>() });
 
 		// End by loading material
-		material.Load();
+		{
+			if (material.IsNull())
+			{
+				// Set default material
+				material = { "Shaders/standard.shader.meta" };
+			}
+			material.Load();
+		}
 
 		return Super::PostLoad();
 	}

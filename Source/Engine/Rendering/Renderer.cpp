@@ -64,16 +64,14 @@ bool Renderer::Initialize()
 	gl_context = SDL_GL_CreateContext(window);
 	SDL_GL_SetSwapInterval(0); // 1 Enables vsync
 
-
-	//Setup GL and UI
-	if (gl3wInit() != 0) {
+	if (gl3wInit() != 0)
+	{
 		return false;
 	}
 
-	glRenderTexture = { SCREEN_WIDTH, SCREEN_HEIGHT };
-
 	PrepareUI();
 	TracyGpuContext(gl_context);
+
 	return true;
 }
 

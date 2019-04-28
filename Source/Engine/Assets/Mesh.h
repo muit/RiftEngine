@@ -17,10 +17,11 @@ private:
 
 	MeshData data;
 
+public:
+
 	PROP(TAssetPtr<Material>, material)
 	TAssetPtr<Material> material;
 
-public:
 
 	Mesh() : Super() {}
 

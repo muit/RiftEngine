@@ -7,6 +7,8 @@
 #include "Core/Log.h"
 
 #include "../../Data/MaterialData.h"
+#include "Core/Strings/Name.h"
+#include "Core/Math/Vector.h"
 
 
 struct RenderMaterial
@@ -38,7 +40,7 @@ struct RenderMaterial
 		glDeleteProgram(programId);
 	}
 
-	void Use() { glUseProgram(programId); }
+	void Use() const { glUseProgram(programId); }
 
 private:
 
@@ -46,4 +48,10 @@ private:
 
 	void LogShaderError(GLint shaderId);
 	void LogProgramError();
+
+public:
+
+	bool SetFloat(Name Id, float value) const;
+	bool SetV3(Name Id, v3 value) const;
+	bool SetMatrix4f(Name Id, Matrix4f value) const;
 };

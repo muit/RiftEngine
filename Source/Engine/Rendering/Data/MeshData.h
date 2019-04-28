@@ -28,7 +28,6 @@ struct MeshData
 	VertexBuffer vertices;
 	TriangleBuffer triangles;
 
-
 public:
 
 	MeshData() = default;

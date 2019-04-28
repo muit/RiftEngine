@@ -36,15 +36,20 @@ public:
 	}
 };
 
+
+struct MeshDrawInstance
+{
+	AssetInfo mesh;
+	AssetInfo material;
+	Transform transform;
+};
+
 class DrawMeshesCommand : public RenderCommand {
 public:
-	TArray<AssetInfo> meshes;
-	TArray<Transform> transforms;
+	TArray<MeshDrawInstance> meshes;
 
-
-	DrawMeshesCommand(TArray<AssetInfo> meshes, TArray<Transform> transforms)
+	DrawMeshesCommand(TArray<MeshDrawInstance> meshes)
 		: meshes{ MoveTemp(meshes) }
-		, transforms{ MoveTemp(transforms) }
 	{}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override;

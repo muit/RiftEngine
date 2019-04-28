@@ -69,3 +69,36 @@ void RenderMaterial::LogProgramError()
 
 	Log::Error(message);
 }
+
+bool RenderMaterial::SetFloat(Name Id, float value) const
+{
+	GLuint paramId = glGetUniformLocation(programId, Id.ToString().c_str());
+	if (paramId != GL_INVALID_INDEX)
+	{
+		glUniform1fv(paramId, 1, &value);
+		return true;
+	}
+	return false;
+}
+
+bool RenderMaterial::SetV3(Name Id, v3 value) const
+{
+	GLuint paramId = glGetUniformLocation(programId, Id.ToString().c_str());
+	if (paramId != GL_INVALID_INDEX)
+	{
+		glUniform3fv(paramId, 1, value.data());
+		return true;
+	}
+	return false;
+}
+
+bool RenderMaterial::SetMatrix4f(Name Id, Matrix4f value) const
+{
+	GLuint paramId = glGetUniformLocation(programId, Id.ToString().c_str());
+	if (paramId != GL_INVALID_INDEX)
+	{
+		glUniformMatrix4fv(paramId, 1, GL_FALSE, value.data());
+		return true;
+	}
+	return false;
+}

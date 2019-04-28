@@ -15,17 +15,24 @@ void SRenderMeshes::BeginPlay()
 
 void SRenderMeshes::Tick(float /*deltaTime*/)
 {
-	ECS()->View<CTransform, CMesh>().each(
-	[](const EntityId e, CTransform& t, CMesh& c)
+	auto view = ECS()->View<CTransform, CMesh>();
+
+	TArray<MeshDrawInstance> meshInstances;
+	meshInstances.Reserve((i32)view.size());
+
+	view.each([&meshInstances](const EntityId e, CTransform& t, CMesh& c)
 	{
 		if (c.model.IsValid())
 		{
-			QueueRenderCommand<DrawMeshesCommand>(
-				TArray<AssetInfo>{ c.model.GetInfo() },
-				TArray<Transform>{ t.transform }
-			);
+			meshInstances.Add({
+				c.model.GetInfo(),
+				c.model->material.GetInfo(),
+				t.transform
+			});
 		}
 	});
+
+	QueueRenderCommand<DrawMeshesCommand>(MoveTemp(meshInstances));
 
 	if (texture)
 	{
