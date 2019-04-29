@@ -2,6 +2,8 @@
 #pragma once
 
 #include "CoreStruct.h"
+#include "EngineTypes.h"
+#include "ECS/EntityId.h"
 #include "ECS/Component.h"
 
 
@@ -10,20 +12,31 @@ class CEntity : public Component {
 
 public:
 
-	PROP(Guid, id, DetailsEdit | SaveGame)
+	PROP(Guid, id, Transient)
 	Guid id;
 
 	PROP(Name, name, DetailsEdit | SaveGame)
 	Name name;
 
-	PROP(bool, bTransient, Transient)
+	PROP(bool, bTransient)
 	bool bTransient;
 
+	/** Parent entity */
+	PROP(EntityId, parent)
+	EntityId parent;
 
-	CEntity() : id{ Guid::New() }, name{}, bTransient{false} {}
+
+	CEntity()
+		: id{ Guid::New() }
+		, name{}
+		, bTransient{ false }
+		, parent{}
+	{}
+
 	CEntity(Name name, bool bTransient)
 		: id{ Guid::New() }
 		, name{ name }
 		, bTransient{bTransient}
+		, parent{}
 	{}
 };

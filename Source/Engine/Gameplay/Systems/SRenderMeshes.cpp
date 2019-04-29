@@ -3,6 +3,8 @@
 #include "SRenderMeshes.h"
 #include "Rendering/Commands/MeshCommands.h"
 #include "Core/Engine.h"
+#include "Tools/Profiler.h"
+
 #include "Gameplay/Components/CTransform.h"
 #include "Gameplay/Components/CMesh.h"
 
@@ -13,8 +15,11 @@ void SRenderMeshes::BeginPlay()
 	texture.Load();
 }
 
-void SRenderMeshes::Tick(float /*deltaTime*/)
+void SRenderMeshes::Tick(float deltaTime)
 {
+	ScopedStackGameZone();
+	Super::Tick(deltaTime);
+
 	auto view = ECS()->View<CTransform, CMesh>();
 
 	TArray<MeshDrawInstance> meshInstances;
@@ -27,7 +32,7 @@ void SRenderMeshes::Tick(float /*deltaTime*/)
 			meshInstances.Add({
 				c.model.GetInfo(),
 				c.model->material.GetInfo(),
-				t.transform
+				t.worldTransform
 			});
 		}
 	});

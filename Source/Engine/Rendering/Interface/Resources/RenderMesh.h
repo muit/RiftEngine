@@ -13,20 +13,18 @@ struct RenderMesh
 
 	u32 glVertexArrayId = GL_INVALID_INDEX;
 
-	u32 trianglesCount = 0;
+	u32 indicesCount = 0;
 	u32 verticesCount = 0;
 
 
 	RenderMesh(const MeshData& mesh) { Load(mesh); }
 	~RenderMesh() { Free(); }
 
-	void Bind() const {
-		glBindVertexArray(glVertexArrayId);
-	}
+	void Bind() const;
 
 	void Draw() const
 	{
-		glDrawElements(GL_TRIANGLES, verticesCount, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
 	}
 
 	static void Unbind() { glBindVertexArray(0); }

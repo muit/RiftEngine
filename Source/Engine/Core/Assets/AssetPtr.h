@@ -9,7 +9,7 @@
 #include "AssetInfo.h"
 #include "AssetData.h"
 #include "AssetManager.h"
-#include "Core/Serialization/Archive.h"
+//#include "Core/Serialization/Archive.h"
 #include "../TypeTraits.h"
 
 
@@ -117,7 +117,7 @@ public:
 	Ptr<T> operator*()  const { return Get(); }
 	Ptr<T> operator->() const { return Get(); }
 
-	FORCEINLINE bool Serialize(Archive& ar, const char* inName)
+	FORCEINLINE bool Serialize(class Archive& ar, const char* inName)
 	{
 		return info.Serialize(ar, inName);
 	}

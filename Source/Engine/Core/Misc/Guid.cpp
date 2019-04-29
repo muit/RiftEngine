@@ -14,10 +14,10 @@ bool Guid::Serialize(Archive& ar, const char* name)
 {
 	ar.BeginObject(name);
 	{
-		ar(TX("a"), A);
-		ar(TX("b"), B);
-		ar(TX("c"), C);
-		ar(TX("d"), D);
+		ar(TX("a"), a);
+		ar(TX("b"), b);
+		ar(TX("c"), c);
+		ar(TX("d"), d);
 	}
 	ar.EndObject();
 	return true;
@@ -29,22 +29,22 @@ String Guid::ToString(EGuidFormats Format) const
 	switch (Format)
 	{
 	case EGuidFormats::DigitsWithHyphens:
-		result.sprintf(TX("%08X-%04X-%04X-%04X-%04X%08X"), A, B >> 16, B & 0xFFFF, C >> 16, C & 0xFFFF, D);
+		result.sprintf(TX("%08X-%04X-%04X-%04X-%04X%08X"), a, b >> 16, b & 0xFFFF, c >> 16, c & 0xFFFF, d);
 
 	case EGuidFormats::DigitsWithHyphensInBraces:
-		result.sprintf(TX("{%08X-%04X-%04X-%04X-%04X%08X}"), A, B >> 16, B & 0xFFFF, C >> 16, C & 0xFFFF, D);
+		result.sprintf(TX("{%08X-%04X-%04X-%04X-%04X%08X}"), a, b >> 16, b & 0xFFFF, c >> 16, c & 0xFFFF, d);
 
 	case EGuidFormats::DigitsWithHyphensInParentheses:
-		result.sprintf(TX("(%08X-%04X-%04X-%04X-%04X%08X)"), A, B >> 16, B & 0xFFFF, C >> 16, C & 0xFFFF, D);
+		result.sprintf(TX("(%08X-%04X-%04X-%04X-%04X%08X)"), a, b >> 16, b & 0xFFFF, c >> 16, c & 0xFFFF, d);
 
 	case EGuidFormats::HexValuesInBraces:
-		result.sprintf(TX("{0x%08X,0x%04X,0x%04X,{0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X}}"), A, B >> 16, B & 0xFFFF, C >> 24, (C >> 16) & 0xFF, (C >> 8) & 0xFF, C & 0XFF, D >> 24, (D >> 16) & 0XFF, (D >> 8) & 0XFF, D & 0XFF);
+		result.sprintf(TX("{0x%08X,0x%04X,0x%04X,{0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X,0x%02X}}"), a, b >> 16, b & 0xFFFF, c >> 24, (c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0XFF, d >> 24, (d >> 16) & 0XFF, (d >> 8) & 0XFF, d & 0XFF);
 
 	case EGuidFormats::UniqueObjectGuid:
-		result.sprintf(TX("%08X-%08X-%08X-%08X"), A, B, C, D);
+		result.sprintf(TX("%08X-%08X-%08X-%08X"), a, b, c, d);
 
 	default:
-		result.sprintf(TX("%08X%08X%08X%08X"), A, B, C, D);
+		result.sprintf(TX("%08X%08X%08X%08X"), a, b, c, d);
 	}
 
 	return eastl::move(result);
@@ -82,10 +82,10 @@ bool Guid::Parse(const String& guidString, Guid& OutGuid)
 		{
 			return ParseExact(guidString, EGuidFormats::DigitsWithHyphensInBraces, OutGuid);
 		}
-		
+
 		return ParseExact(guidString, EGuidFormats::DigitsWithHyphensInParentheses, OutGuid);
 	}
-	
+
 	if (stringSize == 68)
 	{
 		return ParseExact(guidString, EGuidFormats::HexValuesInBraces, OutGuid);

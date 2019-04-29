@@ -13,29 +13,16 @@
 
 using json = nlohmann::json;
 
-
-template <typename T>
-class HasGlobalSerialize
+class Archive
 {
-	typedef char a;
-	typedef long b;
-
-	template <typename C> static a test(decltype(&Serialize(eastl::declval<Archive&>(), eastl::declval<const char *>(), eastl::declval<C&>())));
-	template <typename C> static b test(...);
-
-public:
-	enum { value = sizeof(test<T>(0)) == sizeof(char) };
-};
-
-
-class Archive {
-
 	const bool bLoads = false;
 
 public:
+	class World* context;
 
-	Archive() : bLoads(false) {}
-	Archive(bool bLoads) : bLoads(bLoads) {}
+
+	Archive() : bLoads(false), context{ nullptr } {}
+	Archive(bool bLoads) : bLoads(bLoads), context{ nullptr } {}
 	virtual ~Archive() = default;
 
 
@@ -149,18 +136,21 @@ private:
 	 * Selection of Serialize call.
 	 */
 	template<class T>
-	FORCEINLINE typename eastl::enable_if_t<!ClassTraits<T>::HasCustomSerialize, bool>
-		CustomSerializeOrNot(Archive& ar, const char* name, T& val)
+	FORCEINLINE bool CustomSerializeOrNot(Archive& ar, const char* name, T& val)
 	{
-		ar.Serialize(name, val);
-		return true;
-	}
-
-	template<class T>
-	FORCEINLINE typename eastl::enable_if_t<ClassTraits<T>::HasCustomSerialize, bool>
-		CustomSerializeOrNot(Archive& ar, const char* name, T& val)
-	{
-		return val.Serialize(ar, name);
+		if constexpr(ClassTraits<T>::HasCustomSerialize)
+		{
+			return val.Serialize(ar, name);
+		}
+		else if constexpr(ClassTraits<T>::HasGlobalSerialize)
+		{
+			return ::Serialize(*this, name, val);
+		}
+		else
+		{
+			ar.Serialize(name, val);
+			return true;
+		}
 	}
 };
 
@@ -173,6 +163,7 @@ class JsonArchive : public Archive {
 	const bool bBeautify;
 
 public:
+
 
 	//Save Constructor
 	JsonArchive(const bool bBeautify = true)
@@ -260,7 +251,7 @@ private:
 	}
 
 	FORCEINLINE json& Data() {
-		if(depthData.size() > 0)
+		if(!depthData.empty())
 			return *depthData.top();
 		return baseData;
 	}

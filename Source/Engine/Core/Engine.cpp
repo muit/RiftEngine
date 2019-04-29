@@ -28,15 +28,15 @@ bool Engine::Start()
 			return false;
 		}
 
-		renderer = Create<Renderer>();
+		renderer = Create<Renderer>(Self());
 		if (!renderer->Initialize())
 			return false;
 
-		input = Create<InputManager>();
-
+		input = Create<InputManager>(Self());
+		assetManager = Create<AssetManager>(Self());
 
 		world = Create<World>(Self());
-		world->Start();
+		world->Initialize();
 
 		ui = Create<UIManager>(Self());
 		ui->Prepare();

@@ -4,8 +4,9 @@
 #include "CoreObject.h"
 #include "Assets/Scene.h"
 
-#include "ECS/ECSManager.h"
 #include "Core/Assets/AssetManager.h"
+#include "Physics/PhysicsManager.h"
+#include "ECS/ECSManager.h"
 #include "Rendering/Frame.h"
 #include "Rendering/Commands/RenderCommand.h"
 #include "Core/Assets/AssetPtr.h"
@@ -18,38 +19,37 @@
 class World : public Object {
 	CLASS(World, Object)
 
-
-	GlobalPtr<AssetManager> assetManager;
-
 	TAssetPtr<Scene> scene;
 
-	GlobalPtr<ECSManager> ecsManager;
+	GlobalPtr<PhysicsManager> physics;
+	GlobalPtr<ECSManager> ecs;
 
 
 public:
 
-	void Start()
+	void Initialize()
 	{
 		Log::Message("World Start-Up");
 
-		assetManager = Create<AssetManager>(Self());
-		ecsManager   = Create<ECSManager>(Self());
+		physics = Create<PhysicsManager>(Self());
+		physics->Initialize();
+		ecs   = Create<ECSManager>(Self());
 
 		scene = { "scene.meta" };
 		scene.LoadOrCreate();
 
-		ecsManager->BeginPlay();
+		ecs->BeginPlay();
 	}
 
 	void Tick(float deltaTime);
 
 	void EndPlay() {
-		ecsManager->EndPlay();
+		ecs->EndPlay();
 	}
 
 	TAssetPtr<Scene> GetActiveScene() const { return scene; }
-	Ptr<AssetManager> GetAssetManager()   const { return assetManager; }
-	Ptr<ECSManager> GetECS() const { return ecsManager; }
+	Ptr<PhysicsManager> GetPhysics()   const { return physics; }
+	Ptr<ECSManager> GetECS() const { return ecs; }
 
 	FORCEINLINE bool IsEditor() {
 #if WITH_EDITOR

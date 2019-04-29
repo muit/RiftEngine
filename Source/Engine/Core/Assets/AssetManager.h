@@ -19,10 +19,6 @@ private:
 
 public:
 
-	/*void Initialize() {}
-
-	void Shutdown() {}*/
-
 	Ptr<AssetData> Load(const AssetInfo& info);
 	Ptr<AssetData> LoadOrCreate(const AssetInfo& info, Class* assetType);
 
@@ -31,5 +27,5 @@ public:
 		return loadedAssets[id.GetPath()];
 	}
 
-	static Ptr<AssetManager> Get(Ptr<Object> context = {});
+	static Ptr<AssetManager> Get();
 };

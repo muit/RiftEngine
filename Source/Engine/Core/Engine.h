@@ -19,13 +19,14 @@ class Engine : public Object
 
 	FrameTime frameTime;
 
-	TaskSystem taskSystem;
-
 	GlobalPtr<World> world;
+
 	GlobalPtr<InputManager> input;
+	GlobalPtr<AssetManager> assetManager;
 	GlobalPtr<UIManager> ui;
 	GlobalPtr<Renderer> renderer;
 
+	TaskSystem taskSystem;
 
 
 public:
@@ -53,8 +54,9 @@ private:
 
 public:
 
-	Ptr<InputManager> Input() { return input; }
-	Ptr<Renderer> GetRenderer() { return renderer; }
+	Ptr<InputManager> GetInput()        const { return input; }
+	Ptr<AssetManager> GetAssetManager() const { return assetManager; }
+	Ptr<Renderer>     GetRenderer()     const { return renderer; }
 
 	TaskSystem& Tasks() { return taskSystem; }
 

@@ -35,7 +35,7 @@ public:
 	{
 		//size += n;
 		void* const ptr = malloc_alloc.allocate(n, flags);
-		TracyAllocS(ptr, n, 10);
+		TracyAllocS(ptr, n, 8);
 		return ptr;
 	}
 
@@ -43,21 +43,21 @@ public:
 	{
 		//size += n;
 		void* const ptr = malloc_alloc.allocate(n, alignment, alignmentOffset, flags);
-		TracyAllocS(ptr, n, 10);
+		TracyAllocS(ptr, n, 8);
 		return ptr;
 	}
 
 	void Deallocate(void* const ptr)
 	{
 		// #TODO: obtain size of the ptr
-		TracyFreeS(ptr, 10);
+		TracyFreeS(ptr, 8);
 		malloc_alloc.deallocate(ptr, 0);
 	}
 
 	void Deallocate(void* const ptr, size_t n)
 	{
 		//size -= n;
-		TracyFreeS(ptr, 10);
+		TracyFreeS(ptr, 8);
 		malloc_alloc.deallocate(ptr, n);
 	}
 

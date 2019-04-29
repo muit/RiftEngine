@@ -2,7 +2,9 @@
 
 #include "SLighting.h"
 #include "Core/Engine.h"
-#include "Gameplay/Components/CEditorCamera.h"
+#include "Tools/Profiler.h"
+
+#include "../Components/CEditorCamera.h"
 #include "../Components/CDirectionalLight.h"
 #include "../Components/CPointLight.h"
 #include "Rendering/Commands/LightingCommands.h"
@@ -10,6 +12,7 @@
 
 void SLighting::Tick(float deltaTime)
 {
+	ScopedStackGameZone();
 	Super::Tick(deltaTime);
 
 	CameraData cameraData{};
@@ -24,15 +27,15 @@ void SLighting::Tick(float deltaTime)
 	dirView.each([deltaTime, &directionals](EntityId e, CTransform& t, CDirectionalLight& light)
 	{
 		// Rotate the light
-		Rotator r = t.transform.GetRotation();
+		Rotator r = t.worldTransform.GetRotation();
 		r.x() += 10.f * deltaTime;
 		r.z() += 1.f * deltaTime;
-		t.transform.SetRotation(r);
+		t.worldTransform.SetRotation(r);
 
 		directionals.Add({
 			LinearColor{ light.color },
 			light.intensity,
-			t.transform.rotation
+			t.worldTransform.rotation
 		});
 	});
 
@@ -46,7 +49,7 @@ void SLighting::Tick(float deltaTime)
 			LinearColor{ light.color },
 			light.intensity,
 			light.radius,
-			t.transform.location
+			t.worldTransform.location
 		});
 	});
 

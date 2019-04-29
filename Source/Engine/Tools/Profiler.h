@@ -4,6 +4,11 @@
 
 #include <tracy/Tracy.hpp>
 
-#define ScopedGameZone(Name)     ZoneScopedNC(Name, 0x459bd1)
-#define ScopedGraphicsZone(Name) ZoneScopedNC(Name, 0x94d145)
-#define ScopedZone(Name, Color) ZoneScopedNC(Name, 0x##Color)
+
+#define ScopedZone(Name, Color)  ZoneScopedNC(Name, 0x##Color)
+#define ScopedGameZone(Name)     ScopedZone(Name, 459bd1)
+#define ScopedGraphicsZone(Name) ScopedZone(Name, 94d145)
+
+#define ScopedStackZone(Color)    ZoneScopedC(0x##Color)
+#define ScopedStackGameZone()     ScopedStackZone(459bd1)
+#define ScopedStackGraphicsZone() ScopedStackZone(94d145)

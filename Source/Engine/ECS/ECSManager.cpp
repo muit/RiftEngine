@@ -11,11 +11,51 @@
 #include "Gameplay/Components/CEditorCamera.h"
 #include "Gameplay/Components/CPointLight.h"
 #include "Gameplay/Components/CDirectionalLight.h"
+
 #include "Gameplay/Systems/SEditorCamera.h"
+#include "Gameplay/Systems/SPhysics.h"
 #include "Gameplay/Systems/SRenderMeshes.h"
 #include "Gameplay/Systems/SRenderCamera.h"
 #include "Gameplay/Systems/SLighting.h"
 
+
+EntityId ECSManager::CreateEntity(Name entityName, bool bTransient /*= false*/)
+{
+	const EntityId id = __CreateEntity(entityName);
+
+	// Cache the created Guid
+	const Guid guid = registry.get<CEntity>().id;
+	guidEntityCache.insert_or_assign(guid, id);
+
+	return id;
+}
+
+void ECSManager::DestroyEntity(EntityId entity)
+{
+	if (registry.valid(entity))
+	{
+		const Guid guid = registry.get<CEntity>().id;
+		__DestroyEntity(entity);
+
+		// Remove the associated Guid
+		guidEntityCache.erase(guid);
+	}
+}
+
+EntityId ECSManager::__CreateEntity(Name entityName, bool bTransient /*= false*/)
+{
+	EntityId entity = registry.create();
+	Assign<CEntity>(entity, entityName, bTransient);
+
+	onEntityCreated.DoBroadcast(entity);
+	return entity;
+}
+
+void ECSManager::__DestroyEntity(EntityId entity)
+{
+	onEntityDestroyed.DoBroadcast(entity);
+	registry.destroy(entity);
+}
 
 bool ECSManager::Serialize(Archive& ar)
 {
@@ -24,20 +64,52 @@ bool ECSManager::Serialize(Archive& ar)
 	ar.BeginObject("entities");
 	if (ar.IsLoading())
 	{
-		registry.reset();
+		// Destroy all entities
+		{
+			View<CEntity>().each([this](EntityId id, CEntity entity)
+			{
+				onEntityDestroyed.DoBroadcast(id);
+			});
+			registry.reset();
+		}
 
 		u32 size;
 		ar.SerializeArraySize(size);
 
 		registry.reserve(size);
 
+		TArray<EntityId> createdEntities;
+		createdEntities.Reserve(size);
+
+		// Reset Guid cache
+		guidEntityCache.clear();
+		guidEntityCache.reserve(size);
+
+		// Create all entities
 		for (u32 i = 0; i < size; ++i)
 		{
 			ar.BeginObject(i);
 			if (ar.IsObjectValid())
 			{
-				EntityId entity = CreateEntity("");
-				SerializeEntity(ar, entity);
+				EntityId id = __CreateEntity("");
+
+				// Serialize Id and cache it
+				auto& entityComp = Assign<CEntity>(id);
+				ar("id", entityComp.id);
+				guidEntityCache.insert_or_assign(entityComp.id, id);
+
+				createdEntities.Add(id);
+			}
+			ar.EndObject();
+		}
+
+		// Deserialize all entities
+		for (u32 i = 0; i < size; ++i)
+		{
+			ar.BeginObject(i);
+			if (ar.IsObjectValid())
+			{
+				SerializeEntity(ar, createdEntities[i]);
 			}
 			ar.EndObject();
 		}
@@ -48,17 +120,16 @@ bool ECSManager::Serialize(Archive& ar)
 		ar.SerializeArraySize(size);
 
 		u32 i = 0;
-		Archive* arPtr = &ar;
-		registry.each([this, arPtr, i](EntityId entity) mutable
+		View<CEntity>().each([this, &ar, &i](EntityId id, CEntity entity)
 		{
-			CEntity& entityComp = registry.get<CEntity>(entity);
-			if (!entityComp.bTransient)
+			if (!entity.bTransient)
 			{
-				arPtr->BeginObject(i);
+				ar.BeginObject(i);
 				{
-					SerializeEntity(*arPtr, entity);
+					ar("id", entity.id);
+					SerializeEntity(ar, id);
 				}
-				arPtr->EndObject();
+				ar.EndObject();
 				++i;
 			}
 		});
@@ -82,6 +153,7 @@ void ECSManager::RegistrySystems()
 {
 	// #TODO: Externalize system registry
 	RegistrySystem<SEditorCamera>();
+	RegistrySystem<SPhysics>();
 
 	// Rendering
 	RegistrySystem<SRenderCamera>();

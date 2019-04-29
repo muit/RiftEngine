@@ -14,6 +14,7 @@ bool Scene::Serialize(Archive& ar)
 		Ptr<World> world = GetWorld();
 		if (world)
 		{
+			ar.context = *world;
 			world->GetECS()->Serialize(ar);
 		}
 	}

@@ -6,6 +6,7 @@
 #include "eastl/unique_ptr.h"
 #include <entt/entity/registry.hpp>
 
+#include "EntityId.h"
 #include "Component.h"
 #include "System.h"
 
@@ -13,15 +14,20 @@
 #include "Core/Events/Broadcast.h"
 
 
-using EntityId = u32;
-class Archive;
 
+//DECLARE_REFLECTION_TYPE(EntityId);
+
+
+class Archive;
 
 class ECSManager : public Object {
 	CLASS(ECSManager, Object)
 
 
 	entt::Registry<EntityId> registry;
+
+	/** List of Guids pointing to entity Ids */
+	eastl::unordered_map<Guid, EntityId> guidEntityCache;
 
 	TArray<GlobalPtr<System>> systems;
 
@@ -56,20 +62,13 @@ public:
 	 * Begin ENTITIES
 	 */
 
-	EntityId CreateEntity(Name entityName, bool bTransient = false)
-	{
-		EntityId entity = registry.create();
-		Assign<CEntity>(entity, entityName, bTransient);
+	EntityId CreateEntity(Name entityName, bool bTransient = false);
+	void DestroyEntity(EntityId entity);
 
-		onEntityCreated.DoBroadcast(entity);
-		return entity;
-	}
+	// Internal versions that don't track cached Guids
+	EntityId __CreateEntity(Name entityName, bool bTransient = false);
+	void __DestroyEntity(EntityId entity);
 
-	void DestroyEntity(EntityId entity)
-	{
-		onEntityDestroyed.DoBroadcast(entity);
-		registry.destroy(entity);
-	}
 
 	bool IsValid(EntityId entity) const
 	{
@@ -128,8 +127,9 @@ private:
 		}
 	}
 
-
 public:
+
+	const eastl::unordered_map<Guid, EntityId>& GetGuidCache() const { return guidEntityCache; }
 
 	/**************************************************************
 	 * Begin SYSTEMS
@@ -148,6 +148,16 @@ public:
 	template<typename... Components>
 	auto View() {
 		return registry.view<Components...>();
+	};
+
+	template<typename Component>
+	Component& Get(const EntityId entity) {
+		return registry.get<Component>(entity);
+	};
+
+	template<typename Component>
+	const Component& Get(const EntityId entity) const {
+		return registry.get<Component>(entity);
 	};
 
 	u32 GetEntityCount() {

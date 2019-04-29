@@ -86,13 +86,7 @@ Ptr<AssetData> AssetManager::LoadOrCreate(const AssetInfo& info, Class* assetTyp
 }
 
 
-Ptr<AssetManager> AssetManager::Get(Ptr<Object> context)
+Ptr<AssetManager> AssetManager::Get()
 {
-	if (!context)
-		context = GEngine;
-
-	if (Ptr<World> world = context->GetWorld()) {
-		return world->GetAssetManager();
-	}
-	return {};
+	return GEngine->GetAssetManager();
 }

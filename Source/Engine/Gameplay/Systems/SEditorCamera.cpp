@@ -13,7 +13,7 @@ void SEditorCamera::BeginPlay()
 {
 	Super::BeginPlay();
 
-	input = GEngine->Input();
+	input = GEngine->GetInput();
 
 	input->CreateTriggerAction({ "ViewportMoveMode" }, {
 		{ EKey::MouseRight, EKeyModifier::None },
@@ -49,7 +49,7 @@ void SEditorCamera::BeginPlay()
 	{
 		camera = ECS()->CreateEntity({ "EditorCamera" });
 
-		auto& t = ECS()->Assign<CTransform>(camera).transform;
+		auto& t = ECS()->Assign<CTransform>(camera).worldTransform;
 		t.location = { 0, 0, -5 };
 		t.SetRotation({ 90.f, 0.f, 0.f });
 
@@ -68,13 +68,13 @@ void SEditorCamera::Tick(float deltaTime)
 		// #FIX: X is threated as Z
 
 		// Use LookAt Rotation(A-B)
-		Rotator rotation = t.transform.GetRotation();
+		Rotator rotation = t.worldTransform.GetRotation();
 		rotation += finalRotateDelta;
 		rotation.x() = Math::Clamp(rotation.x(), 0.f, 180.f);
-		t.transform.SetRotation(rotation);
+		t.worldTransform.SetRotation(rotation);
 
 		// Rotate movement towards angle
-		t.transform.location += t.transform.rotation * finalMoveDelta;
+		t.worldTransform.location += t.worldTransform.rotation * finalMoveDelta;
 	});
 
 	rotationDelta = v3::Zero();

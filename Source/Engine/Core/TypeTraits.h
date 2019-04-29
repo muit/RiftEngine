@@ -10,6 +10,7 @@
 template <typename T>
 struct BaseClassTraits { enum {
 	HasCustomSerialize = false,
+	HasGlobalSerialize = false,
 	HasDetailsWidget = false,
 	HasPostSerialize = false
 };};

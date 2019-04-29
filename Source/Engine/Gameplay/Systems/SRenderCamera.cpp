@@ -2,11 +2,14 @@
 
 #include "SRenderCamera.h"
 #include "Core/Engine.h"
+#include "Tools/Profiler.h"
+
 #include "Gameplay/Components/CEditorCamera.h"
 
 
 void SRenderCamera::Tick(float deltaTime)
 {
+	ScopedStackGameZone();
 	Super::Tick(deltaTime);
 
 	CameraData cameraData{};
@@ -21,7 +24,7 @@ void SRenderCamera::Tick(float deltaTime)
 
 			if (ECS()->IsValid(cameraEntity)) {
 				cameraData = GetCameraData(
-					view.get<CTransform>(cameraEntity).transform,
+					view.get<CTransform>(cameraEntity).GetWorldTransform(),
 					&view.get<CEditorCamera>(cameraEntity)
 				);
 			}
@@ -37,7 +40,7 @@ void SRenderCamera::Tick(float deltaTime)
 
 			if (ECS()->IsValid(cameraEntity)) {
 				cameraData = GetCameraData(
-					view.get<CTransform>(cameraEntity).transform,
+					view.get<CTransform>(cameraEntity).GetWorldTransform(),
 					&view.get<CCamera>(cameraEntity)
 				);
 			}

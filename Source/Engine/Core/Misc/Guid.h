@@ -5,6 +5,7 @@
 #include "CoreEngine.h"
 #include "Core/TypeTraits.h"
 #include "Core/Strings/String.h"
+#include "Crc.h"
 
 
 /**
@@ -65,10 +66,10 @@ public:
 
 	/** Default constructor. */
 	Guid()
-		: A(0)
-		, B(0)
-		, C(0)
-		, D(0)
+		: a(0)
+		, b(0)
+		, c(0)
+		, d(0)
 	{ }
 
 	/**
@@ -80,7 +81,7 @@ public:
 	 * @param InD The fourth component.
 	 */
 	Guid(u32 InA, u32 InB, u32 InC, u32 InD)
-		: A(InA), B(InB), C(InC), D(InD)
+		: a(InA), b(InB), c(InC), d(InD)
 	{ }
 
 public:
@@ -94,7 +95,7 @@ public:
 	 */
 	friend bool operator==(const Guid& X, const Guid& Y)
 	{
-		return ((X.A ^ Y.A) | (X.B ^ Y.B) | (X.C ^ Y.C) | (X.D ^ Y.D)) == 0;
+		return ((X.a ^ Y.a) | (X.b ^ Y.b) | (X.c ^ Y.c) | (X.d ^ Y.d)) == 0;
 	}
 
 	/**
@@ -106,7 +107,7 @@ public:
 	 */
 	friend bool operator!=(const Guid& X, const Guid& Y)
 	{
-		return ((X.A ^ Y.A) | (X.B ^ Y.B) | (X.C ^ Y.C) | (X.D ^ Y.D)) != 0;
+		return ((X.a ^ Y.a) | (X.b ^ Y.b) | (X.c ^ Y.c) | (X.d ^ Y.d)) != 0;
 	}
 
 	/**
@@ -118,10 +119,10 @@ public:
 	 */
 	friend bool operator<(const Guid& X, const Guid& Y)
 	{
-		return	((X.A < Y.A) ? true : ((X.A > Y.A) ? false :
-				((X.B < Y.B) ? true : ((X.B > Y.B) ? false :
-				((X.C < Y.C) ? true : ((X.C > Y.C) ? false :
-				((X.D < Y.D) ? true : ((X.D > Y.D) ? false : false)))))))); //-V583
+		return	((X.a < Y.a) ? true : ((X.a > Y.a) ? false :
+				((X.b < Y.b) ? true : ((X.b > Y.b) ? false :
+				((X.c < Y.c) ? true : ((X.c > Y.c) ? false :
+				((X.d < Y.d) ? true : ((X.d > Y.d) ? false : false)))))))); //-V583
 	}
 
 	/**
@@ -137,13 +138,13 @@ public:
 
 		switch(Index)
 		{
-		case 0: return A;
-		case 1: return B;
-		case 2: return C;
-		case 3: return D;
+		case 0: return a;
+		case 1: return b;
+		case 2: return c;
+		case 3: return d;
 		}
 
-		return A;
+		return a;
 	}
 
 	/**
@@ -159,13 +160,13 @@ public:
 
 		switch(Index)
 		{
-		case 0: return A;
-		case 1: return B;
-		case 2: return C;
-		case 3: return D;
+		case 0: return a;
+		case 1: return b;
+		case 2: return c;
+		case 3: return d;
 		}
 
-		return A;
+		return a;
 	}
 
 	bool Serialize(class Archive& Ar, const char* name);
@@ -192,7 +193,7 @@ public:
 	 */
 	void Invalidate()
 	{
-		A = B = C = D = 0;
+		a = b = c = d = 0;
 	}
 
 	/**
@@ -205,7 +206,7 @@ public:
 	 */
 	bool IsValid() const
 	{
-		return ((A | B | C | D) != 0);
+		return ((a | b | c | d) != 0);
 	}
 
 	/**
@@ -260,18 +261,28 @@ public:
 public:
 
 	/** Holds the first component. */
-	u32 A;
+	u32 a;
 
 	/** Holds the second component. */
-	u32 B;
+	u32 b;
 
 	/** Holds the third component. */
-	u32 C;
+	u32 c;
 
 	/** Holds the fourth component. */
-	u32 D;
+	u32 d;
 };
 
 DEFINE_CLASS_TRAITS(Guid,
 	HasCustomSerialize = true
 );
+namespace eastl {
+	template <>
+	struct hash<Guid> {
+		size_t operator()(const Guid& k) const
+		{
+			return Crc::MemCrc32(&k, sizeof(Guid));
+		}
+	};
+};
+

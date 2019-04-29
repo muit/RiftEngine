@@ -12,8 +12,11 @@ class CTransform : public Component {
 
 public:
 
-	EntityId parent;
+	PROP(Transform, worldTransform, DetailsEdit);
+	Transform worldTransform;
 
-	PROP(Transform, transform, DetailsEdit);
-	Transform transform;
+	Transform&       GetWorldTransform()       { return worldTransform; }
+	const Transform& GetWorldTransform() const { return worldTransform; }
+
+	Transform GetRelativeTransform() const { return worldTransform; }
 };

@@ -7,5 +7,5 @@ void World::Tick(float deltaTime)
 {
 	ScopedGameZone("World");
 
-	ecsManager->Tick(deltaTime);
+	ecs->Tick(deltaTime);
 }

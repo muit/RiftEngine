@@ -24,7 +24,7 @@ bool AssetData::OnLoad(const AssetInfo& inInfo, json& data)
 
 bool AssetData::SaveToPath(const Name& path)
 {
-	String spath = path.ToString();
+	const String& spath = path.ToString();
 	if (spath.empty() || !FileSystem::IsAssetPath(spath))
 		return false;
 
