@@ -2,7 +2,42 @@
 
 #include "Physics2D.h"
 #include <Box2D/Dynamics/b2Body.h>
+#include <Box2D/Dynamics/b2Fixture.h>
 
+
+
+
+b2FixtureDef Fixture2D::Parameters::ToB2Def() const
+{
+	b2FixtureDef def;
+	def.shape       = shape;
+	def.friction    = friction;
+	def.restitution = restitution;
+	def.density     = density;
+	def.isSensor    = bIsTrigger;
+	return def;
+}
+
+void Body2D::SetMobility(EMobilityType mobility)
+{
+	assert(bodyPtr);
+	bodyPtr->SetType(b2BodyType(mobility));
+}
+
+Fixture2D Body2D::CreateFixture(const Fixture2D::Parameters& params)
+{
+	if (IsValid())
+	{
+		b2FixtureDef def = params.ToB2Def();
+		return { bodyPtr->CreateFixture(&def) };
+	}
+	return {};
+}
+
+void Body2D::DeleteFixture(Fixture2D& body)
+{
+
+}
 
 void Physics2D::Initialize()
 {

@@ -10,7 +10,36 @@ void SPhysics::Tick(float deltaTime)
 	ScopedStackGameZone();
 	Super::Tick(deltaTime);
 
-	// Update physics data
-	GetWorld()->GetPhysics()->Tick(deltaTime);
-	// Apply physics data
+	auto physics = GetWorld()->GetPhysics();
+
+	BoxView view = ECS()->View<CTransform, CBoxCollider2D>();
+
+
+
+	// Update physics step
+	physics->Tick(deltaTime);
+
+	ApplyPhysicsData(view);
+}
+
+void SPhysics::UploadDataToPhysics(BoxView& view)
+{
+	view.each([](EntityId e, CTransform& t, CBoxCollider2D& collider)
+	{
+		// Update transforms
+		if (collider.IsDirty())
+		{
+			// Update body
+
+		}
+	});
+}
+
+void SPhysics::ApplyPhysicsData(BoxView& view)
+{
+	view.each([](EntityId e, CTransform& t, CBoxCollider2D& collider)
+	{
+		// Apply transformations
+		//t.GetWorldTransform()
+	});
 }

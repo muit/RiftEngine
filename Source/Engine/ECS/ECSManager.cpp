@@ -18,6 +18,9 @@
 #include "Gameplay/Systems/SRenderCamera.h"
 #include "Gameplay/Systems/SLighting.h"
 
+#include "Physics/Components/CCollider2D.h"
+#include "Physics/Components/CBoxCollider2D.h"
+
 
 EntityId ECSManager::CreateEntity(Name entityName, bool bTransient /*= false*/)
 {
@@ -147,13 +150,17 @@ void ECSManager::SerializeEntity(Archive& ar, EntityId entity)
 	SerializeComponent<CEditorCamera>(ar, entity);
 	SerializeComponent<CPointLight>(ar, entity);
 	SerializeComponent<CDirectionalLight>(ar, entity);
+
+	// Physics Components
+	SerializeComponent<CCollider2D>(ar, entity);
+	SerializeComponent<CBoxCollider2D>(ar, entity);
 }
 
 void ECSManager::RegistrySystems()
 {
 	// #TODO: Externalize system registry
-	RegistrySystem<SEditorCamera>();
 	RegistrySystem<SPhysics>();
+	RegistrySystem<SEditorCamera>();
 
 	// Rendering
 	RegistrySystem<SRenderCamera>();

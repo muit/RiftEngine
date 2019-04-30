@@ -4,10 +4,14 @@
 
 #include "CoreObject.h"
 #include <Box2D/Dynamics/b2World.h>
+#include <Box2D/Collision/Shapes/b2Shape.h>
 
 #include "Core/Math/Vector.h"
 
 class b2Body;
+struct b2BodyDef;
+class b2Fixture;
+struct b2FixtureDef;
 class Physics2D;
 
 
@@ -18,6 +22,60 @@ enum class EMobilityType : u8
 	Movable
 };
 
+enum class EShapeType : u8
+{
+	Box,
+	Circle,
+	Geometry
+};
+
+using Shape = b2Shape;
+using PolygonShape = b2PolygonShape;
+
+
+struct Fixture2D
+{
+	struct Parameters
+	{
+		const Shape* shape;
+
+		void* containerPtr;
+
+		// The friction coefficient, usually in the range [0,1].
+		float friction = 0.2f;
+
+		// The restitution (elasticity) usually in the range [0,1].
+		float restitution = 0.f;
+
+		// The density, usually in kg/m^2.
+		float density = 0.f;
+
+		// A sensor shape collects contact information but never generates a collision response.
+		bool bIsTrigger = false;
+
+		// Contact filtering data
+		//CollisionFilter filter;
+
+		b2FixtureDef ToB2Def() const;
+	};
+
+
+	b2Fixture* fixturePtr;
+
+
+	Fixture2D() : fixturePtr{ nullptr } {}
+	Fixture2D(Fixture2D&& other) : fixturePtr{ other.fixturePtr } { other.fixturePtr = nullptr; }
+	Fixture2D& operator=(Fixture2D&& other) {
+		fixturePtr = other.fixturePtr;
+		other.fixturePtr = nullptr;
+	}
+	Fixture2D(b2Fixture* inFixture) : fixturePtr{ inFixture } {}
+
+
+	bool IsValid() const { return fixturePtr != nullptr; }
+	b2Fixture* GetRaw() const { return fixturePtr; }
+
+};
 
 struct Body2D
 {
@@ -28,12 +86,26 @@ struct Body2D
 
 	Body2D() : bodyPtr{ nullptr } {}
 	Body2D(Body2D&& other) : bodyPtr{ other.bodyPtr } { other.bodyPtr = nullptr; }
-
-	bool IsValid() const { return bodyPtr != nullptr; }
+	Body2D& operator=(Body2D&& other) {
+		bodyPtr = other.bodyPtr;
+		other.bodyPtr = nullptr;
+	}
 
 private:
 
 	Body2D(b2Body* inBody) : bodyPtr{ inBody } {}
+
+public:
+
+	void SetMobility(EMobilityType mobility);
+
+	Fixture2D CreateFixture(const Fixture2D::Parameters& params);
+	void DeleteFixture(Fixture2D& body);
+
+
+	bool IsValid() const { return bodyPtr != nullptr; }
+	b2Body* GetRaw() const { return bodyPtr; }
+
 };
 
 
