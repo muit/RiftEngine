@@ -22,7 +22,7 @@ bool Texture::PostLoad()
 		data.FromSurface(rawImg);
 		SDL_FreeSurface(rawImg);
 
-		QueueRenderCommand<LoadTextureCommand>(TAssetPtr<Texture>{ Self().Cast<Texture>() });
+		QueueRenderCommand<LoadTextureCommand>(TAssetPtr<Texture>{ Self<Texture>() });
 
 		return Super::PostLoad();;
 	}

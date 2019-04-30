@@ -41,13 +41,13 @@ public:
 
 	void Load(Name id, const MeshData& data)
 	{
-		meshes.insert_or_assign(id, RenderMesh{ data });
+		meshes.insert_or_assign(id, RenderMesh{ id, data });
 	}
 
 	void Load(Name id, const MaterialData& data)
 	{
 		// #TODO: Parse Fragment / Vertex shader
-		materials.insert_or_assign(id, RenderMaterial{ data });
+		materials.insert_or_assign(id, RenderMaterial{ id, data });
 	}
 
 	template<ResourceType type>

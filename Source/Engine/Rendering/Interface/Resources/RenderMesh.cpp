@@ -4,16 +4,10 @@
 #include "Core/Log.h"
 
 
-void RenderMesh::Bind() const
-{
-	glBindVertexArray(glVertexArrayId);
-}
-
-void RenderMesh::Load(const MeshData& mesh)
+void RenderMesh::Load(Name id, const MeshData& mesh)
 {
 	glGenVertexArrays(1, &glVertexArrayId); // VAO
 	glBindVertexArray(glVertexArrayId);
-	Log::Warning("Created Vertex Array '%i'", glVertexArrayId);
 
 	glGenBuffers(1, &glVerticesId);         // VBO
 	glGenBuffers(1, &glTrianglesId);        // EBO
@@ -53,6 +47,8 @@ void RenderMesh::Load(const MeshData& mesh)
 	}
 
 	glBindVertexArray(0);
+
+	Log::Message("Loaded mesh into GPU '%s' Id:%i", id.ToString().c_str(), glVertexArrayId);
 }
 
 void RenderMesh::Free()

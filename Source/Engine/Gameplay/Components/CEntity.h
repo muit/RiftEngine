@@ -25,6 +25,13 @@ public:
 	PROP(EntityId, parent)
 	EntityId parent;
 
+private:
+
+	PROP(bool, bPendingKill)
+	bool bPendingKill;
+
+
+public:
 
 	CEntity()
 		: id{ Guid::New() }
@@ -39,4 +46,7 @@ public:
 		, bTransient{bTransient}
 		, parent{}
 	{}
+
+	void MarkPendingKill() { bPendingKill = true; }
+	FORCEINLINE bool IsPendingKill() const { return bPendingKill; }
 };

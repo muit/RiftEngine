@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreEngine.h"
-#include "RenderCommand.h"
+#include "Tools/Profiler.h"
 #include "../Data/LightData.h"
 #include "../Renderer.h"
 #include "../Frame.h"
+
+#include "RenderCommand.h"
 
 
 class DrawDirectionalLightCommand : public RenderCommand {
@@ -18,6 +20,7 @@ public:
 	{}
 	virtual void Execute(FrameRender& render, Frame& frame) override
 	{
+		ScopedGraphicsZone("Directional Lights Command");
 		render.lighting.directionals.Append(MoveTemp(lights));
 	}
 };
@@ -31,6 +34,7 @@ public:
 	{}
 	virtual void Execute(FrameRender& render, Frame& frame) override
 	{
+		ScopedGraphicsZone("Point Lights Command");
 		render.lighting.points.Append(MoveTemp(lights));
 	}
 };

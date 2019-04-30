@@ -18,27 +18,28 @@ struct RenderMaterialParameter
 
 struct RenderMaterial
 {
-	GLint programId;
+	static const Name notAResourceId;
+
+	GLuint programId = GL_INVALID_INDEX;
 
 	TArray<RenderMaterialParameter> parameterIds;
 
 
-	RenderMaterial() : programId{ 0 } {}
-	RenderMaterial(const String& vertexCode, const String& fragmentCode)
+	RenderMaterial() = default;
+	RenderMaterial(const String& vertexCode, const String& fragmentCode, Name id = notAResourceId)
 	{
-		CompileProgram(vertexCode, fragmentCode);
-		glUseProgram(programId);
+		CompileProgram(id, vertexCode, fragmentCode);
 	}
-	RenderMaterial(const MaterialData& materialData)
-		: RenderMaterial{ materialData.vertexCode, materialData.fragmentCode }
+	RenderMaterial(Name id, const MaterialData& materialData)
+		: RenderMaterial{ materialData.vertexCode, materialData.fragmentCode, id }
 	{}
 
 	RenderMaterial(RenderMaterial&& other) : programId{other.programId} {
-		other.programId = 0;
+		other.programId = GL_INVALID_INDEX;
 	}
 	RenderMaterial& operator=(RenderMaterial&& other) {
 		programId = other.programId;
-		other.programId = 0;
+		other.programId = GL_INVALID_INDEX;
 		return *this;
 	}
 
@@ -50,7 +51,7 @@ struct RenderMaterial
 
 private:
 
-	void CompileProgram(const String& vertexCode, const String& fragmentCode);
+	void CompileProgram(Name id, const String& vertexCode, const String& fragmentCode);
 
 	void LogShaderError(GLint shaderId);
 	void LogProgramError();

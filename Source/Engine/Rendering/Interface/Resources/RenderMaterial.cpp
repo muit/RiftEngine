@@ -2,9 +2,11 @@
 
 #include "RenderMaterial.h"
 
-void RenderMaterial::CompileProgram(const String& vertexCode, const String& fragmentCode)
+const Name RenderMaterial::notAResourceId { "Not a Resource" };
+
+void RenderMaterial::CompileProgram(Name id, const String& vertexCode, const String& fragmentCode)
 {
-	GLint state = GL_FALSE;
+	GLint success = GL_FALSE;
 
 	// Create shader objects
 	GLuint   vertexId = glCreateShader(GL_VERTEX_SHADER);
@@ -25,15 +27,15 @@ void RenderMaterial::CompileProgram(const String& vertexCode, const String& frag
 
 
 	bool bError = false;
-	glGetShaderiv(vertexId, GL_COMPILE_STATUS, &state);
-	if (!state)
+	glGetShaderiv(vertexId, GL_COMPILE_STATUS, &success);
+	if (!success)
 	{
 		LogShaderError(vertexId);
 		bError = true;
 	}
 
-	glGetShaderiv(fragmentId, GL_COMPILE_STATUS, &state);
-	if (!state)
+	glGetShaderiv(fragmentId, GL_COMPILE_STATUS, &success);
+	if (!success)
 	{
 		LogShaderError(fragmentId);
 		bError |= true;
@@ -47,21 +49,25 @@ void RenderMaterial::CompileProgram(const String& vertexCode, const String& frag
 		glAttachShader(programId, fragmentId);
 		glLinkProgram(programId);
 
-		glGetProgramiv(programId, GL_LINK_STATUS, &state);
-		if (!state)
+		glGetProgramiv(programId, GL_LINK_STATUS, &success);
+		if (!success)
 		{
 			LogProgramError();
+		}
+		else
+		{
+			glUseProgram(programId);
+			parameterIds.Add(
+				{ "mvp", glGetUniformLocation(programId, "mvp") }
+			);
+
+			Log::Message("Loaded material into GPU '%s' Id:%i", id.ToString().c_str(), programId);
 		}
 	}
 
 	// Free compiled shaders
 	glDeleteShader(vertexId);
 	glDeleteShader(fragmentId);
-
-	parameterIds.Add({
-		"mvp",
-		glGetUniformLocation(programId, "mvp")
-	});
 }
 
 void RenderMaterial::LogShaderError(GLint shaderId)

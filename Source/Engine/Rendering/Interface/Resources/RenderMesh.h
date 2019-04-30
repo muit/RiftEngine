@@ -4,11 +4,12 @@
 
 #include "CoreEngine.h"
 #include "../../Data/MeshData.h"
+#include "Core/Assets/AssetInfo.h"
 
 
 struct RenderMesh
 {
-	u32 glVerticesId  = GL_INVALID_INDEX;
+	u32 glVerticesId = GL_INVALID_INDEX;
 	u32 glTrianglesId = GL_INVALID_INDEX;
 
 	u32 glVertexArrayId = GL_INVALID_INDEX;
@@ -17,10 +18,15 @@ struct RenderMesh
 	u32 verticesCount = 0;
 
 
-	RenderMesh(const MeshData& mesh) { Load(mesh); }
+	RenderMesh(Name id, const MeshData& mesh) { Load(id, mesh); }
 	~RenderMesh() { Free(); }
+	RenderMesh(RenderMesh&& other)            { MoveFrom(MoveTemp(other)); }
+	RenderMesh& operator=(RenderMesh&& other) { MoveFrom(MoveTemp(other)); }
 
-	void Bind() const;
+	void Bind() const
+	{
+		glBindVertexArray(glVertexArrayId);
+	}
 
 	void Draw() const
 	{
@@ -31,8 +37,21 @@ struct RenderMesh
 
 private:
 
-	void Load(const MeshData& mesh);
+	void Load(Name id, const MeshData& mesh);
 
 	void Free();
-};
 
+	void MoveFrom(RenderMesh&& other)
+	{
+		glVertexArrayId = other.glVertexArrayId;
+		glVerticesId    = other.glVerticesId;
+		glTrianglesId   = other.glTrianglesId;
+		indicesCount    = other.indicesCount;
+		verticesCount   = other.verticesCount;
+		other.glVertexArrayId = GL_INVALID_INDEX;
+		other.glVerticesId    = GL_INVALID_INDEX;
+		other.glTrianglesId   = GL_INVALID_INDEX;
+		other.indicesCount = 0;
+		other.glVerticesId = 0;
+	}
+};

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreEngine.h"
+#include "Tools/Profiler.h"
 
 #include "Core/MultiThreading.h"
 #include "Core/Assets/AssetPtr.h"
@@ -20,6 +21,7 @@ public:
 	LoadTextureCommand(TAssetPtr<Texture> asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
+		ScopedGraphicsZone("Load Texture Command");
 		// #TODO: Ensure assets stay loaded during this frame
 		render.resources.Load(asset.GetPath(), asset->GetTextureData());
 	}
@@ -33,6 +35,7 @@ public:
 	FreeTextureCommand(AssetInfo asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
+		ScopedGraphicsZone("Free Texture Command");
 		render.resources.Free<ResourceType::Texture>(asset.GetPath());
 	}
 };
@@ -48,6 +51,7 @@ public:
 	{}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
+		ScopedGraphicsZone("Draw Texture Command");
 		//u32 texture = render.resources.GetGLId<ResourceType::Texture>(id);
 
 		//render.DrawImage(position, texture);

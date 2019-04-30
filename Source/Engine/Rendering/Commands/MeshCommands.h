@@ -3,13 +3,15 @@
 #pragma once
 
 #include "CoreEngine.h"
+#include "Tools/Profiler.h"
 
 #include "Core/MultiThreading.h"
 #include "Core/Assets/AssetPtr.h"
 #include "Assets/Mesh.h"
-#include "RenderCommand.h"
 #include "../Renderer.h"
 #include "../Frame.h"
+
+#include "RenderCommand.h"
 
 
 class LoadMeshCommand : public RenderCommand {
@@ -20,6 +22,7 @@ public:
 	LoadMeshCommand(TAssetPtr<Mesh> asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
+		ScopedGraphicsZone("Load Mesh Command");
 		render.resources.Load(asset.GetPath(), asset->GetMeshData());
 	}
 };
@@ -32,6 +35,7 @@ public:
 	FreeMeshCommand(AssetInfo asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
+		ScopedGraphicsZone("Free Mesh Command");
 		render.resources.Free<ResourceType::Mesh>(asset.GetPath());
 	}
 };

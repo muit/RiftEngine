@@ -5,8 +5,6 @@
 #include <Box2D/Dynamics/b2Fixture.h>
 
 
-
-
 b2FixtureDef Fixture2D::Parameters::ToB2Def() const
 {
 	b2FixtureDef def;

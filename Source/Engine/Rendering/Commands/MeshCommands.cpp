@@ -15,15 +15,12 @@ using MaterialBatchMap = eastl::unordered_map<Name, MeshTransformMap>;
 void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 {
 	ScopedGraphicsZone("Draw Mesh Command");
-	TracyGpuZone("Draw Mesh Command");
 
 	static const Name transformParameter = { "mvp" };
 
 	const Matrix4f toCamera{ render.Camera().transform.ToLocalMatrix().matrix() };
 	const Matrix4f toProjection{ render.Camera().GetPerspectiveMatrix(render.GetRenderSize()) };
 	const Matrix4f cameraTransform{ toProjection * toCamera };
-
-
 
 	/** Prepare batches
 	 * Group them by Material -> Mesh -> Transform
@@ -33,7 +30,7 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 		ScopedGraphicsZone("Build Batches");
 		for (const auto& meshInstance : meshes)
 		{
-			const RenderMaterial& materialResource = render.resources.Get<ResourceType::Material>(meshInstance.material.GetPath());
+			/*const RenderMaterial& materialResource = render.resources.Get<ResourceType::Material>(meshInstance.material.GetPath());
 			const RenderMesh& meshResource = render.resources.Get<ResourceType::Mesh>(meshInstance.mesh.GetPath());
 
 			materialResource.Use();
@@ -42,10 +39,10 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 
 			meshResource.Bind();
 			meshResource.Draw();
-			RenderMesh::Unbind();
+			RenderMesh::Unbind();*/
 
 			// Find or add a Material Batch
-			/*auto it = batches.find(meshInstance.material.GetPath());
+			auto it = batches.find(meshInstance.material.GetPath());
 			if (it != batches.end())
 			{
 				auto& meshBatches = it->second;
@@ -78,7 +75,7 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 						}
 					}
 				});
-			}*/
+			}
 		}
 	}
 

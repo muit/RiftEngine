@@ -56,12 +56,15 @@ struct Fixture2D
 		// Contact filtering data
 		//CollisionFilter filter;
 
-		b2FixtureDef ToB2Def() const;
+		FORCEINLINE b2FixtureDef ToB2Def() const;
 	};
 
+private:
 
 	b2Fixture* fixturePtr;
 
+
+public:
 
 	Fixture2D() : fixturePtr{ nullptr } {}
 	Fixture2D(Fixture2D&& other) : fixturePtr{ other.fixturePtr } { other.fixturePtr = nullptr; }
@@ -79,10 +82,13 @@ struct Fixture2D
 
 struct Body2D
 {
-	friend Physics2D;
+private:
 
+	friend Physics2D;
 	b2Body* bodyPtr;
 
+
+public:
 
 	Body2D() : bodyPtr{ nullptr } {}
 	Body2D(Body2D&& other) : bodyPtr{ other.bodyPtr } { other.bodyPtr = nullptr; }
@@ -101,7 +107,6 @@ public:
 
 	Fixture2D CreateFixture(const Fixture2D::Parameters& params);
 	void DeleteFixture(Fixture2D& body);
-
 
 	bool IsValid() const { return bodyPtr != nullptr; }
 	b2Body* GetRaw() const { return bodyPtr; }
