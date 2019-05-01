@@ -49,7 +49,7 @@ void SEditorCamera::BeginPlay()
 	{
 		camera = ECS()->CreateEntity({ "EditorCamera" });
 
-		auto& t = ECS()->Assign<CTransform>(camera).worldTransform;
+		auto& t = ECS()->Assign<CTransform>(camera).transform;
 		t.location = { 0, 0, -5 };
 		t.SetRotation({ 90.f, 0.f, 0.f });
 
@@ -63,18 +63,16 @@ void SEditorCamera::Tick(float deltaTime)
 	const v3 finalMoveDelta = movementDelta * deltaTime;
 
 	ECS()->View<CTransform, CEditorCamera>()
-		.each([deltaTime, finalRotateDelta, finalMoveDelta](const auto e, CTransform& t, auto& c)
+		.each([deltaTime, &finalRotateDelta, &finalMoveDelta](const auto e, CTransform& t, CEditorCamera& c)
 	{
-		// #FIX: X is threated as Z
-
 		// Use LookAt Rotation(A-B)
-		Rotator rotation = t.worldTransform.GetRotation();
+		Rotator rotation = t.transform.GetRotation();
 		rotation += finalRotateDelta;
-		rotation.x() = Math::Clamp(rotation.x(), 0.f, 180.f);
-		t.worldTransform.SetRotation(rotation);
+		rotation.x = Math::Clamp(rotation.x, 0.f, 180.f);
+		t.transform.SetRotation(rotation);
 
 		// Rotate movement towards angle
-		t.worldTransform.location += t.worldTransform.rotation * finalMoveDelta;
+		t.transform.location += t.transform.TransformVector(finalMoveDelta);
 	});
 
 	rotationDelta = v3::Zero();
@@ -103,19 +101,19 @@ void SEditorCamera::ViewportMoveMode(EKeyPressState state)
 
 void SEditorCamera::MoveForward(float delta)
 {
-	movementDelta += v3{0.f, 0.f, delta * forwardSpeed};
+	movementDelta.z += delta * forwardSpeed;
 }
 
 void SEditorCamera::MoveRight(float delta)
 {
-	movementDelta += v3{delta * sideSpeed, 0.f, 0.f};
+	movementDelta.x += delta * sideSpeed;
 }
 
 void SEditorCamera::TurnUp(float delta)
 {
 	if (bRotatingMode)
 	{
-		rotationDelta += v3{ delta, 0.f, 0.f };
+		rotationDelta.x += delta;
 	}
 }
 
@@ -123,6 +121,6 @@ void SEditorCamera::TurnRight(float delta)
 {
 	if (bRotatingMode)
 	{
-		rotationDelta += v3{ 0.f, 0.f, delta };
+		rotationDelta.z += delta;
 	}
 }

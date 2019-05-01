@@ -1,6 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "Math.h"
+#include "Vector.h"
 
 float Math::Atan2(float Y, float X)
 {
@@ -45,4 +46,25 @@ float Math::Atan2(float Y, float X)
 	t3 = (Y < 0.0f) ? -t3 : t3;
 
 	return t3;
+}
+
+v3 Math::GetSafeScaleReciprocal(const v3& scale, float tolerance /*= SMALL_NUMBER*/)
+{
+	v3 safeReciprocalScale;
+	if (Math::Abs(scale.x) <= tolerance)
+		safeReciprocalScale.x = 0.f;
+	else
+		safeReciprocalScale.x = 1 / scale.x;
+
+	if (Math::Abs(scale.y) <= tolerance)
+		safeReciprocalScale.y = 0.f;
+	else
+		safeReciprocalScale.y = 1 / scale.y;
+
+	if (Math::Abs(scale.z) <= tolerance)
+		safeReciprocalScale.z = 0.f;
+	else
+		safeReciprocalScale.z = 1 / scale.z;
+
+	return safeReciprocalScale;
 }

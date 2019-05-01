@@ -4,19 +4,47 @@
 
 #include "CoreEngine.h"
 #include "Core/TypeTraits.h"
-#include "Eigen/Core.h"
-#include "Eigen/Geometry.h"
+
+#include <glm/glm.hpp>
+#include "glm/vec3.hpp"
+#include "glm/detail/type_vec3.hpp"
+#include "glm/geometric.hpp"
+#include "glm/gtx/quaternion.hpp"
+#include "glm/gtc/type_ptr.inl"
 
 #include "Math.h"
 
 
-using v2 = Eigen::Matrix<float, 2, 1>;
-using v2_u32 = Eigen::Matrix<u32, 2, 1>;
-
-class v3 : public Eigen::Matrix<float, 3, 1> {
-	using Eigen::Matrix<float, 3, 1>::Matrix;
+template<glm::length_t L, typename T>
+class vec : public glm::vec<L, T> {
+	using glm::vec<L, T>::vec;
 
 public:
+
+	T* Data() const { glm::value_ptr(*this); }
+
+	static constexpr vec<L, T> Zero() { return glm::zero<vec<L, T>>(); }
+	static constexpr vec<L, T> One()  { return glm::one<vec<L, T>>(); }
+};
+
+using v2     = vec<2, float>;
+using v2_u32 = vec<2, u32>;
+
+class v3 : public vec<3, float> {
+	using vec<3, float>::vec;
+
+public:
+
+	constexpr v3 operator+(const v3& other)
+	{
+		return { x + other.x, y + other.y, z + other.z };
+	}
+	constexpr void operator+=(const v3& other)
+	{
+		x += other.x;
+		y += other.y;
+		z += other.z;
+	}
 
 	static const v3 Forward;
 	static const v3 Right;
@@ -26,31 +54,31 @@ public:
 
 /** Non reflected vectors */
 
-using v4 = Eigen::Matrix<float, 4, 1>;
+using v4    = vec<4, float>;
 
-using v2_u8 = Eigen::Matrix<u8, 2, 1>;
-using v3_u8 = Eigen::Matrix<u8, 3, 1>;
-using v4_u8 = Eigen::Matrix<u8, 4, 1>;
+using v2_u8 = vec<2, u8>;
+using v3_u8 = vec<3, u8>;
+using v4_u8 = vec<4, u8>;
 
-using v2_i32 = Eigen::Matrix<i32, 2, 1>;
-using v3_i32 = Eigen::Matrix<i32, 3, 1>;
-using v4_i32 = Eigen::Matrix<i32, 4, 1>;
+using v2_i32 = vec<2, i32>;
+using v3_i32 = vec<3, i32>;
+using v4_i32 = vec<4, i32>;
 
-using v3_u32 = Eigen::Matrix<u32, 3, 1>;
-using v4_u32 = Eigen::Matrix<u32, 4, 1>;
+using v3_u32 = vec<3, u32>;
+using v4_u32 = vec<4, u32>;
 
 class Rotator : public v3 {
 	using v3::v3;
 
 public:
 
-	float Pitch() const { return y(); }
-	float Yaw()   const { return z(); }
-	float Roll()  const { return x(); }
+	float Pitch() const { return y; }
+	float Yaw()   const { return z; }
+	float Roll()  const { return x; }
 
-	float& Pitch() { return y(); }
-	float& Yaw()   { return z(); }
-	float& Roll()  { return x(); }
+	float& Pitch() { return y; }
+	float& Yaw()   { return z; }
+	float& Roll()  { return x; }
 
 	/**
 	 * Clamps an angle to the range of [0, 360).
@@ -69,10 +97,13 @@ public:
 	static float NormalizeAxis(float Angle);
 };
 
-class Quat : public Eigen::Quaternion<float, Eigen::DontAlign> {
-	using Eigen::Quaternion<float, Eigen::DontAlign>::Quaternion;
+class Quat : public glm::qua<float, glm::highp> {
+	using glm::qua<float, glm::highp>::qua;
 
 public:
+
+	v3 Rotate(const v3& vector) const;
+	v3 Unrotate(const v3& vector) const;
 
 	Rotator ToRotator() const;
 
@@ -84,21 +115,38 @@ public:
 	v3 GetRight()   const { return *this * v3::Right;   }
 	v3 GetUp()      const { return *this * v3::Up;      }
 
+	Quat Inverse() const { glm::inverse(*this); }
+
+	float* Data() const { glm::value_ptr(*this); }
+
 	static Quat FromRotator(Rotator rotator);
 
 	static Quat FromRotatorRad(Rotator rotator) {
 		return FromRotator(rotator * Math::DEGTORAD);
 	}
 
-	static Quat LookAt(v3 origin, v3 dest);
+	static Quat LookAt(const v3& origin, const v3& dest);
+
+	static constexpr Quat Identity() { return glm::quat_identity<value_type, glm::highp>(); }
 };
 
-using Matrix4f = Eigen::Matrix4f;
+template<glm::length_t X, glm::length_t Y, typename T>
+class Matrix : public glm::mat<X, Y, T>
+{
+	using glm::mat<X, Y, T>::mat;
 
+public:
+
+	Matrix Inverse() const { return glm::inverse(*this); }
+
+	T* Data() const { glm::value_ptr(*this); }
+};
+
+using Matrix4f = Matrix<4, 4, float>;
 
 template<typename Type, u32 Dimensions>
 struct Box {
-	using VectorType = Eigen::Matrix<Type, Dimensions, 1>;
+	using VectorType = glm::mat<Dimensions, 1, Type>;
 
 	VectorType min;
 	VectorType max;
@@ -110,11 +158,12 @@ struct Box {
 	inline void ExtendPoint(const VectorType& point) {
 		for (u32 i = 0; i < Dimensions; ++i)
 		{
-			if (point[i] < min[i]) {
+			if (point[i] < min[i])
+			{
 				min[i] = point[i];
 			}
-
-			if (point[i] > max[i]) {
+			if (point[i] > max[i])
+			{
 				max[i] = point[i];
 			}
 		}

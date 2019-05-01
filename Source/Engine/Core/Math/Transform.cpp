@@ -1,6 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "Transform.h"
+#include "Math.h"
 #include "Core/Serialization/Archive.h"
 
 #if WITH_EDITOR
@@ -45,17 +46,17 @@ protected:
 
 			Transform& tr = *GetHandle()->GetValuePtr();
 
-			ImGui::InputFloat3("Location", tr.location.data(), 3, flags);
+			ImGui::InputFloat3("Location", tr.location.Data(), 3, flags);
 
 			v3 rotation = tr.GetRotation();
 			v3 prevRotation = rotation;
-			ImGui::InputFloat3("Rotation", rotation.data(), 3);
+			ImGui::InputFloat3("Rotation", rotation.Data(), 3);
 			if (rotation != prevRotation)
 			{
 				tr.SetRotation(rotation);
 			}
 
-			ImGui::InputFloat3("Scale", tr.scale.data(), 3, flags);
+			ImGui::InputFloat3("Scale", tr.scale.Data(), 3, flags);
 		}
 		ImGui::PopID();
 	}

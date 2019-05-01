@@ -11,22 +11,22 @@
         "name": "EditorCamera"
       },
       "CTransform": {
-        "worldTransform": {
+        "transform": {
           "location": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
+            "x": 18.039312,
+            "y": 17.161846,
+            "z": -8.310745
           },
           "rotation": {
-            "w": 1.0,
-            "x": 0.0,
-            "y": -0.0,
-            "z": 0.0
+            "w": 0.5618241,
+            "x": -0.30735114,
+            "y": -0.36861175,
+            "z": 0.67380583
           },
           "scale": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
           }
         }
       },
@@ -52,23 +52,10 @@
         "model": "Meshes/piramid.obj.meta"
       },
       "CTransform": {
-        "worldTransform": {
-          "location": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "rotation": {
-            "w": 0.0,
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "scale": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          }
+        "transform": {
+          "location": { "x": 8.0, "y": 18.0, "z": 0.0 },
+          "rotation": { "w": 0.707, "x": -0.707, "y": 0.0, "z": 0.0 },
+          "scale": { "x": 0.2, "y": 0.5, "z": 0.2 }
         }
       },
       "id": {
@@ -93,23 +80,10 @@
         "model": "Meshes/piramid.obj.meta"
       },
       "CTransform": {
-        "worldTransform": {
-          "location": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "rotation": {
-            "w": 0.0,
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "scale": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          }
+        "transform": {
+          "location": { "x": 6.0, "y": 18.0, "z": 0.0 },
+          "rotation": { "w": 0.707, "x": -0.707, "y": 0.0, "z": 0.0 },
+          "scale": { "x": 0.2, "y": 0.5, "z": 0.2 }
         }
       },
       "id": {
@@ -134,23 +108,10 @@
         "model": "Meshes/piramid.obj.meta"
       },
       "CTransform": {
-        "worldTransform": {
-          "location": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "rotation": {
-            "w": 0.0,
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "scale": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          }
+        "transform": {
+          "location": { "x": 4.0, "y": 18.0, "z": 0.0 },
+          "rotation": { "w": 0.707, "x": -0.707, "y": 0.0, "z": 0.0 },
+          "scale": { "x": 0.2, "y": 0.5, "z": 0.2 }
         }
       },
       "id": {
@@ -175,23 +136,10 @@
         "model": "Meshes/piramid.obj.meta"
       },
       "CTransform": {
-        "worldTransform": {
-          "location": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "rotation": {
-            "w": 0.0,
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "scale": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          }
+        "transform": {
+          "location": { "x": 8.0, "y": 16.0, "z": 0.0 },
+          "rotation": { "w": 0.707, "x": -0.707, "y": 0.0, "z": 0.0 },
+          "scale": { "x": 0.2, "y": 0.5, "z": 0.2 }
         }
       },
       "id": {
@@ -216,23 +164,10 @@
         "model": "Meshes/piramid.obj.meta"
       },
       "CTransform": {
-        "worldTransform": {
-          "location": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "rotation": {
-            "w": 0.0,
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "scale": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          }
+        "transform": {
+          "location": { "x": 6.0, "y": 16.0, "z": 0.0 },
+          "rotation": { "w": 0.707, "x": -0.707, "y": 0.0, "z": 0.0 },
+          "scale": { "x": 0.2, "y": 0.5, "z": 0.2 }
         }
       },
       "id": {
@@ -257,23 +192,10 @@
         "model": "Meshes/piramid.obj.meta"
       },
       "CTransform": {
-        "worldTransform": {
-          "location": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "rotation": {
-            "w": 0.0,
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          },
-          "scale": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-          }
+        "transform": {
+          "location": { "x": 4.0, "y": 16.0, "z": 0.0 },
+          "rotation": { "w": 0.707, "x": -0.707, "y": 0.0, "z": 0.0 },
+          "scale": { "x": 0.2, "y": 0.5, "z": 0.2 }
         }
       },
       "id": {
@@ -298,22 +220,22 @@
         "model": "Meshes/terrain.fbx.meta"
       },
       "CTransform": {
-        "worldTransform": {
+        "transform": {
           "location": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
+            "x": 18.039312,
+            "y": 17.161846,
+            "z": -8.310745
           },
           "rotation": {
-            "w": 0.0,
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
+            "w": 0.5618241,
+            "x": -0.30735114,
+            "y": -0.36861175,
+            "z": 0.67380583
           },
           "scale": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
           }
         }
       },
@@ -339,22 +261,22 @@
         "name": "Directional Light"
       },
       "CTransform": {
-        "worldTransform": {
+        "transform": {
           "location": {
             "x": 0.0,
             "y": 0.0,
             "z": 0.0
           },
           "rotation": {
-            "w": 0.019702455,
-            "x": 0.9871633,
-            "y": 0.15846212,
-            "z": 0.0031626911
+            "w": 0.23218462,
+            "x": -0.3226116,
+            "y": 0.74477905,
+            "z": -0.53601885
           },
           "scale": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
           }
         }
       },

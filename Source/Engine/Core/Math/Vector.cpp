@@ -4,16 +4,30 @@
 #include "Core/Platform/PlatformMisc.h"
 #include "Core/Serialization/Archive.h"
 
-const v3 v3::Forward{ v3::UnitY() };
-const v3 v3::Right  { v3::UnitX() };
-const v3 v3::Up     { v3::UnitZ() };
+const v3 v3::Forward{ 0.f, 1.f, 0.f };
+const v3 v3::Right  { 1.f, 0.f, 0.f };
+const v3 v3::Up     { 0.f, 0.f, 1.f };
 
+
+v3 Quat::Rotate(const v3& v) const
+{
+	const v3 q(x, y, z);
+	const v3 t = 2.f * glm::cross(q, v);
+	return v + (w * t) + glm::cross(q, t);
+}
+
+v3 Quat::Unrotate(const v3& v) const
+{
+	const v3 q(-x, -y, -z); // Inverse
+	const v3 t = 2.f * glm::cross(q, v);
+	return v + (w * t) + glm::cross(q, t);
+}
 
 Rotator Quat::ToRotator() const
 {
-	const float SingularityTest = z() * x() - w() * y();
-	const float YawY = 2.f*(w() * z() + x() * y());
-	const float YawX = (1.f - 2.f*(Math::Square(y()) + Math::Square(z())));
+	const float SingularityTest = z * x - w * y;
+	const float YawY = 2.f*(w * z + x * y);
+	const float YawX = (1.f - 2.f*(Math::Square(y) + Math::Square(z)));
 
 	// reference
 	// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
@@ -29,19 +43,19 @@ Rotator Quat::ToRotator() const
 	{
 		RotatorFromQuat.Pitch() = -90.f;
 		RotatorFromQuat.Yaw() = Math::Atan2(YawY, YawX) * Math::RADTODEG;
-		RotatorFromQuat.Roll() = Rotator::NormalizeAxis(-RotatorFromQuat.Yaw() - (2.f * Math::Atan2(x(), w()) * Math::RADTODEG));
+		RotatorFromQuat.Roll() = Rotator::NormalizeAxis(-RotatorFromQuat.Yaw() - (2.f * Math::Atan2(x, w) * Math::RADTODEG));
 	}
 	else if (SingularityTest > SINGULARITY_THRESHOLD)
 	{
 		RotatorFromQuat.Pitch() = 90.f;
 		RotatorFromQuat.Yaw() = Math::Atan2(YawY, YawX) * Math::RADTODEG;
-		RotatorFromQuat.Roll() = Rotator::NormalizeAxis(RotatorFromQuat.Yaw() - (2.f * Math::Atan2(x(), w()) * Math::RADTODEG));
+		RotatorFromQuat.Roll() = Rotator::NormalizeAxis(RotatorFromQuat.Yaw() - (2.f * Math::Atan2(x, w) * Math::RADTODEG));
 	}
 	else
 	{
 		RotatorFromQuat.Pitch() = Math::FastAsin(2.f*(SingularityTest)) * Math::RADTODEG;
 		RotatorFromQuat.Yaw()   = Math::Atan2(YawY, YawX) * Math::RADTODEG;
-		RotatorFromQuat.Roll()  = Math::Atan2(-2.f*(w() * x() + y() * z()), (1.f - 2.f*(Math::Square(x()) + Math::Square(y())))) * Math::RADTODEG;
+		RotatorFromQuat.Roll()  = Math::Atan2(-2.f*(w * x + y * z), (1.f - 2.f*(Math::Square(x) + Math::Square(y)))) * Math::RADTODEG;
 	}
 
 	return RotatorFromQuat;
@@ -72,9 +86,9 @@ Quat Quat::FromRotator(Rotator rotator)
 	return RotationQuat;
 }
 
-Quat Quat::LookAt(v3 origin, v3 dest)
+Quat Quat::LookAt(const v3& origin, const v3& dest)
 {
-	return Quat::FromTwoVectors(dest - origin, v3::Up);
+	return glm::lookAt(origin, dest, v3::Up);
 }
 
 float Rotator::ClampAxis(float Angle)

@@ -15,7 +15,7 @@ void V3PropertyWidget::Tick()
 
 	ImGui::PushID(idName.c_str());
 	v3* const val = GetHandle()->GetValuePtr();
-	ImGui::InputFloat3(displayName.c_str(), val->data(), "%g", flags);
+	ImGui::InputFloat3(displayName.c_str(), val->Data(), "%g", flags);
 	ImGui::PopID();
 }
 

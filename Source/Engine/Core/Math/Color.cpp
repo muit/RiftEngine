@@ -49,17 +49,17 @@ LinearColor::LinearColor(const Color& other)
 }
 
 LinearColor::LinearColor(const v3& vector) :
-	r(vector.x()),
-	g(vector.y()),
-	b(vector.z()),
+	r(vector.x),
+	g(vector.y),
+	b(vector.z),
 	a(1.0f)
 {}
 
 LinearColor::LinearColor(const v4& vector) :
-	r(vector.x()),
-	g(vector.y()),
-	b(vector.z()),
-	a(vector.w())
+	r(vector.x),
+	g(vector.y),
+	b(vector.z),
+	a(vector.w)
 {}
 
 LinearColor LinearColor::FromSRGBColor(const Color& color)
@@ -201,8 +201,8 @@ LinearColor LinearColor::FGetHSV( u8 H, u8 S, u8 V )
 	Brightness *= 0.7f/(0.01f + Math::Sqrt(Brightness));
 	Brightness  = Math::Clamp(Brightness,0.f,1.f);
 	const v3 Hue = (H<86) ? v3((85-H)/85.f,(H-0)/85.f,0) : (H<171) ? v3(0,(170-H)/85.f,(H-85)/85.f) : v3((H-170)/85.f,0,(255-H)/84.f);
-	const v3 ColorVector = (Hue + S/255.f * (v3(1,1,1) - Hue)) * Brightness;
-	return LinearColor(ColorVector.x(), ColorVector.y(), ColorVector.z(), 1);
+	const v3 colorVector = (Hue + S/255.f * (v3(1,1,1) - Hue)) * Brightness;
+	return LinearColor(colorVector.x, colorVector.y, colorVector.z, 1);
 }
 
 /** Converts a linear space RGB color to an HSV color */

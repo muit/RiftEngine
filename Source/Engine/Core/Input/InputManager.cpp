@@ -35,11 +35,11 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> render
 
 		case SDL_MOUSEMOTION: {
 			v2_i32 pos{};
-			SDL_GetRelativeMouseState(&pos.x(), &pos.y());
-			if (Math::Abs(pos.x()) > 0)
-				UpdateAxis(EAxis::MouseX, (float)pos.x());
-			if (Math::Abs(pos.y()) > 0)
-				UpdateAxis(EAxis::MouseY, (float)pos.y());
+			SDL_GetRelativeMouseState(&pos.x, &pos.y);
+			if (Math::Abs(pos.x) > 0)
+				UpdateAxis(EAxis::MouseX, (float)pos.x);
+			if (Math::Abs(pos.y) > 0)
+				UpdateAxis(EAxis::MouseY, (float)pos.y);
 			break;
 		}
 

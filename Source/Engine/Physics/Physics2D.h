@@ -137,6 +137,6 @@ public:
 
 private:
 
-	b2Vec2 ToB2Vec2(v2 vector) { return { vector.x(), vector.y() }; }
+	b2Vec2 ToB2Vec2(v2 vector) { return { vector.x, vector.y }; }
 	v2     ToV2(b2Vec2 vector) { return { vector.x, vector.y }; }
 };

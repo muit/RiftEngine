@@ -18,9 +18,9 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 
 	static const Name transformParameter = { "mvp" };
 
-	const Matrix4f toCamera{ render.Camera().transform.ToLocalMatrix().matrix() };
-	const Matrix4f toProjection{ render.Camera().GetPerspectiveMatrix(render.GetRenderSize()) };
-	const Matrix4f cameraTransform{ toProjection * toCamera };
+	const Matrix4f view{ render.Camera().GetViewMatrix() };
+	const Matrix4f projection{ render.Camera().GetProjectionMatrix(render.GetRenderSize()) };
+	const Matrix4f vpMatrix { projection * view };
 
 	/** Prepare batches
 	 * Group them by Material -> Mesh -> Transform
@@ -30,19 +30,20 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 		ScopedGraphicsZone("Build Batches");
 		for (const auto& meshInstance : meshes)
 		{
-			/*const RenderMaterial& materialResource = render.resources.Get<ResourceType::Material>(meshInstance.material.GetPath());
+			const RenderMaterial& materialResource = render.resources.Get<ResourceType::Material>(meshInstance.material.GetPath());
 			const RenderMesh& meshResource = render.resources.Get<ResourceType::Mesh>(meshInstance.mesh.GetPath());
 
 			materialResource.Use();
 			// Update transform on material and draw triangles
-			materialResource.SetMatrix4f(transformParameter, cameraTransform * meshInstance.transform.ToWorldMatrix().matrix());
+			const Matrix4f mvp = vpMatrix * meshInstance.transform.ToMatrix();
+			materialResource.SetMatrix4f(transformParameter, mvp);
 
 			meshResource.Bind();
 			meshResource.Draw();
-			RenderMesh::Unbind();*/
+			RenderMesh::Unbind();
 
 			// Find or add a Material Batch
-			auto it = batches.find(meshInstance.material.GetPath());
+			/*auto it = batches.find(meshInstance.material.GetPath());
 			if (it != batches.end())
 			{
 				auto& meshBatches = it->second;
@@ -75,7 +76,7 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 						}
 					}
 				});
-			}
+			}*/
 		}
 	}
 
@@ -102,7 +103,9 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 				ScopedGraphicsZone("Transform Mesh Draw");
 
 				// Update transform on material and draw triangles
-				materialResource.SetMatrix4f(transformParameter, cameraTransform * transform.ToWorldMatrix().matrix());
+				const Matrix4f mvp = vpMatrix * transform.ToMatrix();
+				materialResource.SetMatrix4f(transformParameter, mvp);
+
 				meshResource.Draw();
 			}
 		}

@@ -17,7 +17,7 @@ void TextureData::FromSurface(SDL_Surface* surface)
 
 		size = { surface->w, surface->h };
 
-		const u32 pixelCount = size.x() * size.y();
+		const u32 pixelCount = size.x * size.y;
 		u32* const pixels = (u32*)surface->pixels;
 
 		// Copy pixels

@@ -56,7 +56,7 @@ void RenderMaterial::CompileProgram(Name id, const String& vertexCode, const Str
 		}
 		else
 		{
-			glUseProgram(programId);
+			// Cache parameter ids by name
 			parameterIds.Add(
 				{ "mvp", glGetUniformLocation(programId, "mvp") }
 			);
@@ -105,23 +105,23 @@ bool RenderMaterial::SetFloat(Name Id, float value) const
 	return false;
 }
 
-bool RenderMaterial::SetV3(Name Id, v3 value) const
+bool RenderMaterial::SetV3(Name Id, const v3& value) const
 {
 	const GLint paramId = glGetUniformLocation(programId, Id.ToString().c_str());
 	if (paramId != GL_INVALID_INDEX)
 	{
-		glUniform3fv(paramId, 1, value.data());
+		glUniform3fv(paramId, 1, value.Data());
 		return true;
 	}
 	return false;
 }
 
-bool RenderMaterial::SetMatrix4f(Name Id, Matrix4f value) const
+bool RenderMaterial::SetMatrix4f(Name Id, const Matrix4f& value) const
 {
 	const GLint paramId = glGetUniformLocation(programId, Id.ToString().c_str());
 	if (paramId != -1)
 	{
-		glUniformMatrix4fv(paramId, 1, GL_FALSE, value.data());
+		glUniformMatrix4fv(paramId, 1, GL_FALSE, value.Data());
 		return true;
 	}
 	return false;

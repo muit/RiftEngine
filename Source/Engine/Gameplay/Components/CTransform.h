@@ -12,11 +12,11 @@ class CTransform : public Component {
 
 public:
 
-	PROP(Transform, worldTransform, DetailsEdit);
-	Transform worldTransform;
+	PROP(Transform, transform, DetailsEdit);
+	Transform transform;
 
-	Transform&       GetWorldTransform()       { return worldTransform; }
-	const Transform& GetWorldTransform() const { return worldTransform; }
+	Transform&       GetWorldTransform()       { return transform; }
+	const Transform& GetWorldTransform() const { return transform; }
 
-	Transform GetRelativeTransform() const { return worldTransform; }
+	Transform GetRelativeTransform() const { return transform; }
 };

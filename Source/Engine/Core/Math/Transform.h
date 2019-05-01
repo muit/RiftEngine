@@ -6,19 +6,20 @@
 #include "Vector.h"
 #include "Math.h"
 #include "EASTL/internal/copy_help.h"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/matrix_transform_2d.hpp"
+#include "glm/gtx/matrix_decompose.hpp"
 
 
-struct Transform {
-
-	using Matrix = Eigen::Transform<float, 3, Eigen::Affine>;
-
+struct Transform
+{
 	v3 location;
 	Quat rotation;
 	v3 scale;
 
 
-	Transform() : location{ v3::Zero() }, rotation{ Quat::Identity() }, scale{ v3::Ones() } {};
-	Transform(v3 location) : location{ location }, rotation{ Quat::Identity() }, scale{ v3::Ones() } {};
+	Transform() : location{ v3::Zero() }, rotation{ Quat::Identity() }, scale{ v3::One() } {};
+	Transform(v3 location) : location{ location }, rotation{ Quat::Identity() }, scale{ v3::One() } {};
 
 
 	FORCEINLINE Rotator GetRotation() {
@@ -36,34 +37,52 @@ struct Transform {
 	bool Serialize(class Archive& ar, const char* name);
 
 
-	Matrix ToWorldMatrix() const {
-		return Eigen::Translation3f(location) * rotation.normalized().toRotationMatrix() * Scaling(scale);
+	Matrix4f ToMatrix() const {
+		const Matrix4f translated    = glm::translate(Matrix4f{1.f}, location);
+		const Matrix4f rotatedScaled = glm::scale(glm::mat4_cast(rotation), scale);
+		return rotatedScaled * translated;
 	}
 
-	Matrix ToLocalMatrix() const {
-		return ToWorldMatrix().inverse();
+	Matrix4f ToInverseMatrix() const {
+		return ToMatrix().Inverse();
 	}
 
-	v3 LocationToWorld(const v3& inLocation) const {
-		return ToWorldMatrix() * inLocation;
+	Transform Inverse()
+	{
+		Transform t{};
+		t.SetFromMatrix(ToInverseMatrix());
+		return t;
 	}
 
-	v3 LocationToLocal(const v3& inLocation) const {
-		return ToWorldMatrix().inverse() * inLocation;
+	FORCEINLINE v3 TransformLocation(const v3& p) const {
+		return rotation.Rotate(p * scale) + location;
 	}
-
-	v3 DirectionToWorld(const v3& direction) const {
-		return ToWorldMatrix().linear() * direction;
+	FORCEINLINE v3 TransformVector(const v3& vector) const {
+		return rotation.Rotate(vector * scale);
 	}
-
-	v3 DirectionToLocal(const v3& direction) const {
-		return ToWorldMatrix().inverse().linear() * direction;
+	FORCEINLINE Quat TransformRotation(const Quat& q) const {
+		return rotation * q;
+	}
+	FORCEINLINE v3 InverseTransformLocation(const v3 &p) const {
+		return rotation.Unrotate(p - location) * Math::GetSafeScaleReciprocal(scale);
+	}
+	FORCEINLINE v3 InverseTransformVector(const v3& vector) const {
+		return rotation.Unrotate(vector) * Math::GetSafeScaleReciprocal(scale);
+	}
+	FORCEINLINE Quat InverseTransformRotation(const Quat& q) const {
+		return rotation.Inverse() * q;
 	}
 
 	v3 GetForward() const {
 		return rotation.GetForward();
 	}
 
+
+	void SetFromMatrix(const Matrix4f& m) {
+		v3 skew;
+		v4 perpective;
+		glm::decompose(m, scale, rotation, location, skew, perpective);
+	}
 
 #if WITH_EDITOR
 	static class Class* GetDetailsWidgetClass();

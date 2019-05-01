@@ -31,7 +31,7 @@ private:
 		glBindTexture(GL_TEXTURE_2D, glId);
 
 		// Copy data to GPU
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureSize.x(), textureSize.y(), 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)texture.Buffer().Data());
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureSize.x, textureSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)texture.Buffer().Data());
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 

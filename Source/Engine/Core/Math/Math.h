@@ -5,6 +5,8 @@
 #include "CoreEngine.h"
 #include <cmath>
 
+class v3;
+
 
 struct Math
 {
@@ -272,4 +274,11 @@ struct Math
 		return (nonnegative ? FASTASIN_HALF_PI - result : result - FASTASIN_HALF_PI);
 	}
 #undef FASTASIN_HALF_PI
+
+	// mathematically if you have 0 scale, it should be infinite,
+	// however, in practice if you have 0 scale, and relative transform doesn't make much sense
+	// anymore because you should be instead of showing gigantic infinite mesh
+	// also returning BIG_NUMBER causes sequential NaN issues by multiplying
+	// so we hardcode as 0
+	static v3 GetSafeScaleReciprocal(const v3& scale, float tolerance = SMALL_NUMBER);
 };

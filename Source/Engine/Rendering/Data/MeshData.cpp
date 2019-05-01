@@ -40,7 +40,7 @@ void MeshData::ProcessNode(aiNode *node, const aiScene *scene)
 void MeshData::ProcessMesh(aiMesh *mesh, const aiScene* scene)
 {
 	// Starting vertex index of this mesh
-	const v3_u32 vertexIndexOffset = v3_u32::Constant((u32)vertices.Size());
+	const v3_u32 vertexIndexOffset = v3_u32{ (u32)vertices.Size() };
 
 	// Process Vertices
 	vertices.Reserve(mesh->mNumVertices);
@@ -84,8 +84,8 @@ void MeshData::ProcessMesh(aiMesh *mesh, const aiScene* scene)
 
 		if(face.mNumIndices == 3)
 		{
-			const v3_u32 triangleIndex{ face.mIndices };
-			triangles.Add(triangleIndex + vertexIndexOffset);
+			v3_u32* triangleIndex = reinterpret_cast<v3_u32*>(face.mIndices);
+			triangles.Add(*triangleIndex + (u32)vertices.Size());
 		}
 		else
 		{

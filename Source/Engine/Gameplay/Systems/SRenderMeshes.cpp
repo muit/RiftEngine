@@ -32,7 +32,7 @@ void SRenderMeshes::Tick(float deltaTime)
 			meshInstances.Add({
 				c.model.GetInfo(),
 				c.model->material.GetInfo(),
-				t.worldTransform
+				t.transform
 			});
 		}
 	});

@@ -91,7 +91,7 @@ void ScreenTexture::Draw(v2_u32 size, const TextureData& buffer)
 	glBindTexture(GL_TEXTURE_2D, textureId);
 
 	// Update texture data
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size.x(), size.y(), 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)buffer.Buffer().Data());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)buffer.Buffer().Data());
 	//glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x(), size.y(), GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)buffer.Buffer().Data());
 
 	// Render texture

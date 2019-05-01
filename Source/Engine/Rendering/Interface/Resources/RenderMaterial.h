@@ -59,6 +59,6 @@ private:
 public:
 
 	bool SetFloat(Name Id, float value) const;
-	bool SetV3(Name Id, v3 value) const;
-	bool SetMatrix4f(Name Id, Matrix4f value) const;
+	bool SetV3(Name Id, const v3& value) const;
+	bool SetMatrix4f(Name Id, const Matrix4f& value) const;
 };
