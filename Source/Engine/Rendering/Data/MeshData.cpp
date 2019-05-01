@@ -84,8 +84,8 @@ void MeshData::ProcessMesh(aiMesh *mesh, const aiScene* scene)
 
 		if(face.mNumIndices == 3)
 		{
-			v3_u32* triangleIndex = reinterpret_cast<v3_u32*>(face.mIndices);
-			triangles.Add(*triangleIndex + (u32)vertices.Size());
+			const v3_u32* triangleIndex = reinterpret_cast<const v3_u32*>(face.mIndices);
+			triangles.Add(*triangleIndex + vertexIndexOffset);
 		}
 		else
 		{
