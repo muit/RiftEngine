@@ -15,17 +15,35 @@
 
 #include "Gameplay/Components/CTransform.h"
 #include "Gameplay/Singletons/CActiveCamera.h"
+#include "Core/Engine.h"
 
+
+void Guizmo::Construct()
+{
+	// Bind events
+	auto input = GEngine->GetInput();
+	input->CreateTriggerAction("GizmoModeTranslate", {
+		EKey::E
+	}).Bind(this, &Guizmo::SetTranslateMode);
+
+	input->CreateTriggerAction("GizmoModeRotate", {
+		EKey::R
+	}).Bind(this, &Guizmo::SetRotateMode);
+
+	input->CreateTriggerAction("GizmoModeScale", {
+		EKey::T
+	}).Bind(this, &Guizmo::SetScaleMode);
+}
 
 void Guizmo::Tick(float deltaTime)
 {
-	auto ecs = GetWorld()->GetECS();
-	assert(ecs.IsValid());
-
-	if (!ecs->IsValid(entity) || !ecs->Has<CTransform>(entity))
+	if (!IsActive())
 	{
 		return;
 	}
+
+	auto ecs = GetWorld()->GetECS();
+	assert(ecs.IsValid());
 
 	if (auto* cameraComp = ecs->FindSingleton<CActiveCamera>())
 	{
@@ -33,22 +51,27 @@ void Guizmo::Tick(float deltaTime)
 
 		ImGuiViewport* vp = ImGui::GetMainViewport();
 		Matrix4f projection = cameraComp->activeData.GetProjectionMatrix({ vp->Size.x, vp->Size.y });
-		Matrix4f view = cameraComp->activeData.GetViewMatrix();
+		Matrix4f view       = cameraComp->activeData.GetViewMatrix();
 
 		ImGuizmo::SetRect(vp->Pos.x, vp->Pos.y, vp->Size.x, vp->Size.y);
 
 		// Draw Grid
 		{
 			static Matrix4f identity = Matrix4f::Identity();
-			ImGuizmo::DrawGrid(&view[0].x, &projection[0].x, &identity[0].x, 1.f);
+			ImGuizmo::DrawGrid(view.Data(), projection.Data(), identity.Data(), 1.f);
 		}
 
 		// Draw Axis
 		{
 			Matrix4f matrix = transform.transform.ToMatrix();
-			ImGuizmo::DrawCube(&view[0].x, &projection[0].x, &matrix[0].x);
-			ImGuizmo::Manipulate(&view[0].x, &projection[0].x, ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, &matrix[0].x, nullptr, nullptr);
-			transform.transform.SetFromMatrix(matrix);
+
+			ImGuizmo::DrawCube(view.Data(), projection.Data(), matrix.Data());
+
+			ImGuizmo::Manipulate(view.Data(), projection.Data(), static_cast<ImGuizmo::OPERATION>(editMode), ImGuizmo::LOCAL, matrix.Data(), nullptr, nullptr);
+			if (ImGuizmo::IsUsing())
+			{
+				transform.transform.SetFromMatrix(matrix);
+			}
 		}
 	}
 }
@@ -60,6 +83,12 @@ void Guizmo::SetEntity(EntityId inEntity)
 		entity = inEntity;
 		ForceRebuild();
 	}
+}
+
+bool Guizmo::IsActive() const
+{
+	auto ecs = GetWorld()->GetECS();
+	return ecs->IsValid(entity) && ecs->Has<CTransform>(entity);
 }
 
 #endif

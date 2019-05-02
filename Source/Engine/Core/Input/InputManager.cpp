@@ -206,7 +206,9 @@ void InputManager::NotifyAllKeys()
 KeyBroadcast& InputManager::CreateTriggerAction(Name actionName, TArray<TriggerAction::KeyBinding>&& bindings) const
 {
 	if (actionName.IsNone())
+	{
 		actionName = { "Invalid" };
+	}
 
 	TriggerAction* currentAction = triggerActions.Find([actionName](const TriggerAction& action) {
 		return action.name == actionName;

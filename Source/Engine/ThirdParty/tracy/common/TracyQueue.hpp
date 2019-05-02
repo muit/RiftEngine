@@ -12,8 +12,10 @@ enum class QueueType : uint8_t
     ZoneName,
     Message,
     ZoneBeginAllocSrcLoc,
+    ZoneBeginAllocSrcLocCallstack,
     CallstackMemory,
     Callstack,
+    CallstackAlloc,
     Terminate,
     KeepAlive,
     Crash,
@@ -21,6 +23,7 @@ enum class QueueType : uint8_t
     ZoneBegin,
     ZoneBeginCallstack,
     ZoneEnd,
+    ZoneValidation,
     FrameMarkMsg,
     FrameMarkMsgStart,
     FrameMarkMsgEnd,
@@ -45,13 +48,16 @@ enum class QueueType : uint8_t
     MemFree,
     MemAllocCallstack,
     MemFreeCallstack,
+    CallstackFrameSize,
     CallstackFrame,
+    SysTimeReport,
     StringData,
     ThreadName,
     CustomStringData,
     PlotName,
     SourceLocationPayload,
     CallstackPayload,
+    CallstackAllocPayload,
     FrameName,
     NUM_TYPES
 };
@@ -71,6 +77,12 @@ struct QueueZoneEnd
     int64_t time;
     uint64_t thread;
     uint32_t cpu;
+};
+
+struct QueueZoneValidation
+{
+    uint64_t thread;
+    uint32_t id;
 };
 
 struct QueueStringTransfer
@@ -237,9 +249,21 @@ struct QueueCallstack
     uint64_t thread;
 };
 
-struct QueueCallstackFrame
+struct QueueCallstackAlloc
 {
     uint64_t ptr;
+    uint64_t nativePtr;
+    uint64_t thread;
+};
+
+struct QueueCallstackFrameSize
+{
+    uint64_t ptr;
+    uint8_t size;
+};
+
+struct QueueCallstackFrame
+{
     uint64_t name;
     uint64_t file;
     uint32_t line;
@@ -250,6 +274,12 @@ struct QueueCrashReport
     int64_t time;
     uint64_t thread;
     uint64_t text;      // ptr
+};
+
+struct QueueSysTime
+{
+    int64_t time;
+    float sysTime;
 };
 
 struct QueueHeader
@@ -268,6 +298,7 @@ struct QueueItem
     {
         QueueZoneBegin zoneBegin;
         QueueZoneEnd zoneEnd;
+        QueueZoneValidation zoneValidation;
         QueueStringTransfer stringTransfer;
         QueueFrameMark frameMark;
         QueueSourceLocation srcloc;
@@ -288,8 +319,11 @@ struct QueueItem
         QueueMemFree memFree;
         QueueCallstackMemory callstackMemory;
         QueueCallstack callstack;
+        QueueCallstackAlloc callstackAlloc;
+        QueueCallstackFrameSize callstackFrameSize;
         QueueCallstackFrame callstackFrame;
         QueueCrashReport crashReport;
+        QueueSysTime sysTime;
     };
 };
 
@@ -302,8 +336,10 @@ static const size_t QueueDataSize[] = {
     sizeof( QueueHeader ) + sizeof( QueueZoneText ),        // zone name
     sizeof( QueueHeader ) + sizeof( QueueMessage ),
     sizeof( QueueHeader ) + sizeof( QueueZoneBegin ),       // allocated source location
+    sizeof( QueueHeader ) + sizeof( QueueZoneBegin ),       // allocated source location, callstack
     sizeof( QueueHeader ) + sizeof( QueueCallstackMemory ),
     sizeof( QueueHeader ) + sizeof( QueueCallstack ),
+    sizeof( QueueHeader ) + sizeof( QueueCallstackAlloc ),
     // above items must be first
     sizeof( QueueHeader ),                                  // terminate
     sizeof( QueueHeader ),                                  // keep alive
@@ -312,6 +348,7 @@ static const size_t QueueDataSize[] = {
     sizeof( QueueHeader ) + sizeof( QueueZoneBegin ),
     sizeof( QueueHeader ) + sizeof( QueueZoneBegin ),       // callstack
     sizeof( QueueHeader ) + sizeof( QueueZoneEnd ),
+    sizeof( QueueHeader ) + sizeof( QueueZoneValidation ),
     sizeof( QueueHeader ) + sizeof( QueueFrameMark ),       // continuous frames
     sizeof( QueueHeader ) + sizeof( QueueFrameMark ),       // start
     sizeof( QueueHeader ) + sizeof( QueueFrameMark ),       // end
@@ -336,7 +373,9 @@ static const size_t QueueDataSize[] = {
     sizeof( QueueHeader ) + sizeof( QueueMemFree ),
     sizeof( QueueHeader ) + sizeof( QueueMemAlloc ),        // callstack
     sizeof( QueueHeader ) + sizeof( QueueMemFree ),         // callstack
+    sizeof( QueueHeader ) + sizeof( QueueCallstackFrameSize ),
     sizeof( QueueHeader ) + sizeof( QueueCallstackFrame ),
+    sizeof( QueueHeader ) + sizeof( QueueSysTime ),
     // keep all QueueStringTransfer below
     sizeof( QueueHeader ) + sizeof( QueueStringTransfer ),  // string data
     sizeof( QueueHeader ) + sizeof( QueueStringTransfer ),  // thread name
@@ -344,6 +383,7 @@ static const size_t QueueDataSize[] = {
     sizeof( QueueHeader ) + sizeof( QueueStringTransfer ),  // plot name
     sizeof( QueueHeader ) + sizeof( QueueStringTransfer ),  // allocated source location payload
     sizeof( QueueHeader ) + sizeof( QueueStringTransfer ),  // callstack payload
+    sizeof( QueueHeader ) + sizeof( QueueStringTransfer ),  // callstack alloc payload
     sizeof( QueueHeader ) + sizeof( QueueStringTransfer ),  // frame name
 };
 

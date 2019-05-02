@@ -85,6 +85,9 @@ public:
 	/** EVENTS */
 
 	KeyBroadcast& CreateTriggerAction(Name actionName, TArray<TriggerAction::KeyBinding>&& bindings) const;
+	KeyBroadcast& CreateTriggerAction(Name actionName, TriggerAction::KeyBinding&& binding) const {
+		return CreateTriggerAction(actionName, TArray<TriggerAction::KeyBinding>{ MoveTemp(binding) });
+	}
 	KeyBroadcast* FindTriggerAction(Name actionName) const;
 
 	AxisBroadcast& CreateAxisAction(Name actionName, TArray<AxisAction::KeyBinding>&& keyBindings, TArray<AxisAction::AxisBinding>&& axisBindings) const;

@@ -5,7 +5,8 @@
 
 Matrix4f CameraData::GetViewMatrix()
 {
-	return transform.ToMatrixNoScale().Inverse();
+	// Translate -> Rotate
+	return Matrix4f(glm::mat4_cast(transform.rotation) * glm::translate(transform.location)).Inverse();
 }
 
 Matrix4f CameraData::GetProjectionMatrix(const v2_u32& screenSize)

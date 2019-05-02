@@ -30,22 +30,8 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 		ScopedGraphicsZone("Build Batches");
 		for (const auto& meshInstance : meshes)
 		{
-			const RenderMaterial& materialResource = render.resources.Get<ResourceType::Material>(meshInstance.material.GetPath());
-			const RenderMesh& meshResource = render.resources.Get<ResourceType::Mesh>(meshInstance.mesh.GetPath());
-
-			Matrix4f m = meshInstance.transform.ToMatrix();
-
-			materialResource.Use();
-			// Update transform on material and draw triangles
-			const Matrix4f mvp = vpMatrix * m;
-			materialResource.SetMatrix4f(transformParameter, mvp);
-
-			meshResource.Bind();
-			meshResource.Draw();
-			RenderMesh::Unbind();
-
 			// Find or add a Material Batch
-			/*auto it = batches.find(meshInstance.material.GetPath());
+			auto it = batches.find(meshInstance.material.GetPath());
 			if (it != batches.end())
 			{
 				auto& meshBatches = it->second;
@@ -78,7 +64,7 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 						}
 					}
 				});
-			}*/
+			}
 		}
 	}
 

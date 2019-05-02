@@ -21,6 +21,9 @@
 #   include <fcntl.h>
 #endif
 
+#ifdef __MINGW32__
+#  define __STDC_FORMAT_MACROS
+#endif
 #include <inttypes.h>
 #include <stdio.h>
 
@@ -41,7 +44,8 @@ struct ThreadNameData
     const char* name;
     ThreadNameData* next;
 };
-extern std::atomic<ThreadNameData*>& s_threadNameData;
+std::atomic<ThreadNameData*>& GetThreadNameData();
+void InitRPMallocThread();
 #endif
 
 void SetThreadName( std::thread& thread, const char* name )
@@ -51,7 +55,7 @@ void SetThreadName( std::thread& thread, const char* name )
 
 void SetThreadName( std::thread::native_handle_type handle, const char* name )
 {
-#ifdef _WIN32
+#if defined _WIN32 && !defined PTW32_VERSION && !defined __WINPTHREADS_VERSION
 #  if defined NTDDI_WIN10_RS2 && NTDDI_VERSION >= NTDDI_WIN10_RS2
     wchar_t buf[256];
     mbstowcs( buf, name, 256 );
@@ -101,22 +105,28 @@ void SetThreadName( std::thread::native_handle_type handle, const char* name )
 #endif
 #ifdef TRACY_COLLECT_THREAD_NAMES
     {
-        rpmalloc_thread_initialize();
+        InitRPMallocThread();
         const auto sz = strlen( name );
         char* buf = (char*)tracy_malloc( sz+1 );
         memcpy( buf, name, sz );
         buf[sz+1] = '\0';
         auto data = (ThreadNameData*)tracy_malloc( sizeof( ThreadNameData ) );
 #  ifdef _WIN32
+#    if defined PTW32_VERSION
+        data->id = pthread_getw32threadid_np( static_cast<pthread_t>( handle ) );
+#    elif defined __WINPTHREADS_VERSION
+        data->id = GetThreadId( pthread_gethandle( static_cast<pthread_t>( handle ) ) );
+#    else
         data->id = GetThreadId( static_cast<HANDLE>( handle ) );
+#    endif
 #  elif defined __APPLE__
         pthread_threadid_np( handle, &data->id );
 #  else
         data->id = (uint64_t)handle;
 #  endif
         data->name = buf;
-        data->next = s_threadNameData.load( std::memory_order_relaxed );
-        while( !s_threadNameData.compare_exchange_weak( data->next, data, std::memory_order_release, std::memory_order_relaxed ) ) {}
+        data->next = GetThreadNameData().load( std::memory_order_relaxed );
+        while( !GetThreadNameData().compare_exchange_weak( data->next, data, std::memory_order_release, std::memory_order_relaxed ) ) {}
     }
 #endif
 }
@@ -125,7 +135,7 @@ const char* GetThreadName( uint64_t id )
 {
     static char buf[256];
 #ifdef TRACY_COLLECT_THREAD_NAMES
-    auto ptr = s_threadNameData.load( std::memory_order_relaxed );
+    auto ptr = GetThreadNameData().load( std::memory_order_relaxed );
     while( ptr )
     {
         if( ptr->id == id )

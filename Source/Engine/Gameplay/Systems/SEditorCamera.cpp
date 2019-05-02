@@ -27,8 +27,8 @@ void SEditorCamera::BeginPlay()
 	.Bind(this, &SEditorCamera::MoveForward);
 
 	input->CreateAxisAction({ "MoveRight" }, {
-		{ EKey::A, EKeyModifier::None,  1.f },
-		{ EKey::D, EKeyModifier::None, -1.f }
+		{ EKey::A, EKeyModifier::None, -1.f },
+		{ EKey::D, EKeyModifier::None,  1.f }
 	}, {})
 	.Bind(this, &SEditorCamera::MoveRight);
 
@@ -50,7 +50,7 @@ void SEditorCamera::BeginPlay()
 		camera = ECS()->CreateEntity({ "EditorCamera" });
 
 		auto& t = ECS()->Assign<CTransform>(camera).transform;
-		t.location = { 0, 0, 15 };
+		t.location = { 0, 0, 10 };
 		t.SetRotation({ 90.f, 0.f, 0.f });
 
 		ECS()->Assign<CEditorCamera>(camera);
@@ -66,12 +66,12 @@ void SEditorCamera::Tick(float deltaTime)
 		.each([deltaTime, &finalRotateDelta, &finalMoveDelta](const auto e, CTransform& t, CEditorCamera& c)
 	{
 		// Rotate Camera
-		Rotator rotation = t.transform.GetRotation();
-		rotation += finalRotateDelta;
+		//Rotator rotation = t.transform.GetRotation();
+		//rotation += finalRotateDelta;
 
 		// Limit vertical rotation
-		rotation.x = Math::Clamp(rotation.x, 0.f, 180.f);
-		t.transform.SetRotation(rotation);
+		//rotation.x = Math::Clamp(rotation.x, 0.f, 180.f);
+		//t.transform.SetRotation(rotation);
 
 		// Rotate movement towards angle
 		t.transform.location += t.transform.TransformVector(finalMoveDelta);
