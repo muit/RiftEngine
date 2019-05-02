@@ -7,7 +7,7 @@
 
 void BoolPropertyWidget::Tick(float)
 {
-	ImGui::PushID(idName.c_str());
+	ImGui::PushID(GetName().ToString().c_str());
 
 	ImGui::Checkbox(displayName.c_str(), GetHandle()->GetValuePtr());
 

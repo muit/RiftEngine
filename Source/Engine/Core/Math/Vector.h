@@ -22,7 +22,8 @@ class vec : public glm::vec<L, T> {
 
 public:
 
-	T* Data() const { glm::value_ptr(*this); }
+	T*       Data()       { return &x; }
+	const T* Data() const { return &x; }
 
 	static constexpr vec<L, T> Zero() { return glm::zero<vec<L, T>>(); }
 	static constexpr vec<L, T> One()  { return glm::one<vec<L, T>>(); }
@@ -118,7 +119,8 @@ public:
 
 	Quat Inverse() const { glm::inverse(*this); }
 
-	float* Data() const { glm::value_ptr(*this); }
+	float*       Data()       { return &x; }
+	const float* Data() const { return &x; }
 
 	static Quat FromRotator(Rotator rotator);
 
@@ -142,7 +144,8 @@ public:
 	Matrix Transpose() const { return glm::transpose(*this); }
 	Matrix InverseTranspose() const { return glm::inverseTranspose(*this); }
 
-	T* Data() const { glm::value_ptr(*this); }
+	T* Data() { return &operator[](0).x; }
+	const T* Data() const { return &operator[](0).x; }
 
 	static constexpr Matrix Identity() { return glm::identity<glm::mat<X, Y, T, glm::highp>>(); }
 };

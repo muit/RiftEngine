@@ -27,25 +27,11 @@ class World : public Object {
 
 public:
 
-	void Initialize()
-	{
-		Log::Message("World Start-Up");
-
-		physics = Create<PhysicsManager>(Self());
-		physics->Initialize();
-		ecs   = Create<ECSManager>(Self());
-
-		scene = { "empty_scene.meta" };
-		scene.LoadOrCreate();
-
-		ecs->BeginPlay();
-	}
+	void Initialize();
 
 	void Tick(float deltaTime);
 
-	void EndPlay() {
-		ecs->EndPlay();
-	}
+	void EndPlay() { ecs->EndPlay(); }
 
 	TAssetPtr<Scene> GetActiveScene() const { return scene; }
 	Ptr<PhysicsManager> GetPhysics()   const { return physics; }

@@ -6,10 +6,10 @@
 #include "Vector.h"
 #include "Math.h"
 #include "EASTL/internal/copy_help.h"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtx/matrix_transform_2d.hpp"
-#include "glm/gtx/matrix_decompose.hpp"
-
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/matrix_transform_2d.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
+#include "glm/gtx/transform.hpp"
 
 struct Transform
 {
@@ -38,13 +38,15 @@ struct Transform
 
 
 	Matrix4f ToMatrix() const {
-		const Matrix4f translated    = glm::translate(Matrix4f{1.f}, location);
-		const Matrix4f rotatedScaled = glm::scale(glm::mat4_cast(rotation), scale);
-		return rotatedScaled * translated;
+		// Scale -> Rotate -> Translate
+		return glm::translate(glm::mat4_cast(rotation) * glm::scale(scale), location);
 	}
 
-	Matrix4f ToInverseMatrix() const {
-		return ToMatrix().Inverse();
+	Matrix4f ToInverseMatrix() const { return ToMatrix().Inverse(); }
+
+	Matrix4f ToMatrixNoScale() const {
+		// Rotate -> Translate
+		return glm::translate(glm::mat4_cast(rotation), location);
 	}
 
 	Transform Inverse()
@@ -73,9 +75,7 @@ struct Transform
 		return rotation.Inverse() * q;
 	}
 
-	v3 GetForward() const {
-		return rotation.GetForward();
-	}
+	v3 GetForward() const { return rotation.GetForward(); }
 
 
 	void SetFromMatrix(const Matrix4f& m) {

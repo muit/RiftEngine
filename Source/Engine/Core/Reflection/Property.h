@@ -48,6 +48,6 @@ public:
 	BaseType* GetType() const { return typePtr; }
 	Name GetTypeName() const { return typeName; }
 
-	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(const Ptr<BaseObject>& instance) = 0;
-	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(BaseStruct* instance) = 0;
+	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(const Ptr<BaseObject>& instance) const = 0;
+	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(BaseStruct* instance) const = 0;
 };

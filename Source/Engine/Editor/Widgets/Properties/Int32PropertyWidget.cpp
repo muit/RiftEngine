@@ -7,7 +7,7 @@
 
 void Int32PropertyWidget::Tick(float)
 {
-	ImGui::PushID(idName.c_str());
+	ImGui::PushID(GetName().ToString().c_str());
 
 	ImGui::InputInt(displayName.c_str(), GetHandle()->GetValuePtr());
 

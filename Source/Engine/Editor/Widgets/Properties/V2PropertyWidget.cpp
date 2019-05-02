@@ -12,9 +12,11 @@ void V2PropertyWidget::Tick(float)
 	if (!prop->HasTag(DetailsEdit))
 		flags |= ImGuiInputTextFlags_ReadOnly;
 
-	ImGui::PushID(idName.c_str());
+	ImGui::PushID(GetName().ToString().c_str());
+
 	v2* const val = GetHandle()->GetValuePtr();
 	ImGui::InputFloat2(displayName.c_str(), val->Data(), "%g", flags);
+
 	ImGui::PopID();
 }
 

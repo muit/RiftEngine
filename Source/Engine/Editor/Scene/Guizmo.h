@@ -13,10 +13,7 @@
 class Guizmo : public Widget {
 	CLASS(Guizmo, Widget)
 
-
 	EntityId entity = NoEntity;
-
-	Transform testTransform {};
 
 
 public:

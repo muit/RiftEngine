@@ -7,7 +7,7 @@
 
 void UInt8PropertyWidget::Tick(float)
 {
-	ImGui::PushID(idName.c_str());
+	ImGui::PushID(GetName().ToString().c_str());
 
 	i32 value = *GetHandle()->GetValuePtr();
 	ImGui::InputInt(displayName.c_str(), &value);

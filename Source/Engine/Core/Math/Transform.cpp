@@ -40,7 +40,7 @@ protected:
 		if (!prop->HasTag(DetailsEdit))
 			flags |= ImGuiInputTextFlags_ReadOnly;
 
-		ImGui::PushID(idName.c_str());
+		ImGui::PushID(GetName().ToString().c_str());
 		{
 			ImGui::Text(displayName.c_str());
 

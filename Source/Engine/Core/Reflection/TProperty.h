@@ -31,7 +31,7 @@ public:
 		: Property(typePtr, typeName, eastl::move(name), tags), access(access)
 	{}
 
-	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(const Ptr<BaseObject>& instance) override {
+	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(const Ptr<BaseObject>& instance) const override {
 		if (instance->GetClass() == GetType())
 		{
 			return eastl::shared_ptr<PropertyHandle>(new TPropertyHandle<VarType>(instance, this, access));
@@ -39,7 +39,7 @@ public:
 		return {};
 	}
 
-	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(BaseStruct* instance) override {
+	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(BaseStruct* instance) const override {
 		if (instance->GetStruct() == GetType())
 		{
 			return eastl::shared_ptr<PropertyHandle>(new TPropertyHandle<VarType>(instance, this, access));

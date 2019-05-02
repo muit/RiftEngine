@@ -4,6 +4,7 @@
   "entities": [
     {
       "CEntity": {
+        "bPendingKill": false,
         "bTransient": false,
         "name": "Piramid"
       },
@@ -18,16 +19,71 @@
       },
       "CTransform": {
         "transform": {
-          "location": { "x": 0, "y": 1, "z": 0 },
-          "rotation": { "w": 0.707, "x": -0.707, "y": 0.0, "z": 0.0 },
-          "scale": { "x": 0.2, "y": 0.5, "z": 0.2 }
+          "location": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "w": 0.707,
+            "x": -0.707,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": {
+            "x": 0.4,
+            "y": 1.0,
+            "z": 0.4
+          }
         }
       },
       "id": {
-        "a": 1650782,
-        "b": 3624173,
-        "c": 270683792,
-        "d": 1312558568
+        "a": 137406,
+        "b": 3624727,
+        "c": 1496431808,
+        "d": 3156120288
+      }
+    },
+    {
+      "CEntity": {
+        "bPendingKill": false,
+        "bTransient": false,
+        "name": "Piramid"
+      },
+      "CMesh": {
+        "color": {
+          "a": 255,
+          "b": 0,
+          "g": 0,
+          "r": 128
+        },
+        "model": "Meshes/piramid.obj.meta"
+      },
+      "CTransform": {
+        "transform": {
+          "location": {
+            "x": 0.0,
+            "y": 2.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "w": 0.707,
+            "x": -0.707,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": {
+            "x": 0.4,
+            "y": 1.0,
+            "z": 0.4
+          }
+        }
+      },
+      "id": {
+        "a": 137406,
+        "b": 3624727,
+        "c": 1496431808,
+        "d": 3152120288
       }
     }
   ],

@@ -9,6 +9,8 @@
 #include "ECS/ECSManager.h"
 #include "ECS/Component.h"
 
+#include "Gameplay/Components/CTransform.h"
+
 
 #if WITH_EDITOR
 void SceneDetails::Build()
@@ -35,6 +37,19 @@ void SceneDetails::Build()
 	else if (entity != NoEntity)
 	{
 		auto ecs = GetWorld()->GetECS();
+
+		// #TODO: Add automatic property generation
+		if (ecs->Has<CTransform>(entity))
+		{
+			static const Name transformName{ "transform" };
+
+			CTransform& transform = ecs->Get<CTransform>(entity);
+
+			const auto* prop = CTransform::StaticStruct()->FindProperty(transformName);
+
+			auto handle = prop->CreateHandle(&transform);
+			Add(PropertyWidget::NewPropertyWidget(Self<Widget>(), handle));
+		}
 
 		TArray<StructType*> componentTypes;
 		Component::StaticStruct()->GetAllChildren(componentTypes);

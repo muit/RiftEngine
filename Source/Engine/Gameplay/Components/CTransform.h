@@ -13,7 +13,7 @@ class CTransform : public Component {
 public:
 
 	PROP(Transform, transform, DetailsEdit);
-	Transform transform;
+	Transform transform {};
 
 	Transform&       GetWorldTransform()       { return transform; }
 	const Transform& GetWorldTransform() const { return transform; }

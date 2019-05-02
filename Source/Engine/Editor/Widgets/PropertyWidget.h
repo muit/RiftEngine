@@ -17,7 +17,6 @@ class PropertyWidget : public Widget {
 
 protected:
 
-	String idName;
 	String displayName;
 
 	eastl::shared_ptr<PropertyHandle> prop;
@@ -30,8 +29,8 @@ public:
 	void Configure(const eastl::shared_ptr<PropertyHandle>& inProperty)
 	{
 		prop = inProperty;
-		idName = prop->GetName();
-		CString::ToSentenceCase(idName, displayName);
+		SetName(prop->GetName());
+		CString::ToSentenceCase(GetName().ToString(), displayName);
 	}
 
 	static GlobalPtr<PropertyWidget> NewPropertyWidget(const Ptr<Widget>& owner, const eastl::shared_ptr<PropertyHandle>& prop);

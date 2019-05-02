@@ -13,6 +13,7 @@
 #include "ECS/ECSManager.h"
 #include "ECS/Component.h"
 
+#include "Gameplay/Components/CTransform.h"
 #include "Gameplay/Singletons/CActiveCamera.h"
 
 
@@ -21,32 +22,34 @@ void Guizmo::Tick(float deltaTime)
 	auto ecs = GetWorld()->GetECS();
 	assert(ecs.IsValid());
 
-	if (!ecs->IsValid(entity))
+	if (!ecs->IsValid(entity) || !ecs->Has<CTransform>(entity))
 	{
 		return;
 	}
 
-	if (auto * cameraComp = ecs->FindSingleton<CActiveCamera>())
+	if (auto* cameraComp = ecs->FindSingleton<CActiveCamera>())
 	{
-		ImGuiViewport* vp = ImGui::GetMainViewport();
+		CTransform& transform = ecs->Get<CTransform>(entity);
 
-		Matrix4f matrix = testTransform.ToMatrix().Transpose();
+		ImGuiViewport* vp = ImGui::GetMainViewport();
 		Matrix4f projection = cameraComp->activeData.GetProjectionMatrix({ vp->Size.x, vp->Size.y });
 		Matrix4f view = cameraComp->activeData.GetViewMatrix();
-		static Matrix4f identity = Matrix4f::Identity();
-
-		v3 pos = testTransform.location;
-		v3 camPos = cameraComp->activeData.transform.location;
-		Log::Message("Cam(x:%.2f y:%.2f z:%.2f) - Pos(x:%.2f y:%.2f z:%.2f)", camPos.x, camPos.y, camPos.z, pos.x, pos.y, pos.z);
 
 		ImGuizmo::SetRect(vp->Pos.x, vp->Pos.y, vp->Size.x, vp->Size.y);
 
-		ImGuizmo::DrawCube(&view[0].x, &projection[0].x, &identity[0].x);
-		ImGuizmo::DrawGrid(&view[0].x, &projection[0].x, &identity[0].x, 1.f);
+		// Draw Grid
+		{
+			static Matrix4f identity = Matrix4f::Identity();
+			ImGuizmo::DrawGrid(&view[0].x, &projection[0].x, &identity[0].x, 1.f);
+		}
 
-		ImGuizmo::Manipulate(&view[0].x, &projection[0].x, ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, &identity[0].x, nullptr, nullptr);
-
-		testTransform.SetFromMatrix(matrix);
+		// Draw Axis
+		{
+			Matrix4f matrix = transform.transform.ToMatrix();
+			ImGuizmo::DrawCube(&view[0].x, &projection[0].x, &matrix[0].x);
+			ImGuizmo::Manipulate(&view[0].x, &projection[0].x, ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, &matrix[0].x, nullptr, nullptr);
+			transform.transform.SetFromMatrix(matrix);
+		}
 	}
 }
 

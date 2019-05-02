@@ -4,8 +4,7 @@
 
 #include "CoreEngine.h"
 #include "Core/Math/Transform.h"
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
+
 
 struct CameraData {
 
@@ -20,7 +19,7 @@ public:
 	CameraData()
 		: fov{ 60.f } // Obtained from camera
 		, nearZ{ 0.1f }
-		, farZ{ 100.f }
+		, farZ{ 1000.f }
 		, transform{}
 	{}
 

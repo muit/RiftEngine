@@ -33,9 +33,11 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 			const RenderMaterial& materialResource = render.resources.Get<ResourceType::Material>(meshInstance.material.GetPath());
 			const RenderMesh& meshResource = render.resources.Get<ResourceType::Mesh>(meshInstance.mesh.GetPath());
 
+			Matrix4f m = meshInstance.transform.ToMatrix();
+
 			materialResource.Use();
 			// Update transform on material and draw triangles
-			const Matrix4f mvp = vpMatrix * meshInstance.transform.ToMatrix();
+			const Matrix4f mvp = vpMatrix * m;
 			materialResource.SetMatrix4f(transformParameter, mvp);
 
 			meshResource.Bind();

@@ -7,7 +7,7 @@
 
 void FloatPropertyWidget::Tick(float)
 {
-	ImGui::PushID(idName.c_str());
+	ImGui::PushID(GetName().ToString().c_str());
 	ImGui::InputFloat(displayName.c_str(), GetHandle()->GetValuePtr());
 	ImGui::PopID();
 }

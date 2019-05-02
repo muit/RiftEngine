@@ -29,10 +29,11 @@ class EngineModule : BaseModule
         conf.Options.Add(new Sharpmake.Options.Vc.Compiler.DisableSpecificWarnings("4152", "4100", "4201"));
         //conf.Options.Add(Sharpmake.Options.Vc.Compiler.ShowIncludes.Enable);
 
-        //if(target.Optimization == Optimization.Debug)
-        //{
-            conf.Defines.Add("TRACY_ENABLE");
-        //}
+        if(target.Optimization == Optimization.Debug)
+        {
+            conf.Defines.Add("GLM_FORCE_XYZW_ONLY");
+        }
+        conf.Defines.Add("TRACY_ENABLE");
 
         switch(target.Platform) {
             case Platform.win32:

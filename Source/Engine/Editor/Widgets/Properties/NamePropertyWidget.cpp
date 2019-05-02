@@ -13,7 +13,7 @@ void NamePropertyWidget::OnValueChanged()
 
 void NamePropertyWidget::Tick(float)
 {
-	ImGui::PushID(idName.c_str());
+	ImGui::PushID(GetName().ToString().c_str());
 	{
 		lastValue = currentValue;
 		currentValue = GetHandle()->GetValuePtr()->ToString();

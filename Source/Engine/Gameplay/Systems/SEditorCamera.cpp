@@ -50,7 +50,7 @@ void SEditorCamera::BeginPlay()
 		camera = ECS()->CreateEntity({ "EditorCamera" });
 
 		auto& t = ECS()->Assign<CTransform>(camera).transform;
-		t.location = { 0, -5, 0 };
+		t.location = { 0, 0, 15 };
 		t.SetRotation({ 90.f, 0.f, 0.f });
 
 		ECS()->Assign<CEditorCamera>(camera);
@@ -65,9 +65,11 @@ void SEditorCamera::Tick(float deltaTime)
 	ECS()->View<CTransform, CEditorCamera>()
 		.each([deltaTime, &finalRotateDelta, &finalMoveDelta](const auto e, CTransform& t, CEditorCamera& c)
 	{
-		// Use LookAt Rotation(A-B)
+		// Rotate Camera
 		Rotator rotation = t.transform.GetRotation();
 		rotation += finalRotateDelta;
+
+		// Limit vertical rotation
 		rotation.x = Math::Clamp(rotation.x, 0.f, 180.f);
 		t.transform.SetRotation(rotation);
 
@@ -101,7 +103,7 @@ void SEditorCamera::ViewportMoveMode(EKeyPressState state)
 
 void SEditorCamera::MoveForward(float delta)
 {
-	movementDelta.z += delta * forwardSpeed;
+	movementDelta.y += delta * forwardSpeed;
 }
 
 void SEditorCamera::MoveRight(float delta)
@@ -113,7 +115,7 @@ void SEditorCamera::TurnUp(float delta)
 {
 	if (bRotatingMode)
 	{
-		rotationDelta.x += delta;
+		rotationDelta.y += delta;
 	}
 }
 
