@@ -27,7 +27,7 @@ EntityId ECSManager::CreateEntity(Name entityName, bool bTransient /*= false*/)
 	const EntityId id = __CreateEntity(entityName);
 
 	// Cache the created Guid
-	const Guid guid = registry.get<CEntity>().id;
+	const Guid guid = registry.get<CEntity>(id).id;
 	guidEntityCache.insert_or_assign(guid, id);
 
 	return id;

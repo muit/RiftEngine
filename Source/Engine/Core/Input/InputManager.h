@@ -21,9 +21,8 @@ private:
 
 		AxisStates() : values{ (i32)EAxis::Max } {}
 
-		float& operator[](EAxis key) {
-			return values[(i32)key];
-		}
+		float& operator[](EAxis key) { return values[(i32)key]; }
+		const float& operator[](EAxis key) const { return values[(i32)key]; }
 	};
 
 	/** Keeps the state of a key */
@@ -32,22 +31,23 @@ private:
 
 		KeyStates() : states{ (i32)EKey::Max } {}
 
-		EKeyPressState& operator[](EKey key) {
-			return states[(i32)key];
-		}
+		EKeyPressState& operator[](EKey key) { return states[i32(key)]; }
+		const EKeyPressState& operator[](EKey key) const { return states[i32(key)]; }
 	};
 
 	/** Keeps the state of a modifier. TODO: Calculate mods flag */
-	struct ModifierStates {
-		TArray<EKeyModifier> mods;
-		TArray<EKeyPressState> states;
+	struct ModStates {
+		EKeyModifier flags;
 
-		i32 Add(EKeyModifier mod, EKeyPressState state);
+		void Set(EKeyModifier mod, EKeyPressState state);
+
+		/** @return true if this modifier is active */
+		bool operator[](EKeyModifier mod) const;
 	};
 
 	AxisStates axisStates;
 	KeyStates keyStates;
-	ModifierStates modStates;
+	ModStates modStates;
 	/** END INPUT STATE */
 
 
@@ -70,14 +70,16 @@ private:
 
 	void UpdateKey(EKey key, EKeyPressState state);
 
-	void UpdateMod(EKeyModifier mod, EKeyPressState state);
-
 	void UpdateAxis(EAxis axis, float value);
 
 	void NotifyAllAxis();
 	void NotifyAllKeys();
 
 public:
+
+	FORCEINLINE EKeyPressState GetKeyState(EKey key) const { return keyStates[key]; }
+	FORCEINLINE bool IsKeyPressed(EKey key) const { return keyStates[key] == EKeyPressState::Pressed; }
+	FORCEINLINE bool IsModifierPressed(EKeyModifier mod) const { return modStates[mod]; }
 
 
 	/** EVENTS */

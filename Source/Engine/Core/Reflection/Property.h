@@ -4,6 +4,7 @@
 #include <EASTL/shared_ptr.h>
 
 #include "Core/Object/BaseObject.h"
+#include "Core/Object/BaseStruct.h"
 #include "Core/Strings/Name.h"
 #include "Core/Strings/String.h"
 #include "ReflectionTags.h"
@@ -48,4 +49,5 @@ public:
 	Name GetTypeName() const { return typeName; }
 
 	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(const Ptr<BaseObject>& instance) = 0;
+	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(BaseStruct* instance) = 0;
 };

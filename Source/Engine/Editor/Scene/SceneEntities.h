@@ -4,11 +4,10 @@
 
 #if WITH_EDITOR
 
-#include "UI/Editor/EditorWindow.h"
-#include "UI/Editor/Widgets/PropertyWidget.h"
+#include "Editor/EditorWindow.h"
+#include "Editor/Widgets/PropertyWidget.h"
 
 #include "ECS/ECSManager.h"
-#include "Details.h"
 
 
 class SceneEntities : public EditorWindow {
@@ -20,7 +19,7 @@ class SceneEntities : public EditorWindow {
 
 public:
 
-	Ptr<Details> sceneDetailsWindow;
+	Broadcast<const TArray<EntityId>&> onSelectionChanged;
 
 
 	SceneEntities() : Super(), filter{} {}

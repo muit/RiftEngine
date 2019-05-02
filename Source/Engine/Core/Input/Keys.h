@@ -412,14 +412,31 @@ constexpr EKeyModifier operator|(EKeyModifier lhs, EKeyModifier rhs)
 	return static_cast<EKeyModifier>((*lhs) | (*rhs));
 }
 
+constexpr EKeyModifier& operator|=(EKeyModifier& lhs, EKeyModifier rhs)
+{
+	lhs = lhs | rhs;
+	return lhs;
+}
+
 constexpr EKeyModifier operator&(EKeyModifier lhs, EKeyModifier rhs)
 {
 	return static_cast<EKeyModifier>((*lhs) & (*rhs));
 }
 
+constexpr EKeyModifier& operator&=(EKeyModifier& lhs, EKeyModifier rhs)
+{
+	lhs = lhs & rhs;
+	return lhs;
+}
+
 constexpr bool operator!(EKeyModifier lhs)
 {
 	return *lhs <= 0;
+}
+
+constexpr EKeyModifier operator~(EKeyModifier lhs)
+{
+	return static_cast<EKeyModifier>(~*lhs);
 }
 
 constexpr bool operator>(EKeyModifier lhs, u8 rhs)

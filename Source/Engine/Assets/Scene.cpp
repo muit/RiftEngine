@@ -1,7 +1,7 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "Scene.h"
-#include "Core/World.h"
+#include "World.h"
 #include "Core/Serialization/Archive.h"
 
 

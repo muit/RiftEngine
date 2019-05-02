@@ -11,7 +11,7 @@ void MemoryDebugger::Build()
 {
 	Super::Build();
 	bOpen = true;
-	windowName = TX("Memory");
+	idName = TX("Memory");
 	windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize;
 }
 

@@ -3,9 +3,10 @@
 #include "SceneEntities.h"
 #include "Core/Log.h"
 #include "Core/Serialization/Archive.h"
-#include "Core/World.h"
+#include "World.h"
 #include "ECS/ECSManager.h"
 #include "Gameplay/Components/CEntity.h"
+#include "Core/Engine.h"
 
 
 #if WITH_EDITOR
@@ -13,7 +14,7 @@
 void SceneEntities::Build()
 {
 	Super::Build();
-	windowName = TX("Entities");
+	idName = TX("Entities");
 	windowFlags = ImGuiWindowFlags_AlwaysAutoResize;
 }
 
@@ -65,20 +66,32 @@ void SceneEntities::Tick()
 
 void SceneEntities::OnEntityClicked(EntityId entity)
 {
-	const i32 selectedIndex = selectedEntities.FindIndex(entity);
-	const bool selected = selectedIndex != NO_INDEX;
+	auto input = GEngine->GetInput();
 
-	if (!selected)
+	const i32 index = selectedEntities.FindIndex(entity);
+	if (index == NO_INDEX)
 	{
-		selectedEntities.Empty();
+		// If Ctrl is pressed, add the entity to the list
+		if (!input->IsModifierPressed(EKeyModifier::Ctrl))
+		{
+			selectedEntities.Empty();
+		}
 		selectedEntities.Add(entity);
-
-		// Display the serialized data of an entity
-		JsonArchive ar{};
-		GetWorld()->GetECS()->SerializeEntity(ar, entity);
-
-		Log::Message(ar.GetDataString().c_str());
 	}
+	else
+	{
+		// Already selected select
+		if (!input->IsModifierPressed(EKeyModifier::Ctrl))
+		{
+			selectedEntities.Empty();
+		}
+		else
+		{
+			selectedEntities.RemoveAt(index);
+		}
+	}
+
+	onSelectionChanged.DoBroadcast(selectedEntities);
 }
 
 #endif

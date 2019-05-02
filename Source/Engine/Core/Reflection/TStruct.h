@@ -52,7 +52,7 @@ public:
 	}
 
 	template<typename VarType>
-	void RegistryProperty(Name&& name, eastl::function<VarType*(BaseObject*)>&& access, ReflectionTags tags)
+	void RegistryProperty(Name&& name, eastl::function<VarType*(BaseStruct*)>&& access, ReflectionTags tags)
 	{
 		properties.emplace(name, eastl::unique_ptr<Property>(
 			new TProperty<VarType>(

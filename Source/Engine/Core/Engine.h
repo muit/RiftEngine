@@ -5,7 +5,7 @@
 #include "CoreObject.h"
 #include "Rendering/Renderer.h"
 
-#include "Core/World.h"
+#include "World.h"
 #include "Input/InputManager.h"
 #include "UI/UIManager.h"
 #include "Rendering/Renderer.h"

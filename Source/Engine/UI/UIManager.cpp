@@ -1,7 +1,9 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "UIManager.h"
-#include "imgui/imgui_impl_sdl.h"
+#include <imgui/imgui_impl_sdl.h>
+
+#include "Core/Log.h"
 
 
 void UIManager::Prepare()

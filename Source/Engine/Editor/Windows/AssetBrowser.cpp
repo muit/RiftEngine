@@ -11,7 +11,7 @@ void AssetBrowser::Build()
 {
 	Super::Build();
 	bOpen = true;
-	windowName = TX("Asset Browser");
+	idName = TX("Asset Browser");
 	windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize;
 }
 

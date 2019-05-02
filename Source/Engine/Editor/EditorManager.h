@@ -8,22 +8,19 @@
 #include "Editor.h"
 
 #include <imgui/imgui.h>
-#include "Core/World.h"
+
 #include "UI/Widget.h"
-#include "Windows/SceneEntities.h"
-#include "Windows/Details.h"
 #include "Windows/MemoryDebugger.h"
 #include "Windows/AssetBrowser.h"
+#include "Scene/SceneEditor.h"
 
 
 class EditorManager : public Object {
 	CLASS(EditorManager, Object)
 
 
-	eastl::vector<GlobalPtr<Editor>> activeEditors;
+	TArray<GlobalPtr<Editor>> editors;
 
-	GlobalPtr<SceneEntities> sceneEntities;
-	GlobalPtr<Details> details;
 	GlobalPtr<MemoryDebugger> memory;
 	GlobalPtr<AssetBrowser> assetBrowser;
 
@@ -32,13 +29,9 @@ class EditorManager : public Object {
 
 public:
 
-	EditorManager() : Super() {
-
-		details = Widget::CreateStandalone<Details>();
-		details->SetObject(GetWorld()->GetActiveScene().Get());
-
-		sceneEntities = Widget::CreateStandalone<SceneEntities>();
-		sceneEntities->sceneDetailsWindow = details;
+	EditorManager() : Super()
+	{
+		CreateEditor<SceneEditor>();
 
 		memory = Widget::CreateStandalone<MemoryDebugger>();
 		assetBrowser = Widget::CreateStandalone<AssetBrowser>();
@@ -53,8 +46,8 @@ public:
 	template<typename EditorType>
 	Ptr<Editor> CreateEditor()
 	{
-		activeEditors.push_back(Create<EditorType>(Self()));
-		return activeEditors.back();
+		editors.Add(Create<EditorType>(Self()));
+		return editors.Last();
 	}
 };
 

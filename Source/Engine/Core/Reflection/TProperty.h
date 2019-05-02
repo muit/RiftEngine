@@ -2,11 +2,11 @@
 #pragma once
 
 #include "Property.h"
-#include <functional>
 #include <EASTL/shared_ptr.h>
 
 #include "Core/Strings/Name.h"
 #include "Class.h"
+#include "StructType.h"
 #include "ReflectionTags.h"
 #include "Runtime/TPropertyHandle.h"
 
@@ -16,8 +16,9 @@
  */
 template <typename VarType>
 class TProperty : public Property {
+public:
 
-	using Access = std::function<VarType*(BaseObject*)>;
+	using Access = eastl::function<VarType*(BaseStruct*)>;
 
 private:
 
@@ -32,6 +33,14 @@ public:
 
 	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(const Ptr<BaseObject>& instance) override {
 		if (instance->GetClass() == GetType())
+		{
+			return eastl::shared_ptr<PropertyHandle>(new TPropertyHandle<VarType>(instance, this, access));
+		}
+		return {};
+	}
+
+	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(BaseStruct* instance) override {
+		if (instance->GetStruct() == GetType())
 		{
 			return eastl::shared_ptr<PropertyHandle>(new TPropertyHandle<VarType>(instance, this, access));
 		}

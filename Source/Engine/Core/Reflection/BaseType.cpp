@@ -13,7 +13,7 @@ const Property* BaseType::FindProperty(const Name& propertyName) const
 		return dynamic_cast<const Property*>((*propIt).second.get());
 }
 
-const BaseType::PropertyMap& BaseType::GetAllProperties()
+const BaseType::PropertyMap& BaseType::GetAllProperties() const
 {
 	return properties;
 }

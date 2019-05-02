@@ -7,10 +7,10 @@
 #if WITH_EDITOR
 #include <EASTL/shared_ptr.h>
 #include <imgui/imgui.h>
-#include "UI/Editor/Widgets/PropertyWidget.h"
 
 #include "Core/Reflection/Class.h"
 #include "Core/Reflection/Runtime/TPropertyHandle.h"
+#include "Editor/Widgets/PropertyWidget.h"
 #endif
 
 

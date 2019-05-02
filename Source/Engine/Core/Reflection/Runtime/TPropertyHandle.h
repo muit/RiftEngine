@@ -1,11 +1,8 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include <vector>
-#include <functional>
-
 #include "PropertyHandle.h"
-#include "Core/Reflection//Property.h"
+#include "Core/Reflection/Property.h"
 
 
 /**
@@ -15,7 +12,7 @@
 template<typename VarType>
 struct TPropertyHandle : public PropertyHandle
 {
-	using Access = std::function<VarType*(BaseObject*)>;
+	using Access = eastl::function<VarType*(BaseStruct*)>;
 
 	Access access;
 
@@ -26,11 +23,15 @@ public:
 		: PropertyHandle(instance, prop), access{access}
 	{}
 
+	TPropertyHandle(BaseStruct* instance, const Property* prop, const Access& access)
+		: PropertyHandle(instance, prop), access{ access }
+	{}
+
 	VarType* GetValuePtr() const
 	{
 		if (IsValid())
 		{
-			return access(*instance);
+			return access(GetInstance());
 		}
 		return nullptr;
 	}

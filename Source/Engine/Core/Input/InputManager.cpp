@@ -14,7 +14,6 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> render
 	// Mark all axis not dirty
 
 	UpdatePressedKeys();
-	UpdatePressedMods();
 	ResetAxis();
 
 	bool bFinish = false;
@@ -74,31 +73,31 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> render
 			const SDL_Keymod sdlModState = SDL_GetModState();
 
 			// Automatic casting to Rift keys
-			const EKey key = (EKey)event.key.keysym.scancode;
+			const auto key = static_cast<EKey>(event.key.keysym.scancode);
 
+			// Update modifiers
 			switch (key)
 			{
 			case EKey::LShift:
-				UpdateMod(EKeyModifier::LShift, state);
+				modStates.Set(EKeyModifier::LShift, state);
 				break;
 			case EKey::RShift:
-				UpdateMod(EKeyModifier::RShift, state);
+				modStates.Set(EKeyModifier::RShift, state);
 				break;
 			case EKey::LCtrl:
-				UpdateMod(EKeyModifier::LCtrl, state);
+				modStates.Set(EKeyModifier::LCtrl, state);
 				break;
 			case EKey::RCtrl:
-				UpdateMod(EKeyModifier::RCtrl, state);
+				modStates.Set(EKeyModifier::RCtrl, state);
 				break;
 			case EKey::LAlt:
-				UpdateMod(EKeyModifier::LAlt, state);
+				modStates.Set(EKeyModifier::LAlt, state);
 				break;
 			case EKey::RAlt:
-				UpdateMod(EKeyModifier::RAlt, state);
+				modStates.Set(EKeyModifier::RAlt, state);
 				break;
-			default:
-				UpdateKey(key, state);
 			};
+			UpdateKey(key, state);
 			break;
 		}
 	}
@@ -127,23 +126,7 @@ void InputManager::UpdatePressedKeys()
 
 void InputManager::UpdatePressedMods()
 {
-	for (i32 i = 0; i < modStates.states.Size(); ++i)
-	{
-		switch (modStates.states[i])
-		{
-		case EKeyPressState::Press:
-			modStates.states[i] = EKeyPressState::Pressed;
-			break;
-
-		case EKeyPressState::Released:
-			modStates.mods.RemoveAt(i, false);
-			modStates.states.RemoveAt(i, false);
-			--i;
-			break;
-		}
-	}
-	modStates.mods.Shrink();
-	modStates.states.Shrink();
+	modStates.flags = EKeyModifier(0);
 }
 
 void InputManager::ResetAxis()
@@ -168,23 +151,6 @@ void InputManager::UpdateKey(EKey key, EKeyPressState state)
 void InputManager::UpdateAxis(EAxis axis, float value)
 {
 	axisStates[axis] = value;
-}
-
-void InputManager::UpdateMod(EKeyModifier mod, EKeyPressState state)
-{
-	i32 i = modStates.mods.FindIndex(mod);
-	if (i == NO_INDEX)
-		modStates.Add(mod, state);
-	else
-	{
-		EKeyPressState& currentState = modStates.states[i];
-
-		// Can only be pressed when creating the state
-		if (state != EKeyPressState::Press)
-		{
-			currentState = state;
-		}
-	}
 }
 
 void InputManager::NotifyAllAxis()
@@ -301,10 +267,20 @@ AxisBroadcast* InputManager::FindAxisAction(Name actionName) const
 	return foundAction ? &foundAction->OnUpdate() : nullptr;
 }
 
-i32 InputManager::ModifierStates::Add(EKeyModifier mod, EKeyPressState state)
+void InputManager::ModStates::Set(EKeyModifier mod, EKeyPressState state)
 {
-	mods.Add(mod);
-	states.Add(state);
+	switch (state)
+	{
+	case EKeyPressState::Press:
+		flags |= mod;
+		break;
+	case EKeyPressState::Release:
+		flags &= ~mod;
+		break;
+	}
+}
 
-	return mods.Size() - 1;
+bool InputManager::ModStates::operator[](EKeyModifier mod) const
+{
+	return (flags & mod) > 0;
 }

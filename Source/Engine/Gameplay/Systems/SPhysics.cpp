@@ -1,8 +1,8 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "SPhysics.h"
+#include "World.h"
 #include "Tools/Profiler.h"
-#include "Core/World.h"
 
 
 void SPhysics::Tick(float deltaTime)

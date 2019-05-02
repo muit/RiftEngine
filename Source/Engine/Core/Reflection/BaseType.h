@@ -33,5 +33,5 @@ public:
 
 	const Property* FindProperty(const Name& propertyName) const;
 
-	const PropertyMap& GetAllProperties();
+	const PropertyMap& GetAllProperties() const;
 };

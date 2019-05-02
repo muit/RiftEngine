@@ -137,7 +137,7 @@ static void __meta_RegistryProperty(MetaCounter<id_name>) {\
 	constexpr ReflectionTags tags = ReflectionTagsInitializer<inTags>::value;\
 	static_assert(!(tags & Abstract), "Properties can't be Abstract");\
 \
-	StaticType()->RegistryProperty<type>(TX(#name), [](BaseObject* baseInstance)\
+	StaticType()->RegistryProperty<type>(TX(#name), [](BaseStruct* baseInstance)\
 	{\
 		if(__meta_type* instance = dynamic_cast<__meta_type*>(baseInstance))\
 			return &instance->name;\

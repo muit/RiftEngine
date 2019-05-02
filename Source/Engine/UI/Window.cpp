@@ -6,7 +6,7 @@
 void Window::Build()
 {
 	bOpen = true;
-	windowName = TX("");
+	idName = TX("");
 	windowFlags = 0;
 }
 
@@ -22,7 +22,14 @@ void Window::Tick()
 
 void Window::BeginWindow()
 {
-	ImGui::Begin(windowName.ToString().c_str(), &bOpen, windowFlags);
+	// Generate unique name
+	String name;
+	if (!displayName.empty())
+		name = CString::Printf("%s###%s", displayName.c_str(), idName.ToString().c_str());
+	else
+		name = idName.ToString();
+
+	ImGui::Begin(name.c_str(), &bOpen, windowFlags);
 }
 
 void Window::EndWindow()

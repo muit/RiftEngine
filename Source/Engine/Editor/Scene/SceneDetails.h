@@ -4,13 +4,15 @@
 
 #if WITH_EDITOR
 
-#include "UI/Editor/EditorWindow.h"
-#include "UI/Editor/Widgets/PropertyWidget.h"
+#include "Editor/EditorWindow.h"
+#include "Editor/Widgets/PropertyWidget.h"
+#include "ECS/EntityId.h"
 
 
-class Details : public EditorWindow {
-	CLASS(Details, EditorWindow)
+class SceneDetails : public EditorWindow {
+	CLASS(SceneDetails, EditorWindow)
 
+	EntityId entity;
 	Ptr<Object> object;
 
 protected:
@@ -21,6 +23,7 @@ protected:
 
 public:
 
+	void SetEntity(EntityId inEntity);
 	void SetObject(Ptr<Object> inObject);
 };
 

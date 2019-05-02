@@ -7,14 +7,19 @@
 #include <EASTL/vector.h>
 
 #include "EditorWindow.h"
+#include "Scene/Gizmo.h"
 
 
 #if WITH_EDITOR
 
 class Editor : public Object {
-    CLASS(Editor, Object)
+	CLASS(Editor, Object)
 
-    eastl::vector<GlobalPtr<EditorWindow>> Windows;
+public:
+
+	virtual void Tick(float /*deltaTime*/) {}
+
+	virtual void ExpandViewsMenu() {}
 };
 
 #endif

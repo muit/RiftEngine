@@ -12,7 +12,8 @@ class Window : public Widget {
 protected:
 
 	bool bOpen;
-	Name windowName;
+	Name idName;
+	String displayName;
 	ImGuiWindowFlags windowFlags;
 
 
@@ -27,4 +28,8 @@ public:
 	void SetOpen(bool bValue) { bOpen = bValue; }
 	bool IsOpened() const { return bOpen; }
 	bool* IsOpenedPtr() { return &bOpen; }
+
+	const String& GetDisplayName() const {
+		return displayName.empty()? idName.ToString() : displayName;
+	}
 };

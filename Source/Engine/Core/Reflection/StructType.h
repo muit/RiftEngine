@@ -23,6 +23,7 @@ public:
 		if (bIncludeSelf)
 			outChildren.Add(this);
 
+		outChildren.Reserve(outChildren.Size() + children.Size());
 		for (auto* const child : children)
 		{
 			outChildren.Add(child);

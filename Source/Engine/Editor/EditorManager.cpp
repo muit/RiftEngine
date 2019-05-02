@@ -1,8 +1,11 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "EditorManager.h"
-#include "imgui/imgui_stl.h"
+#include <imgui/imgui_stl.h>
+
+#include "World.h"
 #include "Core/Object/Object.h"
+#include "Core/Assets/AssetPtr.h"
 #include "Assets/Scene.h"
 
 
@@ -18,8 +21,11 @@ void EditorManager::Tick(float deltaTime)
 	if (showDemoWindow)
 		ImGui::ShowDemoWindow(&showDemoWindow);
 
-	sceneEntities->OnTick();
-	details->OnTick();
+	for (const auto& editor : editors)
+	{
+		editor->Tick(deltaTime);
+	}
+
 	memory->OnTick();
 	assetBrowser->OnTick();
 }
@@ -76,9 +82,10 @@ void EditorManager::TickMainNavBar()
 		{
 			if (ImGui::MenuItem("Open Scene")) {}
 			if (ImGui::MenuItem("Save Scene", "CTRL+S")) {
-				TAssetPtr<Scene> scene = GetWorld()->GetActiveScene();
-				if(scene)
+				if (TAssetPtr<Scene> scene = GetWorld()->GetActiveScene())
+				{
 					scene->Save();
+				}
 			}
 			ImGui::Separator();
 			if (ImGui::MenuItem("Exit")) {}
@@ -98,10 +105,14 @@ void EditorManager::TickMainNavBar()
 
 		if (ImGui::BeginMenu("View"))
 		{
-			if (ImGui::MenuItem("Entities", (const char*)0, sceneEntities->IsOpenedPtr())) {}
-			if (ImGui::MenuItem("Details", (const char*)0, details->IsOpenedPtr())) {}
 			if (ImGui::MenuItem("Memory", (const char*)0, memory->IsOpenedPtr())) {}
 			if (ImGui::MenuItem("Asset Browser", (const char*)0, assetBrowser->IsOpenedPtr())) {}
+
+			for (const auto& editor : editors)
+			{
+				editor->ExpandViewsMenu();
+			}
+
 			ImGui::EndMenu();
 		}
 

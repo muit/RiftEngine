@@ -7,7 +7,7 @@
 #include <imgui/imgui_impl_sdl.h>
 #include <tracy/TracyOpenGL.hpp>
 
-#include "Core/World.h"
+#include "World.h"
 #include "Core/Log.h"
 #include "Tools/Profiler.h"
 

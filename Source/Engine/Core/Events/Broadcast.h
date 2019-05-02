@@ -4,6 +4,7 @@
 #include "CoreObject.h"
 #include "EngineTypes.h"
 #include "EventHandle.h"
+#include "Core/Log.h"
 
 
 template<typename... Params>
@@ -63,6 +64,8 @@ public:
 			rawListeners.Add({ handle.Id(), eastl::move(method), nullptr });
 			return handle;
 		}
+
+		Log::Warning("Couldn't bind delegate");
 		return EventHandle::Invalid();
 	}
 
@@ -73,7 +76,7 @@ public:
 		{
 			if constexpr (IsObject<Type>::value)
 			{
-				return Bind(instance->Self().Cast<Type>(), method);
+				return Bind(instance->Self<Type>(), MoveTemp(method));
 			}
 			else
 			{
@@ -82,6 +85,8 @@ public:
 				});
 			}
 		}
+
+		Log::Warning("Couldn't bind delegate");
 		return EventHandle::Invalid();
 	}
 
@@ -96,9 +101,11 @@ public:
 			};
 
 			EventHandle handle{};
-			objListeners.Add({ handle.Id(), std::move(func), object });
+			objListeners.Add({ handle.Id(), MoveTemp(func), object });
 			return handle;
 		}
+
+		Log::Warning("Couldn't bind delegate");
 		return EventHandle::Invalid();
 	}
 
