@@ -9,5 +9,5 @@ Matrix4f CameraData::GetViewMatrix()
 
 Matrix4f CameraData::GetProjectionMatrix(const v2_u32& screenSize)
 {
-	return glm::perspective(fov * Math::DEGTORAD, float(screenSize.x) / float(screenSize.y), nearZ, farZ);
+	return glm::perspective(fov * Math::DEGTORAD, 4.f/3.f/*float(screenSize.x) / float(screenSize.y)*/, nearZ, farZ);
 }

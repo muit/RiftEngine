@@ -5,6 +5,7 @@
 #include <SDL_opengl.h>
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_sdl.h>
+#include <imgui/ImGuizmo.h>
 #include <tracy/TracyOpenGL.hpp>
 
 #include "World.h"
@@ -95,7 +96,8 @@ void Renderer::PreTick()
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
-
+	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 }
 
 void Renderer::Render()
@@ -111,7 +113,8 @@ void Renderer::Render()
 	SDL_GL_MakeCurrent(window, gl_context);
 
 	ImGuiIO& io = ImGui::GetIO();
-	v2_u32 viewportSize{ (u32)io.DisplaySize.x, (u32)io.DisplaySize.y };
+	ImGuiViewport* vp = ImGui::GetMainViewport();
+	v2_u32 viewportSize{ (u32)vp->Size.x, (u32)vp->Size.y };
 
 	glViewport(0, 0, viewportSize.x, viewportSize.y);
 	glClearColor(0.7f, 0.4f, 0.4f, 1);

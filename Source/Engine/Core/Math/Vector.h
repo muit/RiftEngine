@@ -9,6 +9,7 @@
 #include "glm/vec3.hpp"
 #include "glm/detail/type_vec3.hpp"
 #include "glm/geometric.hpp"
+#include "glm/matrix.hpp"
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/type_ptr.inl"
 
@@ -131,15 +132,19 @@ public:
 };
 
 template<glm::length_t X, glm::length_t Y, typename T>
-class Matrix : public glm::mat<X, Y, T>
+class Matrix : public glm::mat<X, Y, T, glm::highp>
 {
-	using glm::mat<X, Y, T>::mat;
+	using glm::mat<X, Y, T, glm::highp>::mat;
 
 public:
 
 	Matrix Inverse() const { return glm::inverse(*this); }
+	Matrix Transpose() const { return glm::transpose(*this); }
+	Matrix InverseTranspose() const { return glm::inverseTranspose(*this); }
 
 	T* Data() const { glm::value_ptr(*this); }
+
+	static constexpr Matrix Identity() { return glm::identity<glm::mat<X, Y, T, glm::highp>>(); }
 };
 
 using Matrix4f = Matrix<4, 4, float>;

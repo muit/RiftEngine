@@ -14,7 +14,7 @@ class StringPropertyWidget : public PropertyWidget {
 
 protected:
 
-	virtual void Tick() override;
+	virtual void Tick(float) override;
 
 	TPropertyHandle<String>* GetHandle() const {
 		return dynamic_cast<TPropertyHandle<String>*>(prop.get());

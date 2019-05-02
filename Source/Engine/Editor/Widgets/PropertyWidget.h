@@ -23,7 +23,7 @@ protected:
 	eastl::shared_ptr<PropertyHandle> prop;
 
 
-	virtual void Tick() override {}
+	virtual void Tick(float) override {}
 
 public:
 
@@ -34,7 +34,7 @@ public:
 		CString::ToSentenceCase(idName, displayName);
 	}
 
-	static GlobalPtr<PropertyWidget> NewPropertyWidget(const eastl::shared_ptr<PropertyHandle>& prop);
+	static GlobalPtr<PropertyWidget> NewPropertyWidget(const Ptr<Widget>& owner, const eastl::shared_ptr<PropertyHandle>& prop);
 };
 
 #endif

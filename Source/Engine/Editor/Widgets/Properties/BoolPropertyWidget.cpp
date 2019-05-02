@@ -5,7 +5,7 @@
 
 #if WITH_EDITOR
 
-void BoolPropertyWidget::Tick()
+void BoolPropertyWidget::Tick(float)
 {
 	ImGui::PushID(idName.c_str());
 

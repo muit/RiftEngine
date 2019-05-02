@@ -11,11 +11,11 @@ void MemoryDebugger::Build()
 {
 	Super::Build();
 	bOpen = true;
-	idName = TX("Memory");
+	SetName(TX("Memory"));
 	windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize;
 }
 
-void MemoryDebugger::Tick()
+void MemoryDebugger::Tick(float)
 {
 	if (bOpen)
 	{

@@ -12,14 +12,14 @@
 class SceneDetails : public EditorWindow {
 	CLASS(SceneDetails, EditorWindow)
 
-	EntityId entity;
+	EntityId entity = NoEntity;
 	Ptr<Object> object;
 
 protected:
 
 	virtual void Build() override;
 
-	virtual void Tick() override;
+	virtual void Tick(float deltaTime) override;
 
 public:
 

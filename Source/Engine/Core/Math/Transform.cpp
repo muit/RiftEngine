@@ -34,7 +34,7 @@ class TransformPropertyWidget : public PropertyWidget {
 
 protected:
 
-	virtual void Tick() override {
+	virtual void Tick(float) override {
 
 		ImGuiInputTextFlags flags = 0;
 		if (!prop->HasTag(DetailsEdit))

@@ -15,7 +15,7 @@ class BoolPropertyWidget : public PropertyWidget {
 
 protected:
 
-	virtual void Tick() override;
+	virtual void Tick(float) override;
 
 	TPropertyHandle<bool>* GetHandle() const {
 		return dynamic_cast<TPropertyHandle<bool>*>(prop.get());

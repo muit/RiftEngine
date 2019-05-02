@@ -11,7 +11,7 @@ void NamePropertyWidget::OnValueChanged()
 	GetHandle()->SetValue(newValue);
 }
 
-void NamePropertyWidget::Tick()
+void NamePropertyWidget::Tick(float)
 {
 	ImGui::PushID(idName.c_str());
 	{

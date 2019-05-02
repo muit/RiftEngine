@@ -11,6 +11,8 @@
 #include "Gameplay/Components/CEditorCamera.h"
 #include "Gameplay/Components/CPointLight.h"
 #include "Gameplay/Components/CDirectionalLight.h"
+#include "Physics/Components/CCollider2D.h"
+#include "Physics/Components/CBoxCollider2D.h"
 
 #include "Gameplay/Systems/SEditorCamera.h"
 #include "Gameplay/Systems/SPhysics.h"
@@ -18,8 +20,7 @@
 #include "Gameplay/Systems/SRenderCamera.h"
 #include "Gameplay/Systems/SLighting.h"
 
-#include "Physics/Components/CCollider2D.h"
-#include "Physics/Components/CBoxCollider2D.h"
+#include "Gameplay/Singletons/CActiveCamera.h"
 
 
 EntityId ECSManager::CreateEntity(Name entityName, bool bTransient /*= false*/)
@@ -170,4 +171,5 @@ void ECSManager::RegistrySystems()
 
 void ECSManager::RegistrySingletons()
 {
+	RegistrySingleton<CActiveCamera>();
 }

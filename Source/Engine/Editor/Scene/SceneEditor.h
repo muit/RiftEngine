@@ -6,8 +6,7 @@
 
 #include "SceneEntities.h"
 #include "SceneDetails.h"
-#include "Gizmo.h"
-#include "Core/Object/Object.h"
+#include "Guizmo.h"
 #include "Editor/Editor.h"
 
 
@@ -18,7 +17,8 @@ class SceneEditor : public Editor {
 
 	GlobalPtr<SceneEntities> sceneEntities;
 	GlobalPtr<SceneDetails> details;
-	GlobalPtr<Gizmo> gizmo;
+
+	GlobalPtr<Guizmo> guizmo;
 
 public:
 
@@ -27,12 +27,7 @@ public:
 
 	virtual void Construct() override;
 
-	virtual void Tick(float deltaTime) override {
-		Super::Tick(deltaTime);
-
-		sceneEntities->OnTick();
-		details->OnTick();
-	}
+	virtual void Tick(float deltaTime) override;
 
 	virtual void ExpandViewsMenu() override;
 

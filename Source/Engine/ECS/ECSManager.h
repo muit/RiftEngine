@@ -75,15 +75,6 @@ public:
 		return registry.valid(entity);
 	}
 
-	template<typename C, typename... Args>
-	C& Assign(EntityId entity, Args... args)
-	{
-		if (registry.has<C>(entity))
-			return registry.replace<C>(entity, eastl::forward<Args>(args)...);
-
-		return registry.assign<C>(entity, eastl::forward<Args>(args)...);
-	}
-
 
 	/**************************************************************
 	 * Begin SERIALIZATION
@@ -150,6 +141,15 @@ public:
 		return registry.view<Components...>();
 	};
 
+	template<typename C, typename... Args>
+	C& Assign(EntityId entity, Args... args)
+	{
+		if (Has<C>(entity))
+			return registry.replace<C>(entity, eastl::forward<Args>(args)...);
+
+		return registry.assign<C>(entity, eastl::forward<Args>(args)...);
+	}
+
 	template<typename Component>
 	Component& Get(const EntityId entity) {
 		return registry.get<Component>(entity);
@@ -159,6 +159,9 @@ public:
 	const Component& Get(const EntityId entity) const {
 		return registry.get<Component>(entity);
 	};
+
+	template<typename C>
+	FORCEINLINE bool Has(EntityId entity) const { return registry.has<C>(entity); }
 
 	u32 GetEntityCount() {
 		return (i32)registry.size();

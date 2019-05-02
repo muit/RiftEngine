@@ -53,17 +53,17 @@ public:
 		}
 	}
 
-	void OnTick() {
+	void OnTick(float deltaTime) {
 		if (bBuilt)
 		{
-			Tick();
+			Tick(deltaTime);
 		}
 	}
 
-	void TickChilds() {
+	void TickChilds(float deltaTime) {
 		for (auto& child : childs)
 		{
-			child->OnTick();
+			child->OnTick(deltaTime);
 		}
 	}
 
@@ -73,7 +73,7 @@ protected:
 	/** Called before rebuilding or when the widget gets destroyed */
 	virtual void UndoBuild() {}
 
-	virtual void Tick() { TickChilds(); }
+	virtual void Tick(float deltaTime) { TickChilds(deltaTime); }
 
 	virtual void BeforeDestroy() override {
 		UndoBuild();
@@ -81,11 +81,13 @@ protected:
 	}
 
 
+public:
+
 	/** Create widget from template type */
 	template<typename WidgetType, typename... Args>
-	static GlobalPtr<WidgetType> New(Args&&... args) {
+	GlobalPtr<WidgetType> New(Args&&... args) {
 		// Create the widget
-		GlobalPtr<WidgetType> widget = Create<WidgetType>();
+		GlobalPtr<WidgetType> widget = Create<WidgetType>(Self());
 
 		// Configure it
 		widget->Configure(std::forward<Args>(args)...);
@@ -95,9 +97,9 @@ protected:
 
 	/** Create widget from class */
 	template<typename WidgetType, typename... Args>
-	static GlobalPtr<WidgetType> New(Class* c, Args&&... args) {
+	GlobalPtr<WidgetType> New(Class* c, Args&&... args) {
 		// Create the widget
-		GlobalPtr<WidgetType> widget = Create<WidgetType>(c);
+		GlobalPtr<WidgetType> widget = Create<WidgetType>(c, Self());
 
 		widget->Configure(std::forward<Args>(args)...);
 
@@ -121,12 +123,10 @@ protected:
 		return Add(New<Widget>(std::forward<Args>(args)...)).Cast<WidgetType>();
 	}
 
-public:
-
 	template<typename WidgetType, typename... Args>
-	static GlobalPtr<WidgetType> CreateStandalone(Args&&... args) {
+	static GlobalPtr<WidgetType> CreateStandalone(Ptr<Object> owner, Args&&... args) {
 		// Create the widget
-		GlobalPtr<WidgetType> widget = Create<WidgetType>();
+		GlobalPtr<WidgetType> widget = Create<WidgetType>(owner);
 
 		// Configure it
 		widget->Configure(std::forward<Args>(args)...);

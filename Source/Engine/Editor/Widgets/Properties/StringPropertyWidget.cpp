@@ -5,7 +5,7 @@
 
 #if WITH_EDITOR
 
-void StringPropertyWidget::Tick()
+void StringPropertyWidget::Tick(float)
 {
 	ImGui::PushID(idName.c_str());
 	ImGui::InputText(displayName.c_str(), *GetHandle()->GetValuePtr());

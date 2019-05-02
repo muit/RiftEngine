@@ -10,13 +10,24 @@ void SceneEditor::Construct()
 {
 	Super::Construct();
 
-	sceneEntities = Widget::CreateStandalone<SceneEntities>();
+	sceneEntities = Widget::CreateStandalone<SceneEntities>(Self());
 	sceneEntities->onSelectionChanged.Bind(this, &SceneEditor::OnSelectionChanged);
 
-	details = Widget::CreateStandalone<SceneDetails>();
-
+	details = Widget::CreateStandalone<SceneDetails>(Self());
 	// Select scene
 	details->SetObject(GetWorld()->GetActiveScene().Get());
+
+	guizmo = Widget::CreateStandalone<Guizmo>(Self());
+}
+
+void SceneEditor::Tick(float deltaTime)
+{
+	Super::Tick(deltaTime);
+
+	guizmo->Tick(deltaTime);
+
+	sceneEntities->OnTick(deltaTime);
+	details->OnTick(deltaTime);
 }
 
 void SceneEditor::ExpandViewsMenu()
@@ -31,10 +42,12 @@ void SceneEditor::OnSelectionChanged(const TArray<EntityId>& entities)
 	if (selections.Size() > 0)
 	{
 		details->SetEntity(selections[0]);
+		guizmo->SetEntity(selections[0]);
 	}
 	else
 	{
 		details->SetObject(GetWorld()->GetActiveScene().Get());
+		guizmo->SetEntity(NoEntity);
 	}
 }
 

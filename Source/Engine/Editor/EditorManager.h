@@ -24,17 +24,21 @@ class EditorManager : public Object {
 	GlobalPtr<MemoryDebugger> memory;
 	GlobalPtr<AssetBrowser> assetBrowser;
 
+	Ptr<SceneEditor> sceneEditor;
+
 
 	bool showDemoWindow = true;
 
 public:
 
-	EditorManager() : Super()
+	virtual void Construct() override
 	{
-		CreateEditor<SceneEditor>();
+		Super::Construct();
 
-		memory = Widget::CreateStandalone<MemoryDebugger>();
-		assetBrowser = Widget::CreateStandalone<AssetBrowser>();
+		sceneEditor = CreateEditor<SceneEditor>();
+
+		memory = Widget::CreateStandalone<MemoryDebugger>(Self());
+		assetBrowser = Widget::CreateStandalone<AssetBrowser>(Self());
 	}
 
 	void Tick(float deltaTime);
@@ -44,10 +48,10 @@ public:
 
 
 	template<typename EditorType>
-	Ptr<Editor> CreateEditor()
+	Ptr<EditorType> CreateEditor()
 	{
-		editors.Add(Create<EditorType>(Self()));
-		return editors.Last();
+		const i32 i = editors.Add(Create<EditorType>(Self()));
+		return editors[i].AsPtr().Cast<EditorType>();
 	}
 };
 

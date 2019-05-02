@@ -14,7 +14,7 @@
 void SceneDetails::Build()
 {
 	Super::Build();
-	idName = "Details";
+	SetName(TX("Details"));
 
 	if (object)
 	{
@@ -27,7 +27,7 @@ void SceneDetails::Build()
 				if (property.second->HasTag(DetailsEdit) || property.second->HasTag(DetailsView))
 				{
 					auto handle = property.second->CreateHandle(object);
-					Add(PropertyWidget::NewPropertyWidget(handle));
+					Add(PropertyWidget::NewPropertyWidget(Self<Widget>(), handle));
 				}
 			}
 		}
@@ -39,28 +39,28 @@ void SceneDetails::Build()
 		TArray<StructType*> componentTypes;
 		Component::StaticStruct()->GetAllChildren(componentTypes);
 
-		for (const auto* type : componentTypes)
+		/*for (const auto* type : componentTypes)
 		{
-			/*for (const auto& property : type->GetAllProperties())
+			for (const auto& property : type->GetAllProperties())
 			{
 				if (property.second->HasTag(DetailsEdit) || property.second->HasTag(DetailsView))
 				{
 					auto handle = property.second->CreateHandle(object);
 					Add(PropertyWidget::NewPropertyWidget(handle));
 				}
-			}*/
-		}
+			}
+		}*/
 	}
 }
 
-void SceneDetails::Tick()
+void SceneDetails::Tick(float deltaTime)
 {
 	if (bOpen)
 	{
 		BeginWindow();
 		if (object || entity != NoEntity)
 		{
-			TickChilds();
+			TickChilds(deltaTime);
 		}
 		EndWindow();
 	}

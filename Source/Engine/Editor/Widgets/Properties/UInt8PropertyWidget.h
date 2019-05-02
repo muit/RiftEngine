@@ -15,7 +15,7 @@ class UInt8PropertyWidget : public PropertyWidget {
 
 protected:
 
-	virtual void Tick() override;
+	virtual void Tick(float) override;
 
 	TPropertyHandle<u8>* GetHandle() const {
 		return dynamic_cast<TPropertyHandle<u8>*>(prop.get());

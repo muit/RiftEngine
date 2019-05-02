@@ -4,10 +4,7 @@
 
 #include "CoreObject.h"
 
-#include <EASTL/vector.h>
-
 #include "EditorWindow.h"
-#include "Scene/Gizmo.h"
 
 
 #if WITH_EDITOR

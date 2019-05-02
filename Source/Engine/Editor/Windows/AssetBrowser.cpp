@@ -11,11 +11,11 @@ void AssetBrowser::Build()
 {
 	Super::Build();
 	bOpen = true;
-	idName = TX("Asset Browser");
+	SetName(TX("Asset Browser"));
 	windowFlags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize;
 }
 
-void AssetBrowser::Tick()
+void AssetBrowser::Tick(float)
 {
 }
 

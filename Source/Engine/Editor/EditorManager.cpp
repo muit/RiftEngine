@@ -21,13 +21,14 @@ void EditorManager::Tick(float deltaTime)
 	if (showDemoWindow)
 		ImGui::ShowDemoWindow(&showDemoWindow);
 
+	editors.RemoveIf([](const auto & editor) { return !editor.IsValid(); });
 	for (const auto& editor : editors)
 	{
 		editor->Tick(deltaTime);
 	}
 
-	memory->OnTick();
-	assetBrowser->OnTick();
+	memory->OnTick(deltaTime);
+	assetBrowser->OnTick(deltaTime);
 }
 
 void EditorManager::TickDocking()
@@ -52,8 +53,8 @@ void EditorManager::TickDocking()
 	}
 
 	// When using ImGuiDockNodeFlags_PassthruDockspace, DockSpace() will render our background and handle the pass-thru hole, so we ask Begin() to not render a background.
-	if (opt_flags & ImGuiDockNodeFlags_PassthruDockspace)
-		window_flags |= ImGuiWindowFlags_NoBackground;
+	/*if (opt_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+		window_flags |= ImGuiWindowFlags_NoBackground;*/
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 

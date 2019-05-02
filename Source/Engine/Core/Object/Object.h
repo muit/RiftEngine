@@ -51,7 +51,7 @@ public:
 
 
 	void SetName(Name newName) { name = eastl::move(newName); }
-	Name GetName() { return name; }
+	Name GetName() const { return name; }
 
 	virtual Ptr<World> GetWorld() const;
 };

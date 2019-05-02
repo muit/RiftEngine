@@ -6,7 +6,7 @@
 
 #if WITH_EDITOR
 
-void V2PropertyWidget::Tick()
+void V2PropertyWidget::Tick(float)
 {
 	ImGuiInputTextFlags flags = 0;
 	if (!prop->HasTag(DetailsEdit))

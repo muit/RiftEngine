@@ -15,41 +15,41 @@
 #include "Properties/V2PropertyWidget.h"
 
 
-GlobalPtr<PropertyWidget> PropertyWidget::NewPropertyWidget(const eastl::shared_ptr<PropertyHandle>& prop)
+GlobalPtr<PropertyWidget> PropertyWidget::NewPropertyWidget(const Ptr<Widget>& owner, const eastl::shared_ptr<PropertyHandle>& prop)
 {
-	if (prop)
+	if (prop && owner)
 	{
 		Class* customWidgetClass = prop->GetClassDefinedWidgetClass();
 		if (customWidgetClass)
 		{
-			return New<PropertyWidget>(customWidgetClass, prop);
+			return owner->New<PropertyWidget>(customWidgetClass, prop);
 		}
 
 		// Ordered by estimated usage
 		// #TODO: Switch to native pointers
 		if (auto propFloat = eastl::dynamic_pointer_cast<TPropertyHandle<float>>(prop)) {
-			return New<FloatPropertyWidget>(propFloat);
+			return owner->New<FloatPropertyWidget>(propFloat);
 		}
 		else if (auto propInt32 = eastl::dynamic_pointer_cast<TPropertyHandle<i32>>(prop)) {
-			return New<Int32PropertyWidget>(propInt32);
+			return owner->New<Int32PropertyWidget>(propInt32);
 		}
 		else if (auto propUInt8 = eastl::dynamic_pointer_cast<TPropertyHandle<u8>>(prop)) {
-			return New<UInt8PropertyWidget>(propUInt8);
+			return owner->New<UInt8PropertyWidget>(propUInt8);
 		}
 		else if (auto propBool = eastl::dynamic_pointer_cast<TPropertyHandle<bool>>(prop)) {
-			return New<BoolPropertyWidget>(propBool);
+			return owner->New<BoolPropertyWidget>(propBool);
 		}
 		else if (auto propName = eastl::dynamic_pointer_cast<TPropertyHandle<Name>>(prop)) {
-			return New<NamePropertyWidget>(propName);
+			return owner->New<NamePropertyWidget>(propName);
 		}
 		else if (auto propString = eastl::dynamic_pointer_cast<TPropertyHandle<String>>(prop)) {
-			return New<StringPropertyWidget>(propString);
+			return owner->New<StringPropertyWidget>(propString);
 		}
 		else if (auto propV3 = eastl::dynamic_pointer_cast<TPropertyHandle<v3>>(prop)) {
-			return New<V3PropertyWidget>(propV3);
+			return owner->New<V3PropertyWidget>(propV3);
 		}
 		else if (auto propV2 = eastl::dynamic_pointer_cast<TPropertyHandle<v2>>(prop)) {
-			return New<V2PropertyWidget>(propV2);
+			return owner->New<V2PropertyWidget>(propV2);
 		}
 	}
 	return {};

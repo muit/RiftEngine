@@ -5,6 +5,7 @@
 #include "Tools/Profiler.h"
 
 #include "Gameplay/Components/CEditorCamera.h"
+#include "Gameplay/Singletons/CActiveCamera.h"
 
 
 void SRenderCamera::Tick(float deltaTime)
@@ -47,6 +48,10 @@ void SRenderCamera::Tick(float deltaTime)
 		}
 	}
 
-	// Render camera
+	// Enqueue camera render
+	if (auto * dataComp = ECS()->FindSingleton<CActiveCamera>())
+	{
+		dataComp->activeData = cameraData;
+	}
 	QueueRenderCommand<CameraCommand>(cameraData);
 }

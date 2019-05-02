@@ -14,11 +14,11 @@
 void SceneEntities::Build()
 {
 	Super::Build();
-	idName = TX("Entities");
+	SetName(TX("Entities"));
 	windowFlags = ImGuiWindowFlags_AlwaysAutoResize;
 }
 
-void SceneEntities::Tick()
+void SceneEntities::Tick(float)
 {
 	Ptr<World> world = GetWorld();
 

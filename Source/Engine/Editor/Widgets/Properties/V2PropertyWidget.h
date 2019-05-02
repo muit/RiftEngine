@@ -15,7 +15,7 @@ class V2PropertyWidget : public PropertyWidget {
 
 protected:
 
-	virtual void Tick() override;
+	virtual void Tick(float) override;
 
 	TPropertyHandle<v2>* GetHandle() const {
 		return dynamic_cast<TPropertyHandle<v2>*>(prop.get());

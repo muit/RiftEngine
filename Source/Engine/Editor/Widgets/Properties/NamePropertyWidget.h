@@ -23,7 +23,7 @@ public:
 
 protected:
 
-	virtual void Tick() override;
+	virtual void Tick(float) override;
 
 	TPropertyHandle<Name>* GetHandle() const {
 		return dynamic_cast<TPropertyHandle<Name>*>(prop.get());

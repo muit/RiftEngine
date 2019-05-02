@@ -12,13 +12,12 @@ class Window : public Widget {
 protected:
 
 	bool bOpen;
-	Name idName;
 	String displayName;
 	ImGuiWindowFlags windowFlags;
 
 
 	virtual void Build() override;
-	virtual void Tick() override;
+	virtual void Tick(float deltaTime) override;
 
 	void BeginWindow();
 	void EndWindow();
@@ -30,6 +29,6 @@ public:
 	bool* IsOpenedPtr() { return &bOpen; }
 
 	const String& GetDisplayName() const {
-		return displayName.empty()? idName.ToString() : displayName;
+		return displayName.empty()? GetName().ToString() : displayName;
 	}
 };

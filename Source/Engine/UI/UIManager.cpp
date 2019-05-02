@@ -4,6 +4,7 @@
 #include <imgui/imgui_impl_sdl.h>
 
 #include "Core/Log.h"
+#include "Tools/Profiler.h"
 
 
 void UIManager::Prepare()
@@ -25,8 +26,7 @@ void UIManager::OnSDLEvent(SDL_Event* ev)
 
 void UIManager::Tick(float deltaTime)
 {
-	ZoneScopedNC("UI", 0x459bd1);
-	ImGui::NewFrame();
+	ScopedGameZone("UI");
 
 #if WITH_EDITOR
 	editor->Tick(deltaTime);

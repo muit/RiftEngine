@@ -28,7 +28,7 @@ protected:
 
 	virtual void Build() override;
 
-	virtual void Tick() override;
+	virtual void Tick(float deltaTime) override;
 
 	void OnEntityClicked(EntityId entity);
 };
