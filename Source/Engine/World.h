@@ -5,7 +5,6 @@
 #include "Assets/Scene.h"
 
 #include "Core/Assets/AssetManager.h"
-#include "Physics/PhysicsManager.h"
 #include "ECS/ECSManager.h"
 #include "Rendering/Frame.h"
 #include "Rendering/Commands/RenderCommand.h"
@@ -21,7 +20,6 @@ class World : public Object {
 
 	TAssetPtr<Scene> scene;
 
-	GlobalPtr<PhysicsManager> physics;
 	GlobalPtr<ECSManager> ecs;
 
 
@@ -34,7 +32,6 @@ public:
 	void EndPlay() { ecs->EndPlay(); }
 
 	TAssetPtr<Scene> GetActiveScene() const { return scene; }
-	Ptr<PhysicsManager> GetPhysics()   const { return physics; }
 	Ptr<ECSManager> GetECS() const { return ecs; }
 
 	FORCEINLINE bool IsEditor() {

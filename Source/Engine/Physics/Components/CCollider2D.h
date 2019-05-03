@@ -2,8 +2,10 @@
 #pragma once
 
 #include "CoreStruct.h"
+#include <Box2D/Dynamics/b2Fixture.h>
+
 #include "ECS/Component.h"
-#include "Physics/Physics2D.h"
+#include "Physics/Fixture2D.h"
 
 
 enum class EColliderFlag : u8 {
@@ -20,11 +22,20 @@ public:
 	// #TODO: Add support for reflected enums
 	EMobilityType mobility = EMobilityType::Movable;
 
+	// The density, usually in kg/m^2.
 	PROP(float, density, DetailsEdit);
 	float density = 1;
 
-	PROP(bool, bTrigger, DetailsEdit);
-	bool bTrigger = false;
+	// The friction coefficient, usually in the range [0,1].
+	PROP(float, friction, DetailsEdit);
+	float friction = 0.2f;
+
+	// The restitution (elasticity) usually in the range [0,1].
+	PROP(float, restitution, DetailsEdit);
+	float restitution = 0.f;
+
+	PROP(bool, bIsTrigger, DetailsEdit);
+	bool bIsTrigger = false;
 
 	PROP(bool, bAffectedByGravity, DetailsEdit);
 	bool bAffectedByGravity = true;
@@ -34,26 +45,12 @@ public:
 
 	u8 flags = u8(EColliderFlag::PendingCreation);
 
-	/** Body used when this entity doesn't have a Rigidbody */
-	Body2D staticBody;
 	Fixture2D fixture;
 
 
 public:
 
 	CCollider2D() = default;
-	CCollider2D(CCollider2D&&) = default;
-	CCollider2D& operator=(CCollider2D&&) = default;
-	CCollider2D(const CCollider2D& other) { CopyFrom(other); }
-	CCollider2D& operator=(const CCollider2D& other) { CopyFrom(other); }
-
-	virtual void SetupProperties()
-	{
-	}
-	virtual void UpdateProperties()
-	{
-	}
-
 
 	bool IsDirty() const { return (flags & u8(EColliderFlag::Dirty)) >= 0; }
 
@@ -64,15 +61,13 @@ protected:
 		flags |= u8(EColliderFlag::Dirty);
 	}
 
-private:
+public:
 
-	void CopyFrom(const CCollider2D& other)
+	virtual void FillDefinition(b2FixtureDef& def, Shape* shape) const
 	{
-		density            = other.density;
-		bAffectedByGravity = other.bAffectedByGravity;
-		bTrigger           = other.bTrigger;
-		bFixedRotation     = other.bFixedRotation;
-		flags = other.flags | u8(EColliderFlag::PendingCreation) | u8(EColliderFlag::Dirty);
-		staticBody = {};
+		def.density = density;
+		def.friction = friction;
+		def.restitution = restitution;
+		def.isSensor = bIsTrigger;
 	}
 };

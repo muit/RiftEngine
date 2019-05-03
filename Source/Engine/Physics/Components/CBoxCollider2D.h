@@ -2,6 +2,7 @@
 #pragma once
 
 #include "CoreStruct.h"
+#include "../PhysicsTypes.h"
 #include "CCollider2D.h"
 
 
@@ -22,12 +23,11 @@ public:
 		size = inSize;
 	}
 
-	virtual void SetupProperties(Fixture2D::Parameters& params)
+	virtual void FillDefinition(b2FixtureDef& def, Shape* shape) const override
 	{
+		CCollider2D::FillDefinition(def, shape);
 
-	}
-
-	virtual void UpdateProperties()
-	{
+		PolygonShape* pShape = dynamic_cast<PolygonShape*>(shape);
+		pShape->SetAsBox(size.x, size.y);
 	}
 };

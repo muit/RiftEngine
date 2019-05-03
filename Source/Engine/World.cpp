@@ -7,8 +7,6 @@ void World::Initialize()
 {
 	Log::Message("World Start-Up");
 
-	physics = Create<PhysicsManager>(Self());
-	physics->Initialize();
 	ecs = Create<ECSManager>(Self());
 
 	scene = { "empty_scene.meta" };

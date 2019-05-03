@@ -4,7 +4,7 @@
 #include "ECSManager.h"
 
 
-Ptr<ECSManager> System::ECS()
+Ptr<ECSManager> System::ECS() const
 {
 	return GetOwner().Cast<ECSManager>();
 }

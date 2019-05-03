@@ -22,14 +22,7 @@ struct Transform
 	Transform(v3 location) : location{ location }, rotation{ Quat::Identity() }, scale{ v3::One() } {};
 
 
-	FORCEINLINE Rotator GetRotation() {
-		return rotation.ToRotator();
-	}
-
-	//v3 GetWorldLocation(const Transform& parent) { return location; }
-	//v3 GetWorldRotation() { return value.rotation(); }
-	//v3 GetWorldScale()    { return value.rotation(); }
-
+	FORCEINLINE Rotator GetRotation() { return rotation.ToRotator(); }
 	void SetRotation(const Rotator& angles) {
 		rotation = Quat::FromRotator(angles);
 	}
@@ -37,17 +30,19 @@ struct Transform
 	bool Serialize(class Archive& ar, const char* name);
 
 
-	Matrix4f ToMatrix() const {
+	Matrix4f ToMatrix() const
+	{
 		// Scale -> Rotate -> Translate
 		return glm::translate(location) * glm::mat4_cast(rotation) * glm::scale(scale);
 	}
 
-	Matrix4f ToInverseMatrix() const { return ToMatrix().Inverse(); }
-
-	Matrix4f ToMatrixNoScale() const {
+	Matrix4f ToMatrixNoScale() const
+	{
 		// Rotate -> Translate
-		return glm::translate(glm::mat4_cast(rotation), location);
+		return glm::translate(location) * glm::mat4_cast(rotation);
 	}
+
+	Matrix4f ToInverseMatrix() const { return ToMatrix().Inverse(); }
 
 	Transform Inverse()
 	{
@@ -82,6 +77,13 @@ struct Transform
 		v3 skew;
 		v4 perpective;
 		glm::decompose(m, scale, rotation, location, skew, perpective);
+	}
+
+	Transform operator*(const Transform& other) const
+	{
+		Transform t;
+		t.SetFromMatrix(ToMatrix() * other.ToMatrix());
+		return t;
 	}
 
 #if WITH_EDITOR

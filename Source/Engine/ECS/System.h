@@ -19,5 +19,5 @@ public:
 
 protected:
 
-	Ptr<ECSManager> ECS();
+	Ptr<ECSManager> ECS() const;
 };
