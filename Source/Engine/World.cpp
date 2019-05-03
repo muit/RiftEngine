@@ -11,7 +11,7 @@ void World::Initialize()
 	physics->Initialize();
 	ecs = Create<ECSManager>(Self());
 
-	scene = { "scene.meta" };
+	scene = { "empty_scene.meta" };
 	scene.LoadOrCreate();
 
 	ecs->BeginPlay();

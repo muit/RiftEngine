@@ -213,7 +213,7 @@ LinearColor LinearColor::LinearRGBToHSV() const
 	const float RGBRange = RGBMax - RGBMin;
 
 	const float hue = (RGBMax == RGBMin ? 0.0f :
-					   RGBMax == r    ?  Math::Fmod((((g - b) / RGBRange) * 60.0f) + 360.0f, 360.0f) :
+					   RGBMax == r    ?  Math::Mod((((g - b) / RGBRange) * 60.0f) + 360.0f, 360.0f) :
 					   RGBMax == g    ?             (((b - r) / RGBRange) * 60.0f) + 120.0f :
 					   RGBMax == b    ?             (((r - g) / RGBRange) * 60.0f) + 240.0f :
 					   0.0f);
@@ -284,7 +284,7 @@ LinearColor LinearColor::LerpUsingHSV( const LinearColor& From, const LinearColo
 
 	float NewHue = Math::Lerp( FromHue, ToHue, Progress );
 
-	NewHue = Math::Fmod( NewHue, 360.0f );
+	NewHue = Math::Mod( NewHue, 360.0f );
 	if( NewHue < 0.0f )
 	{
 		NewHue += 360.0f;

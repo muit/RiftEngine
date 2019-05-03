@@ -94,7 +94,7 @@ Quat Quat::LookAt(const v3& origin, const v3& dest)
 float Rotator::ClampAxis(float Angle)
 {
 	// returns Angle in the range (-360,360)
-	Angle = Math::Fmod(Angle, 360.f);
+	Angle = Math::Mod(Angle, 360.f);
 
 	if (Angle < 0.f)
 	{

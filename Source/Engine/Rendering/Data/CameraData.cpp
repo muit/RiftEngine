@@ -6,7 +6,7 @@
 Matrix4f CameraData::GetViewMatrix()
 {
 	// Translate -> Rotate
-	return Matrix4f(glm::mat4_cast(transform.rotation) * glm::translate(transform.location)).Inverse();
+	return glm::lookAt(transform.location, transform.location + transform.GetForward(), v3::Up);
 }
 
 Matrix4f CameraData::GetProjectionMatrix(const v2_u32& screenSize)

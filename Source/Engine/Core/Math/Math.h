@@ -33,6 +33,36 @@ struct Math
 	template<typename Type>
 	static FORCEINLINE constexpr Type Clamp(Type a, Type min, Type max) { return Max(min, Min(a, max)); }
 
+	static FORCEINLINE float ClampAngle(float a) {
+		const float cAngle = Mod(a, 360.f); //(-360,360)
+		return cAngle + (cAngle < 0.f) * 360.f; //[0, 360)
+	}
+
+	static FORCEINLINE float NormalizeAngle(float a)
+	{
+		a = ClampAngle(a); //[0,360)
+
+		if (a > 180.f) a -= 360.f;
+		return a; //(-180, 180]
+	}
+
+	static FORCEINLINE float ClampAngle(float a, float min, float max) {
+		const float maxDelta        = ClampAngle(max - min) * 0.5f;    // 0..180
+		const float rangeCenter     = ClampAngle(min + maxDelta);      // 0..360
+		const float deltaFromCenter = NormalizeAngle(a - rangeCenter); // -180..180
+
+		// maybe clamp to nearest edge
+		if (deltaFromCenter > maxDelta)
+		{
+			return NormalizeAngle(rangeCenter + maxDelta);
+		}
+		else if (deltaFromCenter < -maxDelta)
+		{
+			return NormalizeAngle(rangeCenter - maxDelta);
+		}
+		return NormalizeAngle(a); // Already in range
+	}
+
 	/** Computes absolute value in a generic way */
 	template<typename Type>
 	static FORCEINLINE constexpr Type Abs(const Type a)
@@ -190,8 +220,11 @@ struct Math
 		return (T)(A + Alpha * (B - A));
 	}
 
-	static float Fmod(float a, float b) {
-		return std::fmod(a, b);
+	static float Mod(float a, float b) { return std::fmod(a, b); }
+
+	template<typename Type>
+	static constexpr auto Mod(Type a, Type b) -> decltype(EnableIf<eastl::is_integral_v<Type>, Type>::type) {
+		return a % b;
 	}
 
 	/**
