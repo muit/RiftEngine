@@ -4,7 +4,7 @@
 
 #include "CoreObject.h"
 #include "eastl/unique_ptr.h"
-#include <entt/entity/registry.hpp>
+#include <entt/entt.hpp>
 
 #include "EntityId.h"
 #include "Component.h"
@@ -23,8 +23,9 @@ class Archive;
 class ECSManager : public Object {
 	CLASS(ECSManager, Object)
 
+	using Registry = entt::registry<EntityId>;
 
-	entt::Registry<EntityId> registry;
+	Registry registry;
 
 	/** List of Guids pointing to entity Ids */
 	eastl::unordered_map<Guid, EntityId> guidEntityCache;
@@ -104,11 +105,11 @@ private:
 			ar.EndObject();
 		}
 		// Saving
-		else if (registry.has<CompType>(entity))
+		else if (Has<CompType>(entity))
 		{
 			ar.BeginObject(CompType::StaticStruct()->GetSName());
 			{
-				CompType& comp = registry.get<CompType>(entity);
+				CompType& comp = Get<CompType>(entity);
 				comp.SerializeReflection(ar);
 
 				if constexpr (ClassTraits<CompType>::HasPostSerialize)
@@ -149,6 +150,7 @@ public:
 
 		return registry.assign<C>(entity, eastl::forward<Args>(args)...);
 	}
+
 
 	template<typename Component>
 	Component& Get(const EntityId entity) {

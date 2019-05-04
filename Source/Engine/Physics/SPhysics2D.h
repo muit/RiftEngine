@@ -12,9 +12,6 @@
 #include "Body2D.h"
 
 
-using BoxView = entt::View<EntityId, CTransform, CBoxCollider2D>;
-
-
 class SPhysics2D : public System {
 	CLASS(SPhysics2D, System)
 
@@ -35,7 +32,7 @@ private:
 
 	void Step(float deltaTime);
 
-	void UploadDataToPhysics();
+	//void UploadDataToPhysics();
 	void ApplyPhysicsData();
 
 	void CreateBodies();

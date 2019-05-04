@@ -42,7 +42,7 @@ void SceneEntities::Tick(float)
 				{
 					for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; ++i)
 					{
-						EntityId entity = *(view.cbegin() + i);
+						EntityId entity = *(view.begin() + i);
 						String entName = view.get(entity).name.ToString();
 
 						ImGui::PushID(i);

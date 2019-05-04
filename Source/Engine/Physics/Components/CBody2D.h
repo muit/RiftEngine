@@ -13,7 +13,9 @@ class CBody2D : public Component {
 public:
 
 	// #TODO: Add support for reflected enums
-	EMobilityType mobility = EMobilityType::Movable;
+	//EMobilityType mobility = EMobilityType::Movable;
+	PROP(u8, mobility)
+	u8 mobility = 2;
 
 	PROP(bool, bAffectedByGravity, DetailsEdit);
 	bool bAffectedByGravity = true;

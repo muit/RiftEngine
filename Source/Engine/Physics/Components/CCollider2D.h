@@ -19,8 +19,6 @@ class CCollider2D : public Component {
 	STRUCT(CCollider2D, Component)
 
 public:
-	// #TODO: Add support for reflected enums
-	EMobilityType mobility = EMobilityType::Movable;
 
 	// The density, usually in kg/m^2.
 	PROP(float, density, DetailsEdit);

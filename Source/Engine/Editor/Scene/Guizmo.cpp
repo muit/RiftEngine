@@ -68,7 +68,7 @@ void Guizmo::Tick(float deltaTime)
 		{
 			Matrix4f matrix = transform.transform.ToMatrix();
 
-			ImGuizmo::DrawCube(view.Data(), projection.Data(), matrix.Data());
+			//ImGuizmo::DrawCube(view.Data(), projection.Data(), matrix.Data());
 
 			ImGuizmo::Manipulate(view.Data(), projection.Data(), static_cast<ImGuizmo::OPERATION>(editMode), ImGuizmo::LOCAL, matrix.Data(), nullptr, nullptr);
 			if (ImGuizmo::IsUsing())

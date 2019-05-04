@@ -33,7 +33,7 @@ void SPhysics2D::Tick(float deltaTime)
 
 	Step(deltaTime);
 
-	//ApplyPhysicsData(view);
+	ApplyPhysicsData();
 }
 
 /*void SPhysics2D::UploadDataToPhysics(BoxView& view)
@@ -47,16 +47,40 @@ void SPhysics2D::Tick(float deltaTime)
 
 		}
 	});
-}
-
-void SPhysics2D::ApplyPhysicsData(BoxView& view)
-{
-	view.each([](EntityId e, CTransform& t, CBoxCollider2D& collider)
-	{
-		// Apply transformations
-		//t.GetWorldTransform()
-	});
 }*/
+
+void SPhysics2D::ApplyPhysicsData()
+{
+	const auto ecs = ECS();
+	auto view = ecs->View<CTransform, CBoxCollider2D>();
+
+	for (auto entity : view)
+	{
+		//CTransform& transform    = view.get<CTransform>(entity);
+		CBoxCollider2D& collider = view.get<CBoxCollider2D>(entity);
+
+		EntityId bodyEntity = FindBodyOwner(entity);
+
+		// No body? No fixture
+		if (bodyEntity == NoEntity)
+			return;
+
+		CBody2D& body = ecs->Get<CBody2D>(bodyEntity);
+
+		Fixture2D & fixture = collider.fixture;
+		assert(fixture.IsValid());
+
+		// Fixture on the same entity, position is the same
+		if (bodyEntity == entity)
+		{
+
+		}
+		else
+		{
+			// #TODO: Update relative transform
+		}
+	}
+}
 
 void SPhysics2D::CreateBodies()
 {
