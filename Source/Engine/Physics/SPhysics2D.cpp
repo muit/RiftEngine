@@ -9,12 +9,16 @@
 
 #include "PhysicsTypes.h"
 #include "Components/CBody2D.h"
+#include "Gameplay/Singletons/CPhysicsWorld.h"
 
 
 void SPhysics2D::BeginPlay()
 {
 	Super::BeginPlay();
-	world = { ToB2Vec2({0.0f, 10.f}) };
+
+	physicsWorld = ECS()->FindSingleton<CPhysicsWorld>();
+
+	world = { b2Vec2{ physicsWorld->gravity } };
 }
 
 void SPhysics2D::Tick(float deltaTime)
@@ -52,12 +56,12 @@ void SPhysics2D::Tick(float deltaTime)
 void SPhysics2D::ApplyPhysicsData()
 {
 	const auto ecs = ECS();
-	auto view = ecs->View<CTransform, CBoxCollider2D>();
+	auto boxView = ecs->View<CTransform, CBoxCollider2D>();
 
-	for (auto entity : view)
+	for (auto entity : boxView)
 	{
 		//CTransform& transform    = view.get<CTransform>(entity);
-		CBoxCollider2D& collider = view.get<CBoxCollider2D>(entity);
+		CBoxCollider2D& collider = boxView.get<CBoxCollider2D>(entity);
 
 		EntityId bodyEntity = FindBodyOwner(entity);
 
@@ -80,6 +84,18 @@ void SPhysics2D::ApplyPhysicsData()
 			// #TODO: Update relative transform
 		}
 	}
+
+	auto bodyView = ecs->View<CTransform, CBody2D>();
+	b2World* worldPtr = &world;
+	bodyView.each([worldPtr](EntityId e, CTransform& tComp, CBody2D& bodyComp)
+	{
+		Body2D& body = bodyComp.body;
+		if (body.IsValid())
+		{
+			v2 position = body.GetLocation();
+			tComp.GetWLocation() = v3{ position.x, 0.f, position.y };
+		}
+	});
 }
 
 void SPhysics2D::CreateBodies()
@@ -93,7 +109,7 @@ void SPhysics2D::CreateBodies()
 		if (!body.IsValid())
 		{
 			b2BodyDef bodyDef;
-			bodyDef.position = ToB2Vec2(tComp.GetWLocation());
+			bodyDef.position = tComp.GetWLocation();
 			bodyDef.type = (b2BodyType)bodyComp.mobility;
 			body.Initialize(*worldPtr, bodyDef);
 		}
@@ -154,6 +170,13 @@ EntityId SPhysics2D::FindBodyOwner(EntityId entity) const
 
 void SPhysics2D::Step(float deltaTime)
 {
+	// Update gravity if changed
+	const v2 currentGravity = world.GetGravity();
+	if (physicsWorld && physicsWorld->gravity != currentGravity)
+	{
+		world.SetGravity(currentGravity);
+	}
+
 	const int32 velocityIterations = 6;
 	const int32 positionIterations = 2;
 	world.Step(deltaTime, velocityIterations, positionIterations);

@@ -11,6 +11,9 @@ class CBoxCollider2D : public CCollider2D {
 
 protected:
 
+	PROP(v2, offset, DetailsEdit);
+	v2 offset;
+
 	PROP(v2, size, DetailsEdit);
 	v2 size;
 

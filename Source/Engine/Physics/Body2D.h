@@ -31,6 +31,8 @@ public:
 
 	void SetMobility(EMobilityType mobility);
 
+	FORCEINLINE v2 GetLocation() { return bodyPtr->GetPosition(); }
+
 	bool IsValid() const { return bodyPtr != nullptr; }
 	b2Body* GetRaw() const { return bodyPtr; }
 

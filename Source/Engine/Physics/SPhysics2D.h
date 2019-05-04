@@ -18,10 +18,12 @@ class SPhysics2D : public System {
 
 	b2World world;
 
+	// Cached
+	class CPhysicsWorld* physicsWorld = nullptr;
 
 public:
 
-	SPhysics2D() : Super(), world{ToB2Vec2({0.0f, 10.f})} {}
+	SPhysics2D() : Super(), world{b2Vec2{0.0f, 10.f}} {}
 
 protected:
 
@@ -41,7 +43,4 @@ private:
 private:
 
 	EntityId FindBodyOwner(EntityId entity) const;
-
-	static b2Vec2 ToB2Vec2(v2 vector) { return { vector.x, vector.y }; }
-	static v2     ToV2(b2Vec2 vector) { return { vector.x, vector.y }; }
 };

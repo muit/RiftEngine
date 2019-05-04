@@ -164,6 +164,7 @@ void ECSManager::RegistrySystems()
 {
 	// #TODO: Externalize system registry
 	RegistrySystem<SEditorCamera>();
+	RegistrySystem<SPhysics2D>();
 
 	// Rendering
 	RegistrySystem<SRenderCamera>();

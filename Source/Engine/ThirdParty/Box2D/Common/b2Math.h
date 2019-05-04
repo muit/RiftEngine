@@ -21,6 +21,7 @@
 
 #include "Box2D/Common/b2Settings.h"
 #include <math.h>
+#include "Core/Math/Vector.h"
 
 /// This function is used to ensure that a floating point number is not a NaN or infinity.
 inline bool b2IsValid(float32 x)
@@ -40,6 +41,11 @@ struct b2Vec2
 	/// Construct using coordinates.
 	b2Vec2(float32 xIn, float32 yIn) : x(xIn), y(yIn) {}
 
+	// V2 conversions
+	b2Vec2(v2 other) { x = other.x; y = other.y; }
+	b2Vec2& operator=(v2 other) { x = other.x; y = other.y; return *this; }
+	operator v2() const { return { x, y }; }
+
 	/// Set this vector to all zeros.
 	void SetZero() { x = 0.0f; y = 0.0f; }
 
@@ -48,7 +54,7 @@ struct b2Vec2
 
 	/// Negate this vector.
 	b2Vec2 operator -() const { b2Vec2 v; v.Set(-x, -y); return v; }
-	
+
 	/// Read from and indexed element.
 	float32 operator () (int32 i) const
 	{
@@ -66,7 +72,7 @@ struct b2Vec2
 	{
 		x += v.x; y += v.y;
 	}
-	
+
 	/// Subtract a vector from this vector.
 	void operator -= (const b2Vec2& v)
 	{
@@ -118,6 +124,7 @@ struct b2Vec2
 	{
 		return b2Vec2(-y, x);
 	}
+
 
 	float32 x, y;
 };

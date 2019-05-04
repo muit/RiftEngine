@@ -22,8 +22,11 @@ class vec : public glm::vec<L, T> {
 
 public:
 
-	T*       Data()       { return &x; }
-	const T* Data() const { return &x; }
+	FORCEINLINE T Length() const { return glm::length<vec<L, T>>(*this); }
+	FORCEINLINE T LengthSqrt() const { return glm::length2<vec<L, T>>(*this); }
+
+	FORCEINLINE T*       Data()       { return &x; }
+	FORCEINLINE const T* Data() const { return &x; }
 
 	static constexpr vec<L, T> Zero() { return glm::zero<vec<L, T>>(); }
 	static constexpr vec<L, T> One()  { return glm::one<vec<L, T>>(); }

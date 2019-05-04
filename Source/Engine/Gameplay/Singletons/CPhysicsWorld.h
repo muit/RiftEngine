@@ -10,5 +10,5 @@ class CPhysicsWorld : public Component {
 public:
 
 	PROP(v2, gravity)
-	v2 gravity {0.0f, 10.f};
+	v2 gravity {0.0f, -10.f};
 };
