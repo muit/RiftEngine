@@ -47,12 +47,12 @@ private:
 
 	void Loop(bool& bFinish);
 
+public:
+
 	void Shutdown() {
+		world->Shutdown();
 		SDL_Quit();
 	}
-
-
-public:
 
 	Ptr<InputManager> GetInput()        const { return input; }
 	Ptr<AssetManager> GetAssetManager() const { return assetManager; }

@@ -76,9 +76,6 @@
       "CBody2D": {
         "mobility": 0
       },
-      "CBoxCollider2D": {
-        "size": { "x": 3, "y": 1 }
-      },
       "id": {
         "a": 488110,
         "b": 3625075,

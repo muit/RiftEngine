@@ -11,6 +11,12 @@
 class SRenderCamera : public System {
 	CLASS(SRenderCamera, System)
 
+public:
+
+	SRenderCamera() : Super() { bTickOnEditor = true; }
+
+protected:
+
 	virtual void Tick(float deltaTime) override;
 
 private:

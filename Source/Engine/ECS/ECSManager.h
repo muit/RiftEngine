@@ -14,7 +14,6 @@
 #include "Core/Events/Broadcast.h"
 
 
-
 //DECLARE_REFLECTION_TYPE(EntityId);
 
 
@@ -36,26 +35,22 @@ class ECSManager : public Object {
 
 public:
 
-
-	void BeginPlay() {
+	void Initialize()
+	{
 		RegistrySingletons();
 		RegistrySystems();
-
-		IterateSystems([](Ptr<System> system) {
-			system->BeginPlay();
-		});
 	}
 
-	void Tick(float deltaTime) {
-		IterateSystems([deltaTime](Ptr<System> system) {
-			system->Tick(deltaTime);
-		});
-	}
+	void BeginPlay();
 
-	void EndPlay() {
+	void Tick(float deltaTime);
+
+	void EndPlay()
+	{
 		IterateSystems([](Ptr<System> system) {
 			system->EndPlay();
 		});
+		systems.Empty(false);
 	}
 
 

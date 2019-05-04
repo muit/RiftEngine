@@ -59,6 +59,12 @@ void SEditorCamera::BeginPlay()
 
 void SEditorCamera::Tick(float deltaTime)
 {
+	// Only tick on editor
+	if (!GetWorld()->IsEditor())
+	{
+		return;
+	}
+
 	const v3 finalRotateDelta = rotationDelta * rotateSpeed * deltaTime;
 	const v3 finalMoveDelta = movementDelta * deltaTime;
 

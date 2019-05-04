@@ -15,7 +15,7 @@ class SRenderMeshes : public System {
 
 public:
 
-	SRenderMeshes() : Super(), texture{ "test.png.meta" } {}
+	SRenderMeshes() : Super(), texture{ "test.png.meta" } { bTickOnEditor = true; }
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float /*deltaTime*/) override;

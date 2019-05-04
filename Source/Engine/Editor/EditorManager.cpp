@@ -117,6 +117,22 @@ void EditorManager::TickMainNavBar()
 			ImGui::EndMenu();
 		}
 
+		auto world = GetWorld();
+		if (world->IsEditor())
+		{
+			if (ImGui::MenuItem("Play"))
+			{
+				world->BeginPlay();
+			}
+		}
+		else if (world->IsPIE())
+		{
+			if (ImGui::MenuItem("Stop"))
+			{
+				world->EndPlay();
+			}
+		}
+
 		ImGui::EndMainMenuBar();
 	}
 }

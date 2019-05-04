@@ -12,6 +12,10 @@ class System : public Object {
 
 public:
 
+	PROP(bool, bTickOnEditor)
+	bool bTickOnEditor = false;
+
+
 	virtual void BeginPlay() {}
 	virtual void Tick(float /*deltaTime*/) {}
 	virtual void EndPlay() {}

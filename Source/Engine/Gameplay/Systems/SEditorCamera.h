@@ -13,7 +13,8 @@ class SEditorCamera : public System {
 
 	Ptr<InputManager> input;
 
-	EntityId camera;
+	// Cached camera entity
+	EntityId camera = NoEntity;
 
 	float forwardSpeed = 10.f;
 	float sideSpeed = 5.f;
@@ -25,7 +26,7 @@ class SEditorCamera : public System {
 
 public:
 
-	SEditorCamera() : Super() {}
+	SEditorCamera() : Super() { bTickOnEditor = true; }
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float deltaTime) override;

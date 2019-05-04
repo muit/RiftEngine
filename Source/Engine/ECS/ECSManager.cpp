@@ -2,6 +2,7 @@
 
 #include "ECSManager.h"
 
+#include "World.h"
 #include "Core/Serialization/Archive.h"
 
 #include "Gameplay/Components/CEntity.h"
@@ -24,6 +25,26 @@
 #include "Gameplay/Singletons/CActiveCamera.h"
 #include "Gameplay/Singletons/CPhysicsWorld.h"
 
+
+void ECSManager::BeginPlay()
+{
+	IterateSystems([](Ptr<System> system) {
+		system->BeginPlay();
+	});
+}
+
+void ECSManager::Tick(float deltaTime)
+{
+	auto world = GetWorld();
+
+	IterateSystems([world, deltaTime](Ptr<System> system)
+	{
+		if (!world->IsEditor() || system->bTickOnEditor)
+		{
+			system->Tick(deltaTime);
+		}
+	});
+}
 
 EntityId ECSManager::CreateEntity(Name entityName, bool bTransient /*= false*/)
 {
