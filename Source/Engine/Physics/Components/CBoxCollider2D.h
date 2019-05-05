@@ -15,7 +15,7 @@ protected:
 	v2 offset;
 
 	PROP(v2, size, DetailsEdit);
-	v2 size;
+	v2 size {1.f, 1.f};
 
 
 public:

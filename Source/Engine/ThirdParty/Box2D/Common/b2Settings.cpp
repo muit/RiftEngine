@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include "Core/Log.h"
 
 b2Version b2_version = {2, 3, 2};
 
@@ -39,6 +40,6 @@ void b2Log(const char* string, ...)
 {
 	va_list args;
 	va_start(args, string);
-	vprintf(string, args);
+	Log::Message(string, args);
 	va_end(args);
 }

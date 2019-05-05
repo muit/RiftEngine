@@ -50,7 +50,10 @@ void JsonArchive::Serialize(const char* name, bool& val)
 	if (IsLoading())
 	{
 		const Json& field = Data()[name];
-		val = field.is_boolean() ? field.get<bool>() : false;
+		if (field.is_boolean())
+		{
+			val = field.get<bool>();
+		}
 	}
 	else
 	{
@@ -63,7 +66,10 @@ void JsonArchive::Serialize(const char* name, u8& val)
 	if (IsLoading())
 	{
 		const Json& field = Data()[name];
-		val = field.is_number_unsigned() ? field.get<u8>() : 0;
+		if (field.is_number_unsigned())
+		{
+			val = field.get<u8>();
+		}
 	}
 	else
 	{
@@ -76,7 +82,10 @@ void JsonArchive::Serialize(const char* name, i32& val)
 	if (IsLoading())
 	{
 		const Json& field = Data()[name];
-		val = field.is_number_integer() ? field.get<i32>() : 0;
+		if (field.is_number_unsigned())
+		{
+			val = field.get<i32>();
+		}
 	}
 	else
 	{
@@ -89,7 +98,10 @@ void JsonArchive::Serialize(const char* name, u32& val)
 	if (IsLoading())
 	{
 		const Json& field = Data()[name];
-		val = field.is_number_unsigned() ? field.get<u32>() : 0;
+		if (field.is_number_unsigned())
+		{
+			val = field.get<u32>();
+		}
 	}
 	else
 	{
@@ -102,7 +114,10 @@ void JsonArchive::Serialize(const char* name, float& val)
 	if (IsLoading())
 	{
 		const Json& field = Data()[name];
-		val = field.is_number_float() ? field.get<float>() : 0.f;
+		if (field.is_number())
+		{
+			val = field.get<float>();
+		}
 	}
 	else
 	{
@@ -115,7 +130,10 @@ void JsonArchive::Serialize(const char* name, String& val)
 	if (IsLoading())
 	{
 		const Json& field = Data()[name];
-		val = field.is_string() ? field.get<String>() : String{};
+		if (field.is_string())
+		{
+			val = field.get<String>();
+		}
 	}
 	else
 	{

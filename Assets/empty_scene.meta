@@ -58,7 +58,7 @@
           "transform": {
             "location": {
               "x": 0.0,
-              "y": 3.2432231e-07,
+              "y": 0.0,
               "z": 0.0
             },
             "rotation": {
@@ -121,6 +121,12 @@
               "z": 0.39987907
             }
           }
+        },
+        "CBody2D": {
+          "mobility": 0
+        },
+        "CBoxCollider2D": {
+          "size": { "x": 1, "y": 1 }
         },
         "id": {
           "a": 404694,

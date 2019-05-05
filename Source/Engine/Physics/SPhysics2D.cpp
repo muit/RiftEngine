@@ -36,6 +36,7 @@ void SPhysics2D::Tick(float deltaTime)
 
 	ApplyPhysicsData();
 
+	Log::Message("Physics Dump");
 	world->Dump();
 }
 

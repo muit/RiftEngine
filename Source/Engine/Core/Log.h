@@ -16,7 +16,7 @@ namespace Log {
 		{
 			if constexpr (sizeof...(args) > 0)
 			{
-				String msg = CString::Printf(format, eastl::forward<Args>(args)...).c_str();
+				const String msg = CString::Printf(format, eastl::forward<Args>(args)...);
 				TracyMessage(msg.c_str(), msg.size()); // Send to profiler
 				SDL_Log(msg.c_str()); // Send to console
 			}
@@ -29,7 +29,8 @@ namespace Log {
 	}
 
 	inline void Message(const String msg) {
-		Message(msg.c_str());
+		TracyMessage(msg.c_str(), msg.size()); // Send to profiler
+		SDL_Log(msg.c_str()); // Send to console
 	}
 
 	template<typename ...Args>
@@ -37,9 +38,9 @@ namespace Log {
 		if constexpr (sizeof...(args) > 0)
 		{
 			String msg{ "Warning> " };
-			msg.append_sprintf(format, eastl::forward<Args>(args)...).c_str();
+			msg.append_sprintf(format, eastl::forward<Args>(args)...);
 			TracyMessage(msg.c_str(), msg.size()); // Send to profiler
-			SDL_Log(msg.c_str()); // Send to console
+			SDL_LogError(SDL_LOG_CATEGORY_ERROR, msg.c_str()); // Send to console
 		}
 		else
 		{
@@ -59,9 +60,9 @@ namespace Log {
 		if constexpr (sizeof...(args) > 0)
 		{
 			String msg{ "Error> " };
-			msg.append_sprintf(format, eastl::forward<Args>(args)...).c_str();
+			msg.append_sprintf(format, eastl::forward<Args>(args)...);
 			TracyMessage(msg.c_str(), msg.size()); // Send to profiler
-			SDL_Log(msg.c_str()); // Send to console
+			SDL_LogError(SDL_LOG_CATEGORY_ERROR, msg.c_str()); // Send to console
 		}
 		else
 		{
