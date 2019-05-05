@@ -30,4 +30,11 @@ public:
 public:
 
 	CBody2D() = default;
+
+	void FillDefinition(b2BodyDef& def)
+	{
+		def.type = (b2BodyType)mobility;
+		def.gravityScale = bAffectedByGravity ? 1.0f : 0.0f;
+		def.fixedRotation = bFixedRotation;
+	}
 };

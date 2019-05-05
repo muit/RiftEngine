@@ -30,7 +30,7 @@ public:
 	{
 		CCollider2D::FillDefinition(def, shape);
 
-		PolygonShape* pShape = dynamic_cast<PolygonShape*>(shape);
+		auto* pShape = static_cast<PolygonShape*>(shape);
 		pShape->SetAsBox(size.x, size.y);
 	}
 };

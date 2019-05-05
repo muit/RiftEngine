@@ -18,7 +18,7 @@ void SPhysics2D::BeginPlay()
 
 	physicsWorld = ECS()->FindSingleton<CPhysicsWorld>();
 
-	world = { b2Vec2{ physicsWorld->gravity } };
+	world = eastl::make_unique<b2World>(b2Vec2{ physicsWorld->gravity });
 }
 
 void SPhysics2D::Tick(float deltaTime)
@@ -37,18 +37,11 @@ void SPhysics2D::Tick(float deltaTime)
 	ApplyPhysicsData();
 }
 
-/*void SPhysics2D::UploadDataToPhysics(BoxView& view)
+void SPhysics2D::EndPlay()
 {
-	view.each([](EntityId e, CTransform& t, CBoxCollider2D& collider)
-	{
-		// Update transforms
-		if (collider.IsDirty())
-		{
-			// Update body
-
-		}
-	});
-}*/
+	world.reset();
+	Super::EndPlay();
+}
 
 void SPhysics2D::ApplyPhysicsData()
 {
@@ -87,41 +80,42 @@ void SPhysics2D::ApplyPhysicsData()
 void SPhysics2D::CreateBodies()
 {
 	auto view = ECS()->View<CTransform, CBody2D>();
-
-	b2World* worldPtr = &world;
-	view.each([worldPtr](EntityId e, const CTransform& tComp, CBody2D& bodyComp)
+	for (auto entity : view)
 	{
+		CTransform& transform = view.get<CTransform>(entity);
+		CBody2D& bodyComp     = view.get<CBody2D>(entity);
+
 		Body2D& body = bodyComp.body;
 		if (!body.IsValid())
 		{
+			const v3 location = transform.GetWLocation();
 			b2BodyDef bodyDef;
-			bodyDef.position = tComp.GetWLocation();
-			bodyDef.type = (b2BodyType)bodyComp.mobility;
-			body.Initialize(*worldPtr, bodyDef);
+			bodyDef.position = v2{location.x, location.z};
+			bodyComp.FillDefinition(bodyDef);
+			body.Initialize(*world, bodyDef);
 		}
-	});
+	}
 }
 
 void SPhysics2D::CreateFixtures()
 {
 	const auto ecs = ECS();
-
 	auto view = ecs->View<CTransform, CBoxCollider2D>();
 
 	/** For each Collider component, find a body and registry it as a fixture */
 	view.each([this, ecs](EntityId e, const CTransform& tComp, CBoxCollider2D& collider)
 	{
-		EntityId bodyEntity = FindBodyOwner(e);
-
-		// No body? No fixture
-		if (bodyEntity == NoEntity)
-			return;
-
-		CBody2D& body = ecs->Get<CBody2D>(bodyEntity);
-
 		Fixture2D& fixture = collider.fixture;
 		if (!fixture.IsValid())
 		{
+			EntityId bodyEntity = FindBodyOwner(e);
+
+			// No body? No fixture
+			if (bodyEntity == NoEntity)
+				return;
+
+			CBody2D & body = ecs->Get<CBody2D>(bodyEntity);
+
 			PolygonShape shape;
 			b2FixtureDef def;
 			collider.FillDefinition(def, &shape);
@@ -157,13 +151,13 @@ EntityId SPhysics2D::FindBodyOwner(EntityId entity) const
 void SPhysics2D::Step(float deltaTime)
 {
 	// Update gravity if changed
-	const v2 currentGravity = world.GetGravity();
+	const v2 currentGravity = world->GetGravity();
 	if (physicsWorld && physicsWorld->gravity != currentGravity)
 	{
-		world.SetGravity(currentGravity);
+		world->SetGravity(currentGravity);
 	}
 
 	const int32 velocityIterations = 6;
 	const int32 positionIterations = 2;
-	world.Step(deltaTime, velocityIterations, positionIterations);
+	world->Step(deltaTime, velocityIterations, positionIterations);
 }

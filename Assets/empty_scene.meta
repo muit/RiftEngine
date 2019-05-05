@@ -75,7 +75,7 @@
           }
         },
         "CBody2D": {
-          "mobility": 0
+          "mobility": 2
         },
         "id": {
           "a": 488110,

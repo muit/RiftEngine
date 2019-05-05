@@ -51,8 +51,6 @@ public:
 	template<typename ShapeType>
 	v2 GetRelativeLocation()
 	{
-		Shape* shape = fixturePtr->GetShape();
-
 		if constexpr (eastl::is_same<ShapeType, CircleShape>::value)
 		{
 			// Return the center of a circle shape

@@ -16,19 +16,20 @@ class SPhysics2D : public System {
 	CLASS(SPhysics2D, System)
 
 
-	b2World world;
+	eastl::unique_ptr<b2World> world;
 
 	// Cached
 	class CPhysicsWorld* physicsWorld = nullptr;
 
 public:
 
-	SPhysics2D() : Super(), world{b2Vec2{0.0f, 10.f}} {}
+	SPhysics2D() : Super() {}
 
 protected:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float deltaTime) override;
+	virtual void EndPlay() override;
 
 private:
 
