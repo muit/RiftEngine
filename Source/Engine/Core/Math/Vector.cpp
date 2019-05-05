@@ -118,3 +118,8 @@ FORCEINLINE float Rotator::NormalizeAxis(float Angle)
 
 	return Angle;
 }
+
+v3 v2::xz() const
+{
+	return v3{ x, 0.f, y };
+}

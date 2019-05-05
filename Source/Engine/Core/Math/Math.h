@@ -314,4 +314,8 @@ struct Math
 	// also returning BIG_NUMBER causes sequential NaN issues by multiplying
 	// so we hardcode as 0
 	static v3 GetSafeScaleReciprocal(const v3& scale, float tolerance = SMALL_NUMBER);
+
+	static FORCEINLINE bool NearlyEqual(float a, float b, float tolerance = SMALL_NUMBER) {
+		return Abs(b - a) <= tolerance;
+	}
 };

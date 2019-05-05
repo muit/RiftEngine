@@ -38,7 +38,7 @@ private:
 	//void UploadDataToPhysics();
 	void ApplyPhysicsData();
 
-	void CreateBodies();
+	void CreateAndUpdateBodies();
 	void CreateFixtures();
 
 private:

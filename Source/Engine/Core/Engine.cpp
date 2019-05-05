@@ -52,6 +52,7 @@ bool Engine::Start()
 		Loop(bFinish);
 	}
 
+	Shutdown();
 	Log::Message("Closing");
 	return true;
 }

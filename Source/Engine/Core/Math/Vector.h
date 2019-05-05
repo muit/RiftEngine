@@ -25,6 +25,9 @@ public:
 	FORCEINLINE T Length() const { return glm::length<vec<L, T>>(*this); }
 	FORCEINLINE T LengthSqrt() const { return glm::length2<vec<L, T>>(*this); }
 
+	FORCEINLINE T Distance(const vec<L, T>& other) const { return glm::distance<L, T>(*this, other); }
+	FORCEINLINE T DistanceSqrt(const vec<L, T>& other) const { return glm::distance2<L, T>(*this, other); }
+
 	FORCEINLINE T*       Data()       { return &x; }
 	FORCEINLINE const T* Data() const { return &x; }
 
@@ -32,7 +35,12 @@ public:
 	static constexpr vec<L, T> One()  { return glm::one<vec<L, T>>(); }
 };
 
-using v2     = vec<2, float>;
+class v2 : public vec<2, float> {
+	using vec<2, float>::vec;
+public:
+	class v3 xz() const;
+};
+
 using v2_u32 = vec<2, u32>;
 
 class v3 : public vec<3, float> {
@@ -50,6 +58,8 @@ public:
 		y += other.y;
 		z += other.z;
 	}
+
+	FORCEINLINE v2 xz() const { return v2{x, z}; }
 
 	static const v3 Forward;
 	static const v3 Right;

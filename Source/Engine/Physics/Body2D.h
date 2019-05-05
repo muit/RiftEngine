@@ -32,6 +32,11 @@ public:
 	void SetMobility(EMobilityType mobility);
 
 	FORCEINLINE v2 GetLocation() { return bodyPtr->GetPosition(); }
+	FORCEINLINE float GetAngle() { return bodyPtr->GetAngle(); }
+
+	void SetTransform(v2 location, float angle) {
+		bodyPtr->SetTransform(location, angle);
+	}
 
 	bool IsValid() const { return bodyPtr != nullptr; }
 	b2Body* GetRaw() const { return bodyPtr; }

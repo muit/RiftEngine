@@ -26,15 +26,17 @@ void SPhysics2D::Tick(float deltaTime)
 	ScopedStackGameZone();
 	Super::Tick(deltaTime);
 
-	// Body & Fixture creation
+	// Bodies & Fixtures
 	{
-		CreateBodies();
+		CreateAndUpdateBodies();
 		CreateFixtures();
 	}
 
 	Step(deltaTime);
 
 	ApplyPhysicsData();
+
+	world->Dump();
 }
 
 void SPhysics2D::EndPlay()
@@ -47,7 +49,7 @@ void SPhysics2D::ApplyPhysicsData()
 {
 	const auto ecs = ECS();
 
-	// Update bodies
+	// Update bodies from physics
 	auto bodyView = ecs->View<CTransform, CBody2D>();
 	for (auto entity : bodyView)
 	{
@@ -57,11 +59,11 @@ void SPhysics2D::ApplyPhysicsData()
 		if (bodyComp.body.IsValid())
 		{
 			const v2 position = bodyComp.body.GetLocation();
-			transform.SetWLocation({ position.x, 0.f, position.y });
+			transform.SetWLocation(position.xz());
 		}
 	}
 
-	// Update
+	// Update fixtures from physics
 	auto boxView = ecs->View<CTransform, CBoxCollider2D>();
 	for (auto entity : boxView)
 	{
@@ -72,12 +74,12 @@ void SPhysics2D::ApplyPhysicsData()
 			CBoxCollider2D& collider = boxView.get<CBoxCollider2D>(entity);
 
 			const v2 position = collider.fixture.GetWorldLocation<PolygonShape>();
-			transform.SetWLocation({ position.x, 0.f, position.y });
+			transform.SetWLocation(position.xz());
 		}
 	}
 }
 
-void SPhysics2D::CreateBodies()
+void SPhysics2D::CreateAndUpdateBodies()
 {
 	auto view = ECS()->View<CTransform, CBody2D>();
 	for (auto entity : view)
@@ -88,11 +90,26 @@ void SPhysics2D::CreateBodies()
 		Body2D& body = bodyComp.body;
 		if (!body.IsValid())
 		{
-			const v3 location = transform.GetWLocation();
 			b2BodyDef bodyDef;
-			bodyDef.position = v2{location.x, location.z};
+			const v3 location = transform.GetWLocation();
+			bodyDef.position = location.xz();
+			bodyDef.angle = transform.GetWRotation().y;
+
 			bodyComp.FillDefinition(bodyDef);
 			body.Initialize(*world, bodyDef);
+		}
+		else
+		{
+			const v2 location = transform.GetWLocation().xz();
+			const float angle = transform.GetWRotation().y;
+			const v2 currLocation = body.GetLocation();
+			const float currAngle = body.GetAngle();
+
+			// If angle or position changed, update it
+			if (!Math::NearlyEqual(angle, currAngle) || location.DistanceSqrt(currLocation) > Math::SMALL_NUMBER)
+			{
+				body.SetTransform(location, angle);
+			}
 		}
 	}
 }
@@ -151,10 +168,9 @@ EntityId SPhysics2D::FindBodyOwner(EntityId entity) const
 void SPhysics2D::Step(float deltaTime)
 {
 	// Update gravity if changed
-	const v2 currentGravity = world->GetGravity();
-	if (physicsWorld && physicsWorld->gravity != currentGravity)
+	if (physicsWorld)
 	{
-		world->SetGravity(currentGravity);
+		world->SetGravity(physicsWorld->gravity);
 	}
 
 	const int32 velocityIterations = 6;
