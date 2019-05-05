@@ -37,7 +37,6 @@ public:
 	v3& GetWScale() { return transform.scale; }
 	const v3& GetWScale() const { return transform.scale; }
 
-
 	/** RELATIVE GETTERS */
 	v3 GetRLocation(const Ptr<ECSManager>& ecs) const { return GetRelativeTransform(ecs).location; }
 	//void SetRLocation(const Ptr<ECSManager>& ecs, const v3& location) const {}
@@ -45,4 +44,10 @@ public:
 	Quat GetRRotation(const Ptr<ECSManager>& ecs) const { return GetRelativeTransform(ecs).rotation; }
 
 	v3 GetRScale(const Ptr<ECSManager>& ecs) const { return GetRelativeTransform(ecs).scale; }
+
+
+	/** WORLD SETTERS */
+	void SetWLocation(const v3& location) { transform.location = location; }
+	void SetWRotation(const Quat& rotation) { transform.rotation = rotation; }
+	void SetWScale(const v3& scale) { transform.scale = scale; }
 };

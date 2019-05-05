@@ -15,7 +15,7 @@ bool FileSystem::FolderExists(const Path& path)
 	return fs::exists(path) && fs::is_directory(path);
 }
 
-bool FileSystem::LoadJsonFile(Path path, json& result)
+bool FileSystem::LoadJsonFile(Path path, Json& result)
 {
 	ScopedZone("LoadJsonFile", BB45D1);
 
@@ -29,7 +29,7 @@ bool FileSystem::LoadJsonFile(Path path, json& result)
 	return true;
 }
 
-bool FileSystem::SaveJsonFile(Path path, const json& data, i32 indent)
+bool FileSystem::SaveJsonFile(Path path, const Json& data, i32 indent)
 {
 	ScopedZone("SaveJsonFile", BB45D1);
 

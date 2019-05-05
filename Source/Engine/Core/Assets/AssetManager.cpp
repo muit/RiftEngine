@@ -21,7 +21,7 @@ Ptr<AssetData> AssetManager::Load(const AssetInfo& info)
 
 	ScopedZone("Asset Load", D19D45);
 
-	json data;
+	Json data;
 	if (FileSystem::LoadJsonFile(info.GetPath().ToString(), data))
 	{
 		const auto type{ data["asset_type"] };

@@ -9,9 +9,9 @@
 #include "Core/Engine.h"
 
 
-void SEditorCamera::BeginPlay()
+void SEditorCamera::Construct()
 {
-	Super::BeginPlay();
+	Super::Construct();
 
 	input = GEngine->GetInput();
 
@@ -42,7 +42,6 @@ void SEditorCamera::BeginPlay()
 	})
 	.Bind(this, &SEditorCamera::TurnRight);
 
-
 	// If there's no camera, create one
 	auto view = ECS()->View<CEditorCamera>();
 	if (view.empty())
@@ -60,10 +59,10 @@ void SEditorCamera::BeginPlay()
 void SEditorCamera::Tick(float deltaTime)
 {
 	// Only tick on editor
-	if (!GetWorld()->IsEditor())
+	/*if (!GetWorld()->IsEditor())
 	{
 		return;
-	}
+	}*/
 
 	const v3 finalRotateDelta = rotationDelta * rotateSpeed * deltaTime;
 	const v3 finalMoveDelta = movementDelta * deltaTime;

@@ -6,6 +6,7 @@
 #include "Core/Strings/String.h"
 #include "Core/Strings/Name.h"
 #include "Core/Math/Vector.h"
+#include "Core/Files/FileSystem.h"
 
 
 class Scene : public AssetData {
@@ -16,6 +17,12 @@ public:
 	PROP(String, displayName, DetailsEdit)
 	String displayName;
 
+	PROP(Json, data)
+	Json data;
 
-	virtual bool Serialize(class Archive& ar) override;
+
+	virtual bool Serialize(Archive& ar) override;
+
+	bool ApplyScene(const Ptr<World>& world);
+	bool SaveScene(const Ptr<World>& world);
 };

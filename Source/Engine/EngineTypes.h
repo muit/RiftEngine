@@ -13,6 +13,7 @@
 #include "Core/Math/Vector.h"
 #include "Core/Math/Transform.h"
 #include "Core/Assets/AssetInfo.h"
+#include "Core/Serialization/Json.h"
 
 
 template<typename T>
@@ -51,6 +52,7 @@ DECLARE_REFLECTION_TYPE(Quat);
 DECLARE_REFLECTION_TYPE(Transform);
 DECLARE_REFLECTION_TYPE(AssetInfo);
 
+DECLARE_REFLECTION_TYPE(Json);
 
 template <typename T1, typename T2>
 using TPair = eastl::pair<T1, T2>;

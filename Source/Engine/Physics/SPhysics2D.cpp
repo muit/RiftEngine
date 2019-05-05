@@ -32,9 +32,6 @@ void SPhysics2D::Tick(float deltaTime)
 		CreateFixtures();
 	}
 
-	//BoxView view = ECS()->View<CTransform, CBoxCollider2D>();
-
-
 	Step(deltaTime);
 
 	ApplyPhysicsData();
@@ -56,46 +53,35 @@ void SPhysics2D::Tick(float deltaTime)
 void SPhysics2D::ApplyPhysicsData()
 {
 	const auto ecs = ECS();
-	auto boxView = ecs->View<CTransform, CBoxCollider2D>();
 
-	for (auto entity : boxView)
+	// Update bodies
+	auto bodyView = ecs->View<CTransform, CBody2D>();
+	for (auto entity : bodyView)
 	{
-		//CTransform& transform    = view.get<CTransform>(entity);
-		CBoxCollider2D& collider = boxView.get<CBoxCollider2D>(entity);
+		CTransform& transform = bodyView.get<CTransform>(entity);
+		CBody2D&    bodyComp  = bodyView.get<CBody2D>(entity);
 
-		EntityId bodyEntity = FindBodyOwner(entity);
-
-		// No body? No fixture
-		if (bodyEntity == NoEntity)
-			return;
-
-		CBody2D& body = ecs->Get<CBody2D>(bodyEntity);
-
-		Fixture2D & fixture = collider.fixture;
-		assert(fixture.IsValid());
-
-		// Fixture on the same entity, position is the same
-		if (bodyEntity == entity)
+		if (bodyComp.body.IsValid())
 		{
-
-		}
-		else
-		{
-			// #TODO: Update relative transform
+			const v2 position = bodyComp.body.GetLocation();
+			transform.SetWLocation({ position.x, 0.f, position.y });
 		}
 	}
 
-	auto bodyView = ecs->View<CTransform, CBody2D>();
-	b2World* worldPtr = &world;
-	bodyView.each([worldPtr](EntityId e, CTransform& tComp, CBody2D& bodyComp)
+	// Update
+	auto boxView = ecs->View<CTransform, CBoxCollider2D>();
+	for (auto entity : boxView)
 	{
-		Body2D& body = bodyComp.body;
-		if (body.IsValid())
+		// Bodies are already updated, ignore entities with them
+		if (!ecs->Has<CBody2D>(entity))
 		{
-			v2 position = body.GetLocation();
-			tComp.GetWLocation() = v3{ position.x, 0.f, position.y };
+			CTransform& transform    = boxView.get<CTransform>(entity);
+			CBoxCollider2D& collider = boxView.get<CBoxCollider2D>(entity);
+
+			const v2 position = collider.fixture.GetWorldLocation<PolygonShape>();
+			transform.SetWLocation({ position.x, 0.f, position.y });
 		}
-	});
+	}
 }
 
 void SPhysics2D::CreateBodies()

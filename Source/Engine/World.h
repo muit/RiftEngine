@@ -45,6 +45,14 @@ public:
 	void Shutdown();
 
 
+	bool LoadScene(const TAssetPtr<Scene>& scene);
+
+	virtual bool Serialize(Archive& ar) override {
+		bool bResult = Super::Serialize(ar);
+		bResult &= ecs->Serialize(ar);
+		return bResult;
+	}
+
 	TAssetPtr<Scene> GetActiveScene() const { return scene; }
 	Ptr<ECSManager> GetECS() const { return ecs; }
 

@@ -50,6 +50,9 @@ public:
 		IterateSystems([](Ptr<System> system) {
 			system->EndPlay();
 		});
+	}
+
+	void Shutdown() {
 		systems.Empty(false);
 	}
 

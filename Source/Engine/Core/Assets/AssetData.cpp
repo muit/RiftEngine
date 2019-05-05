@@ -11,7 +11,7 @@ bool AssetData::OnCreate(const AssetInfo& inInfo)
 	return PostLoad();
 }
 
-bool AssetData::OnLoad(const AssetInfo& inInfo, json& data)
+bool AssetData::OnLoad(const AssetInfo& inInfo, Json& data)
 {
 	info = inInfo;
 

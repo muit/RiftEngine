@@ -15,7 +15,7 @@ void SRenderCamera::Tick(float deltaTime)
 
 	CameraData cameraData{};
 
-	if (GetWorld()->IsEditor())
+	if (/*GetWorld()->IsEditor()*/true)
 	{
 		// Use first editor camera
 		auto view = ECS()->View<CTransform, CEditorCamera>();

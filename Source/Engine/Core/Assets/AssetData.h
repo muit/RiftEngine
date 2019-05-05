@@ -20,7 +20,7 @@ public:
 	bool OnCreate(const AssetInfo& inInfo);
 
 	/** Deserializes the asset. Internal usage only. */
-	bool OnLoad(const AssetInfo& inInfo, json& data);
+	bool OnLoad(const AssetInfo& inInfo, Json& data);
 
 
 	bool SaveToPath(const Name& path);

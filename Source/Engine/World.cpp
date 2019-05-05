@@ -11,8 +11,7 @@ void World::Initialize()
 
 	ecs = Create<ECSManager>(Self());
 
-	scene = { "empty_scene.meta" };
-	scene.LoadOrCreate();
+	LoadScene({ "empty_scene.meta" });
 
 #if WITH_EDITOR
 	worldType = EWorldType::Editor;
@@ -30,8 +29,19 @@ void World::BeginPlay()
 	if (IsPlaying())
 		return;
 
-	ScopedGameZone("BeginPlay");
-	worldType = IsEditor() ? EWorldType::PIE : EWorldType::Standalone;
+	if (IsEditor())
+	{
+		// Store current scene in memory for EndPlay restore
+		scene->SaveScene(Self<World>());
+		worldType = EWorldType::PIE;
+	}
+	else
+	{
+		worldType = EWorldType::Standalone;
+	}
+
+	ScopedGameZone("Begin Play");
+	Log::Message("Begin Play");
 
 	ecs->BeginPlay();
 }
@@ -46,12 +56,15 @@ void World::Tick(float deltaTime)
 void World::EndPlay()
 {
 	ScopedGameZone("End Play");
+	Log::Message("End Play");
 
 	ecs->EndPlay();
 
 	if (IsPIE())
 	{
 		worldType = EWorldType::Editor;
+		// Restore scene like it was before
+		scene->ApplyScene(Self<World>());
 	}
 	else
 	{
@@ -66,4 +79,25 @@ void World::Shutdown()
 	{
 		EndPlay();
 	}
+
+	ecs->Shutdown();
+}
+
+bool World::LoadScene(const TAssetPtr<Scene>& inScene)
+{
+	if (inScene.IsNull())
+	{
+		return false;
+	}
+
+	// Load if not already
+	inScene.Load();
+
+	if (!inScene.IsValid())
+	{
+		return false;
+	}
+
+	scene = inScene;
+	return scene->ApplyScene(Self<World>());
 }

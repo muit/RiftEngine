@@ -2,16 +2,13 @@
 #pragma once
 
 #include <EASTL/stack.h>
-#include <nlohmann/json.hpp>
+#include <fstream>
+#include "EngineTypes.h"
+#include "Json.h"
 
 #include "Core/TypeTraits.h"
 #include "Core/Object/ObjectPtr.h"
 
-#include <fstream>
-#include "EngineTypes.h"
-
-
-using json = nlohmann::json;
 
 class Archive
 {
@@ -43,6 +40,8 @@ public:
 	virtual void Serialize(const char* name, float& val) = 0;
 
 	virtual void Serialize(const char* name, String& val) = 0;
+
+	virtual void Serialize(const char* name, Json& val) = 0;
 
 	void Serialize(const char* name, v2& val);
 	void Serialize(const char* name, v2_u32& val);
@@ -157,8 +156,8 @@ private:
 
 class JsonArchive : public Archive {
 
-	json baseData;
-	eastl::stack<json*> depthData;
+	Json baseData;
+	eastl::stack<Json*> depthData;
 
 	const bool bBeautify;
 
@@ -174,7 +173,7 @@ public:
 	{}
 
 	// Load constructor
-	JsonArchive(const json& data)
+	JsonArchive(const Json& data)
 		: Archive(true)
 		, baseData(data)
 		, depthData{}
@@ -184,73 +183,27 @@ public:
 	virtual ~JsonArchive() = default;
 
 	String GetDataString() const { return baseData.dump(GetIndent()); }
-	const json& GetData() const { return baseData; }
+	const Json& GetData() const { return baseData; }
 
 	i32 GetIndent() const { return bBeautify ? 2 : -1; }
 
 private:
 
-	virtual void Serialize(const char* name, bool& val) override {
-		if (IsLoading())
-		{
-			const json& field = Data()[name];
-			val = field.is_boolean() ? field.get<bool>() : false;
-		}
-		else
-			Data()[name] = val;
-	}
+	virtual void Serialize(const char* name, bool& val) override;
 
-	virtual void Serialize(const char* name, u8& val) override {
-		if (IsLoading())
-		{
-			const json& field = Data()[name];
-			val = field.is_number_unsigned() ? field.get<u8>() : 0;
-		}
-		else
-			Data()[name] = val;
-	}
+	virtual void Serialize(const char* name, u8& val) override;
 
-	virtual void Serialize(const char* name, i32& val) override {
-		if (IsLoading())
-		{
-			const json& field = Data()[name];
-			val = field.is_number_integer() ? field.get<i32>() : 0;
-		}
-		else
-			Data()[name] = val;
-	}
+	virtual void Serialize(const char* name, i32& val) override;
 
-	virtual void Serialize(const char* name, u32& val) override {
-		if (IsLoading())
-		{
-			const json& field = Data()[name];
-			val = field.is_number_unsigned() ? field.get<u32>() : 0;
-		}
-		else
-			Data()[name] = val;
-	}
+	virtual void Serialize(const char* name, u32& val) override;
 
-	virtual void Serialize(const char* name, float& val) override {
-		if (IsLoading())
-		{
-			const json& field = Data()[name];
-			val = field.is_number_float() ? field.get<float>() : 0.f;
-		}
-		else
-			Data()[name] = val;
-	}
+	virtual void Serialize(const char* name, float& val) override;
 
-	virtual void Serialize(const char* name, String& val) override {
-		if (IsLoading())
-		{
-			const json& field = Data()[name];
-			val = field.is_string() ? field.get<String>() : String{};
-		}
-		else
-			Data()[name] = val;
-	}
+	virtual void Serialize(const char* name, String& val) override;
 
-	FORCEINLINE json& Data() {
+	virtual void Serialize(const char* name, Json& val) override;
+
+	FORCEINLINE Json& Data() {
 		if(!depthData.empty())
 			return *depthData.top();
 		return baseData;
@@ -277,7 +230,7 @@ private:
 	}
 
 	virtual void SerializeArraySize(u32& size) override {
-		json& data = Data();
+		Json& data = Data();
 		if (IsLoading())
 		{
 			size = data.is_null()? 0 : (u32)data.size();
@@ -285,8 +238,8 @@ private:
 		else
 		{
 			if(!data.is_array())
-				data = json::array();
-			json::array_t* ptr = data.get_ptr<json::array_t*>();
+				data = Json::array();
+			Json::array_t* ptr = data.get_ptr<Json::array_t*>();
 			ptr->reserve((size_t)size);
 		}
 	};

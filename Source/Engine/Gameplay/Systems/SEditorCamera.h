@@ -28,7 +28,7 @@ public:
 
 	SEditorCamera() : Super() { bTickOnEditor = true; }
 
-	virtual void BeginPlay() override;
+	virtual void Construct() override;
 	virtual void Tick(float deltaTime) override;
 	virtual void BeforeDestroy() override;
 
