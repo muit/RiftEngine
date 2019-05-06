@@ -152,7 +152,7 @@ void SPhysics2D::CreateAndUpdateBodies()
 			b2BodyDef bodyDef;
 			const v3 location = transform.GetWLocation();
 			bodyDef.position = location.xz();
-			bodyDef.angle = transform.GetWRotation().y;
+			bodyDef.angle = transform.GetWRotation().ToRotator().y * Math::DEGTORAD;
 
 			bodyComp.FillDefinition(bodyDef);
 			body.Initialize(*world, bodyDef);
@@ -160,7 +160,7 @@ void SPhysics2D::CreateAndUpdateBodies()
 		else if(!bodyComp.IsStatic())
 		{
 			const v2 location = transform.GetWLocation().xz();
-			const float angle = transform.GetWRotation().y;
+			const float angle = transform.GetWRotation().ToRotator().y * Math::DEGTORAD;
 			const v2 currLocation = body.GetLocation();
 			const float currAngle = body.GetAngle();
 
@@ -181,7 +181,7 @@ void SPhysics2D::CreateFixtures()
 	auto boxView = ecs->View<CTransform, CBoxCollider2D>();
 
 	/** For each Box Collider, find a body and registry it as a fixture */
-	boxView.each([this, ecs](EntityId e, const CTransform& tComp, CBoxCollider2D& collider)
+	boxView.each([this, ecs](EntityId e, const CTransform& transform, CBoxCollider2D& collider)
 	{
 		Fixture2D& fixture = collider.fixture;
 		if (!fixture.IsValid())
@@ -196,7 +196,7 @@ void SPhysics2D::CreateFixtures()
 
 			PolygonShape shape;
 			b2FixtureDef def;
-			collider.FillDefinition(def, &shape);
+			collider.FillDefinition(def, &shape, transform.GetWRotation().ToRotator().y);
 			def.shape = &shape;
 			fixture.Initialize(body.body, def);
 		}
@@ -219,7 +219,7 @@ void SPhysics2D::CreateFixtures()
 
 			CircleShape shape;
 			b2FixtureDef def;
-			collider.FillDefinition(def, &shape);
+			collider.FillDefinition(def, &shape, 0.f);
 			def.shape = &shape;
 			fixture.Initialize(body.body, def);
 		}

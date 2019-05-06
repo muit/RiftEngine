@@ -65,7 +65,7 @@ protected:
 
 public:
 
-	virtual void FillDefinition(b2FixtureDef& def, Shape* shape) const
+	virtual void FillDefinition(b2FixtureDef& def, Shape* shape, float angle) const
 	{
 		def.density = density;
 		def.friction = friction;

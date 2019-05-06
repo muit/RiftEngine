@@ -30,11 +30,11 @@ public:
 		size = inSize;
 	}
 
-	virtual void FillDefinition(b2FixtureDef& def, Shape* shape) const override
+	virtual void FillDefinition(b2FixtureDef& def, Shape* shape, float angle) const override
 	{
-		CCollider2D::FillDefinition(def, shape);
+		CCollider2D::FillDefinition(def, shape, angle);
 
 		auto* pShape = static_cast<PolygonShape*>(shape);
-		pShape->SetAsBox(size.x, size.y);
+		pShape->SetAsBox(size.x, size.y/*, v2{}, angle * Math::DEGTORAD*/);
 	}
 };

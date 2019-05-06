@@ -27,9 +27,9 @@ public:
 		radius = inRadius;
 	}
 
-	virtual void FillDefinition(b2FixtureDef& def, Shape* shape) const override
+	virtual void FillDefinition(b2FixtureDef& def, Shape* shape, float angle) const override
 	{
-		CCollider2D::FillDefinition(def, shape);
+		CCollider2D::FillDefinition(def, shape, angle);
 
 		auto* cShape = static_cast<CircleShape*>(shape);
 		cShape->m_radius = radius;
