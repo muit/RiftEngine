@@ -6,6 +6,10 @@
 #include "CCollider2D.h"
 
 
+/**
+ * A Box collider is a collider with a box shape.
+ * @see CCollider2D
+ */
 class CBoxCollider2D : public CCollider2D {
 	STRUCT(CBoxCollider2D, CCollider2D)
 

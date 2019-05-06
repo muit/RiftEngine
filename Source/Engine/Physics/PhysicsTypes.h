@@ -15,13 +15,6 @@ enum class EMobilityType : u8
 	Movable
 };
 
-enum class EShapeType : u8
-{
-	Box,
-	Circle,
-	Geometry
-};
-
 using Shape = b2Shape;
 using PolygonShape = b2PolygonShape;
 using CircleShape = b2CircleShape;

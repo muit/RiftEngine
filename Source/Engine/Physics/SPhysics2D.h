@@ -12,7 +12,13 @@
 #include "Components/CBoxCollider2D.h"
 #include "Components/CCircleCollider2D.h"
 
-
+/**
+ * System that runs on game to upload, step and apply physics simulation.
+ * Upload: Creates bodies and fixtures or updates them if already existing
+ * Step: Updates gravity and runs a simulation step
+ * Apply: Applies simulation into entity transforms. This is done with multithreading
+ * @see CBody2D, CBoxCollider2D, CCircleCollider2D
+ */
 class SPhysics2D : public System {
 	CLASS(SPhysics2D, System)
 

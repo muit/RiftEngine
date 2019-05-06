@@ -7,6 +7,10 @@
 #include "../Body2D.h"
 
 
+/** An entity will obtain physics when having a body.
+ * The body specifies physical properties of the entity
+ * like gravity, mobility type or fixed rotation.
+ */
 class CBody2D : public Component {
 	STRUCT(CBody2D, Component)
 

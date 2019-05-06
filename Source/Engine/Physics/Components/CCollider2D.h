@@ -9,12 +9,15 @@
 
 
 enum class EColliderFlag : u8 {
-	Dirty           = 1 << 0,
-	PendingCreation = 1 << 1,
-	PendingDeletion = 1 << 2
+	Dirty = 1 << 0 // Used to detect changes and later update a collider's physics
 };
 
 
+/**
+ * Specifies a shape with physical properties crelated to a body
+ * Always requires a body on the same entity or on a parent entity.
+ * A Collider can't change its relative location in runtime
+ */
 class CCollider2D : public Component {
 	STRUCT(CCollider2D, Component)
 
@@ -41,7 +44,8 @@ public:
 	PROP(bool, bFixedRotation, DetailsEdit);
 	bool bFixedRotation = false;
 
-	u8 flags = u8(EColliderFlag::PendingCreation);
+	PROP(u8, flags, Transient)
+	u8 flags = 0u;
 
 	Fixture2D fixture;
 

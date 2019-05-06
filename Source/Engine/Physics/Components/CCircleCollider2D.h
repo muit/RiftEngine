@@ -6,6 +6,10 @@
 #include "CCollider2D.h"
 
 
+/**
+ * A Circle collider is a collider with a circular shape.
+ * @see CCollider2D
+ */
 class CCircleCollider2D : public CCollider2D {
 	STRUCT(CCircleCollider2D, CCollider2D)
 
