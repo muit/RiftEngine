@@ -10,11 +10,12 @@
 class b2Fixture;
 struct b2FixtureDef;
 
+/** Class that points to a Box2D fixture. Used by collider components */
 struct Fixture2D
 {
 private:
 
-	b2Fixture* fixturePtr;
+	b2Fixture* fixturePtr = nullptr;
 
 
 public:
@@ -22,10 +23,10 @@ public:
 	Fixture2D() : fixturePtr{ nullptr } {}
 	Fixture2D(const Fixture2D& other) : fixturePtr{ nullptr } {}
 	Fixture2D& operator=(const Fixture2D& other) { fixturePtr = nullptr; }
-	Fixture2D(Fixture2D&& other) : fixturePtr{ other.fixturePtr } { other.fixturePtr = nullptr; }
+	Fixture2D(Fixture2D&& other) { eastl::swap(fixturePtr, other.fixturePtr); }
 	Fixture2D& operator=(Fixture2D&& other) {
-		fixturePtr = other.fixturePtr;
-		other.fixturePtr = nullptr;
+		eastl::swap(fixturePtr, other.fixturePtr);
+		return *this;
 	}
 
 	void Initialize(Body2D& body, const b2FixtureDef& def) {
@@ -56,7 +57,7 @@ public:
 			// Return the center of a circle shape
 			return static_cast<CircleShape*>(fixturePtr->GetShape())->m_p;
 		}
-		else if (eastl::is_same<ShapeType, PolygonShape>::value)
+		else if constexpr (eastl::is_same<ShapeType, PolygonShape>::value)
 		{
 			// Return the center of a polygon shape
 			return static_cast<PolygonShape*>(fixturePtr->GetShape())->m_centroid;

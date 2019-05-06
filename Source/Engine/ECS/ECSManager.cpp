@@ -15,6 +15,7 @@
 #include "Physics/Components/CBody2D.h"
 #include "Physics/Components/CCollider2D.h"
 #include "Physics/Components/CBoxCollider2D.h"
+#include "Physics/Components/CCircleCollider2D.h"
 
 #include "Gameplay/Systems/SEditorCamera.h"
 #include "Gameplay/Systems/SRenderMeshes.h"
@@ -24,6 +25,7 @@
 
 #include "Gameplay/Singletons/CActiveCamera.h"
 #include "Gameplay/Singletons/CPhysicsWorld.h"
+#include "Gameplay/Singletons/CVisualDebugger.h"
 
 
 void ECSManager::BeginPlay()
@@ -179,6 +181,7 @@ void ECSManager::SerializeEntity(Archive& ar, EntityId entity)
 	SerializeComponent<CBody2D>(ar, entity);
 	SerializeComponent<CCollider2D>(ar, entity);
 	SerializeComponent<CBoxCollider2D>(ar, entity);
+	SerializeComponent<CCircleCollider2D>(ar, entity);
 }
 
 void ECSManager::RegistrySystems()
@@ -197,4 +200,5 @@ void ECSManager::RegistrySingletons()
 {
 	RegistrySingleton<CActiveCamera>();
 	RegistrySingleton<CPhysicsWorld>();
+	RegistrySingleton<CVisualDebugger>();
 }

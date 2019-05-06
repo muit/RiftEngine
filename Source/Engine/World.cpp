@@ -26,7 +26,7 @@ void World::Initialize()
 
 void World::BeginPlay()
 {
-	if (IsPlaying())
+	if (IsPIE())
 		return;
 
 	if (IsEditor())

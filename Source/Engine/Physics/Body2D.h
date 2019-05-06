@@ -10,19 +10,20 @@
 #include "PhysicsTypes.h"
 
 
+/** Class that points to a Box2D body. Used by body components */
 struct Body2D
 {
 private:
 
-	b2Body* bodyPtr;
+	b2Body* bodyPtr = nullptr;
 
 public:
 
-	Body2D() : bodyPtr{ nullptr } {}
-	Body2D(Body2D&& other) : bodyPtr{ other.bodyPtr } { other.bodyPtr = nullptr; }
+	Body2D() {}
+	Body2D(Body2D&& other) { eastl::swap(bodyPtr, other.bodyPtr); }
 	Body2D& operator=(Body2D&& other) {
-		bodyPtr = other.bodyPtr;
-		other.bodyPtr = nullptr;
+		eastl::swap(bodyPtr, other.bodyPtr);
+		return *this;
 	}
 
 	void Initialize(b2World& world, const b2BodyDef& definition) {
