@@ -149,6 +149,11 @@ public:
 		return registry.assign<C>(entity, eastl::forward<Args>(args)...);
 	}
 
+	template<typename C>
+	void Remove(EntityId entity)
+	{
+		registry.remove<C>(entity);
+	}
 
 	template<typename Component>
 	Component& Get(const EntityId entity) {

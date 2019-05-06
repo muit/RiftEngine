@@ -85,6 +85,7 @@ void EditorManager::TickMainNavBar()
 			if (ImGui::MenuItem("Save Scene", "CTRL+S")) {
 				if (TAssetPtr<Scene> scene = GetWorld()->GetActiveScene())
 				{
+					scene->SaveScene(GetWorld());
 					scene->Save();
 				}
 			}

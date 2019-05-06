@@ -33,7 +33,7 @@ public:
 	FORCEINLINE String GetName() const
 	{
 		if (prop)
-			return prop->GetName();
+			return prop->GetDisplayName();
 		return "Invalid";
 	}
 
@@ -64,4 +64,6 @@ public:
 	FORCEINLINE virtual Class* GetClassDefinedWidgetClass() {
 		return nullptr;
 	}
+
+	virtual void* GetRawValuePtr() const = 0;
 };

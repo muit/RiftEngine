@@ -6,15 +6,29 @@
     "entities": [
       {
         "CBody2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
           "mobility": 2
         },
         "CCircleCollider2D": {
-          "radius": 0.5
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "bIsTrigger": false,
+          "density": 1.0,
+          "friction": 0.2,
+          "radius": 0.5,
+          "restitution": 0.0
         },
         "CEntity": {
           "name": "Ball"
         },
         "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
           "model": "Meshes/ball.fbx.meta"
         },
         "CTransform": {
@@ -31,26 +45,38 @@
               "z": 0.0
             },
             "scale": {
-              "x": 1,
-              "y": 1,
-              "z": 1
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
             }
           }
         },
         "id": {
-          "a": 488110,
-          "b": 3225075,
-          "c": 2044482800,
-          "d": 2360921928
+          "a": 2313672,
+          "b": 3625523,
+          "c": 1352244192,
+          "d": 1423714608
         }
       },
       {
         "CBody2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
           "mobility": 0
         },
         "CBoxCollider2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "bIsTrigger": false,
+          "density": 1.0,
+          "friction": 0.2,
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "restitution": 0.0,
           "size": {
-            "x": 2,
+            "x": 1.5,
             "y": 0.5
           }
         },
@@ -58,6 +84,12 @@
           "name": "Box"
         },
         "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
           "model": "Meshes/box.fbx.meta"
         },
         "CTransform": {
@@ -75,18 +107,114 @@
             },
             "scale": {
               "x": 3.0,
-              "y": 1,
-              "z": 1
+              "y": 1.0,
+              "z": 1.0
             }
           }
         },
         "id": {
-          "a": 488110,
-          "b": 3625075,
-          "c": 2144482800,
-          "d": 2361931928
+          "a": 2230093,
+          "b": 3625523,
+          "c": 1352244192,
+          "d": 1423714608
+        }
+      },
+      {
+        "CEditorCamera": {
+          "fov": 60.0
+        },
+        "CEntity": {
+          "name": "EditorCamera"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 1.965862,
+              "y": -9.548635,
+              "z": 2.7229474
+            },
+            "rotation": {
+              "w": 0.9969688,
+              "x": -0.028172933,
+              "y": -0.0020485593,
+              "z": 0.07249333
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 2174226,
+          "b": 3625523,
+          "c": 1352244192,
+          "d": 1423714608
+        }
+      },
+      {
+        "CBody2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "mobility": 0
+        },
+        "CBoxCollider2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "bIsTrigger": false,
+          "density": 1.0,
+          "friction": 0.2,
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "restitution": 0.0,
+          "size": {
+            "x": 0.5,
+            "y": 0.5
+          }
+        },
+        "CEntity": {
+          "name": "Floor01"
+        },
+        "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "model": "Meshes/box.fbx.meta"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 3.065746,
+              "y": 0.0,
+              "z": -0.6119597
+            },
+            "rotation": {
+              "w": 0.9851924,
+              "x": 0.0,
+              "y": 0.17145222,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 3.744906,
+              "y": 1.0,
+              "z": 0.99999946
+            }
+          }
+        },
+        "id": {
+          "a": 2111923,
+          "b": 3625523,
+          "c": 1352244192,
+          "d": 1423714608
         }
       }
-    ]
+    ],
+    "name": ""
   }
 }

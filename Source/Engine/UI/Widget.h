@@ -120,7 +120,7 @@ public:
 
 	template<typename WidgetType, typename... Args>
 	Ptr<WidgetType> AddNew(Args&&... args) {
-		return Add(New<Widget>(std::forward<Args>(args)...)).Cast<WidgetType>();
+		return Add(New<WidgetType>(std::forward<Args>(args)...)).Cast<WidgetType>();
 	}
 
 	template<typename WidgetType, typename... Args>

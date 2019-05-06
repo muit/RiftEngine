@@ -35,6 +35,7 @@ public:
 		}
 		return nullptr;
 	}
+	virtual void* GetRawValuePtr() const override { return GetValuePtr(); }
 
 	bool GetValue(VarType& value) const
 	{

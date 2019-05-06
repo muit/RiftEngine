@@ -30,6 +30,12 @@ void SceneEntities::Tick(float)
 		{
 			BeginWindow();
 
+			if (ImGui::Button("New Entity"))
+			{
+				EntityId entity = ecsManager->CreateEntity("");
+				OnEntityClicked(entity);
+			}
+
 			filter.Draw("##FilterDraw");
 
 			auto view = ecsManager->View<CEntity>();

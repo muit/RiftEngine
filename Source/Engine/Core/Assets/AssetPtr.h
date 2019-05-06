@@ -13,12 +13,30 @@
 #include "../TypeTraits.h"
 
 
+class BaseAssetPtr {
+	friend class AssetInfoPropertyWidget;
+protected:
+
+	AssetInfo info;
+
+public:
+
+	BaseAssetPtr() = default;
+	BaseAssetPtr(AssetInfo info) : info{ info } {}
+
+	AssetInfo GetInfo() { return info; }
+
+#if WITH_EDITOR
+	static class Class* GetDetailsWidgetClass();
+#endif
+};
+
+
 template<class T>
-class TAssetPtr
+class TAssetPtr : public BaseAssetPtr
 {
 	static_assert(eastl::is_base_of<AssetData, T>::value, "AssetPtr type must inherit from AssetData");
 
-	AssetInfo info;
 	mutable Ptr<T> cachedAsset;
 
 
@@ -26,12 +44,12 @@ public:
 
 	using ItemType = T;
 
-	TAssetPtr() : info{}, cachedAsset{} {}
+	TAssetPtr() : BaseAssetPtr(), cachedAsset{} {}
 
 	TAssetPtr(TAssetPtr&& other) { MoveFrom(MoveTemp(other)); }
 	TAssetPtr(const TAssetPtr& other) { CopyFrom(other); }
 
-	TAssetPtr(Name path) : info{ path } {}
+	TAssetPtr(Name path) : BaseAssetPtr(path) {}
 	TAssetPtr(const TCHAR* key) : TAssetPtr(Name{ key }) {}
 	TAssetPtr(const AssetInfo& other) : AssetInfo(other) {}
 	TAssetPtr(Ptr<ItemType> asset) {
@@ -108,8 +126,6 @@ public:
 	/** @returns true if this asset is loaded */
 	const bool IsValid() const { return Get().IsValid(); }
 
-	AssetInfo GetInfo() { return info; }
-
 	inline const Name& GetPath()    const { return info.GetPath(); }
 	inline const String& GetSPath() const { return info.GetSPath(); }
 
@@ -140,5 +156,6 @@ private:
 };
 
 DEFINE_TEMPLATE_CLASS_TRAITS(TAssetPtr,
-	HasCustomSerialize = true
+	HasCustomSerialize = true,
+	HasDetailsWidget = true
 );

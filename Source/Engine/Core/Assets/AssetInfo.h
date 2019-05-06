@@ -32,8 +32,13 @@ public:
 	inline const String& GetSPath() const { return id.ToString(); }
 
 	bool Serialize(class Archive& ar, const char* name);
+
+#if WITH_EDITOR
+	static class Class* GetDetailsWidgetClass();
+#endif
 };
 
 DEFINE_CLASS_TRAITS(AssetInfo,
-	HasCustomSerialize = true
+	HasCustomSerialize = true,
+	HasDetailsWidget = true
 );

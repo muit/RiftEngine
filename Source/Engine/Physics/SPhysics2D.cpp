@@ -97,11 +97,14 @@ TaskLambda SPhysics2D::ApplyBoxes()
 			// Bodies are already updated, ignore entities with them
 			if (!ecs->Has<CBody2D>(entity))
 			{
-				CTransform& transform = boxView.get<CTransform>(entity);
 				CBoxCollider2D& collider = boxView.get<CBoxCollider2D>(entity);
+				if (collider.fixture.IsValid())
+				{
+					CTransform& transform = boxView.get<CTransform>(entity);
 
-				const v2 position = collider.fixture.GetWorldLocation<PolygonShape>();
-				transform.SetWLocation(position.xz());
+					const v2 position = collider.fixture.GetWorldLocation<PolygonShape>();
+					transform.SetWLocation(position.xz());
+				}
 			}
 		}
 	};
@@ -120,11 +123,14 @@ TaskLambda SPhysics2D::ApplyCircles()
 			// If has a body or another collider, ignore
 			if (!ecs->Has<CBody2D>(entity) && !ecs->Has<CBoxCollider2D>(entity))
 			{
-				CTransform& transform = circleView.get<CTransform>(entity);
 				CCircleCollider2D& collider = circleView.get<CCircleCollider2D>(entity);
+				if (collider.fixture.IsValid())
+				{
+					CTransform& transform = circleView.get<CTransform>(entity);
 
-				const v2 position = collider.fixture.GetWorldLocation<CircleShape>();
-				transform.SetWLocation(position.xz());
+					const v2 position = collider.fixture.GetWorldLocation<CircleShape>();
+					transform.SetWLocation(position.xz());
+				}
 			}
 		}
 	};

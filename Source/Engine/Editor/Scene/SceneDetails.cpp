@@ -6,10 +6,17 @@
 #include "Core/Reflection/Runtime/HandleHelper.h"
 #include "Core/Reflection/ReflectionTags.h"
 #include "Core/Object/Object.h"
-#include "ECS/ECSManager.h"
 #include "ECS/Component.h"
+#include "ECS/ECSManager.h"
 
+#include "Widgets/ComponentDetails.h"
+
+#include "Gameplay/Components/CEntity.h"
 #include "Gameplay/Components/CTransform.h"
+#include "Gameplay/Components/CMesh.h"
+#include "Physics/Components/CBody2D.h"
+#include "Physics/Components/CBoxCollider2D.h"
+#include "Physics/Components/CCircleCollider2D.h"
 
 
 #if WITH_EDITOR
@@ -38,18 +45,12 @@ void SceneDetails::Build()
 	{
 		auto ecs = GetWorld()->GetECS();
 
-		// #TODO: Add automatic property generation
-		if (ecs->Has<CTransform>(entity))
-		{
-			static const Name transformName{ "transform" };
-
-			CTransform& transform = ecs->Get<CTransform>(entity);
-
-			const auto* prop = CTransform::StaticStruct()->FindProperty(transformName);
-
-			auto handle = prop->CreateHandle(&transform);
-			Add(PropertyWidget::NewPropertyWidget(Self<Widget>(), handle));
-		}
+		AddNew<ComponentDetails<CEntity>>(entity);
+		AddNew<ComponentDetails<CTransform>>(entity);
+		AddNew<ComponentDetails<CMesh>>(entity);
+		AddNew<ComponentDetails<CBody2D>>(entity);
+		AddNew<ComponentDetails<CBoxCollider2D>>(entity);
+		AddNew<ComponentDetails<CCircleCollider2D>>(entity);
 
 		TArray<StructType*> componentTypes;
 		Component::StaticStruct()->GetAllChildren(componentTypes);

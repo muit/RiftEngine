@@ -18,7 +18,7 @@ public:
 
 	// #TODO: Add support for reflected enums
 	//EMobilityType mobility = EMobilityType::Movable;
-	PROP(u8, mobility)
+	PROP(u8, mobility, DetailsEdit)
 	u8 mobility = 2;
 
 	PROP(bool, bAffectedByGravity, DetailsEdit);

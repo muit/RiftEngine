@@ -12,7 +12,7 @@
 class CMesh : public Component {
 	STRUCT(CMesh, Component)
 
-	PROP(TAssetPtr<Mesh>, model)
+	PROP(TAssetPtr<Mesh>, model, DetailsEdit)
 	TAssetPtr<Mesh> model;
 
 	PROP(Color, color)
