@@ -18,12 +18,12 @@ public:
 	PROP(Name, name, DetailsEdit | SaveGame)
 	Name name;
 
-	PROP(bool, bTransient)
-	bool bTransient;
+	PROP(bool, bTransient, Transient)
+	bool bTransient = false;
 
 private:
 
-	PROP(bool, bPendingKill)
+	PROP(bool, bPendingKill, Transient)
 	bool bPendingKill;
 
 

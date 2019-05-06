@@ -33,7 +33,7 @@ bool Mesh::PostLoad()
 			return false;
 		}
 
-		data.FromAssimpScene(scene);
+		data.FromAssimpScene(scene, *this);
 
 		QueueRenderCommand<LoadMeshCommand>(TAssetPtr<Mesh>{ Self().Cast<Mesh>() });
 

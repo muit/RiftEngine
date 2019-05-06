@@ -6,9 +6,10 @@
 
 #include "Core/Log.h"
 #include "Tools/Profiler.h"
+#include "Assets/Mesh.h"
 
 
-void MeshData::FromAssimpScene(const aiScene* scene)
+void MeshData::FromAssimpScene(const aiScene* scene, Mesh& asset)
 {
 	if (scene)
 	{
@@ -17,28 +18,30 @@ void MeshData::FromAssimpScene(const aiScene* scene)
 		vertices.Empty(false);
 		triangles.Empty(false);
 
-		ProcessNode(scene->mRootNode, scene);
+		ProcessNode(scene->mRootNode, scene, asset);
 	}
 }
 
-void MeshData::ProcessNode(aiNode *node, const aiScene *scene)
+void MeshData::ProcessNode(aiNode *node, const aiScene *scene, Mesh& asset)
 {
 	// Process all the node's meshes (if any)
 	for (u32 i = 0; i < node->mNumMeshes; ++i)
 	{
 		aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-		ProcessMesh(mesh, scene);
+		ProcessMesh(mesh, scene, asset);
 	}
 
 	// Then iterate children
 	for (u32 i = 0; i < node->mNumChildren; ++i)
 	{
-		ProcessNode(node->mChildren[i], scene);
+		ProcessNode(node->mChildren[i], scene, asset);
 	}
 }
 
-void MeshData::ProcessMesh(aiMesh *mesh, const aiScene* scene)
+void MeshData::ProcessMesh(aiMesh *mesh, const aiScene* scene, Mesh& asset)
 {
+	const float importScale = asset.importScale;
+
 	// Starting vertex index of this mesh
 	const v3_u32 vertexIndexOffset = v3_u32{ (u32)vertices.Size() };
 
@@ -55,9 +58,9 @@ void MeshData::ProcessMesh(aiMesh *mesh, const aiScene* scene)
 			const aiVector3D& uv = mesh->mTextureCoords[0][i];
 
 			vertices.Add(Vertex {
-				v3{ position.x, position.y, position.z },
+				v3{ position.x, position.y, position.z } * importScale,
 				v3{ normal.x, normal.y, normal.z },
-				v2 { uv.x, uv.y }
+				v2{ uv.x, uv.y }
 			});
 		}
 	}
@@ -69,7 +72,7 @@ void MeshData::ProcessMesh(aiMesh *mesh, const aiScene* scene)
 			const aiVector3D& normal = mesh->mNormals[i];
 
 			vertices.Add(Vertex{
-				v3{ position.x, position.y, position.z },
+				v3{ position.x, position.y, position.z } * importScale,
 				v3{ normal.x, normal.y, normal.z },
 				v2::Zero()
 			});

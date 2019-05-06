@@ -1,0 +1,92 @@
+{
+  "asset_type": "Scene",
+  "displayName": "Physics Scene",
+  "name": "",
+  "scene": {
+    "entities": [
+      {
+        "CBody2D": {
+          "mobility": 2
+        },
+        "CCircleCollider2D": {
+          "radius": 0.5
+        },
+        "CEntity": {
+          "name": "Ball"
+        },
+        "CMesh": {
+          "model": "Meshes/ball.fbx.meta"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 5.0
+            },
+            "rotation": {
+              "w": 0.7071067,
+              "x": -0.70710677,
+              "y": -0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        },
+        "id": {
+          "a": 488110,
+          "b": 3225075,
+          "c": 2044482800,
+          "d": 2360921928
+        }
+      },
+      {
+        "CBody2D": {
+          "mobility": 0
+        },
+        "CBoxCollider2D": {
+          "size": {
+            "x": 2,
+            "y": 0.5
+          }
+        },
+        "CEntity": {
+          "name": "Box"
+        },
+        "CMesh": {
+          "model": "Meshes/box.fbx.meta"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotation": {
+              "w": 0.7071067,
+              "x": -0.70710677,
+              "y": -0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 3.0,
+              "y": 1,
+              "z": 1
+            }
+          }
+        },
+        "id": {
+          "a": 488110,
+          "b": 3625075,
+          "c": 2144482800,
+          "d": 2361931928
+        }
+      }
+    ]
+  }
+}

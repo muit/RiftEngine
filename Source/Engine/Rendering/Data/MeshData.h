@@ -9,6 +9,8 @@
 #include "Core/Containers/Array.h"
 
 
+class Mesh;
+
 struct Vertex
 {
 	v3 position;
@@ -20,9 +22,6 @@ using VertexBuffer = TArray<Vertex>;
 using Triangle = v3_u32;
 using TriangleBuffer = TArray<Triangle>;
 
-using VertexPositionBufferI32 = TArray<v3_i32>;
-
-
 struct MeshData
 {
 	VertexBuffer vertices;
@@ -32,13 +31,13 @@ public:
 
 	MeshData() = default;
 
-	void FromAssimpScene(const struct aiScene* scene);
+	void FromAssimpScene(const struct aiScene* scene, Mesh& asset);
 
 	FORCEINLINE const VertexBuffer& GetVertices() const { return vertices; }
 	FORCEINLINE const TriangleBuffer& GetTriangles() const { return triangles; }
 
 private:
 
-	void ProcessNode(struct aiNode *node, const struct aiScene* scene);
-	void ProcessMesh(struct aiMesh *mesh, const struct aiScene* scene);
+	void ProcessNode(struct aiNode *node, const struct aiScene* scene, Mesh& asset);
+	void ProcessMesh(struct aiMesh *mesh, const struct aiScene* scene, Mesh& asset);
 };

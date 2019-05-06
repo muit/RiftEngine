@@ -151,7 +151,7 @@ void SPhysics2D::CreateAndUpdateBodies()
 			bodyComp.FillDefinition(bodyDef);
 			body.Initialize(*world, bodyDef);
 		}
-		else
+		else if(!bodyComp.IsStatic())
 		{
 			const v2 location = transform.GetWLocation().xz();
 			const float angle = transform.GetWRotation().y;

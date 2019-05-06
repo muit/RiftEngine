@@ -17,7 +17,7 @@ public:
 	PROP(String, displayName, DetailsEdit)
 	String displayName;
 
-	PROP(Json, data)
+	PROP(Json, data, Transient)
 	Json data;
 
 

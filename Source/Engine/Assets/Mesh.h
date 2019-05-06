@@ -22,6 +22,8 @@ public:
 	PROP(TAssetPtr<Material>, material)
 	TAssetPtr<Material> material;
 
+	PROP(float, importScale)
+	float importScale { 1.f };
 
 	Mesh() : Super() {}
 
@@ -29,8 +31,4 @@ public:
 	virtual void OnUnload() override;
 
 	FORCEINLINE const MeshData& GetMeshData() const { return data; }
-
-private:
-
-
 };

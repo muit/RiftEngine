@@ -41,4 +41,6 @@ public:
 		def.gravityScale = bAffectedByGravity ? 1.0f : 0.0f;
 		def.fixedRotation = bFixedRotation;
 	}
+
+	FORCEINLINE bool IsStatic() const { return mobility == u8(EMobilityType::Static); }
 };
