@@ -3,13 +3,14 @@
 
 #include "CoreObject.h"
 #include "ECS/System.h"
-#include "Box2D/Dynamics/b2World.h"
+#include <Box2D/Dynamics/b2World.h>
+
+#include "Core/Engine.h"
+#include "Core/MultiThreading.h"
 
 #include "Gameplay/Components/CTransform.h"
-#include "Physics/Components/CBoxCollider2D.h"
-
-#include "Fixture2D.h"
-#include "Body2D.h"
+#include "Components/CBoxCollider2D.h"
+#include "Components/CCircleCollider2D.h"
 
 
 class SPhysics2D : public System {
@@ -21,9 +22,11 @@ class SPhysics2D : public System {
 	// Cached
 	class CPhysicsWorld* physicsWorld = nullptr;
 
+	TaskFlow applyFlow;
+
 public:
 
-	SPhysics2D() : Super() {}
+	SPhysics2D() : Super(), applyFlow{GEngine->Tasks().CreateFlow()} {}
 
 protected:
 
@@ -37,6 +40,10 @@ private:
 
 	//void UploadDataToPhysics();
 	void ApplyPhysicsData();
+
+	TaskLambda ApplyBodies();
+	TaskLambda ApplyBoxes();
+	TaskLambda ApplyCircles();
 
 	void CreateAndUpdateBodies();
 	void CreateFixtures();

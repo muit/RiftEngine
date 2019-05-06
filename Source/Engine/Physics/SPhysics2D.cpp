@@ -5,11 +5,15 @@
 #include <Box2D/Dynamics/b2Fixture.h>
 
 #include "World.h"
+#include "Core/MultiThreading.h"
 #include "Tools/Profiler.h"
 
 #include "PhysicsTypes.h"
 #include "Components/CBody2D.h"
 #include "Gameplay/Singletons/CPhysicsWorld.h"
+
+#include "Fixture2D.h"
+#include "Body2D.h"
 
 
 void SPhysics2D::BeginPlay()
@@ -45,40 +49,91 @@ void SPhysics2D::EndPlay()
 
 void SPhysics2D::ApplyPhysicsData()
 {
-	const auto ecs = ECS();
+	ScopedGameZone("Apply physics data");
+	// No bodies, boxes or circles update ever the same entity, so no collision
+	applyFlow.emplace(
+		ApplyBodies(),
+		ApplyBoxes(),
+		ApplyCircles()
+	);
+	applyFlow.wait_for_all();
+}
 
+TaskLambda SPhysics2D::ApplyBodies()
+{
 	// Update bodies from physics
-	auto bodyView = ecs->View<CTransform, CBody2D>();
-	for (auto entity : bodyView)
-	{
-		CTransform& transform = bodyView.get<CTransform>(entity);
-		CBody2D&    bodyComp  = bodyView.get<CBody2D>(entity);
+	auto ecs = ECS();
+	return [ecs]() {
+		ScopedGameZone("Apply Bodies");
 
-		if (bodyComp.body.IsValid())
+		auto bodyView = ecs->View<CTransform, CBody2D>();
+		for (auto entity : bodyView)
 		{
-			const v2 position = bodyComp.body.GetLocation();
-			transform.SetWLocation(position.xz());
-		}
-	}
+			CTransform& transform = bodyView.get<CTransform>(entity);
+			CBody2D& bodyComp = bodyView.get<CBody2D>(entity);
 
-	// Update fixtures from physics
-	auto boxView = ecs->View<CTransform, CBoxCollider2D>();
-	for (auto entity : boxView)
-	{
-		// Bodies are already updated, ignore entities with them
-		if (!ecs->Has<CBody2D>(entity))
+			if (bodyComp.body.IsValid())
+			{
+				const v2 position = bodyComp.body.GetLocation();
+				transform.SetWLocation(position.xz());
+
+				// Update angle
+				//transform.SetWRotation(Quat::FromRotator({ 0.f, bodyComp.body.GetAngle(), 0.f }));
+			}
+		}
+	};
+}
+
+TaskLambda SPhysics2D::ApplyBoxes()
+{
+	// Update box fixtures from physics
+	auto ecs = ECS();
+	return [ecs]() {
+		ScopedGameZone("Apply Boxes");
+
+		auto boxView = ecs->View<CTransform, CBoxCollider2D>();
+		for (auto entity : boxView)
 		{
-			CTransform& transform    = boxView.get<CTransform>(entity);
-			CBoxCollider2D& collider = boxView.get<CBoxCollider2D>(entity);
+			// Bodies are already updated, ignore entities with them
+			if (!ecs->Has<CBody2D>(entity))
+			{
+				CTransform& transform = boxView.get<CTransform>(entity);
+				CBoxCollider2D& collider = boxView.get<CBoxCollider2D>(entity);
 
-			const v2 position = collider.fixture.GetWorldLocation<PolygonShape>();
-			transform.SetWLocation(position.xz());
+				const v2 position = collider.fixture.GetWorldLocation<PolygonShape>();
+				transform.SetWLocation(position.xz());
+			}
 		}
-	}
+	};
+}
+
+TaskLambda SPhysics2D::ApplyCircles()
+{
+	// Upload circle fixtures
+	auto ecs = ECS();
+	return [ecs]() {
+		ScopedGameZone("Apply Circles");
+
+		auto circleView = ecs->View<CTransform, CCircleCollider2D>();
+		for (auto entity : circleView)
+		{
+			// If has a body or another collider, ignore
+			if (!ecs->Has<CBody2D>(entity) && !ecs->Has<CBoxCollider2D>(entity))
+			{
+				CTransform& transform = circleView.get<CTransform>(entity);
+				CCircleCollider2D& collider = circleView.get<CCircleCollider2D>(entity);
+
+				const v2 position = collider.fixture.GetWorldLocation<CircleShape>();
+				transform.SetWLocation(position.xz());
+			}
+		}
+	};
 }
 
 void SPhysics2D::CreateAndUpdateBodies()
 {
+	ScopedGameZone("Create & Update Bodies");
+
 	auto view = ECS()->View<CTransform, CBody2D>();
 	for (auto entity : view)
 	{
@@ -114,11 +169,13 @@ void SPhysics2D::CreateAndUpdateBodies()
 
 void SPhysics2D::CreateFixtures()
 {
-	const auto ecs = ECS();
-	auto view = ecs->View<CTransform, CBoxCollider2D>();
+	ScopedGameZone("Create Fixtures");
 
-	/** For each Collider component, find a body and registry it as a fixture */
-	view.each([this, ecs](EntityId e, const CTransform& tComp, CBoxCollider2D& collider)
+	const auto ecs = ECS();
+	auto boxView = ecs->View<CTransform, CBoxCollider2D>();
+
+	/** For each Box Collider, find a body and registry it as a fixture */
+	boxView.each([this, ecs](EntityId e, const CTransform& tComp, CBoxCollider2D& collider)
 	{
 		Fixture2D& fixture = collider.fixture;
 		if (!fixture.IsValid())
@@ -132,6 +189,29 @@ void SPhysics2D::CreateFixtures()
 			CBody2D & body = ecs->Get<CBody2D>(bodyEntity);
 
 			PolygonShape shape;
+			b2FixtureDef def;
+			collider.FillDefinition(def, &shape);
+			def.shape = &shape;
+			fixture.Initialize(body.body, def);
+		}
+	});
+
+	/** For each Circle Collider, find a body and registry it as a fixture */
+	auto circleView = ecs->View<CTransform, CCircleCollider2D>();
+	circleView.each([this, ecs](EntityId e, const CTransform& tComp, CCircleCollider2D& collider)
+	{
+		Fixture2D& fixture = collider.fixture;
+		if (!fixture.IsValid())
+		{
+			EntityId bodyEntity = FindBodyOwner(e);
+
+			// No body? No fixture
+			if (bodyEntity == NoEntity)
+				return;
+
+			CBody2D & body = ecs->Get<CBody2D>(bodyEntity);
+
+			CircleShape shape;
 			b2FixtureDef def;
 			collider.FillDefinition(def, &shape);
 			def.shape = &shape;
@@ -165,6 +245,7 @@ EntityId SPhysics2D::FindBodyOwner(EntityId entity) const
 
 void SPhysics2D::Step(float deltaTime)
 {
+	ScopedGameZone("Step");
 	// Update gravity if changed
 	if (physicsWorld)
 	{
