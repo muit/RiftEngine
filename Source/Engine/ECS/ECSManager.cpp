@@ -12,10 +12,16 @@
 #include "Gameplay/Components/CEditorCamera.h"
 #include "Gameplay/Components/CPointLight.h"
 #include "Gameplay/Components/CDirectionalLight.h"
+
 #include "Physics/Components/CBody2D.h"
 #include "Physics/Components/CCollider2D.h"
 #include "Physics/Components/CBoxCollider2D.h"
 #include "Physics/Components/CCircleCollider2D.h"
+
+#include "Gameplay/Game/Components/CPlayer.h"
+#include "Gameplay/Game/Components/CPlatform.h"
+#include "Gameplay/Game/Systems/SPlayer.h"
+#include "Gameplay/Game/Systems/SPlatforms.h"
 
 #include "Gameplay/Systems/SEditorCamera.h"
 #include "Gameplay/Systems/SRenderMeshes.h"
@@ -173,6 +179,7 @@ void ECSManager::SerializeEntity(Archive& ar, EntityId entity)
 	SerializeComponent<CEntity>(ar, entity);
 	SerializeComponent<CTransform>(ar, entity);
 	SerializeComponent<CMesh>(ar, entity);
+	SerializeComponent<CCamera>(ar, entity);
 	SerializeComponent<CEditorCamera>(ar, entity);
 	SerializeComponent<CPointLight>(ar, entity);
 	SerializeComponent<CDirectionalLight>(ar, entity);
@@ -182,13 +189,20 @@ void ECSManager::SerializeEntity(Archive& ar, EntityId entity)
 	SerializeComponent<CCollider2D>(ar, entity);
 	SerializeComponent<CBoxCollider2D>(ar, entity);
 	SerializeComponent<CCircleCollider2D>(ar, entity);
+
+	// Game
+	SerializeComponent<CPlayer>(ar, entity);
+	SerializeComponent<CPlatform>(ar, entity);
 }
 
 void ECSManager::RegistrySystems()
 {
 	// #TODO: Externalize system registry
-	RegistrySystem<SEditorCamera>();
 	RegistrySystem<SPhysics2D>();
+
+	RegistrySystem<SEditorCamera>();
+	RegistrySystem<SPlayer>();
+	RegistrySystem<SPlatforms>();
 
 	// Rendering
 	RegistrySystem<SRenderCamera>();

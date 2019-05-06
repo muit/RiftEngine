@@ -5,194 +5,11 @@
   "scene": {
     "entities": [
       {
-        "CBody2D": {
-          "bAffectedByGravity": true,
-          "bFixedRotation": false,
-          "mobility": 1
-        },
-        "CBoxCollider2D": {
-          "bAffectedByGravity": true,
-          "bFixedRotation": false,
-          "bIsTrigger": false,
-          "density": 1.0,
-          "friction": 0.2,
-          "offset": {
-            "x": 0.0,
-            "y": 0.0
-          },
-          "restitution": 0.0,
-          "size": {
-            "x": 1.0,
-            "y": 0.5
-          }
-        },
-        "CEntity": {
-          "name": "Elevator"
-        },
-        "CMesh": {
-          "color": {
-            "a": 0,
-            "b": 0,
-            "g": 0,
-            "r": 0
-          },
-          "model": "Meshes/box.fbx.meta"
-        },
-        "CTransform": {
-          "transform": {
-            "location": {
-              "x": -2.7994876,
-              "y": 0.0,
-              "z": 0.0030620098
-            },
-            "rotation": {
-              "w": 1.0,
-              "x": 0.0,
-              "y": 0.0,
-              "z": 0.0
-            },
-            "scale": {
-              "x": 2.0,
-              "y": 1.0,
-              "z": 1.0
-            }
-          }
-        },
-        "id": {
-          "a": 983531,
-          "b": 3625534,
-          "c": 572513936,
-          "d": 1775238312
-        }
-      },
-      {
-        "CBody2D": {
-          "bAffectedByGravity": true,
-          "bFixedRotation": false,
-          "mobility": 0
-        },
-        "CBoxCollider2D": {
-          "bAffectedByGravity": true,
-          "bFixedRotation": false,
-          "bIsTrigger": false,
-          "density": 1.0,
-          "friction": 0.2,
-          "offset": {
-            "x": 0.0,
-            "y": 0.0
-          },
-          "restitution": 0.0,
-          "size": {
-            "x": 1.5,
-            "y": 0.5
-          }
-        },
-        "CEntity": {
-          "name": "Floor01"
-        },
-        "CMesh": {
-          "color": {
-            "a": 0,
-            "b": 0,
-            "g": 0,
-            "r": 0
-          },
-          "model": "Meshes/box.fbx.meta"
-        },
-        "CTransform": {
-          "transform": {
-            "location": {
-              "x": 3.0897121,
-              "y": 0.0,
-              "z": -0.61175466
-            },
-            "rotation": {
-              "w": 0.9848078,
-              "x": 0.0,
-              "y": 0.17364785,
-              "z": 0.0
-            },
-            "scale": {
-              "x": 3.7449048,
-              "y": 1.0,
-              "z": 0.99999946
-            }
-          }
-        },
-        "id": {
-          "a": 927465,
-          "b": 3625534,
-          "c": 457463936,
-          "d": 1763733312
-        }
-      },
-      {
-        "CEditorCamera": {
+        "CCamera": {
           "fov": 60.0
         },
         "CEntity": {
-          "name": "EditorCamera"
-        },
-        "CTransform": {
-          "transform": {
-            "location": {
-              "x": -0.08218243,
-              "y": -13.904281,
-              "z": 3.7365222
-            },
-            "rotation": {
-              "w": 0.9960093,
-              "x": -0.071465984,
-              "y": -0.003826196,
-              "z": 0.053325042
-            },
-            "scale": {
-              "x": 1.0,
-              "y": 1.0,
-              "z": 1.0
-            }
-          }
-        },
-        "id": {
-          "a": 868795,
-          "b": 3625534,
-          "c": 457463936,
-          "d": 1763733312
-        }
-      },
-      {
-        "CBody2D": {
-          "bAffectedByGravity": true,
-          "bFixedRotation": false,
-          "mobility": 0
-        },
-        "CBoxCollider2D": {
-          "bAffectedByGravity": true,
-          "bFixedRotation": false,
-          "bIsTrigger": false,
-          "density": 1.0,
-          "friction": 0.2,
-          "offset": {
-            "x": 0.0,
-            "y": 0.0
-          },
-          "restitution": 0.0,
-          "size": {
-            "x": 1.5,
-            "y": 0.5
-          }
-        },
-        "CEntity": {
-          "name": "Box"
-        },
-        "CMesh": {
-          "color": {
-            "a": 0,
-            "b": 0,
-            "g": 0,
-            "r": 0
-          },
-          "model": "Meshes/box.fbx.meta"
+          "name": "GameCamera"
         },
         "CTransform": {
           "transform": {
@@ -200,60 +17,6 @@
               "x": 0.0,
               "y": 0.0,
               "z": 0.0
-            },
-            "rotation": {
-              "w": 1.0,
-              "x": 0.0,
-              "y": -0.0,
-              "z": 0.0
-            },
-            "scale": {
-              "x": 3.0,
-              "y": 1.0,
-              "z": 1.0
-            }
-          }
-        },
-        "id": {
-          "a": 809713,
-          "b": 3625534,
-          "c": 457463936,
-          "d": 1763733312
-        }
-      },
-      {
-        "CBody2D": {
-          "bAffectedByGravity": true,
-          "bFixedRotation": false,
-          "mobility": 2
-        },
-        "CCircleCollider2D": {
-          "bAffectedByGravity": true,
-          "bFixedRotation": false,
-          "bIsTrigger": false,
-          "density": 1.0,
-          "friction": 0.2,
-          "radius": 0.5,
-          "restitution": 0.0
-        },
-        "CEntity": {
-          "name": "Ball"
-        },
-        "CMesh": {
-          "color": {
-            "a": 0,
-            "b": 0,
-            "g": 0,
-            "r": 0
-          },
-          "model": "Meshes/ball.fbx.meta"
-        },
-        "CTransform": {
-          "transform": {
-            "location": {
-              "x": 0.0,
-              "y": 0.0,
-              "z": 3.174117
             },
             "rotation": {
               "w": 1.0,
@@ -269,10 +32,10 @@
           }
         },
         "id": {
-          "a": 749041,
-          "b": 3625534,
-          "c": 457443936,
-          "d": 1763731312
+          "a": 11492821,
+          "b": 3625601,
+          "c": 1213045104,
+          "d": 550801240
         }
       },
       {
@@ -330,10 +93,591 @@
           }
         },
         "id": {
-          "a": 661065,
-          "b": 3625534,
-          "c": 457403936,
-          "d": 1763727312
+          "a": 11407860,
+          "b": 3625601,
+          "c": 1213045104,
+          "d": 550801240
+        }
+      },
+      {
+        "CBody2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "mobility": 2
+        },
+        "CCircleCollider2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "bIsTrigger": false,
+          "density": 1.0,
+          "friction": 0.2,
+          "radius": 0.5,
+          "restitution": 0.0
+        },
+        "CEntity": {
+          "name": "PlayerBall"
+        },
+        "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "model": "Meshes/ball.fbx.meta"
+        },
+        "CPlayer": {
+          "cameraDistance": 4.0,
+          "cameraSpeed": 4.0,
+          "impulse": 5.0
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 3.174117
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 11348748,
+          "b": 3625601,
+          "c": 1213035104,
+          "d": 550800240
+        }
+      },
+      {
+        "CBody2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "mobility": 0
+        },
+        "CBoxCollider2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "bIsTrigger": false,
+          "density": 1.0,
+          "friction": 0.2,
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "restitution": 0.0,
+          "size": {
+            "x": 1.5,
+            "y": 0.5
+          }
+        },
+        "CEntity": {
+          "name": "Box"
+        },
+        "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "model": "Meshes/box.fbx.meta"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": -0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 3.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 11281566,
+          "b": 3625601,
+          "c": 1213035104,
+          "d": 550800240
+        }
+      },
+      {
+        "CEditorCamera": {
+          "fov": 60.0
+        },
+        "CEntity": {
+          "name": "EditorCamera"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": -3.1331463,
+              "y": -19.764235,
+              "z": 5.350394
+            },
+            "rotation": {
+              "w": 0.9954791,
+              "x": -0.055448692,
+              "y": 0.00428869,
+              "z": -0.07699553
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 11237492,
+          "b": 3625601,
+          "c": 1213035104,
+          "d": 550800240
+        }
+      },
+      {
+        "CBody2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "mobility": 0
+        },
+        "CBoxCollider2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "bIsTrigger": false,
+          "density": 1.0,
+          "friction": 0.2,
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "restitution": 0.0,
+          "size": {
+            "x": 1.5,
+            "y": 0.5
+          }
+        },
+        "CEntity": {
+          "name": "Floor01"
+        },
+        "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "model": "Meshes/box.fbx.meta"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 3.0897121,
+              "y": 0.0,
+              "z": -0.61175466
+            },
+            "rotation": {
+              "w": 0.9848078,
+              "x": 0.0,
+              "y": 0.17364785,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 3.7449048,
+              "y": 1.0,
+              "z": 0.99999946
+            }
+          }
+        },
+        "id": {
+          "a": 11151411,
+          "b": 3625601,
+          "c": 1213035104,
+          "d": 550800240
+        }
+      },
+      {
+        "CBody2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "mobility": 1
+        },
+        "CBoxCollider2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "bIsTrigger": false,
+          "density": 1.0,
+          "friction": 0.2,
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "restitution": 0.0,
+          "size": {
+            "x": 1.0,
+            "y": 0.5
+          }
+        },
+        "CEntity": {
+          "name": "Elevator"
+        },
+        "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "model": "Meshes/box.fbx.meta"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": -2.7994876,
+              "y": 0.0,
+              "z": 0.0030620098
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 2.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 11099934,
+          "b": 3625601,
+          "c": 1213035104,
+          "d": 550800240
+        }
+      },
+      {
+        "CBody2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "mobility": 0
+        },
+        "CBoxCollider2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "bIsTrigger": false,
+          "density": 1.0,
+          "friction": 0.2,
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "restitution": 0.0,
+          "size": {
+            "x": 0.5,
+            "y": 5.0
+          }
+        },
+        "CEntity": {
+          "name": "Wall01"
+        },
+        "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "model": "Meshes/box.fbx.meta"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": -4.517667,
+              "y": 0.0,
+              "z": 2.7762182
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 10.0
+            }
+          }
+        },
+        "id": {
+          "a": 11013650,
+          "b": 3625601,
+          "c": 1213035104,
+          "d": 550800240
+        }
+      },
+      {
+        "CBody2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "mobility": 0
+        },
+        "CBoxCollider2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "bIsTrigger": false,
+          "density": 1.0,
+          "friction": 0.2,
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "restitution": 0.0,
+          "size": {
+            "x": 0.5,
+            "y": 5.0
+          }
+        },
+        "CEntity": {
+          "name": "Wall02"
+        },
+        "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "model": "Meshes/box.fbx.meta"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 15.290616,
+              "y": 0.0,
+              "z": 2.5911055
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 10.0
+            }
+          }
+        },
+        "id": {
+          "a": 10948553,
+          "b": 3625601,
+          "c": 1213035104,
+          "d": 550800240
+        }
+      },
+      {
+        "CBody2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "mobility": 0
+        },
+        "CBoxCollider2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "bIsTrigger": false,
+          "density": 1.0,
+          "friction": 0.2,
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "restitution": 0.0,
+          "size": {
+            "x": 1.0,
+            "y": 0.5
+          }
+        },
+        "CEntity": {
+          "name": "Floor03"
+        },
+        "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "model": "Meshes/box.fbx.meta"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": -0.61647296,
+              "y": 0.0,
+              "z": 5.101065
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 2.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 10906571,
+          "b": 3625601,
+          "c": 1213035104,
+          "d": 550800240
+        }
+      },
+      {
+        "CBody2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "mobility": 0
+        },
+        "CBoxCollider2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "bIsTrigger": false,
+          "density": 1.0,
+          "friction": 0.2,
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "restitution": 0.0,
+          "size": {
+            "x": 1.5,
+            "y": 0.5
+          }
+        },
+        "CEntity": {
+          "name": "Destination01"
+        },
+        "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "model": "Meshes/box.fbx.meta"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 1.4845098,
+              "y": -0.0018163696,
+              "z": 4.5095224
+            },
+            "rotation": {
+              "w": 0.9758188,
+              "x": 0.001713337,
+              "y": 0.21649265,
+              "z": -0.030092677
+            },
+            "scale": {
+              "x": 3.0000002,
+              "y": 0.9999999,
+              "z": 0.99999964
+            }
+          }
+        },
+        "id": {
+          "a": 10819923,
+          "b": 3625601,
+          "c": 1213025104,
+          "d": 550799240
+        }
+      },
+      {
+        "CBody2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "mobility": 0
+        },
+        "CBoxCollider2D": {
+          "bAffectedByGravity": true,
+          "bFixedRotation": false,
+          "bIsTrigger": false,
+          "density": 1.0,
+          "friction": 0.2,
+          "offset": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "restitution": 0.0,
+          "size": {
+            "x": 1.5,
+            "y": 0.5
+          }
+        },
+        "CEntity": {
+          "name": "Destination02"
+        },
+        "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "model": "Meshes/box.fbx.meta"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 3.7724025,
+              "y": 0.0,
+              "z": 4.5165505
+            },
+            "rotation": {
+              "w": 0.976296,
+              "x": 0.0,
+              "y": -0.21643957,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 3.0000002,
+              "y": 1.0,
+              "z": 0.99999994
+            }
+          }
+        },
+        "id": {
+          "a": 10769452,
+          "b": 3625601,
+          "c": 1213025104,
+          "d": 550799240
         }
       }
     ],

@@ -8,6 +8,6 @@
 class CCamera : public Component {
 	STRUCT(CCamera, Component)
 
-	PROP(float, fov)
+	PROP(float, fov, DetailsEdit)
 	float fov = 60.f;
 };

@@ -14,6 +14,9 @@
 #include "Gameplay/Components/CEntity.h"
 #include "Gameplay/Components/CTransform.h"
 #include "Gameplay/Components/CMesh.h"
+#include "Gameplay/Components/CCamera.h"
+#include "Gameplay/Game/Components/CPlayer.h"
+#include "Gameplay/Game/Components/CPlatform.h"
 #include "Physics/Components/CBody2D.h"
 #include "Physics/Components/CBoxCollider2D.h"
 #include "Physics/Components/CCircleCollider2D.h"
@@ -51,21 +54,12 @@ void SceneDetails::Build()
 		AddNew<ComponentDetails<CBody2D>>(entity);
 		AddNew<ComponentDetails<CBoxCollider2D>>(entity);
 		AddNew<ComponentDetails<CCircleCollider2D>>(entity);
+		AddNew<ComponentDetails<CCamera>>(entity);
+		AddNew<ComponentDetails<CPlayer>>(entity);
+		AddNew<ComponentDetails<CPlatform>>(entity);
 
 		TArray<StructType*> componentTypes;
 		Component::StaticStruct()->GetAllChildren(componentTypes);
-
-		/*for (const auto* type : componentTypes)
-		{
-			for (const auto& property : type->GetAllProperties())
-			{
-				if (property.second->HasTag(DetailsEdit) || property.second->HasTag(DetailsView))
-				{
-					auto handle = property.second->CreateHandle(object);
-					Add(PropertyWidget::NewPropertyWidget(handle));
-				}
-			}
-		}*/
 	}
 }
 

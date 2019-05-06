@@ -15,7 +15,7 @@ void SRenderCamera::Tick(float deltaTime)
 
 	CameraData cameraData{};
 
-	if (/*GetWorld()->IsEditor()*/true)
+	if (GetWorld()->IsEditor())
 	{
 		// Use first editor camera
 		auto view = ECS()->View<CTransform, CEditorCamera>();
@@ -39,17 +39,15 @@ void SRenderCamera::Tick(float deltaTime)
 		{
 			EntityId cameraEntity = *view.begin();
 
-			if (ECS()->IsValid(cameraEntity)) {
-				cameraData = GetCameraData(
-					view.get<CTransform>(cameraEntity).GetWorldTransform(),
-					&view.get<CCamera>(cameraEntity)
-				);
-			}
+			cameraData = GetCameraData(
+				view.get<CTransform>(cameraEntity).GetWorldTransform(),
+				&view.get<CCamera>(cameraEntity)
+			);
 		}
 	}
 
 	// Enqueue camera render
-	if (auto * dataComp = ECS()->FindSingleton<CActiveCamera>())
+	if (auto* dataComp = ECS()->FindSingleton<CActiveCamera>())
 	{
 		dataComp->activeData = cameraData;
 	}
