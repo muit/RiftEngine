@@ -75,10 +75,10 @@
           }
         },
         "CBody2D": {
-          "mobility": 2
+          "mobility": 0
         },
         "CBoxCollider2D": {
-          "size": { "x": 3, "y": 1 }
+          "size": { "x": 2, "y": 0.5 }
         },
         "id": {
           "a": 488110,
@@ -107,7 +107,7 @@
             "location": {
               "x": 0.0,
               "y": 0.0,
-              "z": 2.0
+              "z": 4.0
             },
             "rotation": {
               "w": 0.7071067,
@@ -123,10 +123,10 @@
           }
         },
         "CBody2D": {
-          "mobility": 0
+          "mobility": 2
         },
         "CBoxCollider2D": {
-          "size": { "x": 1, "y": 1 }
+          "size": { "x": 0.5, "y": 0.5 }
         },
         "id": {
           "a": 404694,
