@@ -29,7 +29,7 @@ protected:
 
 private:
 
-	void EditAssetInfo(AssetInfo& info);
+	bool EditAssetInfo(AssetInfo& info);
 };
 
 #endif

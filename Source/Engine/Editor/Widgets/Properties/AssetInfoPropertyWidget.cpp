@@ -22,14 +22,18 @@ void AssetInfoPropertyWidget::Tick(float)
 		}
 		else if (auto* assetPtr = GetAssetPtrValuePtr())
 		{
-			EditAssetInfo(assetPtr->info);
+			if (EditAssetInfo(assetPtr->info))
+			{
+				//Reassign to reset cachedAsset
+				assetPtr->SetInfo(assetPtr->info);
+			}
 		}
 
 	}
 	ImGui::PopID();
 }
 
-void AssetInfoPropertyWidget::EditAssetInfo(AssetInfo& info)
+bool AssetInfoPropertyWidget::EditAssetInfo(AssetInfo& info)
 {
 	String id = info.GetPath().ToString();
 	ImGui::InputText(displayName.c_str(), id);
@@ -37,7 +41,9 @@ void AssetInfoPropertyWidget::EditAssetInfo(AssetInfo& info)
 	if (id != info.GetPath().ToString())
 	{
 		info = { Name{id} };
+		return true;
 	}
+	return false;
 }
 
 #endif

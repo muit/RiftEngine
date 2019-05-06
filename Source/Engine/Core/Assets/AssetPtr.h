@@ -13,11 +13,14 @@
 #include "../TypeTraits.h"
 
 
-class BaseAssetPtr {
+class BaseAssetPtr
+{
 	friend class AssetInfoPropertyWidget;
+
 protected:
 
 	AssetInfo info;
+	mutable Ptr<AssetData> cachedAsset;
 
 public:
 
@@ -25,6 +28,11 @@ public:
 	BaseAssetPtr(AssetInfo info) : info{ info } {}
 
 	AssetInfo GetInfo() { return info; }
+	void SetInfo(AssetInfo newInfo)
+	{
+		info = newInfo;
+		cachedAsset.Reset();
+	}
 
 #if WITH_EDITOR
 	static class Class* GetDetailsWidgetClass();
@@ -37,14 +45,13 @@ class TAssetPtr : public BaseAssetPtr
 {
 	static_assert(eastl::is_base_of<AssetData, T>::value, "AssetPtr type must inherit from AssetData");
 
-	mutable Ptr<T> cachedAsset;
 
 
 public:
 
 	using ItemType = T;
 
-	TAssetPtr() : BaseAssetPtr(), cachedAsset{} {}
+	TAssetPtr() : BaseAssetPtr() {}
 
 	TAssetPtr(TAssetPtr&& other) { MoveFrom(MoveTemp(other)); }
 	TAssetPtr(const TAssetPtr& other) { CopyFrom(other); }
@@ -67,57 +74,57 @@ public:
 	 * Tries to load this asset if it's not already
 	 * @returns the loaded asset
 	 */
-	const Ptr<T>& Load() const
+	Ptr<T> Load() const
 	{
-		if(IsNull() || IsValid())
-			return cachedAsset;
+		if (IsNull() || IsValid())
+			return cachedAsset.Cast<T>();
 
 		if (auto manager = AssetManager::Get())
 		{
 			cachedAsset = manager->Load(info).Cast<T>();
 		}
-		return cachedAsset;
+		return cachedAsset.Cast<T>();
 	}
 
 	/**
 	 * Tries to load this asset and returns a new one if not found
 	 * @returns the loaded asset
 	 */
-	const Ptr<T>& LoadOrCreate() const
+	Ptr<T> LoadOrCreate() const
 	{
 		if (IsNull() || IsValid())
-			return cachedAsset;
+			return cachedAsset.Cast<T>();
 
 		if (auto manager = AssetManager::Get())
 		{
 			cachedAsset = manager->LoadOrCreate(info, T::StaticClass()).Cast<T>();
 		}
-		return cachedAsset;
+		return cachedAsset.Cast<T>();
 	}
 
 	/**
 	 * @returns the asset if it's valid and loaded
 	 */
-	const Ptr<T>& Get() const
+	Ptr<T> Get() const
 	{
 		if(IsNull())
 		{
-			return cachedAsset; // Cached asset should always be invalid here
+			return cachedAsset.Cast<T>(); // Cached asset should always be invalid here
 		}
 
 		Ptr<AssetManager> manager = AssetManager::Get();
 		if (manager && !cachedAsset)
 		{
-			cachedAsset = manager->GetLoadedAsset(info).Cast<T>();
+			cachedAsset = manager->GetLoadedAsset(info);
 		}
 
-		return cachedAsset;
+		return cachedAsset.Cast<T>();
 	}
 
 	void Reset()
 	{
 		info = {};
-		cachedAsset = nullptr;
+		cachedAsset.Reset();
 	}
 
 	/** @returns true if this can never be pointed towards an asset */
@@ -142,10 +149,8 @@ private:
 
 	void MoveFrom(TAssetPtr&& other)
 	{
-		info = other.info;
-		cachedAsset = other.cachedAsset;
-		other.info = {};
-		other.cachedAsset = nullptr;
+		eastl::swap(info, other.info);
+		eastl::swap(cachedAsset, other.cachedAsset);
 	}
 
 	void CopyFrom(const TAssetPtr& other)
