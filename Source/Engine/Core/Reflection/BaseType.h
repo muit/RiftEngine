@@ -17,13 +17,13 @@ protected:
 	Name name;
 	ReflectionTags tags;
 
-	typedef eastl::unordered_map<Name, eastl::unique_ptr<Property>> PropertyMap;
+	using PropertyMap = eastl::unordered_map<Name, eastl::unique_ptr<Property>>;
 
 	PropertyMap properties;
 
 public:
 
-	BaseType() {}
+	BaseType() : tags{} {}
 	BaseType(const BaseType&) = delete;
 	BaseType& operator=(const BaseType&) = delete;
 	virtual ~BaseType() {}

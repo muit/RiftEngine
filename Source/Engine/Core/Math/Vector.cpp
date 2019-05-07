@@ -4,10 +4,10 @@
 #include "Core/Platform/PlatformMisc.h"
 #include "Core/Serialization/Archive.h"
 
+
 const v3 v3::Forward{ 0.f, 1.f, 0.f };
 const v3 v3::Right  { 1.f, 0.f, 0.f };
 const v3 v3::Up     { 0.f, 0.f, 1.f };
-
 
 v3 Quat::Rotate(const v3& v) const
 {

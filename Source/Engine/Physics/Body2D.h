@@ -39,6 +39,25 @@ public:
 		bodyPtr->SetTransform(location, angle);
 	}
 
+	void SetLinearVelocity(v2 velocity) const {
+		bodyPtr->SetLinearVelocity(velocity);
+	}
+	void SetAngularVelocity(float velocity) const {
+		bodyPtr->SetAngularVelocity(velocity);
+	}
+	void ApplyLinearImpulse(v2 impulse, bool bWake = true) const {
+		bodyPtr->ApplyLinearImpulseToCenter(impulse, bWake);
+	}
+	void ApplyLinearImpulse(v2 impulse, v2 point, bool bWake = true) const {
+		bodyPtr->ApplyLinearImpulse(impulse, point, bWake);
+	}
+	void ApplyForce(v2 impulse, bool bWake = true) const {
+		bodyPtr->ApplyForceToCenter(impulse, bWake);
+	}
+	void ApplyForce(v2 impulse, v2 point, bool bWake = true) const {
+		bodyPtr->ApplyForce(impulse, point, bWake);
+	}
+
 	bool IsValid() const { return bodyPtr != nullptr; }
 	b2Body* GetRaw() const { return bodyPtr; }
 

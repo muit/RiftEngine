@@ -22,11 +22,13 @@ class vec : public glm::vec<L, T> {
 
 public:
 
-	FORCEINLINE T Length() const { return glm::length<vec<L, T>>(*this); }
-	FORCEINLINE T LengthSqrt() const { return glm::length2<vec<L, T>>(*this); }
+	FORCEINLINE T Length() const { return glm::length<L, T>(*this); }
+	FORCEINLINE T LengthSqrt() const { return glm::length2<L, T>(*this); }
 
 	FORCEINLINE T Distance(const vec<L, T>& other) const { return glm::distance<L, T>(*this, other); }
 	FORCEINLINE T DistanceSqrt(const vec<L, T>& other) const { return glm::distance2<L, T>(*this, other); }
+
+	FORCEINLINE vec Normalize() const { return glm::normalize<L, T>(*this); }
 
 	FORCEINLINE T*       Data()       { return &x; }
 	FORCEINLINE const T* Data() const { return &x; }
@@ -54,9 +56,15 @@ public:
 	}
 	constexpr void operator+=(const v3& other)
 	{
-		x += other.x;
-		y += other.y;
-		z += other.z;
+		x += other.x; y += other.y; z += other.z;
+	}
+	constexpr v3 operator-(const v3& other)
+	{
+		return { x - other.x, y - other.y, z - other.z };
+	}
+	constexpr void operator-=(const v3& other)
+	{
+		x -= other.x; y -= other.y; z -= other.z;
 	}
 
 	FORCEINLINE v2 xz() const { return v2{x, z}; }

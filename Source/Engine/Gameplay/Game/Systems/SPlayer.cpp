@@ -23,6 +23,16 @@ void SPlayer::BeginPlay()
 		{ EKey::D, EKeyModifier::None,  1.f }
 	}, {})
 	.Bind(this, &SPlayer::MoveRight);
+
+	// Store home locations
+	auto view = ECS()->View<CPlayer, CTransform>();
+	for (EntityId entity : view)
+	{
+		CPlayer&    player    = view.get<CPlayer>(entity);
+		const CTransform& transform = view.get<CTransform>(entity);
+
+		player.homeLocation = transform.GetWLocation();
+	}
 }
 
 void SPlayer::Tick(float deltaTime)
@@ -31,7 +41,7 @@ void SPlayer::Tick(float deltaTime)
 
 	auto ecs = ECS();
 
-	const v2 finalMoveDelta = movementDelta * deltaTime;
+	const v2 finalMoveDelta = movementDelta;
 
 	EntityId cameraTarget = NoEntity;
 	CPlayer* playerPtr;
@@ -48,6 +58,20 @@ void SPlayer::Tick(float deltaTime)
 		{
 			cameraTarget = entity;
 			playerPtr = &player;
+		}
+	}
+
+	// Player Dead
+	auto ptView = ecs->View<CPlayer, CTransform>();
+	for (EntityId entity : ptView)
+	{
+		CPlayer&    player    = ptView.get<CPlayer>(entity);
+		CTransform& transform = ptView.get<CTransform>(entity);
+
+		if (transform.GetWLocation().z <= player.dieHeight)
+		{
+			Log::Message("Player died");
+			transform.SetWLocation(player.homeLocation);
 		}
 	}
 

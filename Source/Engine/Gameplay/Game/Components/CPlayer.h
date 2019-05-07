@@ -11,9 +11,15 @@ class CPlayer : public Component {
 	PROP(float, impulse, DetailsEdit)
 	float impulse = 4.f;
 
+	PROP(float, dieHeight, DetailsEdit)
+	float dieHeight = -2.f;
+
 	PROP(float, cameraDistance, DetailsEdit)
 	float cameraDistance = 4.f;
 
 	PROP(float, cameraSpeed, DetailsEdit)
 	float cameraSpeed = 4.f;
+
+	PROP(v3, homeLocation, Transient)
+	v3 homeLocation;
 };
