@@ -57,6 +57,9 @@ public:
 	void ApplyForce(v2 impulse, v2 point, bool bWake = true) const {
 		bodyPtr->ApplyForce(impulse, point, bWake);
 	}
+	void ApplyTorque(float torque, bool bWake = true) const {
+		bodyPtr->ApplyTorque(torque, bWake);
+	}
 
 	bool IsValid() const { return bodyPtr != nullptr; }
 	b2Body* GetRaw() const { return bodyPtr; }

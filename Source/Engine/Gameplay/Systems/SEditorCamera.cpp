@@ -61,6 +61,7 @@ void SEditorCamera::Tick(float deltaTime)
 	// Only tick on editor
 	if (!GetWorld()->IsEditor())
 	{
+		bRotatingMode = false;
 		return;
 	}
 
@@ -108,12 +109,18 @@ void SEditorCamera::ViewportMoveMode(EKeyPressState state)
 
 void SEditorCamera::MoveForward(float delta)
 {
-	movementDelta.y += delta * forwardSpeed;
+	if (GetWorld()->IsEditor())
+	{
+		movementDelta.y += delta * forwardSpeed;
+	}
 }
 
 void SEditorCamera::MoveRight(float delta)
 {
-	movementDelta.x += delta * sideSpeed;
+	if (GetWorld()->IsEditor())
+	{
+		movementDelta.x += delta * sideSpeed;
+	}
 }
 
 void SEditorCamera::TurnUp(float delta)

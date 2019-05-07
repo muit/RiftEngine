@@ -44,7 +44,7 @@ void SPlayer::Tick(float deltaTime)
 	const v2 finalMoveDelta = movementDelta;
 
 	EntityId cameraTarget = NoEntity;
-	CPlayer* playerPtr;
+	CPlayer* playerPtr = nullptr;
 
 	// Player movement
 	auto playerView = ecs->View<CPlayer, CBody2D>();
@@ -52,7 +52,8 @@ void SPlayer::Tick(float deltaTime)
 	{
 		CPlayer& player = playerView.get<CPlayer>(entity);
 		CBody2D& body = playerView.get<CBody2D>(entity);
-		body.body.GetRaw()->ApplyLinearImpulseToCenter({ finalMoveDelta * player.impulse }, true);
+		body.body.ApplyLinearImpulse({ finalMoveDelta * player.impulse });
+		body.body.ApplyTorque(finalMoveDelta.x * player.impulse);
 
 		if (cameraTarget == NoEntity)
 		{
