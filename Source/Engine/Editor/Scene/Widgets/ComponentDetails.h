@@ -67,6 +67,7 @@ void ComponentDetails<Type>::Tick(float deltaTime)
 				if (ImGui::Button("X"))
 				{
 					ecs->Remove<Type>(entity);
+					ForceRebuild();
 					bNotCollapsed = false;
 				}
 			}
