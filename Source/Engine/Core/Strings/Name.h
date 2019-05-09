@@ -4,7 +4,8 @@
 #include "String.h"
 #include <EASTL/functional.h>
 #include <EASTL/unordered_set.h>
-#include "Core/TypeTraits.h"
+
+#include "Core/Reflection/ClassTraits.h"
 
 
 struct Name;

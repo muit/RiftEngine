@@ -5,7 +5,8 @@
 #include <EASTL/numeric_limits.h>
 
 #include "Core/Platform/Platform.h"
-#include "EngineTypes.h"
+#include "Core/Reflection/ClassTraits.h"
+
 
 using EntityId = u32;
 

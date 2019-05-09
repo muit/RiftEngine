@@ -94,6 +94,8 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 				const Matrix4f mvp = vpMatrix * transform.ToMatrix();
 				materialResource.SetMatrix4f(transformParameter, mvp);
 
+				materialResource.BindTextures();
+
 				meshResource.Draw();
 			}
 		}

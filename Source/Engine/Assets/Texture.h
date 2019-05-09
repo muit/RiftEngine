@@ -6,6 +6,7 @@
 #include "Core/Assets/AssetData.h"
 #include "Core/Math/Color.h"
 #include "Rendering/Data/TextureData.h"
+#include "Core/Assets/AssetPtr.h"
 
 
 class Texture : public AssetData
@@ -16,8 +17,10 @@ private:
 
 	TextureData data;
 
-
 public:
+
+	static const TAssetPtr<Texture> default;
+
 
 	Texture() : Super() {}
 

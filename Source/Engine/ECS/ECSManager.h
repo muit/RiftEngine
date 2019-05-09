@@ -12,9 +12,7 @@
 
 #include "Gameplay/Components/CEntity.h"
 #include "Core/Events/Broadcast.h"
-
-
-//DECLARE_REFLECTION_TYPE(EntityId);
+#include "Core/Misc/Guid.h"
 
 
 class Archive;

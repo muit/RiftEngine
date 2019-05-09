@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreEngine.h"
-#include "Core/TypeTraits.h"
-
 #include <glm/glm.hpp>
 #include "glm/vec3.hpp"
 #include "glm/detail/type_vec3.hpp"
@@ -14,6 +12,8 @@
 #include "glm/gtc/type_ptr.inl"
 
 #include "Math.h"
+#include "Core/Strings/Name.h"
+#include "Core/Reflection/ReflectionTypeTraits.h"
 
 
 template<glm::length_t L, typename T>
@@ -42,8 +42,10 @@ class v2 : public vec<2, float> {
 public:
 	class v3 xz() const;
 };
+DECLARE_REFLECTION_TYPE(v2);
 
 using v2_u32 = vec<2, u32>;
+DECLARE_REFLECTION_TYPE(v2_u32);
 
 class v3 : public vec<3, float> {
 	using vec<3, float>::vec;
@@ -73,7 +75,7 @@ public:
 	static const v3 Right;
 	static const v3 Up;
 };
-
+DECLARE_REFLECTION_TYPE(v3);
 
 /** Non reflected vectors */
 
@@ -153,6 +155,8 @@ public:
 
 	static constexpr Quat Identity() { return glm::quat_identity<value_type, glm::highp>(); }
 };
+DECLARE_REFLECTION_TYPE(Quat);
+
 
 template<glm::length_t X, glm::length_t Y, typename T>
 class Matrix : public glm::mat<X, Y, T, glm::highp>

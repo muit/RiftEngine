@@ -6,6 +6,7 @@
 #include "Core/Assets/AssetData.h"
 #include "Core/Math/Color.h"
 #include "Rendering/Data/MaterialData.h"
+//#include "Core/Assets/AssetPtr.h"
 
 
 class Material : public AssetData
@@ -16,10 +17,17 @@ private:
 
 	MaterialData data;
 
-	// #TODO: Create Parameters based on shader code
-	PROP(Color, paramColor)
-	Color paramColor;
+	/*PROP(TAssetPtr<Texture>, baseColor, DetailsEdit)
+	TAssetPtr<Texture> baseColor;
 
+	PROP(TAssetPtr<Texture>, normal, DetailsEdit)
+	TAssetPtr<Texture> normal;
+
+	PROP(TAssetPtr<Texture>, roughness, DetailsEdit)
+	TAssetPtr<Texture> roughness;
+
+	PROP(TAssetPtr<Texture>, metallic, DetailsEdit)
+	TAssetPtr<Texture> metallic;*/
 
 public:
 
@@ -31,4 +39,8 @@ protected:
 
 	virtual bool PostLoad() override;
 	virtual void OnUnload() override;
+
+private:
+
+	void LoadTextures();
 };

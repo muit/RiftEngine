@@ -10,6 +10,8 @@
 #include "Rendering/Commands/TextureCommands.h"
 
 
+const TAssetPtr<Texture> Texture::default { "Textures/T_Default.png.meta" };
+
 bool Texture::PostLoad()
 {
 	data = {};

@@ -8,11 +8,13 @@ layout (location = 2) in vec2 v_uv;
 
 uniform mat4 mvp;
 
+out vec3 normal
 out vec2 uv;
 
 void main()
 {
 	gl_Position = mvp * vec4(v_position, 1.0);
+	normal = v_normal;
 	uv = v_uv;
 }
 

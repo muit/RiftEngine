@@ -8,6 +8,7 @@
 
 #include "Core/TypeTraits.h"
 #include "Core/Object/ObjectPtr.h"
+#include "../Math/Vector.h"
 
 
 class Archive

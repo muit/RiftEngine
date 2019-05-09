@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreEngine.h"
+#include "Core/TypeTraits.h"
 #include "Core/Files/FileSystem.h"
 #include "Core/Strings/Name.h"
+#include "EngineTypes.h"
 
 
 class AssetInfo
@@ -42,3 +44,5 @@ DEFINE_CLASS_TRAITS(AssetInfo,
 	HasCustomSerialize = true,
 	HasDetailsWidget = true
 );
+
+DECLARE_REFLECTION_TYPE(AssetInfo);

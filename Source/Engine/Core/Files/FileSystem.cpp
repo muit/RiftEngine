@@ -58,7 +58,7 @@ bool FileSystem::LoadStringFile(Path path, String& result)
 	// Clean string and reserve it
 	result = {};
 	file.seekg(0, std::ios::end);
-	result.reserve(file.tellg());
+	result.reserve(i32(file.tellg()));
 	file.seekg(0, std::ios::beg);
 
 	// Improve by avoiding this copy from std::string to String

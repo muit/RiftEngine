@@ -4,6 +4,7 @@
 #include "Rendering/Commands/MeshCommands.h"
 #include "Core/Engine.h"
 #include "Tools/Profiler.h"
+#include "Assets/Texture.h"
 
 #include "Gameplay/Components/CTransform.h"
 #include "Gameplay/Components/CMesh.h"
@@ -12,7 +13,8 @@
 void SRenderMeshes::BeginPlay()
 {
 	Super::BeginPlay();
-	texture.Load();
+
+	Texture::default.Load();
 }
 
 void SRenderMeshes::Tick(float deltaTime)
@@ -38,11 +40,6 @@ void SRenderMeshes::Tick(float deltaTime)
 	});
 
 	QueueRenderCommand<DrawMeshesCommand>(MoveTemp(meshInstances));
-
-	if (texture)
-	{
-		//QueueRenderCommand<Draw2DTextureCommand>(0, v2_u32{ 10, 20 });
-	}
 }
 
 void SRenderMeshes::BeforeDestroy()

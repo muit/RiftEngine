@@ -5,6 +5,7 @@
 #include "EngineTypes.h"
 #include "ECS/EntityId.h"
 #include "ECS/Component.h"
+#include "Core/Misc/Guid.h"
 
 
 class CEntity : public Component {

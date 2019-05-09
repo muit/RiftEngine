@@ -8,6 +8,8 @@
 #include "Core/Containers/Array.h"
 #include "Core/Strings/String.h"
 
+#include "Core/Reflection/ClassTraits.h"
+
 
 /**
  * Enum for the different kinds of gamma spaces we expect to need to convert from/to.
@@ -550,6 +552,7 @@ EASTL_DECLARE_IS_POD(LinearColor, true);
 DEFINE_CLASS_TRAITS(Color,
 	HasCustomSerialize = true
 );
+DECLARE_REFLECTION_TYPE(Color);
 
 
 /**

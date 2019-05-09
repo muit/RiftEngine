@@ -31,6 +31,8 @@ bool Material::PostLoad()
 		}
 
 		QueueRenderCommand<LoadMaterialCommand>(GetInfo(), GetData());
+
+		LoadTextures();
 		return Super::PostLoad();
 	}
 	return false;
@@ -39,4 +41,12 @@ bool Material::PostLoad()
 void Material::OnUnload()
 {
 	QueueRenderCommand<FreeMaterialCommand>(GetInfo());
+}
+
+void Material::LoadTextures()
+{
+	/*baseColor.Load();
+	normal.Load();
+	roughness.Load();
+	metallic.Load();*/
 }

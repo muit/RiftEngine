@@ -39,21 +39,3 @@ public:
 		render.resources.Free<ResourceType::Texture>(asset.GetPath());
 	}
 };
-
-class Draw2DTextureCommand : public RenderCommand {
-public:
-	AssetInfo asset;
-	v2_u32 position;
-
-
-	Draw2DTextureCommand(AssetInfo asset, v2_u32 position)
-		: asset{asset}, position{position}
-	{}
-
-	virtual void Execute(FrameRender& render, Frame& frame) override {
-		ScopedGraphicsZone("Draw Texture Command");
-		//u32 texture = render.resources.GetGLId<ResourceType::Texture>(id);
-
-		//render.DrawImage(position, texture);
-	}
-};

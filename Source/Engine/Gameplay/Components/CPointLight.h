@@ -3,6 +3,7 @@
 
 #include "CoreStruct.h"
 #include "ECS/Component.h"
+#include "Core/Math/Color.h"
 
 
 class CPointLight : public Component {

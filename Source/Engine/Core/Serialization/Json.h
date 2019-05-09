@@ -2,5 +2,9 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
+#include "Core/Strings/Name.h"
+#include "Core/Reflection/ReflectionTypeTraits.h"
+
 
 using Json = nlohmann::json;
+DECLARE_REFLECTION_TYPE(Json);

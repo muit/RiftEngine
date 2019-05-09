@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreEngine.h"
-#include "Core/TypeTraits.h"
-#include "Core/Strings/String.h"
+#include "Core/Strings/Name.h"
+#include "Core/Reflection/ClassTraits.h"
+#include "Core/Reflection/ReflectionTypeTraits.h"
+
 #include "Crc.h"
 
 
@@ -276,6 +278,8 @@ public:
 DEFINE_CLASS_TRAITS(Guid,
 	HasCustomSerialize = true
 );
+DECLARE_REFLECTION_TYPE(Guid);
+
 namespace eastl {
 	template <>
 	struct hash<Guid> {

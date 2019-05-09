@@ -48,6 +48,7 @@ struct RenderMaterial
 	}
 
 	void Use() const { glUseProgram(programId); }
+	void BindTextures() const {}
 
 private:
 

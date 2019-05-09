@@ -3,6 +3,8 @@
 
 #include "CoreStruct.h"
 #include "ECS/Component.h"
+#include "Core/Math/Color.h"
+
 
 struct VisualDebuggerPolygon {
 	TArray<v3> points;

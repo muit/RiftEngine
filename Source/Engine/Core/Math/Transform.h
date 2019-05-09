@@ -3,13 +3,18 @@
 #pragma once
 
 #include "CoreEngine.h"
-#include "Vector.h"
-#include "Math.h"
-#include "EASTL/internal/copy_help.h"
+#include <EASTL/internal/copy_help.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
-#include "glm/gtx/transform.hpp"
+#include <glm/gtx/transform.hpp>
+
+#include "Vector.h"
+#include "Math.h"
+
+#include "Core/Reflection/ClassTraits.h"
+#include "Core/Reflection/ReflectionTypeTraits.h"
+
 
 struct Transform
 {
@@ -95,3 +100,5 @@ DEFINE_CLASS_TRAITS(Transform,
 	HasCustomSerialize = true,
 	HasDetailsWidget = true
 );
+
+DECLARE_REFLECTION_TYPE(Transform);
