@@ -53,7 +53,7 @@ in vec2 uv;
 //uniform sample2D rmao;
 uniform float metallic = 0.04;
 uniform float roughness = 0.85;
-uniform float ao = 0.0;
+uniform float ao = 1.0;
 
 uniform vec3 camera_position;
 uniform DirectionalLight directional_lights[MAX_DIRLIGHTS];
@@ -204,7 +204,7 @@ void main()
 
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.03) * baseColor * ao;
+    vec3 ambient = vec3(0.3) * baseColor * ao;
 
 
     vec3 color = ambient + Lo;

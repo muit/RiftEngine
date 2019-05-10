@@ -16,8 +16,8 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 {
 	ScopedGraphicsZone("Draw Mesh Command");
 
-	static const Name mvpParameter = { "mvp" };
-	static const Name modelParameter = { "model" };
+	static const Name mvpParameter { "mvp" };
+	static const Name modelParameter { "model" };
 
 	const Matrix4f view{ render.Camera().GetViewMatrix() };
 	const Matrix4f projection{ render.Camera().GetProjectionMatrix(render.GetRenderSize()) };
