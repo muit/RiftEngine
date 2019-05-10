@@ -6,7 +6,8 @@
 #include "Core/Assets/AssetData.h"
 #include "Core/Math/Color.h"
 #include "Rendering/Data/MaterialData.h"
-//#include "Core/Assets/AssetPtr.h"
+#include "Core/Assets/AssetPtr.h"
+#include "Texture.h"
 
 
 class Material : public AssetData
@@ -17,7 +18,7 @@ private:
 
 	MaterialData data;
 
-	/*PROP(TAssetPtr<Texture>, baseColor, DetailsEdit)
+	PROP(TAssetPtr<Texture>, baseColor, DetailsEdit)
 	TAssetPtr<Texture> baseColor;
 
 	PROP(TAssetPtr<Texture>, normal, DetailsEdit)
@@ -27,7 +28,8 @@ private:
 	TAssetPtr<Texture> roughness;
 
 	PROP(TAssetPtr<Texture>, metallic, DetailsEdit)
-	TAssetPtr<Texture> metallic;*/
+	TAssetPtr<Texture> metallic;
+
 
 public:
 
