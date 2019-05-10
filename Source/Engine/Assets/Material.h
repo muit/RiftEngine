@@ -18,17 +18,16 @@ private:
 
 	MaterialData data;
 
+
 	PROP(TAssetPtr<Texture>, baseColor, DetailsEdit)
 	TAssetPtr<Texture> baseColor;
 
 	PROP(TAssetPtr<Texture>, normal, DetailsEdit)
 	TAssetPtr<Texture> normal;
 
-	PROP(TAssetPtr<Texture>, roughness, DetailsEdit)
-	TAssetPtr<Texture> roughness;
-
-	PROP(TAssetPtr<Texture>, metallic, DetailsEdit)
-	TAssetPtr<Texture> metallic;
+	/** Texture where R is Roughness, G is Metallic, and B is Ambient Occlusion*/
+	PROP(TAssetPtr<Texture>, rmao, DetailsEdit)
+	TAssetPtr<Texture> rmao;
 
 
 public:
