@@ -215,13 +215,14 @@ struct Math
 	}*/
 
 	template< class T, class U/*, EnableIfNotPassByValue(T)*/>
-	static constexpr T Lerp(const T& A, const T& B, const U& Alpha)
+	static constexpr T Lerp(const T& a, const T& b, const U& alpha)
 	{
-		return (T)(A + Alpha * (B - A));
+		return T(a + (b - a) * alpha);
 	}
 
 	static float Mod(float a, float b) { return std::fmod(a, b); }
 
+	// Module for integer types only
 	template<typename Type>
 	static constexpr auto Mod(Type a, Type b) -> decltype(EnableIf<eastl::is_integral_v<Type>, Type>::type) {
 		return a % b;

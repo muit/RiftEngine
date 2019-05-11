@@ -38,7 +38,7 @@ struct Transform
 	Matrix4f ToMatrix() const
 	{
 		// Scale -> Rotate -> Translate
-		return glm::translate(location) * glm::mat4_cast(rotation) * glm::scale(scale);
+		return glm::translate(location) * rotation.ToMatrix() * glm::scale(scale);
 	}
 
 	Matrix4f ToMatrixNoScale() const

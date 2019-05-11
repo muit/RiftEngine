@@ -77,6 +77,7 @@ public:
 };
 DECLARE_REFLECTION_TYPE(v3);
 
+
 /** Non reflected vectors */
 
 using v4    = vec<4, float>;
@@ -91,6 +92,27 @@ using v4_i32 = vec<4, i32>;
 
 using v3_u32 = vec<3, u32>;
 using v4_u32 = vec<4, u32>;
+
+
+template<glm::length_t X, glm::length_t Y, typename T>
+class Matrix : public glm::mat<X, Y, T, glm::highp>
+{
+	using glm::mat<X, Y, T, glm::highp>::mat;
+
+public:
+
+	Matrix Inverse() const { return glm::inverse(*this); }
+	Matrix Transpose() const { return glm::transpose(*this); }
+	Matrix InverseTranspose() const { return glm::inverseTranspose(*this); }
+
+	T* Data() { return &operator[](0).x; }
+	const T* Data() const { return &operator[](0).x; }
+
+	static constexpr Matrix Identity() { return glm::identity<glm::mat<X, Y, T, glm::highp>>(); }
+};
+
+using Matrix4f = Matrix<4, 4, float>;
+
 
 class Rotator : public v3 {
 	using v3::v3;
@@ -122,6 +144,7 @@ public:
 	static float NormalizeAxis(float Angle);
 };
 
+
 class Quat : public glm::qua<float, glm::highp> {
 	using glm::qua<float, glm::highp>::qua;
 
@@ -145,6 +168,8 @@ public:
 	float*       Data()       { return &x; }
 	const float* Data() const { return &x; }
 
+	Matrix4f ToMatrix() const { return glm::mat4_cast<float>(*this); }
+
 	static Quat FromRotator(Rotator rotator);
 
 	static Quat FromRotatorRad(Rotator rotator) {
@@ -157,25 +182,6 @@ public:
 };
 DECLARE_REFLECTION_TYPE(Quat);
 
-
-template<glm::length_t X, glm::length_t Y, typename T>
-class Matrix : public glm::mat<X, Y, T, glm::highp>
-{
-	using glm::mat<X, Y, T, glm::highp>::mat;
-
-public:
-
-	Matrix Inverse() const { return glm::inverse(*this); }
-	Matrix Transpose() const { return glm::transpose(*this); }
-	Matrix InverseTranspose() const { return glm::inverseTranspose(*this); }
-
-	T* Data() { return &operator[](0).x; }
-	const T* Data() const { return &operator[](0).x; }
-
-	static constexpr Matrix Identity() { return glm::identity<glm::mat<X, Y, T, glm::highp>>(); }
-};
-
-using Matrix4f = Matrix<4, 4, float>;
 
 template<typename Type, u32 Dimensions>
 struct Box {
