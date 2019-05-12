@@ -15,7 +15,7 @@ class BaseModule : BaseProject
     public override void ConfigureAll(Configuration conf, RiftTarget target)
     {
         base.ConfigureAll(conf, target);
-        
+
         conf.IncludePaths.Add(@"[project.SharpmakeCsPath]");
         //conf.TargetLibraryPath = "[project.SharpmakeCsPath]/Lib/[target.Optimization]_[target.Platform]";
 
