@@ -8,6 +8,15 @@
 #include "Vector.h"
 #include "Core/Serialization/Archive.h"
 
+#if WITH_EDITOR
+#include <EASTL/shared_ptr.h>
+#include <imgui/imgui.h>
+
+#include "Core/Reflection/Class.h"
+#include "Core/Reflection/Runtime/TPropertyHandle.h"
+#include "Editor/Widgets/PropertyWidget.h"
+#endif
+
 
 // Common colors.
 const LinearColor LinearColor::White       {  1.f,  1.f,  1.f};
@@ -361,6 +370,43 @@ void ComputeAndFixedColorAndIntensity(const LinearColor& InLinearColor,Color& Ou
 	OutColor = ( InLinearColor / MaxComponent ).ToColor(true);
 	OutIntensity = MaxComponent;
 }
+
+
+#if WITH_EDITOR
+class ColorPropertyWidget : public PropertyWidget {
+	CLASS(ColorPropertyWidget, PropertyWidget)
+
+protected:
+
+	virtual void Tick(float) override {
+
+		ImGuiInputTextFlags flags = 0;
+		if (!prop->HasTag(DetailsEdit))
+			flags |= ImGuiInputTextFlags_ReadOnly;
+
+		ImGui::PushID(GetName().ToString().c_str());
+		{
+			Color& color = *GetHandle()->GetValuePtr();
+
+			LinearColor linear = color;
+			if (ImGui::ColorEdit4(displayName.c_str(), &linear.r))
+			{
+				color = linear.ToColor(true);
+			}
+		}
+		ImGui::PopID();
+	}
+
+	TPropertyHandle<Color>* GetHandle() const {
+		return dynamic_cast<TPropertyHandle<Color>*>(prop.get());
+	}
+};
+
+Class* Color::GetDetailsWidgetClass()
+{
+	return ColorPropertyWidget::StaticClass();
+}
+#endif //WITH_EDITOR
 
 
 /**

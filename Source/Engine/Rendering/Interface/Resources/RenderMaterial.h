@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreEngine.h"
+#include <EASTL/unordered_map.h>
 #include "Core/Strings/String.h"
 #include "Core/Log.h"
 
@@ -10,19 +11,13 @@
 #include "Core/Strings/Name.h"
 #include "Core/Math/Vector.h"
 
-struct RenderMaterialParameter
-{
-	Name name;
-	GLint id;
-};
 
 struct RenderMaterial
 {
 	static const Name notAResourceId;
 
 	GLuint programId = GL_INVALID_INDEX;
-
-	TArray<RenderMaterialParameter> parameterIds;
+	mutable eastl::unordered_map<Name, GLint> parameterIds;
 
 
 	RenderMaterial() = default;
@@ -50,6 +45,12 @@ struct RenderMaterial
 	void Use() const { glUseProgram(programId); }
 	void BindTextures() const {}
 
+
+	bool SetFloat(Name name, float value) const;
+	bool SetI32(Name name, i32 value) const;
+	bool SetV3(Name name, const v3& value) const;
+	bool SetMatrix4f(Name name, const Matrix4f& value) const;
+
 private:
 
 	void CompileProgram(Name id, const String& vertexCode, const String& fragmentCode);
@@ -57,9 +58,24 @@ private:
 	void LogShaderError(GLint shaderId);
 	void LogProgramError();
 
-public:
-
-	bool SetFloat(Name Id, float value) const;
-	bool SetV3(Name Id, const v3& value) const;
-	bool SetMatrix4f(Name Id, const Matrix4f& value) const;
+	FORCEINLINE GLint FindParameterIndex(const Name& name) const
+	{
+		const auto it = parameterIds.find(name);
+		if (it != parameterIds.end())
+		{
+			// Found cached id
+			return it->second;
+		}
+		else
+		{
+			// Try to find parameter on the program
+			const GLint id = glGetUniformLocation(programId, name.ToString().c_str());
+			if (id != GL_INVALID_INDEX)
+			{
+				parameterIds.insert_or_assign(name, id);
+				return id;
+			}
+		}
+		return GL_INVALID_INDEX;
+	}
 };

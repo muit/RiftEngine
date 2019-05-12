@@ -18,12 +18,17 @@ struct BaseLightData {
 using AmbientLightData = BaseLightData;
 
 struct DirectionalLightData : public BaseLightData {
+
+	static constexpr i32 maxLights = 10;
+
 	Quat rotation;
 
 	DirectionalLightData() = default;
 };
 
 struct PointLightData : public BaseLightData {
+	static constexpr i32 maxLights = 10;
+
 	float radius;
 	v3 position;
 
@@ -35,5 +40,8 @@ struct LightingRender {
 	TArray<DirectionalLightData> directionals;
 	TArray<PointLightData> points;
 
+
 	LightingRender() = default;
+
+	void Bind(const struct RenderMaterial& material);
 };

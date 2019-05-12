@@ -12,6 +12,7 @@
 #include "Gameplay/Components/CEditorCamera.h"
 #include "Gameplay/Components/CPointLight.h"
 #include "Gameplay/Components/CDirectionalLight.h"
+#include "Gameplay/Systems/SLighting.h"
 
 #include "Physics/Components/CBody2D.h"
 #include "Physics/Components/CCollider2D.h"
@@ -26,7 +27,7 @@
 #include "Gameplay/Systems/SEditorCamera.h"
 #include "Gameplay/Systems/SRenderMeshes.h"
 #include "Gameplay/Systems/SRenderCamera.h"
-#include "Gameplay/Systems/SLighting.h"
+#include "Gameplay/Systems/SRenderLighting.h"
 #include "Physics/SPhysics2D.h"
 
 #include "Gameplay/Singletons/CActiveCamera.h"
@@ -201,12 +202,13 @@ void ECSManager::RegistrySystems()
 	RegistrySystem<SPhysics2D>();
 
 	RegistrySystem<SEditorCamera>();
+	RegistrySystem<SLighting>();
 	RegistrySystem<SPlayer>();
 	RegistrySystem<SPlatforms>();
 
 	// Rendering
 	RegistrySystem<SRenderCamera>();
-	RegistrySystem<SLighting>();
+	RegistrySystem<SRenderLighting>();
 	RegistrySystem<SRenderMeshes>();
 }
 

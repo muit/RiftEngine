@@ -56,13 +56,13 @@ void Guizmo::Tick(float deltaTime)
 		ImGuizmo::SetRect(vp->Pos.x, vp->Pos.y, vp->Size.x, vp->Size.y);
 
 		// Draw Grid
-		{
+		/*{
 			Transform gridTransform {};
 			gridTransform.location = glm::step(1.f, transform.transform.location);
 			gridTransform.location.z = 0.f;
 			gridTransform.SetRotation({-90.f, 0.f, 0.f});
 			ImGuizmo::DrawGrid(view.Data(), projection.Data(), gridTransform.ToMatrix().Data(), 10.f);
-		}
+		}*/
 
 		// Draw Axis
 		{

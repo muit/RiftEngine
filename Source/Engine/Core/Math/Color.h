@@ -221,6 +221,9 @@ struct LinearColor
 		return NewCopy;
 	}
 
+	v3 ToV3() const { return { r, g, b };    }
+	v4 ToV4() const { return { r, g, b, a }; }
+
 	/**
 	 * Converts byte hue-saturation-brightness to floating point red-green-blue.
 	 */
@@ -501,6 +504,10 @@ public:
 		return ( b << 24 ) | ( g << 16 ) | ( r << 8 ) | ( a << 0 );
 	}
 
+#if WITH_EDITOR
+	static class Class* GetDetailsWidgetClass();
+#endif
+
 	/** Some pre-initialized colors, useful for debug code */
 	static const Color White;
 	static const Color Black;
@@ -550,7 +557,8 @@ EASTL_DECLARE_IS_POD(Color, true);
 EASTL_DECLARE_IS_POD(LinearColor, true);
 
 DEFINE_CLASS_TRAITS(Color,
-	HasCustomSerialize = true
+	HasCustomSerialize = true,
+	HasDetailsWidget = true
 );
 DECLARE_REFLECTION_TYPE(Color);
 

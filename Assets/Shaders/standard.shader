@@ -31,16 +31,16 @@ void main()
 
 // Lighting Data
 #define MAX_DIRLIGHTS 10
-uniform int num_directional_lights;
+uniform int num_dir_lights;
 struct DirectionalLight {
-    vec3 direction;
     vec3 color;
+    vec3 direction;
 };
 #define MAX_POINTLIGHTS 10
 uniform int num_point_lights;
 struct PointLight {
-    vec3 position;
     vec3 color;
+    vec3 position;
 };
 
 
@@ -56,7 +56,7 @@ uniform float roughness = 0.85;
 uniform float ao = 1.0;
 
 uniform vec3 camera_position;
-uniform DirectionalLight directional_lights[MAX_DIRLIGHTS];
+uniform DirectionalLight dir_lights[MAX_DIRLIGHTS];
 uniform PointLight point_lights[MAX_POINTLIGHTS];
 
 
@@ -193,9 +193,9 @@ void main()
     vec3 F0 = mix(vec3(0.04), baseColor, metallic);
     
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < num_directional_lights; ++i) 
+    for(int i = 0; i < num_dir_lights; ++i) 
     {
-        Lo += ApplyDirectionalLight(directional_lights[i], baseColor, normal, metallic, F0, N, V);
+        Lo += ApplyDirectionalLight(dir_lights[i], baseColor, normal, metallic, F0, N, V);
     }
     for(int i = 0; i < num_point_lights; ++i) 
     {

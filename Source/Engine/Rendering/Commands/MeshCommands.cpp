@@ -64,7 +64,7 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 							TArray<Transform>{ meshInstance.transform }
 						}
 					}
-					});
+				});
 			}
 		}
 	}
@@ -74,9 +74,8 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 	{
 		ScopedGraphicsZone("Material Batch");
 
-		const RenderMaterial& materialResource = render.resources.Get<ResourceType::Material>(materialBatch.first);
-
-		materialResource.Use();
+		const RenderMaterial& material = render.resources.Get<ResourceType::Material>(materialBatch.first);
+		material.Use();
 
 		for (const auto& meshBatch : materialBatch.second)
 		{
@@ -87,6 +86,10 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 			// Bind mesh once
 			meshResource.Bind();
 
+			material.BindTextures();
+			material.SetV3("camera_position", render.camera.transform.location);
+			render.lighting.Bind(material);
+
 			for (const auto& transform : meshBatch.second)
 			{
 				ScopedGraphicsZone("Transform Mesh Draw");
@@ -94,10 +97,8 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 				// Update transform on material and draw triangles
 				const Matrix4f model = transform.ToMatrix();
 				const Matrix4f mvp = vpMatrix * model;
-				materialResource.SetMatrix4f(mvpParameter, mvp);
-				materialResource.SetMatrix4f(modelParameter, model);
-
-				materialResource.BindTextures();
+				material.SetMatrix4f(mvpParameter, mvp);
+				material.SetMatrix4f(modelParameter, model);
 
 				meshResource.Draw();
 			}

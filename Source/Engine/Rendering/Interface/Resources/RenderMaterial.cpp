@@ -56,11 +56,6 @@ void RenderMaterial::CompileProgram(Name id, const String& vertexCode, const Str
 		}
 		else
 		{
-			// Cache parameter ids by name
-			parameterIds.Add(
-				{ "mvp", glGetUniformLocation(programId, "mvp") }
-			);
-
 			Log::Message("Loaded material into GPU '%s' Id:%i", id.ToString().c_str(), programId);
 		}
 	}
@@ -94,34 +89,45 @@ void RenderMaterial::LogProgramError()
 	Log::Error(message);
 }
 
-bool RenderMaterial::SetFloat(Name Id, float value) const
+bool RenderMaterial::SetFloat(Name name, float value) const
 {
-	const GLint paramId = glGetUniformLocation(programId, Id.ToString().c_str());
-	if (paramId != GL_INVALID_INDEX)
+	const GLint id = FindParameterIndex(name);
+	if (id != GL_INVALID_INDEX)
 	{
-		glUniform1fv(paramId, 1, &value);
+		glUniform1f(id, value);
 		return true;
 	}
 	return false;
 }
 
-bool RenderMaterial::SetV3(Name Id, const v3& value) const
+bool RenderMaterial::SetI32(Name name, i32 value) const
 {
-	const GLint paramId = glGetUniformLocation(programId, Id.ToString().c_str());
-	if (paramId != GL_INVALID_INDEX)
+	const GLint id = FindParameterIndex(name);
+	if (id != GL_INVALID_INDEX)
 	{
-		glUniform3fv(paramId, 1, value.Data());
+		glUniform1i(id, value);
 		return true;
 	}
 	return false;
 }
 
-bool RenderMaterial::SetMatrix4f(Name Id, const Matrix4f& value) const
+bool RenderMaterial::SetV3(Name name, const v3& value) const
 {
-	const GLint paramId = glGetUniformLocation(programId, Id.ToString().c_str());
-	if (paramId != -1)
+	const GLint id = FindParameterIndex(name);
+	if (id != GL_INVALID_INDEX)
 	{
-		glUniformMatrix4fv(paramId, 1, GL_FALSE, value.Data());
+		glUniform3fv(id, 1, value.Data());
+		return true;
+	}
+	return false;
+}
+
+bool RenderMaterial::SetMatrix4f(Name name, const Matrix4f& value) const
+{
+	const GLint id = FindParameterIndex(name);
+	if (id != GL_INVALID_INDEX)
+	{
+		glUniformMatrix4fv(id, 1, GL_FALSE, value.Data());
 		return true;
 	}
 	return false;

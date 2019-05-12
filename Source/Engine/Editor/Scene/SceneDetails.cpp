@@ -17,6 +17,8 @@
 #include "Gameplay/Components/CCamera.h"
 #include "Gameplay/Game/Components/CPlayer.h"
 #include "Gameplay/Game/Components/CPlatform.h"
+#include "Gameplay/Components/CDirectionalLight.h"
+#include "Gameplay/Components/CPointLight.h"
 #include "Physics/Components/CBody2D.h"
 #include "Physics/Components/CBoxCollider2D.h"
 #include "Physics/Components/CCircleCollider2D.h"
@@ -57,6 +59,8 @@ void SceneDetails::Build()
 		AddNew<ComponentDetails<CCamera>>(entity);
 		AddNew<ComponentDetails<CPlayer>>(entity);
 		AddNew<ComponentDetails<CPlatform>>(entity);
+		AddNew<ComponentDetails<CDirectionalLight>>(entity);
+		AddNew<ComponentDetails<CPointLight>>(entity);
 
 		TArray<StructType*> componentTypes;
 		Component::StaticStruct()->GetAllChildren(componentTypes);

@@ -5,8 +5,12 @@
 #include "ECS/System.h"
 
 
-class SLighting : public System {
-	CLASS(SLighting, System)
+class SRenderLighting : public System {
+	CLASS(SRenderLighting, System)
+
+public:
+
+	SRenderLighting() : Super() { bTickOnEditor = true; }
 
 	virtual void Tick(float deltaTime) override;
 };
