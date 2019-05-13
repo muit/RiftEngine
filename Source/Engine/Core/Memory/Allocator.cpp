@@ -28,41 +28,35 @@ namespace Memory {
 	/// gAllocator
 	/// Default engine allocator instance.
 	EASTL_API Allocator   gAllocator {};
-	EASTL_API Allocator* gpAllocator = &gAllocator;
-
 	EASTL_API Allocator* GetAllocator()
 	{
-		return gpAllocator;
+		return &gAllocator;
 	}
 
 	/// gAllocator
 	/// Default engine allocator instance.
 	EASTL_API Allocator   gObjectsAllocator{ TX("Objects") };
-	EASTL_API Allocator* gpObjectsAllocator = &gObjectsAllocator;
-
 	EASTL_API Allocator* GetObjectsAllocator()
 	{
-		return gpObjectsAllocator;
+		return &gObjectsAllocator;
 	}
 
-	/// gAllocator
-	/// Default engine allocator instance.
 	EASTL_API Allocator   gAssetsAllocator{ TX("Assets") };
-	EASTL_API Allocator* gpAssetsAllocator = &gAssetsAllocator;
-
 	EASTL_API Allocator* GetAssetsAllocator()
 	{
-		return gpAssetsAllocator;
+		return &gAssetsAllocator;
 	}
 
-	/// gAllocator
-	/// Default engine allocator instance.
 	EASTL_API Allocator   gFrameAllocator{ TX("Frame") };
-	EASTL_API Allocator* gpFrameAllocator = &gFrameAllocator;
-
 	EASTL_API Allocator* GetFrameAllocator()
 	{
-		return gpFrameAllocator;
+		return &gFrameAllocator;
+	}
+
+	EASTL_API PhysicsAllocator  gPhysicsAllocator{ TX("PhysX") };
+	EASTL_API PhysicsAllocator* GetPhysicsAllocator()
+	{
+		return &gPhysicsAllocator;
 	}
 };
 

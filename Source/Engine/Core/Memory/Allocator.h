@@ -9,7 +9,7 @@
 #include <tracy/Tracy.hpp>
 #include <tracy/client/tracy_rpmalloc.hpp>
 #include <new>
-//#include <PhysX/foundation/PxAllocatorCallback.h>
+#include <foundation/PxAllocatorCallback.h>
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,6 @@ public:
 	}
 };
 
-
 namespace Memory {
 	EASTL_API Allocator* GetAllocator();
 
@@ -113,29 +112,45 @@ public:
 	void SetName(const TCHAR* inName) { name = inName; }
 };
 
-/*class PhysXAllocator : public PxAllocatorCallback
-{
-	using Super = PxAllocatorCallback;
 
+class PhysicsAllocator : public physx::PxAllocatorCallback
+{
 	const TCHAR* name;
 
+
 public:
+	PhysicsAllocator(const TCHAR* name = TX("PhysX")) : name{ name } {}
 
-	void* allocate(size_t n, int flags = 0)
+	virtual void* allocate(size_t size, const char*, const char*, int) override
 	{
-		return Memory::GetAllocator()->Allocate(n, flags);
+#if PX_WINDOWS_FAMILY
+		void* const ptr = _aligned_malloc(size, 16);
+#elif PX_LINUX_FAMILY || PX_SWITCH
+		void* const ptr = ::memalign(16, size);
+#else
+		void* const ptr = ::malloc(size);
+#endif
+		TracyAllocS(ptr, size, 8);
+		return ptr;
 	}
 
-	virtual void* allocate(size_t size, const char* typeName, const char* filename, i32 line) override
+	virtual void deallocate(void* ptr) override
 	{
-		return Memory::GetAllocator()->Allocate(n, alignment, offset, flags);
-	}
-
-	virtual void deallocate(void* p) override
-	{
-		Memory::GetAllocator()->Deallocate(p, n);
+		TracyFreeS(ptr, 8);
+#if PX_WINDOWS_FAMILY
+		_aligned_free(ptr);
+#elif PX_LINUX_FAMILY || PX_SWITCH
+		::free(ptr);
+#else
+		::free(ptr);
+#endif
 	}
 
 	const TCHAR* GetName() const { return name; }
 	void SetName(const TCHAR* inName) { name = inName; }
-};*/
+};
+
+
+namespace Memory {
+	EASTL_API PhysicsAllocator* GetPhysicsAllocator();
+}
