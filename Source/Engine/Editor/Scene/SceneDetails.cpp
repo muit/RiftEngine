@@ -19,9 +19,9 @@
 #include "Gameplay/Game/Components/CPlatform.h"
 #include "Gameplay/Components/CDirectionalLight.h"
 #include "Gameplay/Components/CPointLight.h"
-#include "Physics/Components/CBody2D.h"
-#include "Physics/Components/CBoxCollider2D.h"
-#include "Physics/Components/CCircleCollider2D.h"
+#include "Physics/2D/Components/CBody2D.h"
+#include "Physics/2D/Components/CBoxCollider2D.h"
+#include "Physics/2D/Components/CCircleCollider2D.h"
 
 
 #if WITH_EDITOR

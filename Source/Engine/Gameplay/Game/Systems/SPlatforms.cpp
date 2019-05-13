@@ -4,7 +4,7 @@
 #include "Core/Log.h"
 #include "Core/Engine.h"
 #include "../Components/CPlatform.h"
-#include "Physics/Components/CBody2D.h"
+#include "Physics/2D/Components/CBody2D.h"
 
 
 void SPlatforms::Tick(float deltaTime)

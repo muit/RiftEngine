@@ -31,6 +31,7 @@ public class PhysXLibrary : Project
         conf.TargetCopyFiles.Add(@"[project.SharpmakeCsPath]/lib/[target.Platform]/[target.Optimization]/PhysXCommon.dll");
         conf.TargetCopyFiles.Add(@"[project.SharpmakeCsPath]/lib/[target.Platform]/[target.Optimization]/PhysXCooking.dll");
         conf.TargetCopyFiles.Add(@"[project.SharpmakeCsPath]/lib/[target.Platform]/[target.Optimization]/PhysXFoundation.dll");
+        conf.TargetCopyFiles.Add(@"[project.SharpmakeCsPath]/lib/[target.Platform]/[target.Optimization]/PhysXGpu.dll");
 
 		conf.LibraryFiles.Add(@"PhysX.lib");
 		conf.LibraryFiles.Add(@"PhysXCommon.lib");

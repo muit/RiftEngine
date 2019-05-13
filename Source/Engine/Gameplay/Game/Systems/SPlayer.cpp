@@ -8,7 +8,7 @@
 
 #include "Core/Engine.h"
 #include "../Components/CPlayer.h"
-#include "Physics/Components/CBody2D.h"
+#include "Physics/2D/Components/CBody2D.h"
 #include "Tools/Profiler.h"
 
 

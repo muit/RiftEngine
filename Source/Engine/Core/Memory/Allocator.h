@@ -9,6 +9,7 @@
 #include <tracy/Tracy.hpp>
 #include <tracy/client/tracy_rpmalloc.hpp>
 #include <new>
+//#include <PhysX/foundation/PxAllocatorCallback.h>
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -111,3 +112,30 @@ public:
 	const TCHAR* GetName() const { return name; }
 	void SetName(const TCHAR* inName) { name = inName; }
 };
+
+/*class PhysXAllocator : public PxAllocatorCallback
+{
+	using Super = PxAllocatorCallback;
+
+	const TCHAR* name;
+
+public:
+
+	void* allocate(size_t n, int flags = 0)
+	{
+		return Memory::GetAllocator()->Allocate(n, flags);
+	}
+
+	virtual void* allocate(size_t size, const char* typeName, const char* filename, i32 line) override
+	{
+		return Memory::GetAllocator()->Allocate(n, alignment, offset, flags);
+	}
+
+	virtual void deallocate(void* p) override
+	{
+		Memory::GetAllocator()->Deallocate(p, n);
+	}
+
+	const TCHAR* GetName() const { return name; }
+	void SetName(const TCHAR* inName) { name = inName; }
+};*/

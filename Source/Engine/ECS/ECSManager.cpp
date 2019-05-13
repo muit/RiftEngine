@@ -14,10 +14,10 @@
 #include "Gameplay/Components/CDirectionalLight.h"
 #include "Gameplay/Systems/SLighting.h"
 
-#include "Physics/Components/CBody2D.h"
-#include "Physics/Components/CCollider2D.h"
-#include "Physics/Components/CBoxCollider2D.h"
-#include "Physics/Components/CCircleCollider2D.h"
+#include "Physics/2D/Components/CBody2D.h"
+#include "Physics/2D/Components/CCollider2D.h"
+#include "Physics/2D/Components/CBoxCollider2D.h"
+#include "Physics/2D/Components/CCircleCollider2D.h"
 
 #include "Gameplay/Game/Components/CPlayer.h"
 #include "Gameplay/Game/Components/CPlatform.h"
@@ -28,7 +28,8 @@
 #include "Gameplay/Systems/SRenderMeshes.h"
 #include "Gameplay/Systems/SRenderCamera.h"
 #include "Gameplay/Systems/SRenderLighting.h"
-#include "Physics/SPhysics2D.h"
+#include "Physics/2D/SPhysics2D.h"
+#include "Physics/3D/SPhysics.h"
 
 #include "Gameplay/Singletons/CActiveCamera.h"
 #include "Gameplay/Singletons/CPhysicsWorld.h"
