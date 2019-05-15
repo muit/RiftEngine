@@ -102,6 +102,12 @@ void SceneDetails::Tick(float deltaTime)
 						{
 							onComponentAdded.DoBroadcast(entry);
 							ForceRebuild();
+
+							if (entries.Size() <= 0)
+							{
+								// No more components, close
+								ImGui::CloseCurrentPopup();
+							}
 							break;
 						}
 					}
