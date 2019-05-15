@@ -7,6 +7,7 @@
 #include "UI/Widget.h"
 #include "ECS/ECSManager.h"
 #include "Gameplay/Components/CEntity.h"
+#include "../SceneDetails.h"
 
 
 template<typename Type>
@@ -16,6 +17,9 @@ public:
 
 	Ptr<ECSManager> ecs;
 	EntityId entity = NoEntity;
+
+	String displayName;
+
 
 	void Configure(EntityId inEntity)
 	{
@@ -27,11 +31,31 @@ protected:
 
 	virtual void Build() override;
 	virtual void Tick(float) override;
+
+private:
+
+	void OnComponentAdded(const ComponentCreationEntry& entry)
+	{
+		if (entry.type == Type::StaticStruct())
+		{
+			ecs->Assign<Type>(entity);
+		}
+	}
 };
 
 template<typename Type>
 void ComponentDetails<Type>::Build()
 {
+	if (!ecs->IsValid(entity))
+	{
+		return;
+	}
+
+	StructType* type = Type::StaticStruct();
+	displayName = type->GetSName();
+	CString::RemoveFromStart(displayName, 1); // Remove C prefix
+	CString::ToSentenceCase(displayName, displayName);
+
 	if (ecs->Has<Type>(entity))
 	{
 		Type& comp = ecs->Get<Type>(entity);
@@ -46,47 +70,50 @@ void ComponentDetails<Type>::Build()
 			}
 		}
 	}
+	else
+	{
+		Ptr<SceneDetails> details = GetOwner().Cast<SceneDetails>();
+		details->AddComponentEntry({
+			displayName,
+			type
+		});
+
+		details->OnComponentAdded().Bind(this, &ComponentDetails<Type>::OnComponentAdded);
+	}
 }
 
 template<typename Type>
 void ComponentDetails<Type>::Tick(float deltaTime)
 {
-	static const Name compName{ Type::StaticStruct()->GetName() };
-
-	if (ecs->IsValid(entity))
+	if (ecs->IsValid(entity) && ecs->Has<Type>(entity))
 	{
-		if (ecs->Has<Type>(entity))
+		bool bNotCollapsed = ImGui::CollapsingHeader(displayName.c_str(), ImGuiTreeNodeFlags_AllowOverlapMode);
+
+		if(!eastl::is_convertible<Type, CEntity>::value)
 		{
-			bool bNotCollapsed = ImGui::CollapsingHeader(compName.ToString().c_str(), ImGuiTreeNodeFlags_AllowOverlapMode);
+			ImGui::SameLine(ImGui::GetWindowWidth() - 30);
 
-			if(!eastl::is_convertible<Type, CEntity>::value)
+			//Remove button. Won't appear on CEntity
+			String label = CString::Printf("X##%i", Type::StaticStruct());
+			if (ImGui::Button(label.c_str()))
 			{
-				ImGui::SameLine(ImGui::GetWindowWidth() - 30);
+				ecs->Remove<Type>(entity);
 
-				//Remove button. Won't appear on CEntity
-				if (ImGui::Button("X"))
-				{
-					ecs->Remove<Type>(entity);
-					ForceRebuild();
-					bNotCollapsed = false;
-				}
-			}
-
-			if(bNotCollapsed)
-			{
-				// Show properties
-				TickChilds(deltaTime);
+				// Rebuild full details panel
+				GetOwner().Cast<SceneDetails>()->ForceRebuild();
+				bNotCollapsed = false;
 			}
 		}
-		else
+
+		// Show properties
+		if(bNotCollapsed)
 		{
-			String bttnText = CString::Printf("Add %s", compName.ToString().c_str());
-			if (ImGui::Button(bttnText.c_str()))
-			{
-				// Assign component
-				ecs->Assign<Type>(entity);
-				ForceRebuild();
-			}
+			ImGui::Indent();
+
+			TickChilds(deltaTime);
+
+			ImGui::Spacing();
+			ImGui::Unindent();
 		}
 	}
 }

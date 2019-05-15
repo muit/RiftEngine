@@ -30,6 +30,8 @@ void SceneDetails::Build()
 	Super::Build();
 	SetName(TX("Details"));
 
+	entries.Empty();
+
 	if (object)
 	{
 		displayName = String("Details: ").append(object->GetName().ToString());
@@ -75,6 +77,38 @@ void SceneDetails::Tick(float deltaTime)
 		if (object || entity != NoEntity)
 		{
 			TickChilds(deltaTime);
+
+			// Add last button if component details
+			if (!object && entity != NoEntity)
+			{
+				ImGui::Spacing();
+				ImGui::Separator();
+				if (ImGui::BeginCombo("##AddComponent", "Add Component", ImGuiComboFlags_NoArrowButton | ImGuiComboFlags_HeightLarge))
+				{
+					// Focus Filter by default
+					if (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0))
+						ImGui::SetKeyboardFocusHere(0);
+
+					static ImGuiTextFilter filter;
+					filter.Draw("##Search", ImGui::GetContentRegionAvail().x - 5);
+
+					ImGui::Spacing();
+
+					ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2{});
+					for (const auto& entry : entries)
+					{
+						if (filter.PassFilter(entry.displayName.c_str(), entry.displayName.end()) &&
+							ImGui::Button(entry.displayName.c_str(), ImVec2(ImGui::GetContentRegionAvail().x - 5, 0.0f)))
+						{
+							onComponentAdded.DoBroadcast(entry);
+							ForceRebuild();
+							break;
+						}
+					}
+					ImGui::PopStyleVar(1);
+					ImGui::EndCombo();
+				}
+			}
 		}
 		EndWindow();
 	}
@@ -97,6 +131,11 @@ void SceneDetails::SetObject(Ptr<Object> inObject)
 		entity = NoEntity;
 		ForceRebuild();
 	}
+}
+
+void SceneDetails::AddComponentEntry(ComponentCreationEntry&& entry)
+{
+	entries.Add(entry);
 }
 
 #endif

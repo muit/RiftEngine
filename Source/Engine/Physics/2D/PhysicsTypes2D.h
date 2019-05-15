@@ -7,13 +7,8 @@
 #include <Box2D/Collision/Shapes/b2PolygonShape.h>
 #include <Box2D/Collision/Shapes/b2CircleShape.h>
 
+#include "../PhysicsTypes.h"
 
-enum class EMobilityType : u8
-{
-	Static,
-	Kinematic,
-	Movable
-};
 
 using Shape = b2Shape;
 using PolygonShape = b2PolygonShape;

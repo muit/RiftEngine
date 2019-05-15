@@ -4,12 +4,17 @@
 #include <common/PxTolerancesScale.h>
 #include <PxSceneDesc.h>
 #include <PxFiltering.h>
+#include <foundation/PxFlags.h>
+#include <extensions/PxDefaultSimulationFilterShader.h>
 
 #include "World.h"
 #include "Core/MultiThreading.h"
 #include "Tools/Profiler.h"
 
-#include "PhysicsTypes.h"
+#include "Gameplay/Components/CTransform.h"
+#include "Components/CBody.h"
+
+#include "../PhysicsTypes.h"
 #include "Gameplay/Singletons/CPhysicsWorld.h"
 
 
@@ -72,7 +77,7 @@ void SPhysics::CreateScene()
 	physx::PxSceneDesc sceneDesc(world->getTolerancesScale());
 	sceneDesc.gravity = physx::PxVec3(0.0f, -9.81f, 0.0f);
 
-	if (!sceneDesc.cpuDispatcher)
+	/*if (!sceneDesc.cpuDispatcher)
 	{
 		// Number of desired threads
 		cpuDispatcher = physx::PxDefaultCpuDispatcherCreate(1);
@@ -81,10 +86,10 @@ void SPhysics::CreateScene()
 			Log::Error("PhysX error: PxDefaultCpuDispatcherCreate failed!");
 		}
 		sceneDesc.cpuDispatcher = cpuDispatcher;
-	}
+	}*/
 
-	if (!sceneDesc.filterShader)
-		sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
+	/*if (!sceneDesc.filterShader)
+		sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;*/
 
 	//sceneDesc.frictionType = PxFrictionType::eTWO_DIRECTIONAL;
 	//sceneDesc.frictionType = PxFrictionType::eONE_DIRECTIONAL;
@@ -119,4 +124,39 @@ void SPhysics::CreateScene()
 void SPhysics::Step(float deltaTime)
 {
 	ScopedGameZone("Step");
+
+	// Simulate at a fixed rate
+	deltaTimeIncrement += deltaTime;
+	if (deltaTimeIncrement >= stepSize)
+	{
+		deltaTimeIncrement -= stepSize;
+
+		scene->simulate(stepSize);
+
+		// #TODO: Support multi-threading while doing Render tick
+		scene->fetchResults(true);
+	}
+}
+
+void SPhysics::CreateBody(const CTransform& transform, CBody& body)
+{
+	physx::PxTransform t{ ToPx(transform.GetWLocation()), ToPx(transform.GetWRotation()) };
+
+	switch (EMobilityType(body.mobility))
+	{
+	case EMobilityType::Movable: {
+		body.rigidBody = world->createRigidDynamic(t);
+		break;
+	}
+	case EMobilityType::Kinematic: {
+		physx::PxRigidBody* rigidBody = world->createRigidDynamic(t);
+		rigidBody->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, true);
+		body.rigidBody = rigidBody;
+		break;
+	}
+	case EMobilityType::Static:
+		body.rigidBody = world->createRigidStatic(t);
+		break;
+	}
+	scene->addActor(*body.rigidBody);
 }

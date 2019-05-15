@@ -39,6 +39,15 @@ public:
 		return true;
 	}
 
+	/** Manual destruction is dangerous and a bad practice
+	void Destroy()
+	{
+		if (BaseGlobalPtr* global = Self().__GetGlobal())
+		{
+			global->Reset();
+		}
+	}*/
+
 
 	Ptr<Object> GetOwner() const { return owner.Cast<Object>(); }
 

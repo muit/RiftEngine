@@ -7,6 +7,13 @@
 #include "Editor/EditorWindow.h"
 #include "Editor/Widgets/PropertyWidget.h"
 #include "ECS/EntityId.h"
+#include "Core/Events/Broadcast.h"
+
+
+struct ComponentCreationEntry {
+	String displayName;
+	class StructType* type;
+};
 
 
 class SceneDetails : public EditorWindow {
@@ -14,6 +21,10 @@ class SceneDetails : public EditorWindow {
 
 	EntityId entity = NoEntity;
 	Ptr<Object> object;
+
+	TArray<ComponentCreationEntry> entries;
+	Broadcast<const ComponentCreationEntry&> onComponentAdded;
+
 
 protected:
 
@@ -25,6 +36,12 @@ public:
 
 	void SetEntity(EntityId inEntity);
 	void SetObject(Ptr<Object> inObject);
+
+	void AddComponentEntry(ComponentCreationEntry&& entry);
+
+	Broadcast<const ComponentCreationEntry&>& OnComponentAdded() {
+		return onComponentAdded;
+	}
 };
 
 #endif

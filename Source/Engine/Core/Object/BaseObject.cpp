@@ -6,7 +6,7 @@
 
 Class* BaseObject::GetClass() const
 {
-	const Object* thisObj = static_cast<const Object*>(this);
+	const auto* thisObj = static_cast<const Object*>(this);
 	if (thisObj)
 		return thisObj->GetClass();
 	return nullptr;
@@ -14,7 +14,7 @@ Class* BaseObject::GetClass() const
 
 Ptr<Object> BaseObject::Self() const
 {
-	const Object* thisObj = static_cast<const Object*>(this);
+	const auto* thisObj = static_cast<const Object*>(this);
 	if (thisObj)
 		return thisObj->Self();
 	return {};

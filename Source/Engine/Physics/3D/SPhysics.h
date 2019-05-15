@@ -10,6 +10,9 @@
 
 #include "Core/Log.h"
 
+class CTransform;
+class CBody;
+
 
 class UserErrorCallback : public physx::PxErrorCallback
 {
@@ -31,16 +34,19 @@ public:
 class SPhysics : public System {
 	CLASS(SPhysics, System)
 
+	float stepSize = 1.f / 60.f;
+
+
 	physx::PxFoundation* foundation = nullptr;
 	physx::PxPhysics* world = nullptr;
 	physx::PxScene* scene = nullptr;
-	physx::PxDefaultCpuDispatcher* cpuDispatcher = nullptr;
+	//physx::PxDefaultCpuDispatcher* cpuDispatcher = nullptr;
 
 	UserErrorCallback pxErrorCallback {};
 
 	// Cached
 	class CPhysicsWorld* physicsWorld = nullptr;
-
+	float deltaTimeIncrement = 0.0f;
 
 public:
 
@@ -58,4 +64,9 @@ protected:
 private:
 
 	void Step(float deltaTime);
+
+	void CreateBody(const CTransform& transform, CBody& body);
+
+	physx::PxVec3 ToPx(const v3& v) { return { v.x, v.y, v.z }; }
+	physx::PxQuat ToPx(const Quat& q) { return { q.x, q.y, q.z, q.w }; }
 };

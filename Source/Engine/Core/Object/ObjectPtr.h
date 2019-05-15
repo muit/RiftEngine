@@ -55,7 +55,7 @@ public:
 	void Reset() {
 		if (IsValid())
 		{
-			ptr->Destroy();
+			ptr->StartDestroy();
 			ptr.release();
 		}
 	}
@@ -153,6 +153,8 @@ protected:
 	const BaseGlobalPtr* GetGlobal() const { return globalPtr; }
 
 public:
+
+	BaseGlobalPtr* __GetGlobal() const { return const_cast<BaseGlobalPtr*>(globalPtr); }
 
 	bool IsValid() const {
 		return globalPtr != nullptr && globalPtr->IsValid();

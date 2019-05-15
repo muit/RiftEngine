@@ -23,7 +23,9 @@ protected:
 
 public:
 
-	void Destroy() { BeforeDestroy(); }
+	void StartDestroy() {
+		BeforeDestroy();
+	}
 
 	Class* GetClass() const;
 	Ptr<Object> Self() const;
