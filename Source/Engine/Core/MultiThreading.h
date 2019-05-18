@@ -34,7 +34,7 @@ public:
 	{
 		for (size_t i = 0; i < threadPool->_threads.size(); ++i)
 		{
-			// Name each worker thread
+			// Name each worker thread in the debugger
 			tracy::SetThreadName(threadPool->_threads[i], CString::Printf("Worker %i", i+1).c_str());
 		}
 	}
@@ -44,4 +44,4 @@ public:
 	FORCEINLINE u32 GetNumWorkerThreads() const { return (u32)threadPool->num_workers(); }
 };
 
-EA_RESTORE_VC_WARNING()  // warning: 4267
+EA_RESTORE_VC_WARNING() // warning: 4267

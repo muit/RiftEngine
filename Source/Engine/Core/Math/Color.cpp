@@ -108,9 +108,9 @@ Color LinearColor::ToRGBE() const
 		i32 exponent;
 		const float scale	= frexp(Primary, &exponent) / Primary * 255.f;
 
-		color.r	= (u8)Math::Clamp(Math::FloorToInt(r * scale), 0, 255);
-		color.g = (u8)Math::Clamp(Math::FloorToInt(g * scale), 0, 255);
-		color.b = (u8)Math::Clamp(Math::FloorToInt(b * scale), 0, 255);
+		color.r	= (u8)Math::Clamp(Math::FloorToI32(r * scale), 0, 255);
+		color.g = (u8)Math::Clamp(Math::FloorToI32(g * scale), 0, 255);
+		color.b = (u8)Math::Clamp(Math::FloorToI32(b * scale), 0, 255);
 		color.a = (u8)(Math::Clamp(exponent, -128, 127) + 128);
 	}
 
@@ -135,10 +135,10 @@ Color LinearColor::ToColor(const bool bSRGB) const
 
 	Color ret;
 
-	ret.a = (u8)Math::FloorToInt(floata * 255.999f);
-	ret.r = (u8)Math::FloorToInt(floatr * 255.999f);
-	ret.g = (u8)Math::FloorToInt(floatg * 255.999f);
-	ret.b = (u8)Math::FloorToInt(floatb * 255.999f);
+	ret.a = (u8)Math::FloorToI32(floata * 255.999f);
+	ret.r = (u8)Math::FloorToI32(floatr * 255.999f);
+	ret.g = (u8)Math::FloorToI32(floatg * 255.999f);
+	ret.b = (u8)Math::FloorToI32(floatb * 255.999f);
 
 	return ret;
 }
@@ -147,10 +147,10 @@ Color LinearColor::ToColor(const bool bSRGB) const
 Color LinearColor::Quantize() const
 {
 	return Color(
-		(u8)Math::Clamp<i32>(Math::FloorToInt(r * 255.f),0,255),
-		(u8)Math::Clamp<i32>(Math::FloorToInt(g * 255.f),0,255),
-		(u8)Math::Clamp<i32>(Math::FloorToInt(b * 255.f),0,255),
-		(u8)Math::Clamp<i32>(Math::FloorToInt(a * 255.f),0,255)
+		(u8)Math::Clamp<i32>(Math::FloorToI32(r * 255.f),0,255),
+		(u8)Math::Clamp<i32>(Math::FloorToI32(g * 255.f),0,255),
+		(u8)Math::Clamp<i32>(Math::FloorToI32(b * 255.f),0,255),
+		(u8)Math::Clamp<i32>(Math::FloorToI32(a * 255.f),0,255)
 	);
 }
 
@@ -358,8 +358,8 @@ Color Color::MakeRedToGreenColorFromScalar(float scalar)
 	float redSclr = Math::Clamp<float>((1.0f - scalar)/0.5f,0.f,1.f);
 	float greenSclr = Math::Clamp<float>((scalar/0.5f),0.f,1.f);
 
-	u8 r = (u8)Math::FloorToInt(255 * redSclr);
-	u8 g = (u8)Math::FloorToInt(255 * greenSclr);
+	u8 r = (u8)Math::FloorToI32(255 * redSclr);
+	u8 g = (u8)Math::FloorToI32(255 * greenSclr);
 	u8 b = 0;
 	return Color(r, g, b);
 }

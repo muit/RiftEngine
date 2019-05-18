@@ -149,9 +149,14 @@ struct Math
 		return CeilToDouble(d);
 	}
 
-	static FORCEINLINE i32 FloorToInt(float f)
+	static FORCEINLINE i32 FloorToI32(float f)
 	{
-		return (i32)FloorToFloat(f);
+		return i32(FloorToFloat(f));
+	}
+
+	static FORCEINLINE i64 FloorToI64(double f)
+	{
+		return i64(FloorToDouble(f));
 	}
 
 	static FORCEINLINE float FloorToFloat(float f)
@@ -164,9 +169,14 @@ struct Math
 		return std::floor(d);
 	}
 
-	static FORCEINLINE i32 CeilToInt(float f)
+	static FORCEINLINE i32 CeilToI32(float f)
 	{
-		return (i32)CeilToFloat(f);
+		return i32(CeilToFloat(f));
+	}
+
+	static FORCEINLINE i64 CeilToI64(double f)
+	{
+		return i64(CeilToDouble(f));
 	}
 
 	static FORCEINLINE float CeilToFloat(float f)
@@ -190,8 +200,8 @@ struct Math
 	}
 
 	template<class T>
-	static constexpr T Pow(T a, T b) {
-		return std::pow(eastl::move(a), eastl::move(b));
+	static constexpr T Pow(T value, T power) {
+		return std::pow<T>(eastl::move(value), eastl::move(power));
 	}
 
 
@@ -319,4 +329,10 @@ struct Math
 	static FORCEINLINE bool NearlyEqual(float a, float b, float tolerance = SMALL_NUMBER) {
 		return Abs(b - a) <= tolerance;
 	}
+
+	static const float Log(const float k)             { return log(k); }
+	static const float Log(const float k, float base) { return log(k) / log(base); }
+
+	static const double Log(const double k)              { return log(k); }
+	static const double Log(const double k, double base) { return log(k) / log(base); }
 };

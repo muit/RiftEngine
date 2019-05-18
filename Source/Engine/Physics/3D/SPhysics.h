@@ -2,12 +2,13 @@
 #pragma once
 
 #include "CoreObject.h"
-#include "ECS/System.h"
 #include <PxPhysicsAPI.h>
 #include <PxFoundation.h>
 #include <foundation/PxErrorCallback.h>
 #include <extensions/PxDefaultCpuDispatcher.h>
 
+#include "ECS/System.h"
+#include "Core/MultiThreading.h"
 #include "Core/Log.h"
 
 class CTransform;
@@ -48,6 +49,8 @@ class SPhysics : public System {
 	class CPhysicsWorld* physicsWorld = nullptr;
 	float deltaTimeIncrement = 0.0f;
 
+	TaskFlow physicsMTFlow;
+
 public:
 
 	SPhysics();
@@ -59,20 +62,19 @@ protected:
 	virtual void EndPlay() override;
 	virtual void BeforeDestroy() override;
 
-	void CreateScene();
 
 private:
 
+	void UploadBodies();
 	void Step(float deltaTime);
+	void DownloadBodies();
 
+	void CreateScene();
 	void CreateBody(const CTransform& transform, CBody& body);
 	void SetupBodyShapes(CBody& body);
 
-	void UploadBodies();
-	void DownloadBodies();
-
-	FORCEINLINE physx::PxVec3 ToPx(const v3& v) { return { v.x, v.y, v.z }; }
-	FORCEINLINE physx::PxQuat ToPx(const Quat& q) { return { q.x, q.y, q.z, q.w }; }
-	FORCEINLINE v3 FromPx(const physx::PxVec3& v) { return { v.x, v.y, v.z }; }
-	FORCEINLINE Quat FromPx(const physx::PxQuat& q) { return { q.x, q.y, q.z, q.w }; }
+	static FORCEINLINE physx::PxVec3 ToPx(const v3& v) { return { v.x, v.y, v.z }; }
+	static FORCEINLINE physx::PxQuat ToPx(const Quat& q) { return { q.x, q.y, q.z, q.w }; }
+	static FORCEINLINE v3 FromPx(const physx::PxVec3& v) { return { v.x, v.y, v.z }; }
+	static FORCEINLINE Quat FromPx(const physx::PxQuat& q) { return { q.x, q.y, q.z, q.w }; }
 };

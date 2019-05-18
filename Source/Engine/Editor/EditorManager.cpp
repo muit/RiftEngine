@@ -77,18 +77,27 @@ void EditorManager::TickDocking()
 
 void EditorManager::TickMainNavBar()
 {
+	static AssetDialog saveSceneAsDialog{ "Save Scene", EDialogMode::NewAsset };
+	bool bDoSaveSceneAs = false;
+
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
 		{
 			if (ImGui::MenuItem("Open Scene")) {}
-			if (ImGui::MenuItem("Save Scene", "CTRL+S")) {
+			if (ImGui::MenuItem("Save Scene", "CTRL+S"))
+			{
 				if (TAssetPtr<Scene> scene = GetWorld()->GetActiveScene())
 				{
 					scene->SaveScene(GetWorld());
 					scene->Save();
 				}
 			}
+			if (ImGui::MenuItem("Save Scene as", "CTRL+S"))
+			{
+				bDoSaveSceneAs = true;
+			}
+
 			ImGui::Separator();
 			if (ImGui::MenuItem("Exit")) {}
 			ImGui::EndMenu();
@@ -136,6 +145,13 @@ void EditorManager::TickMainNavBar()
 
 		ImGui::EndMainMenuBar();
 	}
+
+	// Draw modals
+	if (bDoSaveSceneAs)
+	{
+		saveSceneAsDialog.OpenDialog();
+	}
+	saveSceneAsDialog.Draw();
 }
 
 #endif

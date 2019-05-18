@@ -124,6 +124,8 @@ struct CString {
 	static FORCEINLINE bool IsNumeric(const String& str) { return IsNumeric(str.data()); }
 	static bool IsNumeric(const TCHAR* Str);
 
+	static String ParseMemorySize(size_t size);
+
 private:
 
 	// #NOTE: EASTL doesn't support codecvt and wstring conversion yet
