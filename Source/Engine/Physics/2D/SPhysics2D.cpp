@@ -22,7 +22,7 @@ void SPhysics2D::BeginPlay()
 
 	physicsWorld = ECS()->FindSingleton<CPhysicsWorld>();
 
-	world = eastl::make_unique<b2World>(b2Vec2{ physicsWorld->gravity });
+	world = eastl::make_unique<b2World>(b2Vec2{ physicsWorld->gravity.xz() });
 }
 
 void SPhysics2D::Tick(float deltaTime)
@@ -255,7 +255,7 @@ void SPhysics2D::Step(float deltaTime)
 	// Update gravity if changed
 	if (physicsWorld)
 	{
-		world->SetGravity(physicsWorld->gravity);
+		world->SetGravity(physicsWorld->gravity.xz());
 	}
 
 	const int32 velocityIterations = 6;

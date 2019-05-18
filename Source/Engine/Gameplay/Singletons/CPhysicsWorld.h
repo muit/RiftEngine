@@ -9,6 +9,6 @@ class CPhysicsWorld : public Component {
 	STRUCT(CPhysicsWorld, Component)
 public:
 
-	PROP(v2, gravity)
-	v2 gravity {0.0f, -10.f};
+	PROP(v3, gravity)
+	v3 gravity {0.f, 0.f, -9.81f};
 };

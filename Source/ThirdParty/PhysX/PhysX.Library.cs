@@ -42,6 +42,12 @@ public class PhysXLibrary : Project
 		conf.LibraryFiles.Add(@"PhysXCooking" + platformSuffix + ".lib");
 		conf.LibraryFiles.Add(@"PhysXFoundation" + platformSuffix + ".lib");
 
+		conf.LibraryFiles.Add(@"PhysXExtensions_static" + platformSuffix + ".lib");
+		conf.LibraryFiles.Add(@"PhysXPvdSDK_static" + platformSuffix + ".lib");
+		conf.LibraryFiles.Add(@"PhysXTask_static" + platformSuffix + ".lib");
+		conf.LibraryFiles.Add(@"PhysXVehicle_static" + platformSuffix + ".lib");
+		conf.LibraryFiles.Add(@"SceneQuery_static" + platformSuffix + ".lib");
+
         // To use /DEBUG:FULL
         conf.Options.Add(Sharpmake.Options.Vc.Linker.GenerateDebugInformation.Enable);
         conf.Options.Add(Sharpmake.Options.Vc.Linker.GenerateFullProgramDatabaseFile.Enable);

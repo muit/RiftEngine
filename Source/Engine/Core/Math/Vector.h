@@ -170,6 +170,8 @@ public:
 
 	Matrix4f ToMatrix() const { return glm::mat4_cast<float>(*this); }
 
+	bool Equals(const Quat& other, float tolerance = Math::SMALL_NUMBER) const;
+
 	static Quat FromRotator(Rotator rotator);
 
 	static Quat FromRotatorRad(Rotator rotator) {

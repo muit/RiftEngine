@@ -61,6 +61,14 @@ Rotator Quat::ToRotator() const
 	return RotatorFromQuat;
 }
 
+bool Quat::Equals(const Quat& other, float tolerance) const
+{
+	return Math::NearlyEqual(x, other.x, tolerance) &&
+		Math::NearlyEqual(y, other.y, tolerance) &&
+		Math::NearlyEqual(z, other.z, tolerance) &&
+		Math::NearlyEqual(w, other.w, tolerance);
+}
+
 Quat Quat::FromRotator(Rotator rotator)
 {
 	const float DIVIDE_BY_2 = Math::DEGTORAD / 2.f;

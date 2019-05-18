@@ -68,6 +68,8 @@ private:
 	void CreateBody(const CTransform& transform, CBody& body);
 	void SetupBodyShapes(CBody& body);
 
+	void UploadBodies();
+	void DownloadBodies();
 
 	FORCEINLINE physx::PxVec3 ToPx(const v3& v) { return { v.x, v.y, v.z }; }
 	FORCEINLINE physx::PxQuat ToPx(const Quat& q) { return { q.x, q.y, q.z, q.w }; }

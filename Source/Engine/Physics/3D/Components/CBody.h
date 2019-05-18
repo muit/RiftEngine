@@ -52,4 +52,6 @@ public:
 	}
 
 	FORCEINLINE bool IsStatic() const { return mobility == u8(EMobilityType::Static); }
+
+	bool IsInitialized() const { return rigidBody != nullptr; }
 };

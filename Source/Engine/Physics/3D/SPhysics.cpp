@@ -44,9 +44,9 @@ void SPhysics::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CreateScene();
-
 	physicsWorld = ECS()->FindSingleton<CPhysicsWorld>();
+
+	CreateScene();
 }
 
 void SPhysics::Tick(float deltaTime)
@@ -54,7 +54,11 @@ void SPhysics::Tick(float deltaTime)
 	ScopedStackGameZone();
 	Super::Tick(deltaTime);
 
+	UploadBodies();
+
 	Step(deltaTime);
+
+	DownloadBodies();
 }
 
 void SPhysics::EndPlay()
@@ -79,21 +83,20 @@ void SPhysics::BeforeDestroy()
 void SPhysics::CreateScene()
 {
 	physx::PxSceneDesc sceneDesc(world->getTolerancesScale());
-	sceneDesc.gravity = physx::PxVec3(0.0f, -9.81f, 0.0f);
+	sceneDesc.gravity = ToPx(physicsWorld->gravity);
 
-	/*if (!sceneDesc.cpuDispatcher)
+	if (!sceneDesc.cpuDispatcher)
 	{
 		// Number of desired threads
-		cpuDispatcher = physx::PxDefaultCpuDispatcherCreate(1);
-		if (!cpuDispatcher)
+		sceneDesc.cpuDispatcher = physx::PxDefaultCpuDispatcherCreate(1);
+		if (!sceneDesc.cpuDispatcher)
 		{
 			Log::Error("PhysX error: PxDefaultCpuDispatcherCreate failed!");
 		}
-		sceneDesc.cpuDispatcher = cpuDispatcher;
-	}*/
+	}
 
-	/*if (!sceneDesc.filterShader)
-		sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;*/
+	if (!sceneDesc.filterShader)
+		sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
 
 	//sceneDesc.frictionType = PxFrictionType::eTWO_DIRECTIONAL;
 	//sceneDesc.frictionType = PxFrictionType::eONE_DIRECTIONAL;
@@ -116,7 +119,6 @@ void SPhysics::CreateScene()
 #ifdef USE_MBP
 	sceneDesc.broadPhaseType = PxBroadPhaseType::eMBP;
 #endif
-
 
 	scene = world->createScene(sceneDesc);
 	if (!scene)
@@ -148,10 +150,9 @@ void SPhysics::CreateBody(const CTransform& transform, CBody& body)
 
 	switch (EMobilityType(body.mobility))
 	{
-	case EMobilityType::Movable: {
+	case EMobilityType::Movable:
 		body.rigidBody = world->createRigidDynamic(t);
 		break;
-	}
 	case EMobilityType::Kinematic: {
 		physx::PxRigidBody* rigidBody = world->createRigidDynamic(t);
 		rigidBody->setRigidBodyFlag(physx::PxRigidBodyFlag::eKINEMATIC, true);
@@ -162,6 +163,7 @@ void SPhysics::CreateBody(const CTransform& transform, CBody& body)
 		body.rigidBody = world->createRigidStatic(t);
 		break;
 	}
+	SetupBodyShapes(body);
 	scene->addActor(*body.rigidBody);
 }
 
@@ -178,4 +180,38 @@ void SPhysics::SetupBodyShapes(CBody& body)
 	{
 		physx::PxRigidActorExt::createExclusiveShape(*body.rigidBody, physx::PxSphereGeometry(body.radius), *material);
 	}
+}
+
+void SPhysics::UploadBodies()
+{
+	auto view = ECS()->View<CTransform, CBody>();
+	for (auto entity : view)
+	{
+		CTransform& transform = view.get<CTransform>(entity);
+		CBody& body           = view.get<CBody>(entity);
+
+		if (!body.IsInitialized())
+		{
+			CreateBody(transform, body);
+		}
+		else if (!body.IsStatic())
+		{
+			const v3& location = transform.GetWLocation();
+			const Quat& rotation = transform.GetWRotation();
+			const auto currTransform = body.rigidBody->getGlobalPose();
+
+			// If position or rotation changed, update it
+			if (location.DistanceSqrt(FromPx(currTransform.p)) > Math::SMALL_NUMBER ||
+				!rotation.Equals(FromPx(currTransform.q)))
+			{
+				// Apply transform
+				const physx::PxTransform newTransform{ ToPx(location), ToPx(rotation) };
+				body.rigidBody->setGlobalPose(newTransform);
+			}
+		}
+	}
+}
+
+void SPhysics::DownloadBodies()
+{
 }
