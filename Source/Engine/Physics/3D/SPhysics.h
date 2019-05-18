@@ -66,7 +66,11 @@ private:
 	void Step(float deltaTime);
 
 	void CreateBody(const CTransform& transform, CBody& body);
+	void SetupBodyShapes(CBody& body);
 
-	physx::PxVec3 ToPx(const v3& v) { return { v.x, v.y, v.z }; }
-	physx::PxQuat ToPx(const Quat& q) { return { q.x, q.y, q.z, q.w }; }
+
+	FORCEINLINE physx::PxVec3 ToPx(const v3& v) { return { v.x, v.y, v.z }; }
+	FORCEINLINE physx::PxQuat ToPx(const Quat& q) { return { q.x, q.y, q.z, q.w }; }
+	FORCEINLINE v3 FromPx(const physx::PxVec3& v) { return { v.x, v.y, v.z }; }
+	FORCEINLINE Quat FromPx(const physx::PxQuat& q) { return { q.x, q.y, q.z, q.w }; }
 };

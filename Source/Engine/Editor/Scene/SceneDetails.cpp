@@ -22,6 +22,7 @@
 #include "Physics/2D/Components/CBody2D.h"
 #include "Physics/2D/Components/CBoxCollider2D.h"
 #include "Physics/2D/Components/CCircleCollider2D.h"
+#include "Physics/3D/Components/CBody.h"
 
 
 #if WITH_EDITOR
@@ -55,14 +56,15 @@ void SceneDetails::Build()
 		AddNew<ComponentDetails<CEntity>>(entity);
 		AddNew<ComponentDetails<CTransform>>(entity);
 		AddNew<ComponentDetails<CMesh>>(entity);
-		AddNew<ComponentDetails<CBody2D>>(entity);
-		AddNew<ComponentDetails<CBoxCollider2D>>(entity);
-		AddNew<ComponentDetails<CCircleCollider2D>>(entity);
 		AddNew<ComponentDetails<CCamera>>(entity);
 		AddNew<ComponentDetails<CPlayer>>(entity);
 		AddNew<ComponentDetails<CPlatform>>(entity);
 		AddNew<ComponentDetails<CDirectionalLight>>(entity);
 		AddNew<ComponentDetails<CPointLight>>(entity);
+		AddNew<ComponentDetails<CBody2D>>(entity);
+		AddNew<ComponentDetails<CBoxCollider2D>>(entity);
+		AddNew<ComponentDetails<CCircleCollider2D>>(entity);
+		AddNew<ComponentDetails<CBody>>(entity);
 
 		TArray<StructType*> componentTypes;
 		Component::StaticStruct()->GetAllChildren(componentTypes);

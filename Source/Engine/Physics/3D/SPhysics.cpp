@@ -2,10 +2,14 @@
 
 #include "SPhysics.h"
 #include <common/PxTolerancesScale.h>
+#include <extensions/PxDefaultSimulationFilterShader.h>
+#include <extensions/PxRigidActorExt.h>
+#include <foundation/PxFlags.h>
+#include <geometry/PxBoxGeometry.h>
+#include <geometry/PxSphereGeometry.h>
 #include <PxSceneDesc.h>
 #include <PxFiltering.h>
-#include <foundation/PxFlags.h>
-#include <extensions/PxDefaultSimulationFilterShader.h>
+#include <PxMaterial.h>
 
 #include "World.h"
 #include "Core/MultiThreading.h"
@@ -159,4 +163,19 @@ void SPhysics::CreateBody(const CTransform& transform, CBody& body)
 		break;
 	}
 	scene->addActor(*body.rigidBody);
+}
+
+void SPhysics::SetupBodyShapes(CBody& body)
+{
+	physx::PxMaterial* material = world->createMaterial(0.5f, 0.5f, 0.1f);
+
+	if (body.bHasBoxShape)
+	{
+		physx::PxRigidActorExt::createExclusiveShape(*body.rigidBody, physx::PxBoxGeometry(ToPx(body.boxExtent)), *material);
+	}
+
+	if (body.bHasSphereShape)
+	{
+		physx::PxRigidActorExt::createExclusiveShape(*body.rigidBody, physx::PxSphereGeometry(body.radius), *material);
+	}
 }
