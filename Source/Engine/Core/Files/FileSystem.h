@@ -17,6 +17,11 @@ class Archive;
 class FileSystem
 {
 public:
+
+	using DirectoryIterator = fs::directory_iterator;
+	using SpaceInfo = fs::space_info;
+
+
 	/** String API */
 
 	static FORCEINLINE bool FileExists(const String& path)                     { return FileExists  (FromString(path));         }
@@ -53,8 +58,9 @@ public:
 
 	static Path FindRawFile(Path in);
 
-	static bool IsAssetPath(Path path) {
-		return path.is_relative() || !fs::relative(path, GetAssetsPath()).empty();
+	static bool IsAssetPath(Path path);
+	static bool IsAssetFilePath(const Path& path) {
+		return IsAssetPath(path) && path.has_extension() && path.extension() == ".meta";
 	}
 
 
@@ -87,4 +93,6 @@ private:
 		return !fs::relative(path, GetAssetsPath()).empty();
 
 	}
+
+	SpaceInfo Space(Path target) { return fs::space(target); }
 };

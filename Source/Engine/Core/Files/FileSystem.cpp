@@ -110,3 +110,22 @@ Path FileSystem::FindRawFile(Path in)
 
 	return in.parent_path() / stem;
 }
+
+bool FileSystem::IsAssetPath(Path path)
+{
+	if (path.is_relative())
+		return true;
+
+	const Path assets = GetAssetsPath();
+	const Path rootPath = path.root_path();
+
+	// Iterate parent directories to find Assets path
+	for (; path != rootPath; path = path.parent_path())
+	{
+		if (path == assets)
+		{
+			return true;
+		}
+	}
+	return false;
+}

@@ -21,6 +21,12 @@ enum class EDialogSortType : u8 {
 	Date
 };
 
+enum class EDialogReturn : u8 {
+	Success,
+	Cancel,
+	None
+};
+
 struct AssetDialogFile
 {
 	Path path;
@@ -83,46 +89,60 @@ private:
 
 struct AssetDialog
 {
-public:
-	bool bDirty = true;
-	Path currentPath;
-	EDialogMode mode;
-	String title;
-
 	struct Root {
 		Path root;
 		String label;
 	};
+
+public:
+	String title;
+	Path currentPath;
+	EDialogMode mode;
+
+private:
+	Path navigatePath;
 	TArray<Root> roots;
 	TArray<Path> directories;
-
 	TArray<AssetDialogFile> files;
-	TArray<String> selectedItems;
-
-	String newFile;
-
 	AssetDialogSorter sorter;
+	bool bDirty = true;
+	EDialogReturn result = EDialogReturn::None;
 
+	String value;
+
+
+public:
 
 	AssetDialog(String title, EDialogMode mode = EDialogMode::NewAsset)
 		: title{title}
 		, mode{mode}
 		, currentPath{ FileSystem::GetAssetsPath() }
 	{}
-
+	virtual ~AssetDialog() {}
 
 	void OpenDialog();
-	bool Draw();
-
-	const TArray<String>& GetSelected() const { return selectedItems; }
+	EDialogReturn Draw();
 
   private:
 
-	void FillRoots();
 	void ResetCache() {
 		bDirty = true;
 		roots.Empty(false);
 		directories.Empty(false);
 		files.Empty(false);
 	}
+
+protected:
+	virtual void DrawHeader();
+	virtual void DrawContent();
+	virtual void DrawFooter();
+
+	virtual void OnFileSelected(const AssetDialogFile& file) {
+		value = FileSystem::ToString(file.path.filename());
+	}
+
+	void CacheCurrentDirectory();
+	void CacheRoots();
+
+	bool GetSelectedFile(AssetDialogFile& selected);
 };

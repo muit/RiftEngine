@@ -13,7 +13,7 @@
 
 
 // decimals of microseconds
-typedef std::chrono::duration<i64, std::ratio<1, 10'000'000>> decmicroseconds;
+using decmicroseconds = std::chrono::duration<i64, std::ratio<1, 10'000'000>>;
 
 
 /**

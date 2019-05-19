@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreEngine.h"
+#include <chrono>
 
 #include "Timespan.h"
 
@@ -44,6 +45,7 @@ enum class EMonthOfYear
 };
 
 using namespace date;
+namespace Chrono = std::chrono;
 
 
 /**
@@ -70,9 +72,14 @@ using namespace date;
  */
 struct DateTime
 {
+
 	// #TODO: Replace with eastl chrono
-	using SysClock = std::chrono::system_clock;
-	using SysTime = std::chrono::time_point<SysClock, decmicroseconds>;
+	using SysClock = Chrono::system_clock;
+	using SysTime = Chrono::time_point<SysClock, decmicroseconds>;
+
+	/** Holds the ticks in 100 nanoseconds resolution since January 1, 0001 A.D. */
+	SysTime time;
+
 
 public:
 
@@ -86,6 +93,16 @@ public:
 	 */
 	DateTime(SysTime time)
 		: time(time)
+	{ }
+
+	template<typename Precision>
+	DateTime(Chrono::time_point<SysClock, Precision> time)
+		: time{ Chrono::time_point_cast<decmicroseconds, SysClock, Precision>(time) }
+	{ }
+
+	template<typename Clock, typename Precision>
+	DateTime(Chrono::time_point<Clock, Precision> time)
+		: time{ClockCast<decmicroseconds, Precision, SysClock, Clock>(time)}
 	{ }
 
 	/**
@@ -291,7 +308,7 @@ public:
 	 */
 	u32 GetHour() const
 	{
-		return (floor<std::chrono::hours>(time) - floor<days>(time)).count();
+		return (floor<Chrono::hours>(time) - floor<days>(time)).count();
 	}
 
 	/**
@@ -310,7 +327,7 @@ public:
 	 */
 	i32 GetMillisecond() const
 	{
-		return (i32)(floor<std::chrono::milliseconds>(time) - floor<std::chrono::seconds>(time)).count();
+		return (i32)(floor<Chrono::milliseconds>(time) - floor<Chrono::seconds>(time)).count();
 	}
 
 	/**
@@ -321,7 +338,7 @@ public:
 	 */
 	i32 GetMinute() const
 	{
-		return (floor<std::chrono::minutes>(time) - floor<std::chrono::hours>(time)).count();
+		return (floor<Chrono::minutes>(time) - floor<Chrono::hours>(time)).count();
 	}
 
 	/**
@@ -351,7 +368,7 @@ public:
 	 */
 	i32 GetSecond() const
 	{
-		return (i32)(floor<std::chrono::seconds>(time) - floor<std::chrono::minutes>(time)).count();
+		return (i32)(floor<Chrono::seconds>(time) - floor<Chrono::minutes>(time)).count();
 	}
 
 	/**
@@ -451,7 +468,7 @@ public:
 	 */
 	i64 ToUnixTimestamp() const
 	{
-		return floor<std::chrono::seconds>( time ).time_since_epoch().count();
+		return floor<Chrono::seconds>( time ).time_since_epoch().count();
 	}
 
 public:
@@ -485,7 +502,7 @@ public:
 	 */
 	static DateTime FromUnixTimestamp(i64 UnixTime)
 	{
-		return DateTime(1970, 1, 1) + Timespan(std::chrono::seconds{ UnixTime });
+		return DateTime(1970, 1, 1) + Timespan(Chrono::seconds{ UnixTime });
 	}
 
 	/**
@@ -611,6 +628,43 @@ public:
 	 */
 	static bool Validate(i32 Year, i32 Month, i32 Day, i32 Hour, i32 Minute, i32 Second, i32 Millisecond);
 
+
+	template <
+		typename DstDuration,
+		typename SrcDuration,
+		typename DstClock,
+		typename SrcClock,
+		typename DstTime = Chrono::time_point<DstClock, DstDuration>,
+		typename SrcTime = Chrono::time_point<SrcClock, SrcDuration>
+	>
+	static DstTime ClockCast(const SrcTime tp, const SrcDuration tolerance = decmicroseconds{ 1 }, const i32 limit = 10)
+	{
+		assert(limit > 0);
+		auto itercnt = 0;
+		auto src_now = SrcTime{};
+		auto dst_now = DstTime{};
+
+		SrcDuration epsilon = SrcDuration::max();
+		do
+		{
+			const auto src_before = SrcClock::now();
+			const auto dst_between = DstClock::now();
+			const auto src_after = SrcClock::now();
+			const auto src_diff = src_after - src_before;
+			const auto delta = date::detail::abs(src_diff);
+			if (delta < epsilon)
+			{
+				src_now = src_before + src_diff / 2;
+				dst_now = dst_between;
+				epsilon = delta;
+			}
+			if (++itercnt >= limit)
+				break;
+		} while (epsilon > tolerance);
+
+		return dst_now + (tp - src_now);
+	}
+
 protected:
 
 	/** Holds the days per month in a non-leap year. */
@@ -621,9 +675,4 @@ protected:
 
 private:
 	friend struct Z_Construct_UScriptStruct_FDateTime_Statics;
-
-private:
-
-	/** Holds the ticks in 100 nanoseconds resolution since January 1, 0001 A.D. */
-	SysTime time;
 };

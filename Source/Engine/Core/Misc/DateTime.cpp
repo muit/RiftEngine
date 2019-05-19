@@ -7,6 +7,7 @@
 #include <date/tz.h>
 
 #include "Char.h"
+#include "Core/Log.h"
 
 using namespace EA::StdC;
 
@@ -26,14 +27,15 @@ DateTime::DateTime(i32 year, i32 month, i32 day, i32 hour, i32 minute, i32 secon
 	if (!Validate(year, month, day, hour, minute, second, millisecond))
 	{
 		// LOG Invalid date-time
+		Log::Warning("Created invalid date format.");
 	}
 
 	time = SysTime{
 		date::sys_days(date::year{ year } / month / day)
-	       + std::chrono::hours{ hour }
-		 + std::chrono::minutes{ minute }
-		 + std::chrono::seconds{ second }
-	+ std::chrono::milliseconds{ millisecond }
+		+ std::chrono::hours{ hour }
+		+ std::chrono::minutes{ minute }
+		+ std::chrono::seconds{ second }
+		+ std::chrono::milliseconds{ millisecond }
 	};
 }
 
@@ -47,12 +49,10 @@ year_month_day DateTime::GetDateComponents() const
 	return { floor<days>(time) };
 }
 
-
 u32 DateTime::GetDay() const
 {
 	return (u32)GetDateComponents().day();
 }
-
 
 EDayOfWeek DateTime::GetDayOfWeek() const
 {
@@ -61,7 +61,6 @@ EDayOfWeek DateTime::GetDayOfWeek() const
 	// January 1, 0001 was a Monday
 	return static_cast<EDayOfWeek>((wd - Sunday).count());
 }
-
 
 u32 DateTime::GetDayOfYear() const
 {
@@ -205,7 +204,6 @@ i32 DateTime::DaysInMonth(i32 Year, i32 Month)
 	return DaysPerMonth[Month];
 }
 
-
 i32 DateTime::DaysInYear(i32 Year)
 {
 	if (IsLeapYear(Year))
@@ -216,7 +214,6 @@ i32 DateTime::DaysInYear(i32 Year)
 	return 365;
 }
 
-
 bool DateTime::IsLeapYear(i32 Year)
 {
 	if ((Year % 4) == 0)
@@ -226,7 +223,6 @@ bool DateTime::IsLeapYear(i32 Year)
 
 	return false;
 }
-
 
 DateTime DateTime::Now()
 {
@@ -455,7 +451,7 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 			Day = AtoI32(Tokens[0].c_str());
 			Month = ParseMonth(Tokens[1]);
 			Year = AtoI32(Tokens[2].c_str());
-			
+
 			// Horrible assumption here, but this is a deprecated part of the spec
 			Year += 1900;
 		}
@@ -498,7 +494,7 @@ bool DateTime::ParseHttpDate(const String& HttpDate, DateTime& OutDateTime)
 
 			if (Tokens[Tokens.Size() - 1] == TX("GMT"))
 			{
-				// rfc1123 - date | rfc850 - date 
+				// rfc1123 - date | rfc850 - date
 				if (Tokens.Size() == 6)
 				{
 					i32 WkDay = ParseWkday(Tokens[0]);
@@ -660,7 +656,7 @@ bool DateTime::ParseIso8601(const TCHAR* DateTimeString, DateTime& OutDateTime)
 
 			ptr = Next + 1; // skip separator
 			TzMinute = FChar::StrtoI32(ptr, &Next, 10);
-			
+
 			if (Next <= ptr)
 			{
 				return false;
