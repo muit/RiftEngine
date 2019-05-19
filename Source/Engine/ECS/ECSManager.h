@@ -20,7 +20,7 @@ class Archive;
 class ECSManager : public Object {
 	CLASS(ECSManager, Object)
 
-	using Registry = entt::registry<EntityId>;
+	using Registry = entt::basic_registry<EntityId>;
 
 	Registry registry;
 
@@ -32,6 +32,8 @@ class ECSManager : public Object {
 	TArray<eastl::unique_ptr<Component>> singletonComponents;
 
 public:
+
+	ECSManager() : Super(), registry{} {}
 
 	void Initialize()
 	{
@@ -139,7 +141,7 @@ public:
 	};
 
 	template<typename C, typename... Args>
-	C& Assign(EntityId entity, Args... args)
+	C& Assign(EntityId entity, Args&&... args)
 	{
 		if (Has<C>(entity))
 			return registry.replace<C>(entity, eastl::forward<Args>(args)...);

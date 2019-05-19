@@ -2,8 +2,8 @@
 #define ENTT_CORE_MONOSTATE_HPP
 
 
-#include <atomic>
 #include <cassert>
+#include "../config/config.h"
 #include "hashed_string.hpp"
 
 
@@ -45,8 +45,16 @@ struct monostate {
 
 private:
     template<typename Type>
-    inline static std::atomic<Type> value{};
+    inline static maybe_atomic_t<Type> value{};
 };
+
+
+/**
+ * @brief Helper variable template.
+ * @tparam Value Value used to differentiate between different variables.
+ */
+template<hashed_string::hash_type Value>
+inline monostate<Value> monostate_v = {};
 
 
 }

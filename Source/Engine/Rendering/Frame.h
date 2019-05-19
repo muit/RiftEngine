@@ -28,7 +28,7 @@ public:
 	TArray<eastl::shared_ptr<RenderCommand>> commands;
 
 
-	Frame() : id(idCounter++), time(DateTime::Now()) {}
+	Frame() : id(idCounter++), time(DateTime::UtcNow()) {}
 	Frame(Frame&& other) = default;
 	Frame& operator=(Frame&& other) = default;
 

@@ -26,7 +26,7 @@ public:
 
 	FrameTime()
 		: previousTime{}
-		, currentTime{ DateTime::Now() }
+		, currentTime{ DateTime::UtcNow() }
 		, realDeltaTime(0.f)
 		, deltaTime(0.f)
 		, timeDilation(1.f)

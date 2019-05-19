@@ -5,10 +5,10 @@
 #include <vector>
 #include <memory>
 #include <utility>
-#include <algorithm>
 #include <type_traits>
 #include "../config/config.h"
 #include "../core/family.hpp"
+#include "../core/type_traits.hpp"
 #include "sigh.hpp"
 
 
@@ -24,12 +24,11 @@ namespace entt {
  * type `Event`, listeners are such that they can be invoked with an argument of
  * type `const Event &`, no matter what the return type is.
  *
- * Member functions named `receive` are automatically detected and registered or
- * unregistered by the dispatcher. The type of the instances is `Class *` (a
- * naked pointer). It means that users must guarantee that the lifetimes of the
- * instances overcome the one of the dispatcher itself to avoid crashes.
+ * The type of the instances is `Class *` (a naked pointer). It means that users
+ * must guarantee that the lifetimes of the instances overcome the one of the
+ * dispatcher itself to avoid crashes.
  */
-class dispatcher final {
+class dispatcher {
     using event_family = family<struct internal_dispatcher_event_family>;
 
     template<typename Class, typename Event>
@@ -41,14 +40,17 @@ class dispatcher final {
     };
 
     template<typename Event>
-    struct signal_wrapper final: base_wrapper {
-        using sink_type = typename sigh<void(const Event &)>::sink_type;
+    struct signal_wrapper: base_wrapper {
+        using signal_type = sigh<void(const Event &)>;
+        using sink_type = typename signal_type::sink_type;
 
         void publish() override {
-            const auto &curr = current++;
+            for(const auto &event: events[current]) {
+                signal.publish(event);
+            }
+
+            events[current++].clear();
             current %= std::extent<decltype(events)>::value;
-            std::for_each(events[curr].cbegin(), events[curr].cend(), [this](const auto &event) { signal.publish(event); });
-            events[curr].clear();
         }
 
         inline sink_type sink() ENTT_NOEXCEPT {
@@ -62,28 +64,60 @@ class dispatcher final {
 
         template<typename... Args>
         inline void enqueue(Args &&... args) {
-            events[current].push_back({ std::forward<Args>(args)... });
+            events[current].emplace_back(std::forward<Args>(args)...);
         }
 
     private:
-        sigh<void(const Event &)> signal{};
+        signal_type signal{};
         std::vector<Event> events[2];
         int current{};
     };
 
+    struct wrapper_data {
+        std::unique_ptr<base_wrapper> wrapper;
+        ENTT_ID_TYPE runtime_type;
+    };
+
     template<typename Event>
-    signal_wrapper<Event> & wrapper() {
-        const auto type = event_family::type<Event>;
+    static auto type() ENTT_NOEXCEPT {
+        if constexpr(is_named_type_v<Event>) {
+            return named_type_traits<Event>::value;
+        } else {
+            return event_family::type<Event>;
+        }
+    }
 
-        if(!(type < wrappers.size())) {
-            wrappers.resize(type + 1);
+    template<typename Event>
+    signal_wrapper<Event> & assure() {
+        const auto wtype = type<Event>();
+        wrapper_data *wdata = nullptr;
+
+        if constexpr(is_named_type_v<Event>) {
+            const auto it = std::find_if(wrappers.begin(), wrappers.end(), [wtype](const auto &candidate) {
+                return candidate.wrapper && candidate.runtime_type == wtype;
+            });
+
+            wdata = (it == wrappers.cend() ? &wrappers.emplace_back() : &(*it));
+        } else {
+            if(!(wtype < wrappers.size())) {
+                wrappers.resize(wtype+1);
+            }
+
+            wdata = &wrappers[wtype];
+
+            if(wdata->wrapper && wdata->runtime_type != wtype) {
+                wrappers.emplace_back();
+                std::swap(wrappers[wtype], wrappers.back());
+                wdata = &wrappers[wtype];
+            }
         }
 
-        if(!wrappers[type]) {
-            wrappers[type] = std::make_unique<signal_wrapper<Event>>();
+        if(!wdata->wrapper) {
+            wdata->wrapper = std::make_unique<signal_wrapper<Event>>();
+            wdata->runtime_type = wtype;
         }
 
-        return static_cast<signal_wrapper<Event> &>(*wrappers[type]);
+        return static_cast<signal_wrapper<Event> &>(*wdata->wrapper);
     }
 
 public:
@@ -110,7 +144,7 @@ public:
      */
     template<typename Event>
     inline sink_type<Event> sink() ENTT_NOEXCEPT {
-        return wrapper<Event>().sink();
+        return assure<Event>().sink();
     }
 
     /**
@@ -125,7 +159,7 @@ public:
      */
     template<typename Event, typename... Args>
     inline void trigger(Args &&... args) {
-        wrapper<Event>().trigger(std::forward<Args>(args)...);
+        assure<Event>().trigger(std::forward<Args>(args)...);
     }
 
     /**
@@ -139,7 +173,7 @@ public:
      */
     template<typename Event>
     inline void trigger(Event &&event) {
-        wrapper<std::decay_t<Event>>().trigger(std::forward<Event>(event));
+        assure<std::decay_t<Event>>().trigger(std::forward<Event>(event));
     }
 
     /**
@@ -154,7 +188,7 @@ public:
      */
     template<typename Event, typename... Args>
     inline void enqueue(Args &&... args) {
-        wrapper<Event>().enqueue(std::forward<Args>(args)...);
+        assure<Event>().enqueue(std::forward<Args>(args)...);
     }
 
     /**
@@ -168,7 +202,7 @@ public:
      */
     template<typename Event>
     inline void enqueue(Event &&event) {
-        wrapper<std::decay_t<Event>>().enqueue(std::forward<Event>(event));
+        assure<std::decay_t<Event>>().enqueue(std::forward<Event>(event));
     }
 
     /**
@@ -182,7 +216,7 @@ public:
      */
     template<typename Event>
     inline void update() {
-        wrapper<Event>().publish();
+        assure<Event>().publish();
     }
 
     /**
@@ -194,16 +228,16 @@ public:
      */
     inline void update() const {
         for(auto pos = wrappers.size(); pos; --pos) {
-            auto &wrapper = wrappers[pos-1];
+            auto &wdata = wrappers[pos-1];
 
-            if(wrapper) {
-                wrapper->publish();
+            if(wdata.wrapper) {
+                wdata.wrapper->publish();
             }
         }
     }
 
 private:
-    std::vector<std::unique_ptr<base_wrapper>> wrappers;
+    std::vector<wrapper_data> wrappers;
 };
 
 

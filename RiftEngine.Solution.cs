@@ -10,6 +10,7 @@ using Sharpmake; // contains the entire Sharpmake object library.
 [module: Sharpmake.Include("Source/ThirdParty/SDL2/SDL2.Library.cs")]
 [module: Sharpmake.Include("Source/ThirdParty/Assimp/Assimp.Library.cs")]
 [module: Sharpmake.Include("Source/ThirdParty/PhysX/PhysX.Library.cs")]
+[module: Sharpmake.Include("Source/ThirdParty/curl/Curl.Library.cs")]
 [module: Sharpmake.Include("Source/ThirdParty/GoogleTest/GoogleTest.Library.cs")]
 
 [Generate]
@@ -39,6 +40,7 @@ class RiftEngineSolution : Solution
         conf.AddProject<SDL2Library>(target);
         conf.AddProject<AssimpLibrary>(target);
         conf.AddProject<PhysXLibrary>(target);
+        conf.AddProject<CurlLibrary>(target);
     }
 
 

@@ -2,9 +2,7 @@
 
 #include "DateTime.h"
 
-#include "Core/Platform/PlatformTime.h"
 #include <EAStdC/EAString.h>
-#include <date/tz.h>
 
 #include "Char.h"
 #include "Core/Log.h"
@@ -19,6 +17,9 @@ const i32 DateTime::DaysPerMonth[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31
 const i32 DateTime::DaysToMonth[] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365 };
 
 
+DateTime::SysTime::duration DateTime::utcToLocal{};
+
+
 /* FDateTime Constructors
  *****************************************************************************/
 
@@ -30,7 +31,7 @@ DateTime::DateTime(i32 year, i32 month, i32 day, i32 hour, i32 minute, i32 secon
 		Log::Warning("Created invalid date format.");
 	}
 
-	time = SysTime{
+	value = SysTime{
 		date::sys_days(date::year{ year } / month / day)
 		+ std::chrono::hours{ hour }
 		+ std::chrono::minutes{ minute }
@@ -46,7 +47,7 @@ DateTime::DateTime(i32 year, i32 month, i32 day, i32 hour, i32 minute, i32 secon
 
 year_month_day DateTime::GetDateComponents() const
 {
-	return { floor<days>(time) };
+	return { floor<days>(value) };
 }
 
 u32 DateTime::GetDay() const
@@ -56,7 +57,7 @@ u32 DateTime::GetDay() const
 
 EDayOfWeek DateTime::GetDayOfWeek() const
 {
-	const weekday wd { floor<days>(time) };
+	const weekday wd { floor<days>(value) };
 
 	// January 1, 0001 was a Monday
 	return static_cast<EDayOfWeek>((wd - Sunday).count());
@@ -64,7 +65,7 @@ EDayOfWeek DateTime::GetDayOfWeek() const
 
 u32 DateTime::GetDayOfYear() const
 {
-	auto timeDays = std::chrono::floor<days>(time);
+	auto timeDays = std::chrono::floor<days>(value);
 	const year_month_day ymd { timeDays };
 
 	return (timeDays.time_since_epoch() - local_days{ ymd.year() / jan / 1 }.time_since_epoch()).count();
@@ -87,7 +88,7 @@ u32 DateTime::GetHour12() const
 
 u32 DateTime::GetMonth() const
 {
-	return (u32)year_month_day{ floor<days>(time) }.month();
+	return (u32)year_month_day{ floor<days>(value) }.month();
 }
 
 i32 DateTime::GetYear() const
@@ -188,6 +189,12 @@ String DateTime::ToString(const TCHAR* Format) const
 	return Result;
 }
 
+DateTime DateTime::ToLocal() const
+{
+	// #TODO: Fix utcToLocal and apply it
+	return *this + Timespan::FromHours(2);
+}
+
 
 /* FDateTime static interface
  *****************************************************************************/
@@ -226,7 +233,13 @@ bool DateTime::IsLeapYear(i32 Year)
 
 DateTime DateTime::Now()
 {
-	return DateTime(floor<std::chrono::milliseconds>(SysClock::now()));
+	// Return real local times
+	return UtcNow() + Timespan::FromHours(2);
+}
+
+DateTime DateTime::UtcNow()
+{
+	return { floor<SysTime::duration>(SysClock::now()) };
 }
 
 bool DateTime::Parse(const String& DateTimeString, DateTime& OutDateTime)
@@ -696,5 +709,16 @@ bool DateTime::Validate(i32 Year, i32 Month, i32 Day, i32 Hour, i32 Minute, i32 
 		(Minute >= 0) && (Minute <= 59) &&
 		(Second >= 0) && (Second <= 59) &&
 		(Millisecond >= 0) && (Millisecond <= 999);
+}
+
+void DateTime::InitializeTime()
+{
+	/* Crashes while failing to obtain database
+	utcToLocal = {
+		floor<SysTime::duration>(
+			date::make_zoned(date::current_zone(), SysClock::now())
+			.get_info().offset
+		)
+	};*/
 }
 

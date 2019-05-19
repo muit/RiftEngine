@@ -82,7 +82,7 @@ static GlobalPtr<ObjectType> Create(Class* objectClass, const Ptr<Object> owner 
 }
 
 template<class ObjectType>
-static GlobalPtr<ObjectType> Create(const Ptr<Object> owner = {}) {
+static inline GlobalPtr<ObjectType> Create(const Ptr<Object> owner = {}) {
 	static_assert(IsObject<ObjectType>::value, "Type is not an Object!");
 
 	return GlobalPtr<ObjectType>::Create(owner);

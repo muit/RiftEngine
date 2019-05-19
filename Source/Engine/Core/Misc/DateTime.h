@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreEngine.h"
-#include <chrono>
+#include "Core/Platform/PlatformTime.h"
 
 #include "Timespan.h"
 
@@ -72,37 +72,40 @@ namespace Chrono = std::chrono;
  */
 struct DateTime
 {
-
-	// #TODO: Replace with eastl chrono
 	using SysClock = Chrono::system_clock;
 	using SysTime = Chrono::time_point<SysClock, decmicroseconds>;
 
+protected:
+
+	/** Holds the days per month in a non-leap year. */
+	static const i32 DaysPerMonth[];
+
+	/** Holds the cumulative days per month in a non-leap year. */
+	static const i32 DaysToMonth[];
+
+	static SysTime::duration utcToLocal;
+
 	/** Holds the ticks in 100 nanoseconds resolution since January 1, 0001 A.D. */
-	SysTime time;
+	SysTime value;
 
 
 public:
 
 	/** Default constructor (no initialization). */
-	DateTime() : time{} { }
+	DateTime() : value{} { }
 
 	/**
 	 * Creates and initializes a new instance with the specified number of ticks.
 	 *
 	 * @param Ticks The ticks representing the date and time.
 	 */
-	DateTime(SysTime time)
-		: time(time)
+	DateTime(SysTime value)
+		: value{ value }
 	{ }
 
 	template<typename Precision>
-	DateTime(Chrono::time_point<SysClock, Precision> time)
-		: time{ Chrono::time_point_cast<decmicroseconds, SysClock, Precision>(time) }
-	{ }
-
-	template<typename Clock, typename Precision>
-	DateTime(Chrono::time_point<Clock, Precision> time)
-		: time{ClockCast<decmicroseconds, Precision, SysClock, Clock>(time)}
+	DateTime(Chrono::time_point<SysClock, Precision> value)
+		: value{ Chrono::time_point_cast<decmicroseconds, SysClock, Precision>(value) }
 	{ }
 
 	/**
@@ -128,7 +131,7 @@ public:
 	 */
 	DateTime operator+(const Timespan& other) const
 	{
-		return DateTime(time + other.GetTime());
+		return DateTime(value + other.GetTime());
 	}
 
 	/**
@@ -139,7 +142,7 @@ public:
 	 */
 	DateTime& operator+=(const Timespan& Other)
 	{
-		time += Other.GetTime();
+		value += Other.GetTime();
 		return *this;
 	}
 
@@ -151,7 +154,7 @@ public:
 	 */
 	Timespan operator-(const DateTime& other) const
 	{
-		return Timespan(time - other.time);
+		return Timespan(value - other.value);
 	}
 
 	/**
@@ -162,7 +165,7 @@ public:
 	 */
 	DateTime operator-(const Timespan& Other) const
 	{
-		return DateTime( time - Other.GetTime() );
+		return DateTime( value - Other.GetTime() );
 	}
 
 	/**
@@ -173,7 +176,7 @@ public:
 	 */
 	DateTime& operator-=(const Timespan& other)
 	{
-		time -= decmicroseconds{ other.GetTime() };
+		value -= decmicroseconds{ other.GetTime() };
 
 		return *this;
 	}
@@ -186,7 +189,7 @@ public:
 	 */
 	bool operator==(const DateTime& Other) const
 	{
-		return (time == Other.time);
+		return (value == Other.value);
 	}
 
 	/**
@@ -197,7 +200,7 @@ public:
 	 */
 	bool operator!=(const DateTime& Other) const
 	{
-		return (time != Other.time);
+		return (value != Other.value);
 	}
 
 	/**
@@ -208,7 +211,7 @@ public:
 	 */
 	bool operator>(const DateTime& Other) const
 	{
-		return (time > Other.time);
+		return (value > Other.value);
 	}
 
 	/**
@@ -219,7 +222,7 @@ public:
 	 */
 	bool operator>=(const DateTime& Other) const
 	{
-		return (time >= Other.time);
+		return (value >= Other.value);
 	}
 
 	/**
@@ -230,7 +233,7 @@ public:
 	 */
 	bool operator<(const DateTime& Other) const
 	{
-		return (time < Other.time);
+		return (value < Other.value);
 	}
 
 	/**
@@ -241,18 +244,18 @@ public:
 	 */
 	bool operator<=(const DateTime& Other) const
 	{
-		return (time <= Other.time);
+		return (value <= Other.value);
 	}
 
 public:
 	const SysTime& GetTime() const
 	{
-		return time;
+		return value;
 	}
 
 	i64 GetTicks() const
 	{
-		return time.time_since_epoch().count();
+		return value.time_since_epoch().count();
 	}
 
 	/**
@@ -264,7 +267,7 @@ public:
 	 */
 	DateTime GetDate() const
 	{
-		return DateTime(floor<days>(time));
+		return DateTime(floor<days>(value));
 	}
 
 	/**
@@ -308,7 +311,7 @@ public:
 	 */
 	u32 GetHour() const
 	{
-		return (floor<Chrono::hours>(time) - floor<days>(time)).count();
+		return (floor<Chrono::hours>(value) - floor<days>(value)).count();
 	}
 
 	/**
@@ -327,7 +330,7 @@ public:
 	 */
 	i32 GetMillisecond() const
 	{
-		return (i32)(floor<Chrono::milliseconds>(time) - floor<Chrono::seconds>(time)).count();
+		return (i32)(floor<Chrono::milliseconds>(value) - floor<Chrono::seconds>(value)).count();
 	}
 
 	/**
@@ -338,7 +341,7 @@ public:
 	 */
 	i32 GetMinute() const
 	{
-		return (floor<Chrono::minutes>(time) - floor<Chrono::hours>(time)).count();
+		return (floor<Chrono::minutes>(value) - floor<Chrono::hours>(value)).count();
 	}
 
 	/**
@@ -368,7 +371,7 @@ public:
 	 */
 	i32 GetSecond() const
 	{
-		return (i32)(floor<Chrono::seconds>(time) - floor<Chrono::minutes>(time)).count();
+		return (i32)(floor<Chrono::seconds>(value) - floor<Chrono::minutes>(value)).count();
 	}
 
 	/**
@@ -379,7 +382,7 @@ public:
 	 */
 	Timespan GetTimeOfDay() const
 	{
-		return Timespan(time - floor<days>(time));
+		return Timespan(value - floor<days>(value));
 	}
 
 	/**
@@ -468,8 +471,10 @@ public:
 	 */
 	i64 ToUnixTimestamp() const
 	{
-		return floor<Chrono::seconds>( time ).time_since_epoch().count();
+		return floor<Chrono::seconds>( value ).time_since_epoch().count();
 	}
+
+	DateTime ToLocal() const;
 
 public:
 
@@ -554,6 +559,14 @@ public:
 	static DateTime Now();
 
 	/**
+	 * Gets the current UTC date and time.
+	 *
+	 * @return Current date and time.
+	 * @see Today, Now
+	 */
+	static DateTime UtcNow();
+
+	/**
 	 * Converts a string to a date and time.
 	 *
 	 * Currently, the string must be in the format written by either FDateTime.ToString() or
@@ -628,7 +641,20 @@ public:
 	 */
 	static bool Validate(i32 Year, i32 Month, i32 Day, i32 Hour, i32 Minute, i32 Second, i32 Millisecond);
 
+	static void InitializeTime();
 
+	template<typename Clock, typename Precision>
+	static DateTime CastClock(Chrono::time_point<Clock, Precision> time)
+	{
+		return { clock_cast<decmicroseconds, Precision, SysClock, Clock>(time) };
+	}
+
+protected:
+
+	/**
+	 * Cast to a different type of clock.
+	 * This operation may contains small precision errors.
+	 */
 	template <
 		typename DstDuration,
 		typename SrcDuration,
@@ -637,7 +663,7 @@ public:
 		typename DstTime = Chrono::time_point<DstClock, DstDuration>,
 		typename SrcTime = Chrono::time_point<SrcClock, SrcDuration>
 	>
-	static DstTime ClockCast(const SrcTime tp, const SrcDuration tolerance = decmicroseconds{ 1 }, const i32 limit = 10)
+	static DstTime clock_cast(const SrcTime tp, const SrcDuration tolerance = decmicroseconds{ 1 }, const i32 limit = 10)
 	{
 		assert(limit > 0);
 		auto itercnt = 0;
@@ -651,7 +677,7 @@ public:
 			const auto dst_between = DstClock::now();
 			const auto src_after = SrcClock::now();
 			const auto src_diff = src_after - src_before;
-			const auto delta = date::detail::abs(src_diff);
+			const auto delta = Chrono::abs(src_diff);
 			if (delta < epsilon)
 			{
 				src_now = src_before + src_diff / 2;
@@ -664,14 +690,6 @@ public:
 
 		return dst_now + (tp - src_now);
 	}
-
-protected:
-
-	/** Holds the days per month in a non-leap year. */
-	static const i32 DaysPerMonth[];
-
-	/** Holds the cumulative days per month in a non-leap year. */
-	static const i32 DaysToMonth[];
 
 private:
 	friend struct Z_Construct_UScriptStruct_FDateTime_Statics;

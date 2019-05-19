@@ -6,7 +6,7 @@
 
 NameTable::ConstIterator NameTable::Init(const String& string)
 {
-	if (string.size() == 0)
+	if (string.empty())
 		return None();
 
 	ConstIterator FoundIt = table.find(string);

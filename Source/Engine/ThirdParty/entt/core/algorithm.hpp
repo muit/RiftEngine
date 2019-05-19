@@ -18,7 +18,7 @@ namespace entt {
  * This class fills the gap by wrapping some flavors of `std::sort` in a
  * function object.
  */
-struct std_sort final {
+struct std_sort {
     /**
      * @brief Sorts the elements in a range.
      *
@@ -40,7 +40,7 @@ struct std_sort final {
 
 
 /*! @brief Function object for performing insertion sort. */
-struct insertion_sort final {
+struct insertion_sort {
     /**
      * @brief Sorts the elements in a range.
      *
@@ -54,19 +54,19 @@ struct insertion_sort final {
      */
     template<typename It, typename Compare = std::less<>>
     void operator()(It first, It last, Compare compare = Compare{}) const {
-        auto it = first + 1;
+        if(first != last) {
+            auto it = first + 1;
 
-        while(it != last) {
-            auto value = *it;
-            auto pre = it;
+            while(it != last) {
+                auto pre = it++;
+                auto value = *pre;
 
-            while(pre != first && compare(value, *(pre-1))) {
-                *pre = *(pre-1);
-                --pre;
+                while(pre-- != first && compare(value, *pre)) {
+                    *(pre+1) = *pre;
+                }
+
+                *(pre+1) = value;
             }
-
-            *pre = value;
-            ++it;
         }
     }
 };

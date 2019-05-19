@@ -175,7 +175,7 @@ void AssetDialog::DrawContent()
 			String sizeValue = CString::ParseMemorySize(file.size);
 			ImGui::Text(sizeValue.c_str());
 			ImGui::NextColumn();
-			const String dateStr = file.dateTime.ToString(TX("%d/%m/%Y, %H:%M"));
+			const String dateStr = file.dateTime.ToLocal().ToString(TX("%d/%m/%Y, %H:%M"));
 			ImGui::Text(dateStr.c_str());
 			ImGui::NextColumn();
 		}
@@ -241,8 +241,7 @@ void AssetDialog::CacheCurrentDirectory()
 		{
 			auto status = p.status();
 			auto lastWrite = fs::last_write_time(p);
-
-			DateTime lastWriteDate{ lastWrite };
+			DateTime lastWriteDate = DateTime::CastClock(lastWrite);
 
 			u64 size = fs::file_size(p);
 

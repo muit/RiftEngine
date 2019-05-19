@@ -34,6 +34,15 @@ class BaseProject : Project
             conf.Options.Add(Sharpmake.Options.Vc.Compiler.Optimization.Disable);
             conf.Options.Add(Sharpmake.Options.Vc.Compiler.Inline.OnlyInline);
         }
+        
+        if(conf.Platform == Platform.win32)
+        {
+            conf.Defines.Add("_WIN32");
+        }
+        else if(conf.Platform == Platform.win64)
+        {
+            conf.Defines.Add("_WIN64");
+        }
     
         if(target.Editor == Editor.Editor)
         {

@@ -36,10 +36,8 @@ using decmicroseconds = std::chrono::duration<i64, std::ratio<1, 10'000'000>>;
  */
 struct Timespan
 {
-
-	// #TODO: Replace with eastl chrono
 	using SysClock = std::chrono::system_clock;
-	typedef std::chrono::duration<SysClock, decmicroseconds> SysDuration;
+	using SysDuration = std::chrono::duration<SysClock, decmicroseconds>;
 
 
 public:
@@ -616,6 +614,7 @@ private:
 	/** The time span value in 100 nanoseconds resolution. */
 	decmicroseconds duration;
 public:
+	static Timespan FromHours(i32 hours);
 	static Timespan FromMinutes(i32 TzOffsetMinutes);
 	static Timespan FromSeconds(i32 seconds);
 };

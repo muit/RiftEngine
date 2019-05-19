@@ -28,6 +28,8 @@ bool Engine::Start()
 			return false;
 		}
 
+		DateTime::InitializeTime();
+
 		renderer = Create<Renderer>(Self());
 		if (!renderer->Initialize())
 			return false;

@@ -81,6 +81,7 @@ void ECSManager::DestroyEntity(EntityId entity)
 
 EntityId ECSManager::__CreateEntity(Name entityName, bool bTransient /*= false*/)
 {
+	auto s = entityName.GetId();
 	EntityId entity = registry.create();
 	Assign<CEntity>(entity, entityName, bTransient);
 
@@ -128,7 +129,7 @@ bool ECSManager::Serialize(Archive& ar)
 			ar.BeginObject(i);
 			if (ar.IsObjectValid())
 			{
-				EntityId id = __CreateEntity("");
+				EntityId id = __CreateEntity("None");
 
 				// Serialize Id and cache it
 				auto& entityComp = Assign<CEntity>(id);

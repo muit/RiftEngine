@@ -156,6 +156,11 @@ void Timespan::Assign(i32 days, i32 hours, i32 minutes, i32 seconds, i32 fractio
 	+ std::chrono::nanoseconds { fractionNano });
 }
 
+Timespan Timespan::FromHours(i32 hours)
+{
+	return Timespan{ hours, 0, 0 };
+}
+
 Timespan Timespan::FromMinutes(i32 minutes)
 {
 	return Timespan{ 0, minutes, 0 };
