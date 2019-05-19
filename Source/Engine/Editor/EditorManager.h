@@ -13,7 +13,6 @@
 #include "Windows/MemoryDebugger.h"
 #include "Windows/AssetBrowser.h"
 #include "Scene/SceneEditor.h"
-#include "Widgets/Assets/AssetDialog.h"
 
 
 class EditorManager : public Object {

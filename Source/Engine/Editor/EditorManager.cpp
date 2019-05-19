@@ -7,6 +7,8 @@
 #include "Core/Object/Object.h"
 #include "Core/Assets/AssetPtr.h"
 #include "Assets/Scene.h"
+#include "Widgets/Assets/NewAssetDialog.h"
+#include "Widgets/Assets/SelectAssetDialog.h"
 
 
 #if WITH_EDITOR
@@ -77,14 +79,17 @@ void EditorManager::TickDocking()
 
 void EditorManager::TickMainNavBar()
 {
-	static AssetDialog saveSceneAsDialog{ "Save Scene", EDialogMode::NewAsset };
-	bool bDoSaveSceneAs = false;
+	static NewAssetDialog saveSceneAsDialog{ "Save Scene" };
+	static SelectAssetDialog openSceneDialog{ "Open Scene" };
 
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("Open Scene")) {}
+			if (ImGui::MenuItem("Open Scene"))
+			{
+				openSceneDialog.Open();
+			}
 			if (ImGui::MenuItem("Save Scene", "CTRL+S"))
 			{
 				if (TAssetPtr<Scene> scene = GetWorld()->GetActiveScene())
@@ -95,7 +100,7 @@ void EditorManager::TickMainNavBar()
 			}
 			if (ImGui::MenuItem("Save Scene as", "CTRL+S"))
 			{
-				bDoSaveSceneAs = true;
+				saveSceneAsDialog.Open();
 			}
 
 			ImGui::Separator();
@@ -147,11 +152,27 @@ void EditorManager::TickMainNavBar()
 	}
 
 	// Draw modals
-	if (bDoSaveSceneAs)
+	if (openSceneDialog.Draw() == EDialogResult::Success)
 	{
-		saveSceneAsDialog.OpenDialog();
+		const Name sceneName = FileSystem::ToString(openSceneDialog.selectedAsset);
+		GetWorld()->LoadScene({ sceneName });
 	}
-	saveSceneAsDialog.Draw();
+
+	if (saveSceneAsDialog.Draw() == EDialogResult::Success)
+	{
+		if (TAssetPtr<Scene>& scene = GetWorld()->GetActiveScene())
+		{
+			const Name newAssetId = FileSystem::ToString(saveSceneAsDialog.finalPath);
+
+			// Save to specified asset
+			scene->SaveScene(GetWorld());
+			scene->SaveToPath(newAssetId);
+
+			// Replace active scene
+			scene = { newAssetId };
+			scene.Load();
+		}
+	}
 }
 
 #endif

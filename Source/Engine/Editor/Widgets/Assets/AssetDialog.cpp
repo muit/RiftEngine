@@ -7,13 +7,24 @@
 
 void AssetDialog::OpenDialog()
 {
-	ImGui::OpenPopup(title.c_str());
-	value = "";
-	result = EDialogReturn::None;
+	bPendingOpen = true;
 }
 
-EDialogReturn AssetDialog::Draw()
+void AssetDialog::CloseDialog(EDialogResult reason)
 {
+	ImGui::CloseCurrentPopup();
+	result = reason;
+}
+
+EDialogResult AssetDialog::Draw()
+{
+	if (bPendingOpen)
+	{
+		ImGui::OpenPopup(title.c_str());
+		result = EDialogResult::None;
+		bPendingOpen = false;
+	}
+
 	if (ImGui::BeginPopupModal(title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		if (bDirty)
@@ -35,35 +46,33 @@ EDialogReturn AssetDialog::Draw()
 		}
 	}
 
-	if (result != EDialogReturn::None)
+	if (result != EDialogResult::None)
 	{
 		// Reset on return
-		EDialogReturn c = result;
-		result = EDialogReturn::None;
+		EDialogResult c = result;
+		result = EDialogResult::None;
 		return c;
 	}
-	return EDialogReturn::None;
+	return EDialogResult::None;
 }
 
 void AssetDialog::DrawHeader()
 {
-	const Path assetsPath = FileSystem::GetAssetsPath();
 	if (ImGui::Button("Assets/"))
 	{
-		navigatePath = assetsPath;
+		navigatePath = "/";
 	}
 
 	ImGui::SameLine();
 
-	const Path relative = std::filesystem::relative(currentPath, assetsPath);
-	ImGui::Text(relative.string().c_str());
+	ImGui::Text(currentPath.string().c_str());
 }
 
 void AssetDialog::DrawContent()
 {
 	// Directories
 	{
-		ImGui::BeginChild("Directories", ImVec2(250, 350), true, ImGuiWindowFlags_HorizontalScrollbar);
+		ImGui::BeginChild("Directories", ImVec2(200, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
 		if (ImGui::TreeNode("Roots"))
 		{
 			for (auto& p : roots)
@@ -77,7 +86,9 @@ void AssetDialog::DrawContent()
 		}
 		if (ImGui::TreeNodeEx("Directories", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			if (FileSystem::IsAssetPath(currentPath.parent_path()) &&
+			const Path absCurrentPath = FileSystem::GetAssetsPath() / currentPath;
+
+			if (FileSystem::IsAssetPath(absCurrentPath.parent_path()) &&
 				ImGui::Selectable("..", false, 0, ImVec2(ImGui::GetWindowContentRegionWidth(), 0)))
 			{
 				navigatePath = currentPath.parent_path();
@@ -97,7 +108,7 @@ void AssetDialog::DrawContent()
 
 	// Files
 	{
-		ImGui::BeginChild("Files", ImVec2(500, 350), true, ImGuiWindowFlags_HorizontalScrollbar);
+		ImGui::BeginChild("Files", ImVec2(400, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
 		ImGui::Columns(3);
 		ImGui::SetColumnWidth(1, 60.f);
 
@@ -183,59 +194,19 @@ void AssetDialog::DrawContent()
 	}
 }
 
-void AssetDialog::DrawFooter()
-{
-	AssetDialogFile file;
-	bool bCanSucceed = GetSelectedFile(file);
-
-	if (mode == EDialogMode::NewAsset)
-	{
-		ImGui::Text(currentPath.string().c_str());
-		ImGui::SameLine();
-
-		String label = CString::Printf("##%s Filename", title.c_str());
-		ImGui::InputText(label.c_str(), value);
-
-		bCanSucceed = !value.empty();
-	}
-
-	if (!bCanSucceed)
-	{
-		const ImVec4 lolight = ImGui::GetStyle().Colors[ImGuiCol_TextDisabled];
-		ImGui::PushStyleColor(ImGuiCol_Button, lolight);
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, lolight);
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, lolight);
-	}
-	if (ImGui::Button("OK", ImVec2(100, 20)) && bCanSucceed)
-	{
-		ImGui::CloseCurrentPopup();
-		result = EDialogReturn::Success;
-	}
-	if (!bCanSucceed)
-	{
-		ImGui::PopStyleColor(3);
-	}
-
-	ImGui::SetItemDefaultFocus();
-	ImGui::SameLine();
-	if (ImGui::Button("Cancel", ImVec2(100, 20)))
-	{
-		ImGui::CloseCurrentPopup();
-		result = EDialogReturn::Cancel;
-	}
-}
-
 void AssetDialog::CacheCurrentDirectory()
 {
 	CacheRoots();
 
-	FileSystem::SpaceInfo spaceInfo = std::filesystem::space(currentPath);
-
-	for (auto& p : FileSystem::DirectoryIterator(currentPath))
+	const Path absCurrentPath = FileSystem::GetAssetsPath() / currentPath;
+	for (auto& p : FileSystem::DirectoryIterator(absCurrentPath))
 	{
+		Path path = p.path();
+		FileSystem::RelativeToAssetsPath(path);
+
 		if (p.is_directory())
 		{
-			directories.Add(p.path());
+			directories.Add(path);
 		}
 		else if(FileSystem::IsAssetFilePath(p))
 		{
@@ -246,13 +217,13 @@ void AssetDialog::CacheCurrentDirectory()
 			u64 size = fs::file_size(p);
 
 			// Add raw file size if any
-			Path rawPath = FileSystem::FindRawFile(p);
+			Path rawPath = FileSystem::FindRawFile(path);
 			if (fs::exists(rawPath))
 			{
 				size += fs::file_size(rawPath);
 			}
 
-			files.Add({ p.path(), size, lastWriteDate });
+			files.Add({ path, size, lastWriteDate });
 		}
 	}
 

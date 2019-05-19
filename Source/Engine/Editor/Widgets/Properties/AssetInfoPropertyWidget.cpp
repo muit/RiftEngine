@@ -6,6 +6,7 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_stl.h>
 #include "Core/Reflection/ReflectionTags.h"
+#include "Editor/Widgets/Assets/SelectAssetDialog.h"
 
 
 void AssetInfoPropertyWidget::Tick(float)
@@ -36,6 +37,18 @@ void AssetInfoPropertyWidget::Tick(float)
 bool AssetInfoPropertyWidget::EditAssetInfo(AssetInfo& info)
 {
 	String id = info.GetPath().ToString();
+
+	static SelectAssetDialog selectDialog{ "Select Asset", false };
+	if (ImGui::Button("..."))
+	{
+		selectDialog.Open();
+	}
+	if (selectDialog.Draw() == EDialogResult::Success)
+	{
+		id = FileSystem::ToString(selectDialog.selectedAsset);
+	}
+
+	ImGui::SameLine();
 	ImGui::InputText(displayName.c_str(), id);
 
 	if (id != info.GetPath().ToString())

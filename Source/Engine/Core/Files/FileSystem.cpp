@@ -88,6 +88,14 @@ Path FileSystem::GetAssetsPath()
 	return eastl::move(path);
 }
 
+void FileSystem::RelativeToAssetsPath(Path& path)
+{
+	if (path.is_absolute())
+	{
+		path = fs::relative(path, GetAssetsPath());
+	}
+}
+
 Path FileSystem::FindMetaFile(Path in)
 {
 	if (!SanitizeAssetPath(in))

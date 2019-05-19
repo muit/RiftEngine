@@ -53,7 +53,8 @@ public:
 		return bResult;
 	}
 
-	TAssetPtr<Scene> GetActiveScene() const { return scene; }
+	const TAssetPtr<Scene>& GetActiveScene() const { return scene; }
+	TAssetPtr<Scene>&       GetActiveScene()       { return scene; }
 	Ptr<ECSManager> GetECS() const { return ecs; }
 
 

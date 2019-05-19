@@ -24,8 +24,8 @@ bool AssetData::OnLoad(const AssetInfo& inInfo, Json& data)
 
 bool AssetData::SaveToPath(const Name& path)
 {
-	const String& spath = path.ToString();
-	if (spath.empty() || !FileSystem::IsAssetPath(spath))
+	const String& sPath = path.ToString();
+	if (sPath.empty() || !FileSystem::IsAssetPath(sPath))
 		return false;
 
 	JsonArchive ar{};
@@ -33,7 +33,7 @@ bool AssetData::SaveToPath(const Name& path)
 	ar("asset_type", className);
 	Serialize(ar);
 
-	return FileSystem::SaveJsonFile(spath, ar.GetData(), ar.GetIndent());
+	return FileSystem::SaveJsonFile(sPath, ar.GetData(), ar.GetIndent());
 }
 
 bool AssetData::Save()

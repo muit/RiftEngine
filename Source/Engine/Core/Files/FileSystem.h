@@ -53,6 +53,7 @@ public:
 	static bool SaveStringFile(Path path, const String& data);
 
 	static Path GetAssetsPath();
+	static void RelativeToAssetsPath(Path& path);
 
 	static Path FindMetaFile(Path in);
 
@@ -67,7 +68,8 @@ public:
 	/** HELPERS */
 
 	static String ToString(const Path& path) {
-		const std::string pathStr = path.string();
+		std::string pathStr = path.string();
+		std::replace(pathStr.begin(), pathStr.end(), '\\', '/');
 		return String{ pathStr.c_str(), pathStr.size() };
 	}
 
