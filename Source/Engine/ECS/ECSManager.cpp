@@ -18,6 +18,7 @@
 #include "Physics/2D/Components/CCollider2D.h"
 #include "Physics/2D/Components/CBoxCollider2D.h"
 #include "Physics/2D/Components/CCircleCollider2D.h"
+#include "Physics/3D/Components/CBody.h"
 
 #include "Gameplay/Game/Components/CPlayer.h"
 #include "Gameplay/Game/Components/CPlatform.h"
@@ -192,6 +193,7 @@ void ECSManager::SerializeEntity(Archive& ar, EntityId entity)
 	SerializeComponent<CCollider2D>(ar, entity);
 	SerializeComponent<CBoxCollider2D>(ar, entity);
 	SerializeComponent<CCircleCollider2D>(ar, entity);
+	SerializeComponent<CBody>(ar, entity);
 
 	// Game
 	SerializeComponent<CPlayer>(ar, entity);

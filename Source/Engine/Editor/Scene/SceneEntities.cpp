@@ -55,10 +55,12 @@ void SceneEntities::Tick(float)
 						if (filter.PassFilter(entName.begin(), entName.end()))
 						{
 							const bool selected = selectedEntities.Contains(entity);
-							if (ImGui::Selectable(entName.c_str(), selected))
+							if (ImGui::Selectable(entName.c_str(), selected) ||
+								ImGui::OpenPopupOnItemClick("EntityContextMenu", 1))
 							{
 								OnEntityClicked(entity);
 							}
+							DrawEntityContextMenu(entity);
 						}
 						ImGui::PopID();
 					}
@@ -66,6 +68,13 @@ void SceneEntities::Tick(float)
 				ImGui::ListBoxFooter();
 			}
 			EndWindow();
+
+			// Delete entities marked for deletion after loop has finished
+			for (EntityId e : deletedEntities)
+			{
+				ecsManager->DestroyEntity(e);
+			}
+			deletedEntities.Empty();
 		}
 	}
 }
@@ -98,6 +107,20 @@ void SceneEntities::OnEntityClicked(EntityId entity)
 	}
 
 	onSelectionChanged.DoBroadcast(selectedEntities);
+}
+
+void SceneEntities::DrawEntityContextMenu(EntityId entity)
+{
+	if (ImGui::BeginPopupContextItem("EntityContextMenu"))
+	{
+		if (ImGui::Selectable("Copy")) {}
+		if (ImGui::Selectable("Paste")) {}
+		if (ImGui::Selectable("Delete"))
+		{
+			deletedEntities.Add(entity);
+		}
+		ImGui::EndPopup();
+	}
 }
 
 #endif

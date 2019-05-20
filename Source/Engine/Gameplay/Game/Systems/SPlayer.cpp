@@ -9,6 +9,7 @@
 #include "Core/Engine.h"
 #include "../Components/CPlayer.h"
 #include "Physics/2D/Components/CBody2D.h"
+#include "Physics/3D/Components/CBody.h"
 #include "Tools/Profiler.h"
 
 
@@ -46,33 +47,46 @@ void SPlayer::Tick(float deltaTime)
 	EntityId cameraTarget = NoEntity;
 	CPlayer* playerPtr = nullptr;
 
-	// Player movement
-	auto playerView = ecs->View<CPlayer, CBody2D>();
-	for (EntityId entity : playerView)
+	// Player movement 2D
+	auto movement2DView = ecs->View<CPlayer, CBody2D>();
+	for (EntityId entity : movement2DView)
 	{
-		CPlayer& player = playerView.get<CPlayer>(entity);
-		CBody2D& body = playerView.get<CBody2D>(entity);
+		CPlayer& player = movement2DView.get<CPlayer>(entity);
+		CBody2D& body   = movement2DView.get<CBody2D>(entity);
 		body.body.ApplyLinearImpulse({ finalMoveDelta * player.impulse });
 		body.body.ApplyTorque(finalMoveDelta.x * player.impulse);
-
-		if (cameraTarget == NoEntity)
-		{
-			cameraTarget = entity;
-			playerPtr = &player;
-		}
 	}
 
-	// Player Dead
-	auto ptView = ecs->View<CPlayer, CTransform>();
-	for (EntityId entity : ptView)
+	// Player movement 3D
+	/*auto movement3DView = ecs->View<CPlayer, CBody>();
+	for (EntityId entity : movement3DView)
 	{
-		CPlayer&    player    = ptView.get<CPlayer>(entity);
-		CTransform& transform = ptView.get<CTransform>(entity);
+		CPlayer& player = movement3DView.get<CPlayer>(entity);
+		CBody& body = movement3DView.get<CBody>(entity);
+	}*/
+
+	// Player Dead
+	auto playerDeadView = ecs->View<CPlayer, CTransform>();
+	for (EntityId entity : playerDeadView)
+	{
+		CPlayer&    player    = playerDeadView.get<CPlayer>(entity);
+		CTransform& transform = playerDeadView.get<CTransform>(entity);
 
 		if (transform.GetWLocation().z <= player.dieHeight)
 		{
 			Log::Message("Player died");
 			transform.SetWLocation(player.homeLocation);
+		}
+	}
+
+	// Find camera target
+	auto camTargetView = ecs->View<CPlayer>();
+	for (EntityId entity : camTargetView)
+	{
+		if (cameraTarget == NoEntity)
+		{
+			cameraTarget = entity;
+			playerPtr = &camTargetView.get(entity);
 		}
 	}
 

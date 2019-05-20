@@ -16,6 +16,7 @@ class SceneEntities : public EditorWindow {
 	ImGuiTextFilter filter;
 
 	TArray<EntityId> selectedEntities;
+	TArray<EntityId> deletedEntities;
 
 public:
 
@@ -31,6 +32,8 @@ protected:
 	virtual void Tick(float deltaTime) override;
 
 	void OnEntityClicked(EntityId entity);
+
+	void DrawEntityContextMenu(EntityId entity);
 };
 
 #endif
