@@ -148,6 +148,10 @@ void EditorManager::TickMainNavBar()
 			}
 		}
 
+		// Displays scene name
+		const String sceneLabel = CString::Printf("%s###sceneLabel", GetWorld()->GetActiveScene().GetSPath().c_str());
+		ImGui::MenuItem(sceneLabel.c_str(), nullptr, false, false);
+
 		ImGui::EndMainMenuBar();
 	}
 
