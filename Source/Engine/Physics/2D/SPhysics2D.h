@@ -22,11 +22,12 @@
 class SPhysics2D : public System {
 	CLASS(SPhysics2D, System)
 
-
+	float stepSize = 1.f / 60.f;
 	eastl::unique_ptr<b2World> world;
 
 	// Cached
 	class CPhysicsWorld* physicsWorld = nullptr;
+	float deltaTimeIncrement = 0.0f;
 
 	TaskFlow applyFlow;
 
@@ -45,13 +46,13 @@ private:
 	void Step(float deltaTime);
 
 	//void UploadDataToPhysics();
-	void ApplyPhysicsData();
+	void DownloadBodies();
 
 	TaskLambda ApplyBodies();
 	TaskLambda ApplyBoxes();
 	TaskLambda ApplyCircles();
 
-	void CreateAndUpdateBodies();
+	void CreateAndUploadBodies();
 	void CreateFixtures();
 
 private:

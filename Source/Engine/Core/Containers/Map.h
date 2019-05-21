@@ -9,48 +9,43 @@
 
 #include "CoreEngine.h"
 #include "Core/Platform/Platform.h"
+#include "Tuples.h"
 
 
-constexpr i32 NO_INDEX = -1;
-
-enum EMapType {
+enum EMapOptimization {
 	Smaller,
 	Faster
 };
 
-template<typename Key, typename Value, EMapType type = Faster>
+template<typename Key, typename Value, EMapOptimization optimization = Faster>
 class TMap {
 public:
-	template <typename OtherType, EMapType type>
+	template <typename OtherKey, typename OtherValue, EMapOptimization optimization>
 	friend class TMap;
 
 	using KeyType = Key;
 	using ValueType = Value;
-	using HashMapType = google::dense_hash_map <KeyType, ValueType, eastl::hash<KeyType>, eastl::equal_to<KeyType>>;/*eastl::conditional_t<
+	using HashMapType = google::dense_hash_map<KeyType, ValueType, eastl::hash<KeyType>, eastl::equal_to<KeyType>>;/*eastl::conditional_t<
 		type == Faster,
-		google::dense_hash_map <KeyType, ValueType>, // Faster hash map
-		google::sparse_hash_map<KeyType, ValueType>  // Smaller hash map
+		google::dense_hash_map <KeyType, ValueType, eastl::hash<KeyType>, eastl::equal_to<KeyType>>, // Faster hash map
+		google::sparse_hash_map<KeyType, ValueType, eastl::hash<KeyType>, eastl::equal_to<KeyType>>  // Smaller hash map
 	>;*/
 
-	using Iterator      = typename HashMapType::iterator;
-	using ConstIterator = typename HashMapType::const_iterator;
-	using ReverseIterator = typename HashMapType::reverse_iterator;
-	using ConstReverseIterator = typename HashMapType::const_reverse_iterator;
+	using Iterator           = typename HashMapType::iterator;
+	using ConstIterator      = typename HashMapType::const_iterator;
 
 
 private:
 
 	HashMapType map;
 
+
 public:
 
 	TMap() = default;
 
-	TMap(u32 defaultSize) : map{} {
-		map.
-	}
-	TMap(u32 defaultSize, const Type& defaultValue) : map{ defaultSize, defaultValue } {}
-	TMap(std::initializer_list<Type> initList) : map{initList} {}
+	TMap(u32 defaultSize) : map{defaultSize} {}
+	TMap(std::initializer_list<TPair<KeyType, ValueType>> initList) : map{initList} {}
 
 	TMap(TMap&& other) = default;
 	TMap(const TMap& other) = default;
@@ -58,131 +53,102 @@ public:
 	TMap& operator=(const TMap& other) = default;
 
 
-	i32 Add(Type&& item) {
-		map.push_back(MoveTemp(item));
-		return Size() - 1;
+	ValueType& Add(KeyType&& key, ValueType&& value) {
+		return *map.insert(MoveTemp(key), MoveTemp(value));
 	}
 
-	i32 Add(const Type& item) {
-		map.push_back(item);
-		return Size() - 1;
+	ValueType& Add(const KeyType& key, ValueType&& value) {
+		return *map.insert(key, MoveTemp(value));
 	}
 
-	i32 AddUnique(const Type item) {
-		const i32 foundIndex = FindIndex(item);
-		if (foundIndex == NO_INDEX)
-			return Add(eastl::move(item));
-		return foundIndex;
+	ValueType& Add(KeyType&& key, const ValueType& value) {
+		return *map.insert(MoveTemp(key), value);
 	}
 
-	i32 AddDefaulted(u32 Amount = 0) {
-		map.push_back();
-		return Size() - 1;
+	ValueType& Add(const KeyType& key, const ValueType& value) {
+		return *map.insert(key, value);
 	}
 
-	void Append(const TMap<Type>& other) {
+	ValueType& Add(const TPair<KeyType, ValueType>& pair) {
+		return *map.insert(pair.first, pair.second);
+	}
+
+	ValueType& Add(TPair<KeyType, ValueType>&& pair) {
+		return *map.insert(MoveTemp(pair.first), MoveTemp(pair.second));
+	}
+
+	template<EMapOptimization otherOpt>
+	void Append(const TMap<KeyType, ValueType, otherOpt>& other) {
 		if (other.Size() > 0)
 		{
 			if (Size() <= 0)
+			{
 				CopyFrom(other)
+			}
 			else
+			{
 				map.insert(map.end(), other.begin(), other.end());
+			}
 		}
 	}
 
-	void Append(TMap<Type>&& other) {
+	template<EMapOptimization otherOpt>
+	void Append(TMap<KeyType, ValueType, otherOpt>&& other) {
 		if (other.Size() > 0)
 		{
 			if (Size() <= 0)
+			{
 				MoveFrom(MoveTemp(other));
+			}
 			else
+			{
 				map.insert(map.end(), other.begin(), other.end());
+			}
 		}
 	}
-
 
 	void Reserve(i32 sizeNum) { map.reserve(sizeNum); }
-	void Resize(i32 sizeNum) {
-		map.resize(sizeNum);
+	void Resize (i32 sizeNum) { map.resize(sizeNum); }
+
+	FORCEINLINE Iterator FindIt(const KeyType& item) {
+		return map.find(item);
 	}
 
-	void Assign(i32 sizeNum, const Type& value) {
-		map.assign(sizeNum, value);
+	FORCEINLINE ConstIterator FindIt(const KeyType& item) const {
+		return map.find(item);
 	}
 
-	void AssignAll(const Type& value) {
-		Assign(Size(), value);
-	}
-
-	void Insert(i32 index, Type&& item) {
-		map.insert(map.begin() + index, eastl::move(item));
-	}
-
-	void Insert(i32 index, const Type& item, i32 count = 1) {
-		if (IsValidIndex(index))
-		{
-			if (count == 1)
-				map.insert(map.begin() + index, item);
-			else
-				map.insert(map.begin() + index, count, item);
-		}
-	}
-
-	void InsertDefaulted(i32 index, i32 count = 1) {
-		Insert(index, {}, count);
-	}
-
-
-	FORCEINLINE Iterator FindIt(const Type& item) const {
-		return const_cast<Iterator>(eastl::find(map.begin(), map.end(), item));
-	}
-
-	FORCEINLINE Iterator FindIt(eastl::function<bool(const Type&)> cb) const {
-		return const_cast<Iterator>(eastl::find_if(map.begin(), map.end(), cb));
-	}
-
-	i32 FindIndex(const Type& item) const {
-		ConstIterator found = FindIt(item);
-		if (found != map.end())
-		{
-			return (i32)eastl::distance(map.begin(), found);
-		}
-		return NO_INDEX;
-	}
-
-	i32 FindIndex(eastl::function<bool(const Type&)> cb) const {
-		ConstIterator found = FindIt(eastl::move(cb));
-		if (found != map.end())
-		{
-			return (i32)eastl::distance(map.begin(), found);
-		}
-		return NO_INDEX;
-	}
-
-	Type* Find(const Type& item) const {
-		Type* const it = FindIt(item);
-		return it != end() ? it : nullptr;
-		return FindIt(item);
-	}
-
-	Type* Find(eastl::function<bool(const Type&)> cb) const {
-		Type* const it = FindIt(eastl::move(cb));
+	FORCEINLINE ValueType* Find(const KeyType& key) {
+		Type* const it = FindIt(key);
 		return it != end() ? it : nullptr;
 	}
 
-	bool Contains(const Type& item) const {
-		return FindIt(item) != map.end();
+	FORCEINLINE const ValueType* Find(const KeyType& key) const {
+		const Type* const it = FindIt(key);
+		return it != end() ? it : nullptr;
 	}
 
-	bool Contains(eastl::function<bool(const Type&)> cb) const {
-		return FindIt(eastl::move(cb)) != map.end();
+	FORCEINLINE ValueType& FindRef(const KeyType& key) const {
+		ValueType* const val = Find(key);
+		assert(val && "Key not found on the map");
+		return *val;
+	}
+
+	FORCEINLINE ValueType& FindRef(KeyType&& key) const {
+		ValueType* const val = Find(MoveTemp(key));
+		assert(val && "Key not found on the map");
+		return *val;
+	}
+
+	bool Contains(const KeyType& key) const {
+		return FindIt(key) != map.end();
 	}
 
 	/**
 	 * Delete all items that match another provided item
 	 * @return number of deleted items
 	 */
-	i32 Remove(const Type& item, const bool shouldShrink = true) {
+	i32 Remove(const KeyType& item, const bool shouldShrink = true) {
 		const i32 lastSize = Size();
 		eastl::remove(map.begin(), map.end(), item);
 
@@ -190,56 +156,6 @@ public:
 
 		return lastSize - Size();
 	}
-
-	/**
-	 * Delete item at index
-	 * @return true if removed
-	 */
-	bool RemoveAt(i32 index, const bool shouldShrink = true) {
-		if (IsValidIndex(index))
-		{
-			const i32 lastSize = Size();
-			map.erase(map.begin() + index);
-
-			if (shouldShrink) Shrink();
-
-			return lastSize - Size() > 0;
-		}
-		return false;
-	}
-
-	/**
-	 * Delete item at index. Doesn't preserve order but its considerably faster
-	 * @return true if removed
-	 */
-	bool RemoveAtSwap(i32 index, const bool shouldShrink = true) {
-		if (IsValidIndex(index))
-		{
-			const i32 lastSize = Size();
-			Swap(index, lastSize - 1);
-			map.pop_back();
-
-			if (shouldShrink) Shrink();
-
-			return lastSize - Size() > 0;
-		}
-		return false;
-	}
-
-	/**
-	 * Delete all items that match a delegate
-	 * @return number of deleted items
-	 */
-	i32 RemoveIf(eastl::function<bool(const Type&)>&& callback, const bool shouldShrink = true) {
-		const i32 lastSize = Size();
-		map.erase(eastl::remove_if(map.begin(), map.end(), callback), map.end());
-
-		if (shouldShrink) Shrink();
-
-		return lastSize - Size();
-	}
-
-	void Swap(i32 firstIndex, i32 secondIndex);
 
 	/** Empty the array.
 	 * @param shouldShrink false will not free memory
@@ -262,41 +178,34 @@ public:
 		return index >= 0 && index < Size();
 	}
 
-	Type& First() { return map.front(); }
-	Type& Last() { return map.back(); }
-	const Type& First() const { return map.front(); }
-	const Type& Last() const { return map.back(); }
-
-	Type* Data() { return map.data(); }
-	const Type* Data() const { return map.data(); }
 
 	/** OPERATORS */
 public:
 
 	/**
-	 * Array bracket operator. Returns reference to element at give index.
+	 * Array bracket operator. Returns reference to value at given key.
 	 *
 	 * @returns Reference to indexed element.
 	 */
-	FORCEINLINE Type& operator[](i32 index)
-	{
-		assert(IsValidIndex(index));
-		return map.at(index);
+	FORCEINLINE ValueType& operator[](const KeyType& key) { return FindRef(key); }
+	FORCEINLINE const ValueType& operator[](const KeyType& key) const {
+		return FindRef(key);
 	}
 
 	/**
-	 * Array bracket operator. Returns reference to element at give index.
+	 * Array bracket operator. Returns reference to value at given key.
 	 *
 	 * Const version of the above.
 	 *
 	 * @returns Reference to indexed element.
 	 */
-	FORCEINLINE const Type& operator[](i32 index) const
+	FORCEINLINE const ValueType& operator[](i32 index) const
 	{
 		assert(IsValidIndex(index));
 		return map.at(index);
 	}
 
+	// Iterator functions
 	FORCEINLINE Iterator      begin()        { return map.begin();  };
 	FORCEINLINE ConstIterator begin()  const { return map.begin();  };
 	FORCEINLINE ConstIterator cbegin() const { return map.cbegin(); };
@@ -305,28 +214,17 @@ public:
 	FORCEINLINE ConstIterator end()  const { return map.end();  };
 	FORCEINLINE ConstIterator cend() const { return map.cend(); };
 
-	FORCEINLINE ReverseIterator      rbegin()        { return map.rbegin();  };
-	FORCEINLINE ConstReverseIterator rbegin()  const { return map.rbegin();  };
-	FORCEINLINE ConstReverseIterator crbegin() const { return map.crbegin(); };
-
-	FORCEINLINE ReverseIterator      rend()        { return map.rend();  };
-	FORCEINLINE ConstReverseIterator rend()  const { return map.rend();  };
-	FORCEINLINE ConstReverseIterator crend() const { return map.crend(); };
-
 
 	/** INTERNAl */
 private:
 
-	FORCEINLINE void CopyFrom(const TMap& other) { map = other.map; }
-	FORCEINLINE void MoveFrom(TMap&& other) { map = eastl::move(other.map); }
-};
-
-
-template<typename Type, typename Allocator /*= EASTLAllocatorType*/>
-void TMap<Type, Allocator>::Swap(i32 firstIndex, i32 secondIndex)
-{
-	if (Size() > 1 && firstIndex != secondIndex && IsValidIndex(firstIndex) && IsValidIndex(secondIndex))
-	{
-		eastl::iter_swap(map.begin() + firstIndex, map.begin() + secondIndex);
+	template<EMapOptimization otherOpt>
+	FORCEINLINE void CopyFrom(const TMap<KeyType, ValueType, otherOpt>& other) {
+		map = other.map;
 	}
-}
+
+	template<EMapOptimization otherOpt>
+	FORCEINLINE void MoveFrom(TMap<KeyType, ValueType, otherOpt>&& other) {
+		map = eastl::move(other.map);
+	}
+};

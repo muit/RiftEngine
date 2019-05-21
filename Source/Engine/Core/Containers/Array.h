@@ -21,10 +21,10 @@ public:
 	using ItemType = Type;
 	using VectorType = eastl::vector<Type, Allocator>;
 
-	using Iterator = typename VectorType::iterator;
-	typedef typename VectorType::const_iterator         ConstIterator;
-	typedef typename VectorType::reverse_iterator       ReverseIterator;
-	typedef typename VectorType::const_reverse_iterator ConstReverseIterator;
+	using Iterator             = typename VectorType::iterator;
+	using ConstIterator        = typename VectorType::const_iterator;
+	using ReverseIterator      = typename VectorType::reverse_iterator;
+	using ConstReverseIterator = typename VectorType::const_reverse_iterator;
 
 
 private:
@@ -144,22 +144,21 @@ public:
 	}
 
 	i32 FindIndex(eastl::function<bool(const Type&)> cb) const {
-		ConstIterator found = FindIt(eastl::move(cb));
-		if (found != vector.end())
+		ConstIterator it = FindIt(eastl::move(cb));
+		if (it != vector.end())
 		{
-			return (i32)eastl::distance(vector.begin(), found);
+			return (i32)eastl::distance(vector.begin(), it);
 		}
 		return NO_INDEX;
 	}
 
 	Type* Find(const Type& item) const {
-		Type* const it = FindIt(item);
+		Iterator it = FindIt(item);
 		return it != end() ? it : nullptr;
-		return FindIt(item);
 	}
 
 	Type* Find(eastl::function<bool(const Type&)> cb) const {
-		Type* const it = FindIt(eastl::move(cb));
+		Iterator it = FindIt(eastl::move(cb));
 		return it != end() ? it : nullptr;
 	}
 

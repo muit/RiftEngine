@@ -55,9 +55,18 @@ void SPhysics::Tick(float deltaTime)
 	ScopedStackGameZone();
 	Super::Tick(deltaTime);
 
-	UploadBodies();
-	Step(deltaTime);
-	DownloadBodies();
+	// Simulate at a fixed rate
+	deltaTimeIncrement += deltaTime;
+	if (deltaTimeIncrement >= stepSize)
+	{
+		deltaTimeIncrement -= stepSize;
+
+		UploadBodies();
+
+		Step(stepSize);
+
+		DownloadBodies();
+	}
 }
 
 void SPhysics::EndPlay()
@@ -80,17 +89,9 @@ void SPhysics::Step(float deltaTime)
 {
 	ScopedGameZone("Step");
 
-	// Simulate at a fixed rate
-	deltaTimeIncrement += deltaTime;
-	if (deltaTimeIncrement >= stepSize)
-	{
-		deltaTimeIncrement -= stepSize;
-
-		scene->simulate(stepSize);
-
-		// #TODO: Support multi-threading while doing Render tick
-		scene->fetchResults(true);
-	}
+	scene->simulate(deltaTime);
+	// #TODO: Support multi-threading while doing Render tick
+	scene->fetchResults(true);
 }
 
 void SPhysics::CreateScene()

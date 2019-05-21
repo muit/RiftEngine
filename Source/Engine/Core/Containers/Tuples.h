@@ -7,3 +7,6 @@
 
 template <typename T1, typename T2>
 using TPair = eastl::pair<T1, T2>;
+
+template <typename... T>
+using TTuple = eastl::tuple<T...>;

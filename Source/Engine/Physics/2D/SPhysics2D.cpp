@@ -30,15 +30,19 @@ void SPhysics2D::Tick(float deltaTime)
 	ScopedStackGameZone();
 	Super::Tick(deltaTime);
 
-	// Bodies & Fixtures
+	CreateAndUploadBodies();
+	CreateFixtures();
+
+	// Simulate at a fixed rate
+	deltaTimeIncrement += deltaTime;
+	if (deltaTimeIncrement >= stepSize)
 	{
-		CreateAndUpdateBodies();
-		CreateFixtures();
+		deltaTimeIncrement -= stepSize;
+
+		Step(stepSize);
+
+		DownloadBodies();
 	}
-
-	Step(deltaTime);
-
-	ApplyPhysicsData();
 }
 
 void SPhysics2D::EndPlay()
@@ -47,7 +51,7 @@ void SPhysics2D::EndPlay()
 	Super::EndPlay();
 }
 
-void SPhysics2D::ApplyPhysicsData()
+void SPhysics2D::DownloadBodies()
 {
 	ScopedGameZone("Apply physics data");
 	// No bodies, boxes or circles update ever the same entity, so no collision
@@ -136,7 +140,7 @@ TaskLambda SPhysics2D::ApplyCircles()
 	};
 }
 
-void SPhysics2D::CreateAndUpdateBodies()
+void SPhysics2D::CreateAndUploadBodies()
 {
 	ScopedGameZone("Create & Update Bodies");
 
