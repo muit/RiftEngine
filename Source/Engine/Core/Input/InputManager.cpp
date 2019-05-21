@@ -7,7 +7,7 @@
 #include "Tools/Profiler.h"
 
 
-bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> renderer)
+bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, u32 windowId)
 {
 	ScopedGameZone("Input");
 
@@ -26,7 +26,7 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, Ptr<Renderer> render
 		switch (event.type)
 		{
 		case SDL_WINDOWEVENT:
-			if (event.window.event != SDL_WINDOWEVENT_CLOSE || event.window.windowID != renderer->GetWindowId())
+			if (event.window.event != SDL_WINDOWEVENT_CLOSE || event.window.windowID != windowId)
 				break;
 		case SDL_QUIT:
 			bFinish = true;

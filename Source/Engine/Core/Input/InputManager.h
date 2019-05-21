@@ -60,7 +60,7 @@ private:
 
 public:
 
-	bool Tick(float deltaTime, Ptr<class UIManager> ui, Ptr<class Renderer> renderer);
+	bool Tick(float deltaTime, Ptr<class UIManager> ui, u32 windowId);
 
 private:
 

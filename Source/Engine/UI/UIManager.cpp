@@ -26,9 +26,12 @@ void UIManager::OnSDLEvent(SDL_Event* ev)
 
 void UIManager::Tick(float deltaTime)
 {
-	ScopedGameZone("UI");
+	ScopedGameZone("UI Logic");
 
 #if WITH_EDITOR
 	editor->Tick(deltaTime);
 #endif
+
+	// Prepares the Draw List
+	ImGui::Render();
 }

@@ -11,6 +11,7 @@
 #include "World.h"
 #include "Core/Log.h"
 #include "Tools/Profiler.h"
+#include "Core/Engine.h"
 
 
 #if PLATFORM_APPLE
@@ -94,6 +95,7 @@ void Renderer::PrepareUI()
 
 void Renderer::PreTick()
 {
+	ScopedGraphicsZone("Prepare Frame");
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
@@ -104,15 +106,8 @@ void Renderer::Render()
 {
 	ScopedGraphicsZone("Render");
 
-	// Game frame is now render frame and vice versa
-	SwitchFrameBuffer();
-	// Clean game frame
-	GetGameFrame() = {};
-
-	ImGui::Render();
 	SDL_GL_MakeCurrent(window, gl_context);
 
-	ImGuiIO& io = ImGui::GetIO();
 	ImGuiViewport* vp = ImGui::GetMainViewport();
 	v2_u32 viewportSize{ (u32)vp->Size.x, (u32)vp->Size.y };
 
@@ -129,23 +124,23 @@ void Renderer::Render()
 		// Reset render data
 		render.NewFrame(viewportSize);
 
-		GetRenderFrame().ExecuteCommands(render);
+		GEngine->GetRenderFrame().ExecuteCommands(render);
 	}
+}
 
+void Renderer::RenderUI()
+{
 	{ // UI Render
-		ScopedGraphicsZone("UI");
-
+		ScopedGraphicsZone("Render UI");
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		// Update and Render additional Platform Windows
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
 		}
 	}
-
-	SwapWindow();
 }
 
 void Renderer::SwapWindow()

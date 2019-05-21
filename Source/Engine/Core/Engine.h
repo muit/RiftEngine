@@ -6,6 +6,7 @@
 #include "Rendering/Renderer.h"
 
 #include "World.h"
+#include "Rendering/Frame.h"
 #include "Input/InputManager.h"
 #include "UI/UIManager.h"
 #include "Rendering/Renderer.h"
@@ -17,6 +18,8 @@ class Engine : public Object
 {
 	CLASS(Engine, Object)
 
+	static Ptr<Engine> globalEngine;
+
 	FrameTime frameTime;
 
 	GlobalPtr<World> world;
@@ -26,8 +29,10 @@ class Engine : public Object
 	GlobalPtr<UIManager> ui;
 	GlobalPtr<Renderer> renderer;
 
-	TaskSystem taskSystem;
+	TArray<Frame> frameBuffers{ 2 };
+	u32 gameFrameId = 0;
 
+	TaskSystem taskSystem;
 
 public:
 
@@ -45,7 +50,7 @@ private:
 
 	bool Start();
 
-	void Loop(bool& bFinish);
+	void Loop(TaskFlow& frameTasks, bool& bFinish);
 
 public:
 
@@ -72,9 +77,25 @@ public:
 
 	static Ptr<Engine> GetEngine() { return globalEngine; }
 
+
+	/** Frame being prepared on game thread */
+	Frame& GetGameFrame() { return frameBuffers[gameFrameId]; }
+	/** Frame being rendered on graphics thread */
+	Frame& GetRenderFrame() { return frameBuffers[(gameFrameId + 1) % 2]; }
+
+	template<typename Command, typename ...Args>
+	void QueueRenderCommand(Args... args)
+	{
+		static_assert(eastl::is_base_of<RenderCommand, Command>::value, "Command type must inherit RenderCommand");
+
+		GetGameFrame().ScheduleCommand(
+			eastl::make_shared<Command>(eastl::forward<Args>(args)...)
+		);
+	}
+
 private:
 
-	static Ptr<Engine> globalEngine;
+	void SwitchFrameBuffer() { gameFrameId = (gameFrameId + 1) % 2; }
 };
 
 #define GEngine Engine::GetEngine()
@@ -83,5 +104,5 @@ private:
 template<typename Command, typename ...Args>
 FORCEINLINE void QueueRenderCommand(Args... args)
 {
-	GEngine->GetRenderer()->QueueCommand<Command>(eastl::forward<Args>(args)...);
+	GEngine->QueueRenderCommand<Command>(eastl::forward<Args>(args)...);
 }

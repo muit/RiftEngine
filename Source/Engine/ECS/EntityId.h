@@ -16,6 +16,7 @@ struct EntityId {
 
 	EntityId() : id{ eastl::numeric_limits<u32>::max() } {} // Id to NoEntity
 	constexpr EntityId(u32 id) : id{ id } {}
+	constexpr EntityId(size_t id) : id{ u32(id) } {}
 	EntityId(entt::internal::null other) : id{ static_cast<u32>(other) } {}
 	operator u32() const { return id; }
 

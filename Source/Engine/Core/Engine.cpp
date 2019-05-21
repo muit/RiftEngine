@@ -45,13 +45,14 @@ bool Engine::Start()
 	}
 
 	frameTime = {};
-	frameTime.SetFPSCap(60);
+	//frameTime.SetFPSCap(60);
 
 	Log::Message("Start Loop");
+	TaskFlow frameTasks = Tasks().CreateFlow();
 	bool bFinish = false;
 	while (!bFinish)
 	{
-		Loop(bFinish);
+		Loop(frameTasks, bFinish);
 	}
 
 	Shutdown();
@@ -59,23 +60,45 @@ bool Engine::Start()
 	return true;
 }
 
-void Engine::Loop(bool& bFinish)
+void Engine::Loop(TaskFlow& frameTasks, bool& bFinish)
 {
 	frameTime.Tick();
 
-	bFinish = input->Tick(frameTime.GetDeltaTime(), ui, renderer);
+	// Swap render buffers and reset game buffer
+	{
+		ScopedGraphicsZone("Swap Buffers");
+		SwitchFrameBuffer();
+		GetGameFrame() = {};
+	}
 
+	// Pre frame render setup
 	renderer->PreTick();
+
+	// Receive Input
+	u32 windowId = renderer->GetWindowId();
+	bFinish = input->Tick(frameTime.GetDeltaTime(), ui, windowId);
+
+	// Start game thread
+	//Task gameTick = frameTasks.emplace([this]() {});
+	//frameTasks.dispatch();
 
 	{
 		ScopedGameZone("Game");
 		world->Tick(frameTime.GetDeltaTime());
-		ui->Tick(frameTime.GetDeltaTime());
-	}
 
-	// Rendering
+		// UI is rendered on the same frame game does
+		ui->Tick(frameTime.GetDeltaTime());
+
+	}
+	// Do render on main thread while game executes on another
 	renderer->Render();
 
+	//frameTasks.wait_for_all();
+
+	renderer->RenderUI();
+
+	renderer->SwapWindow();
 	frameTime.PostTick();
+
 	FrameMark;
 }
