@@ -24,4 +24,8 @@ public:
 private:
 
 	void MoveRight(float delta);
+
+	void Movement2D();
+	void Movement3D();
+	void MoveCameras(float deltaTime);
 };

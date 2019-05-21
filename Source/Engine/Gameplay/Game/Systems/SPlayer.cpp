@@ -40,33 +40,12 @@ void SPlayer::Tick(float deltaTime)
 {
 	ScopedGameZone("Player");
 
-	auto ecs = ECS();
-
-	const v2 finalMoveDelta = movementDelta;
-
-	EntityId cameraTarget = NoEntity;
-	CPlayer* playerPtr = nullptr;
-
-	// Player movement 2D
-	auto movement2DView = ecs->View<CPlayer, CBody2D>();
-	for (EntityId entity : movement2DView)
-	{
-		CPlayer& player = movement2DView.get<CPlayer>(entity);
-		CBody2D& body   = movement2DView.get<CBody2D>(entity);
-		body.body.ApplyLinearImpulse({ finalMoveDelta * player.impulse });
-		body.body.ApplyTorque(finalMoveDelta.x * player.impulse);
-	}
-
-	// Player movement 3D
-	/*auto movement3DView = ecs->View<CPlayer, CBody>();
-	for (EntityId entity : movement3DView)
-	{
-		CPlayer& player = movement3DView.get<CPlayer>(entity);
-		CBody& body = movement3DView.get<CBody>(entity);
-	}*/
+	Movement2D();
+	Movement3D();
+	movementDelta = v2::Zero();
 
 	// Player Dead
-	auto playerDeadView = ecs->View<CPlayer, CTransform>();
+	auto playerDeadView = ECS()->View<CPlayer, CTransform>();
 	for (EntityId entity : playerDeadView)
 	{
 		CPlayer&    player    = playerDeadView.get<CPlayer>(entity);
@@ -79,7 +58,43 @@ void SPlayer::Tick(float deltaTime)
 		}
 	}
 
+	MoveCameras(deltaTime);
+}
+
+void SPlayer::MoveRight(float delta)
+{
+	movementDelta.x += delta;
+}
+
+void SPlayer::Movement2D()
+{
+	auto movement2DView = ECS()->View<CPlayer, CBody2D>();
+	for (EntityId entity : movement2DView)
+	{
+		CPlayer& player = movement2DView.get<CPlayer>(entity);
+		CBody2D& body   = movement2DView.get<CBody2D>(entity);
+		body.body.ApplyLinearImpulse({ movementDelta * player.impulse });
+		body.body.ApplyTorque(movementDelta.x * player.impulse);
+	}
+}
+
+void SPlayer::Movement3D()
+{
+	/*auto movement3DView = ECS()->View<CPlayer, CBody>();
+	for (EntityId entity : movement3DView)
+	{
+		CPlayer& player = movement3DView.get<CPlayer>(entity);
+		CBody&   body   = movement3DView.get<CBody>(entity);
+	}*/
+}
+
+void SPlayer::MoveCameras(float deltaTime)
+{
+	auto ecs = ECS();
+
 	// Find camera target
+	EntityId cameraTarget = NoEntity;
+	CPlayer* playerPtr = nullptr;
 	auto camTargetView = ecs->View<CPlayer>();
 	for (EntityId entity : camTargetView)
 	{
@@ -105,11 +120,4 @@ void SPlayer::Tick(float deltaTime)
 			);
 		}
 	}
-
-	movementDelta = v2::Zero();
-}
-
-void SPlayer::MoveRight(float delta)
-{
-	movementDelta.x += delta;
 }
