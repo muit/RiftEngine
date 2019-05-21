@@ -1,32 +1,76 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 #pragma once
 
-#include "String.h"
+#include <mutex>
 #include <EASTL/functional.h>
 #include <EASTL/unordered_set.h>
+#include <sparsehash/dense_hash_set.h>
 
+#include "String.h"
 #include "Core/Reflection/ClassTraits.h"
+#include <shared_mutex>
 
 
 struct Name;
 
+/** Represents an string with an already hashed value */
+struct NameKey
+{
+private:
+	size_t hash;
+	const String str;
+
+public:
+	NameKey(size_t hash = 0) : hash{ hash } {}
+	NameKey(String str) : hash{ eastl::hash<String>()(str) }, str{ MoveTemp(str) } {}
+
+	NameKey(const NameKey& other) : hash{ other.hash } {}
+	NameKey(NameKey&& other) : hash{ other.hash }, str{other.str} {}
+	NameKey& operator=(const NameKey& other) { hash = other.hash; return *this; }
+
+	bool HasString() const { return str.empty(); }
+	const String& GetString() const { return str;  }
+	const size_t GetHash()    const { return hash; }
+
+	bool operator==(const NameKey& other) const { return hash == other.hash; }
+};
+
+namespace eastl {
+	template <>
+	struct hash<NameKey>
+	{
+		FORCEINLINE size_t operator()(const NameKey& x) const { return x.GetHash(); }
+	};
+}
+
+
 /** Global table storing all names */
 class NameTable {
 	friend Name;
-	using Container     = eastl::unordered_set<String>;
+
+	// #TODO: Move to TSet
+	using Container     = google::dense_hash_set<NameKey, eastl::hash<NameKey>, eastl::equal_to<NameKey>>;
 	using Iterator      = Container::iterator;
 	using ConstIterator = Container::const_iterator;
 
 	Container table;
+	// Mutex that allows sync reads but waits for registries
+	mutable std::shared_mutex editTableMutex;
 
 
-	NameTable() : table{} {}
+	NameTable() : table{} {
+		table.set_empty_key({ "" });
+	}
 
-	ConstIterator Init(const String& string);
+	NameKey Register(const String& string);
+	const String& Find(const NameKey& key) const
+	{
+		// Ensure no other thread is editing the table
+		std::shared_lock lock{ editTableMutex };
+		return table.find(key)->GetString();
+	}
 
-	ConstIterator None() const { return table.end(); }
-
-	static NameTable& GetGlobal() {
+	static FORCEINLINE NameTable& GetGlobal() {
 		static NameTable global {};
 		return global;
 	}
@@ -39,43 +83,39 @@ class NameTable {
  */
 struct Name {
 	friend NameTable;
-	using Id = NameTable::ConstIterator;
+	using Id = NameKey;
 private:
 
 
-	static const String NoneStr;
+	static const String noneStr;
 	Id id;
 
 
 public:
 
-	Name() : id(NoneId()) {}
+	Name() : id{ noneId } {}
 
 	Name(const StringView&& key) : Name(String{ key }) {}
 	Name(const TCHAR* key) : Name(String{ key }) {}
 	Name(const TCHAR* key, String::size_type size) : Name(String{ key, size }) {}
 	Name(const String& key) {
 		// Index this name
-		id = NameTable::GetGlobal().Init(key);
+		id = NameTable::GetGlobal().Register(key);
 	}
 	Name(const Name& other) : id(other.id) {}
-	Name(Name&& other) : id(std::move(other.id)) {}
+	Name(Name&& other) { std::swap(id, other.id); }
 
-	Name& operator= (const Name& other) {
+	NOINLINE Name& operator= (const Name& other) {
 		id = other.id;
 		return *this;
 	}
 	Name& operator= (Name&& other) {
-		id = std::move(other.id);
+		std::swap(id, other.id);
 		return *this;
 	}
 
 	const String& ToString() const {
-		if (IsNone())
-		{
-			return NoneStr;
-		}
-		return *id;
+		return IsNone() ? noneStr : NameTable::GetGlobal().Find(id);
 	}
 
 	bool operator==(const Name& other) const {
@@ -83,14 +123,17 @@ public:
 	}
 
 	bool IsNone() const {
-		return id == NoneId();
+		return id == noneId;
 	}
 
 	const Id& GetId() const { return id; }
 
 
-	static const Name None() { return { NoneId() }; };
-	static const Id NoneId() { return NameTable::GetGlobal().None(); };
+	static const Name None() {
+		static Name none{ "" };
+		return none;
+	};
+	static const NameKey noneId;
 
 	bool Serialize(class Archive& ar, const char* name);
 
@@ -108,9 +151,7 @@ namespace eastl {
 	struct hash<Name> {
 		size_t operator()(const Name& k) const
 		{
-			// Return the string pointer as the hash
-			const Name::Id& id = k.GetId();
-			return reinterpret_cast<size_t>(id.get_node());
+			return k.GetId().GetHash();
 		}
 	};
 

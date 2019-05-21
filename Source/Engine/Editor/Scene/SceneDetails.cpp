@@ -15,6 +15,7 @@
 #include "Gameplay/Components/CTransform.h"
 #include "Gameplay/Components/CMesh.h"
 #include "Gameplay/Components/CCamera.h"
+#include "Gameplay/Components/CEditorCamera.h"
 #include "Gameplay/Game/Components/CPlayer.h"
 #include "Gameplay/Game/Components/CPlatform.h"
 #include "Gameplay/Components/CDirectionalLight.h"
@@ -57,6 +58,7 @@ void SceneDetails::Build()
 		AddNew<ComponentDetails<CTransform>>(entity);
 		AddNew<ComponentDetails<CMesh>>(entity);
 		AddNew<ComponentDetails<CCamera>>(entity);
+		AddNew<ComponentDetails<CEditorCamera>>(entity);
 		AddNew<ComponentDetails<CPlayer>>(entity);
 		AddNew<ComponentDetails<CPlatform>>(entity);
 		AddNew<ComponentDetails<CDirectionalLight>>(entity);

@@ -8,6 +8,12 @@
 class CEditorCamera : public CCamera {
 	STRUCT(CEditorCamera, CCamera)
 
-	PROP(float, fov)
-	float fov = 60;
+	PROP(float, forwardSpeed, DetailsEdit)
+	float forwardSpeed = 10.f;
+
+	PROP(float, sideSpeed, DetailsEdit)
+	float sideSpeed = 10.f;
+
+	PROP(float, rotateSpeed, DetailsEdit)
+	float rotateSpeed = 20.f;
 };

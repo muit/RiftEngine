@@ -65,22 +65,24 @@ void SEditorCamera::Tick(float deltaTime)
 		return;
 	}
 
-	const v3 finalRotateDelta = rotationDelta * rotateSpeed * deltaTime;
+	const v3 finalRotateDelta = rotationDelta * deltaTime;
 	const v3 finalMoveDelta = movementDelta * deltaTime;
 
 	ECS()->View<CTransform, CEditorCamera>()
-		.each([deltaTime, &finalRotateDelta, &finalMoveDelta](const auto e, CTransform& t, CEditorCamera& c)
+	.each([finalRotateDelta, finalMoveDelta](const auto e, CTransform& t, CEditorCamera& c)
 	{
 		// Rotate Camera
 		Rotator rotation = t.transform.GetRotation();
-		rotation += finalRotateDelta;
+		rotation += finalRotateDelta * c.rotateSpeed;
 
 		// Limit vertical rotation
 		rotation.x = Math::ClampAngle(rotation.x, 270.01f, 89.99f);
 		t.transform.SetRotation(rotation);
 
 		// Rotate movement towards angle
-		t.transform.location += t.transform.TransformVector(finalMoveDelta);
+		t.transform.location += t.transform.TransformVector(
+			finalMoveDelta * v3{ c.sideSpeed, c.forwardSpeed, 0.f }
+		);
 	});
 
 	rotationDelta = v3::Zero();
@@ -111,7 +113,7 @@ void SEditorCamera::MoveForward(float delta)
 {
 	if (GetWorld()->IsEditor())
 	{
-		movementDelta.y += delta * forwardSpeed;
+		movementDelta.y += delta;
 	}
 }
 
@@ -119,7 +121,7 @@ void SEditorCamera::MoveRight(float delta)
 {
 	if (GetWorld()->IsEditor())
 	{
-		movementDelta.x += delta * sideSpeed;
+		movementDelta.x += delta;
 	}
 }
 

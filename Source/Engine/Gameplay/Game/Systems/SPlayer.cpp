@@ -99,9 +99,9 @@ void SPlayer::Tick(float deltaTime)
 			CTransform& targetTransform = ecs->Get<CTransform>(cameraTarget);
 			CTransform& transform = cameraView.get<CTransform>(entity);
 
-			const v3 targetLocation = transform.GetWLocation() + v3{ 0.f, -playerPtr->cameraDistance, 0.f };
+			const v3 targetLocation = targetTransform.GetWLocation() + v3{ 0.f, -playerPtr->cameraDistance, 0.f };
 			transform.SetWLocation(
-				Math::Lerp(targetLocation, targetTransform.GetWLocation(), deltaTime * playerPtr->cameraSpeed)
+				Math::Lerp(transform.GetWLocation(), targetLocation, deltaTime * playerPtr->cameraSpeed)
 			);
 		}
 	}

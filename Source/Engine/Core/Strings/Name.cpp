@@ -4,22 +4,29 @@
 #include "Core/Serialization/Archive.h"
 
 
-NameTable::ConstIterator NameTable::Init(const String& string)
+const String Name::noneStr{ "none" };
+const NameKey Name::noneId{ 0 };
+
+NameKey NameTable::Register(const String& string)
 {
 	if (string.empty())
-		return None();
+		return Name::noneId;
 
-	ConstIterator FoundIt = table.find(string);
-	if (FoundIt != None())
-		return FoundIt;
+	// Calculate hash once
+	NameKey key{ string };
+
+	ConstIterator FoundIt = table.find(key);
+	if (FoundIt != table.end())
+	{
+		std::shared_lock lock{ editTableMutex };
+		return *FoundIt;
+	}
 	else
 	{
-		return table.insert(string).first;
+		std::unique_lock lock{ editTableMutex };
+		return *table.insert(MoveTemp(key)).first;
 	}
 }
-
-
-const String Name::NoneStr {""};
 
 bool Name::Serialize(Archive& ar, const char* name)
 {

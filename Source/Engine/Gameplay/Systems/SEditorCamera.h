@@ -16,10 +16,6 @@ class SEditorCamera : public System {
 	// Cached camera entity
 	EntityId camera = NoEntity;
 
-	float forwardSpeed = 10.f;
-	float sideSpeed = 5.f;
-	float rotateSpeed = 10.f;
-
 	bool bRotatingMode = false;
 	v3 movementDelta{ v3::Zero() };
 	v3 rotationDelta{ v3::Zero() };

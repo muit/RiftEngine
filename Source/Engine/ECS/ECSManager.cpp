@@ -82,7 +82,6 @@ void ECSManager::DestroyEntity(EntityId entity)
 
 EntityId ECSManager::__CreateEntity(Name entityName, bool bTransient /*= false*/)
 {
-	auto s = entityName.GetId();
 	EntityId entity = registry.create();
 	Assign<CEntity>(entity, entityName, bTransient);
 
