@@ -181,6 +181,8 @@ void SPhysics::SetupBodyShapes(CBody& body)
 
 void SPhysics::UploadBodies()
 {
+	ScopedGameZone("Upload Bodies");
+
 	auto view = ECS()->View<CTransform, CBody>();
 
 	// Upload valid bodies to physics (Splitted between all threads)
@@ -219,6 +221,8 @@ void SPhysics::UploadBodies()
 
 void SPhysics::DownloadBodies()
 {
+	ScopedGameZone("Download Bodies");
+
 	auto view = ECS()->View<CTransform, CBody>();
 
 	// Download valid bodies from physics (Splitted between all threads)

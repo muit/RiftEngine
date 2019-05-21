@@ -81,14 +81,12 @@ void Engine::Loop(TaskFlow& frameTasks, bool& bFinish)
 	// Start game thread
 	//Task gameTick = frameTasks.emplace([this]() {});
 	//frameTasks.dispatch();
-
 	{
 		ScopedGameZone("Game");
 		world->Tick(frameTime.GetDeltaTime());
 
 		// UI is rendered on the same frame game does
 		ui->Tick(frameTime.GetDeltaTime());
-
 	}
 	// Do render on main thread while game executes on another
 	renderer->Render();
