@@ -18,7 +18,7 @@ public:
 
 	/** Parent entity */
 	PROP(EntityId, parent)
-	EntityId parent {NoEntity};
+	EntityId parent;
 
 
 	Transform&       GetWorldTransform()       { return transform; }

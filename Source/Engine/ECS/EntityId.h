@@ -8,14 +8,14 @@
 
 #include "Core/Platform/Platform.h"
 #include "Core/Reflection/ClassTraits.h"
-#include "Core/Reflection/ReflectionTypeTraits.h"
+#include "EngineTypes.h"
 
 
 struct EntityId {
 	u32 id;
 
 	EntityId() : id{ eastl::numeric_limits<u32>::max() } {} // Id to NoEntity
-	constexpr EntityId(u32 otherId) : id{ otherId } {}
+	constexpr EntityId(u32 id) : id{ id } {}
 	EntityId(entt::internal::null other) : id{ static_cast<u32>(other) } {}
 	operator u32() const { return id; }
 
