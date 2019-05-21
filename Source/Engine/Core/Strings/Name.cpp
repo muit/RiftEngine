@@ -5,9 +5,9 @@
 
 
 const String Name::noneStr{ "none" };
-const NameKey Name::noneId{ 0 };
+const Name::Id Name::noneId{ 0 };
 
-NameKey NameTable::Register(const String& string)
+size_t NameTable::Register(const String& string)
 {
 	if (string.empty())
 		return Name::noneId;
@@ -19,12 +19,12 @@ NameKey NameTable::Register(const String& string)
 	if (FoundIt != table.end())
 	{
 		std::shared_lock lock{ editTableMutex };
-		return *FoundIt;
+		return FoundIt->GetHash();
 	}
 	else
 	{
 		std::unique_lock lock{ editTableMutex };
-		return *table.insert(MoveTemp(key)).first;
+		return table.insert(MoveTemp(key)).first->GetHash();
 	}
 }
 

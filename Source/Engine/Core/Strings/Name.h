@@ -25,10 +25,9 @@ public:
 	NameKey(String str) : hash{ eastl::hash<String>()(str) }, str{ MoveTemp(str) } {}
 
 	NameKey(const NameKey& other) : hash{ other.hash } {}
-	NameKey(NameKey&& other) : hash{ other.hash }, str{other.str} {}
+	NameKey(NameKey&& other) : hash{ other.hash }, str{MoveTemp(other.str)} {}
 	NameKey& operator=(const NameKey& other) { hash = other.hash; return *this; }
 
-	bool HasString() const { return str.empty(); }
 	const String& GetString() const { return str;  }
 	const size_t GetHash()    const { return hash; }
 
@@ -62,12 +61,12 @@ class NameTable {
 		table.set_empty_key({ 0 });
 	}
 
-	NameKey Register(const String& string);
-	const String& Find(const NameKey& key) const
+	size_t Register(const String& string);
+	const String& Find(size_t hash) const
 	{
 		// Ensure no other thread is editing the table
 		std::shared_lock lock{ editTableMutex };
-		return table.find(key)->GetString();
+		return table.find({ hash })->GetString();
 	}
 
 	static FORCEINLINE NameTable& GetGlobal() {
@@ -83,9 +82,8 @@ class NameTable {
  */
 struct Name {
 	friend NameTable;
-	using Id = NameKey;
+	using Id = size_t;
 private:
-
 
 	static const String noneStr;
 	Id id;
@@ -133,7 +131,7 @@ public:
 		static Name none{ "" };
 		return none;
 	};
-	static const NameKey noneId;
+	static const Id noneId;
 
 	bool Serialize(class Archive& ar, const char* name);
 
@@ -151,7 +149,7 @@ namespace eastl {
 	struct hash<Name> {
 		size_t operator()(const Name& k) const
 		{
-			return k.GetId().GetHash();
+			return k.GetId();
 		}
 	};
 
