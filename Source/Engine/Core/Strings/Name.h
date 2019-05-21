@@ -59,7 +59,7 @@ class NameTable {
 
 
 	NameTable() : table{} {
-		table.set_empty_key({ "" });
+		table.set_empty_key({ 0 });
 	}
 
 	NameKey Register(const String& string);

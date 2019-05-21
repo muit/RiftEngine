@@ -130,13 +130,13 @@ public:
 
 	FORCEINLINE ValueType& FindRef(const KeyType& key) const {
 		ValueType* const val = Find(key);
-		assert(val && "Key not found on the map");
+		assert(val && "Key not found, can't dereference its value");
 		return *val;
 	}
 
 	FORCEINLINE ValueType& FindRef(KeyType&& key) const {
 		ValueType* const val = Find(MoveTemp(key));
-		assert(val && "Key not found on the map");
+		assert(val && "Key not found, can't dereference its value");
 		return *val;
 	}
 
@@ -148,25 +148,40 @@ public:
 	 * Delete all items that match another provided item
 	 * @return number of deleted items
 	 */
-	i32 Remove(const KeyType& item, const bool shouldShrink = true) {
-		const i32 lastSize = Size();
-		eastl::remove(map.begin(), map.end(), item);
+	i32 Remove(const KeyType& key, const bool shouldShrink = true)
+	{
+		ConstIterator it = FindIt(key);
+		if (it != end())
+		{
+			const i32 lastSize = Size();
+			map.erase(it);
 
-		if (shouldShrink) Shrink();
-
-		return lastSize - Size();
+			if (shouldShrink)
+			{
+				Shrink();
+			}
+			return lastSize - Size();
+		}
+		return 0;
 	}
 
 	/** Empty the array.
-	 * @param shouldShrink false will not free memory
+	 * @param bShouldShrink false will not free memory
 	 */
-	void Empty(const bool shouldShrink = true, i32 sizeNum = 0) {
-		map.clear();
+	void Empty(const bool bShouldShrink = true, i32 sizeNum = 0) {
 
-		if (shouldShrink)
-			Shrink();
-		else if(sizeNum > 0)
-			Reserve(sizeNum);
+		if(bShouldShrink)
+		{
+			map.clear();
+		}
+		else
+		{
+			map.clear_no_resize();
+			if (sizeNum > 0 && map.max_size() != sizeNum)
+			{
+				map.resize(sizeNum);
+			}
+		}
 	}
 
 	void Shrink() { map.shrink_to_fit(); }

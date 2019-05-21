@@ -6,7 +6,7 @@
 #include "Core/Serialization/Archive.h"
 
 
-bool Serialize(Archive& ar, const char* name, EntityId& val)
+bool EntityId::Serialize(class Archive& ar, const char* name)
 {
 	if (!ar.context)
 	{
@@ -17,7 +17,7 @@ bool Serialize(Archive& ar, const char* name, EntityId& val)
 	if (ar.IsLoading())
 	{
 		// Find EntityId on the cache map
-		Guid guid {};
+		Guid guid{};
 		ar(name, guid);
 		if (guid.IsValid())
 		{
@@ -26,21 +26,21 @@ bool Serialize(Archive& ar, const char* name, EntityId& val)
 			const auto& cache = ecs->GetGuidCache();
 			const auto it = cache.find(guid);
 
-			val = (it != cache.end()) ? it->second : NoEntity;
+			id = (it != cache.end()) ? it->second : NoEntity;
 		}
 		else
 		{
-			val = NoEntity;
+			id = NoEntity;
 		}
 	}
 	else
 	{
 		// Get Guid from the component
 		auto ecs = ar.context->GetECS();
-		if (ecs->IsValid(val))
+		if (ecs->IsValid(*this))
 		{
 			// Save CEntity guid
-			ar(name, ecs->Get<CEntity>(val).id);
+			ar(name, ecs->Get<CEntity>(*this).id);
 		}
 	}
 	return true;

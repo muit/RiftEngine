@@ -45,7 +45,7 @@ bool Engine::Start()
 	}
 
 	frameTime = {};
-	//frameTime.SetFPSCap(120);
+	frameTime.SetFPSCap(60);
 
 	Log::Message("Start Loop");
 	bool bFinish = false;
