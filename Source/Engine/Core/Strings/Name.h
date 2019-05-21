@@ -105,7 +105,7 @@ public:
 	Name(const Name& other) : id(other.id) {}
 	Name(Name&& other) { std::swap(id, other.id); }
 
-	NOINLINE Name& operator= (const Name& other) {
+	Name& operator= (const Name& other) {
 		id = other.id;
 		return *this;
 	}

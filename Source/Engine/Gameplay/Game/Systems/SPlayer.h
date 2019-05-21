@@ -19,7 +19,7 @@ class SPlayer : public System {
 public:
 
 	virtual void BeginPlay() override;
-	NOINLINE virtual void Tick(float deltaTime) override;
+	virtual void Tick(float deltaTime) override;
 
 private:
 
