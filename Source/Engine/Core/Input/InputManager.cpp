@@ -1,7 +1,11 @@
 // Copyright 2015-2019 Piperift - All rights reserved
 
 #include "InputManager.h"
-#include "SDL_events.h"
+#include <SDL_events.h>
+#if WITH_EDITOR
+#include <imgui/imgui.h>
+#endif
+
 #include "Rendering/Renderer.h"
 #include "UI/UIManager.h"
 #include "Tools/Profiler.h"
@@ -13,6 +17,12 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, u32 windowId)
 
 	// Mark all axis not dirty
 
+#if WITH_EDITOR
+	auto& io = ImGui::GetIO();
+	const bool bUICapturedMouse    = io.WantCaptureMouse;
+	const bool bUICapturedKeyboard = io.WantCaptureKeyboard;
+#endif
+
 	UpdatePressedKeys();
 	ResetAxis();
 
@@ -23,6 +33,7 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, u32 windowId)
 	{
 		ui->OnSDLEvent(&event);
 
+		// Window events
 		switch (event.type)
 		{
 		case SDL_WINDOWEVENT:
@@ -31,74 +42,96 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, u32 windowId)
 		case SDL_QUIT:
 			bFinish = true;
 			break;
-
-		case SDL_MOUSEMOTION: {
-			v2_i32 pos{};
-			SDL_GetRelativeMouseState(&pos.x, &pos.y);
-			if (Math::Abs(pos.x) > 0)
-				UpdateAxis(EAxis::MouseX, (float)pos.x);
-			if (Math::Abs(pos.y) > 0)
-				UpdateAxis(EAxis::MouseY, (float)pos.y);
-			break;
 		}
 
-		case SDL_MOUSEWHEEL:
-			if (Math::Abs(event.wheel.x) > 0)
-				UpdateAxis(EAxis::MouseWheelX, (float)event.wheel.x);
-			if (Math::Abs(event.wheel.y) > 0)
-				UpdateAxis(EAxis::MouseWheelY, (float)event.wheel.y);
-			break;
-
-		case SDL_MOUSEBUTTONDOWN:
-			if (event.button.button == SDL_BUTTON_LEFT)
-				UpdateKey(EKey::MouseLeft, EKeyPressState::Press);
-			if (event.button.button == SDL_BUTTON_RIGHT)
-				UpdateKey(EKey::MouseRight, EKeyPressState::Press);
-			if (event.button.button == SDL_BUTTON_MIDDLE)
-				UpdateKey(EKey::MouseCenter, EKeyPressState::Press);
-			break;
-
-		case SDL_MOUSEBUTTONUP:
-			if (event.button.button == SDL_BUTTON_LEFT)
-				UpdateKey(EKey::MouseLeft, EKeyPressState::Release);
-			if (event.button.button == SDL_BUTTON_RIGHT)
-				UpdateKey(EKey::MouseRight, EKeyPressState::Release);
-			if (event.button.button == SDL_BUTTON_MIDDLE)
-				UpdateKey(EKey::MouseCenter, EKeyPressState::Release);
-			break;
-
-		case SDL_KEYDOWN:
-		case SDL_KEYUP:
-			EKeyPressState state = (event.type == SDL_KEYDOWN) ? EKeyPressState::Press : EKeyPressState::Release;
-			const SDL_Keymod sdlModState = SDL_GetModState();
-
-			// Automatic casting to Rift keys
-			const auto key = static_cast<EKey>(event.key.keysym.scancode);
-
-			// Update modifiers
-			switch (key)
+		// Mouse events
+		if (!bUICapturedMouse)
+		{
+			switch (event.type)
 			{
-			case EKey::LShift:
-				modStates.Set(EKeyModifier::LShift, state);
+			case SDL_MOUSEMOTION: {
+				v2_i32 pos{};
+				SDL_GetRelativeMouseState(&pos.x, &pos.y);
+				if (Math::Abs(pos.x) > 0)
+					UpdateAxis(EAxis::MouseX, (float)pos.x);
+				if (Math::Abs(pos.y) > 0)
+					UpdateAxis(EAxis::MouseY, (float)pos.y);
 				break;
-			case EKey::RShift:
-				modStates.Set(EKeyModifier::RShift, state);
+			}
+			case SDL_MOUSEWHEEL:
+				if (bUICapturedMouse)
+					break;
+
+				if (Math::Abs(event.wheel.x) > 0)
+					UpdateAxis(EAxis::MouseWheelX, (float)event.wheel.x);
+				if (Math::Abs(event.wheel.y) > 0)
+					UpdateAxis(EAxis::MouseWheelY, (float)event.wheel.y);
 				break;
-			case EKey::LCtrl:
-				modStates.Set(EKeyModifier::LCtrl, state);
+
+			case SDL_MOUSEBUTTONDOWN:
+				if (bUICapturedMouse)
+					break;
+
+				if (event.button.button == SDL_BUTTON_LEFT)
+					UpdateKey(EKey::MouseLeft, EKeyPressState::Press);
+				if (event.button.button == SDL_BUTTON_RIGHT)
+					UpdateKey(EKey::MouseRight, EKeyPressState::Press);
+				if (event.button.button == SDL_BUTTON_MIDDLE)
+					UpdateKey(EKey::MouseCenter, EKeyPressState::Press);
 				break;
-			case EKey::RCtrl:
-				modStates.Set(EKeyModifier::RCtrl, state);
+
+			case SDL_MOUSEBUTTONUP:
+				if (bUICapturedMouse)
+					break;
+
+				if (event.button.button == SDL_BUTTON_LEFT)
+					UpdateKey(EKey::MouseLeft, EKeyPressState::Release);
+				if (event.button.button == SDL_BUTTON_RIGHT)
+					UpdateKey(EKey::MouseRight, EKeyPressState::Release);
+				if (event.button.button == SDL_BUTTON_MIDDLE)
+					UpdateKey(EKey::MouseCenter, EKeyPressState::Release);
 				break;
-			case EKey::LAlt:
-				modStates.Set(EKeyModifier::LAlt, state);
+			}
+		}
+
+		// Keyboard events
+		if (!bUICapturedKeyboard)
+		{
+			switch(event.type)
+			{
+			case SDL_KEYDOWN:
+			case SDL_KEYUP:
+				EKeyPressState state = (event.type == SDL_KEYDOWN) ? EKeyPressState::Press : EKeyPressState::Release;
+				const SDL_Keymod sdlModState = SDL_GetModState();
+
+				// Automatic casting to Rift keys
+				const auto key = static_cast<EKey>(event.key.keysym.scancode);
+
+				// Update modifiers
+				switch (key)
+				{
+				case EKey::LShift:
+					modStates.Set(EKeyModifier::LShift, state);
+					break;
+				case EKey::RShift:
+					modStates.Set(EKeyModifier::RShift, state);
+					break;
+				case EKey::LCtrl:
+					modStates.Set(EKeyModifier::LCtrl, state);
+					break;
+				case EKey::RCtrl:
+					modStates.Set(EKeyModifier::RCtrl, state);
+					break;
+				case EKey::LAlt:
+					modStates.Set(EKeyModifier::LAlt, state);
+					break;
+				case EKey::RAlt:
+					modStates.Set(EKeyModifier::RAlt, state);
+					break;
+				};
+				UpdateKey(key, state);
 				break;
-			case EKey::RAlt:
-				modStates.Set(EKeyModifier::RAlt, state);
-				break;
-			};
-			UpdateKey(key, state);
-			break;
+			}
 		}
 	}
 

@@ -7,7 +7,10 @@
 #include <tracy/Tracy.hpp>
 
 #include "Strings/String.h"
+#include "Editor/Scene/LogWindow.h"
 
+#if WITH_EDITOR
+#endif
 
 namespace Log {
 	template<typename ...Args>
@@ -19,11 +22,25 @@ namespace Log {
 				const String msg = CString::Printf(format, eastl::forward<Args>(args)...);
 				TracyMessage(msg.c_str(), msg.size()); // Send to profiler
 				SDL_Log(msg.c_str()); // Send to console
+
+				#if WITH_EDITOR
+				if (LogWindow::globalLogWindow.IsValid())
+					LogWindow::globalLogWindow->Log(msg);
+				#endif
 			}
 			else
 			{
-				TracyMessage(format, std::strlen(format)); // Send to profiler
+				const size_t size = std::strlen(format);
+				TracyMessage(format, size); // Send to profiler
 				SDL_Log(format); // Send to console
+
+				#if WITH_EDITOR
+				if (LogWindow::globalLogWindow.IsValid())
+				{
+					String msg{ format, size };
+					LogWindow::globalLogWindow->Log(msg);
+				}
+				#endif
 			}
 		}
 	}
@@ -41,6 +58,11 @@ namespace Log {
 			msg.append_sprintf(format, eastl::forward<Args>(args)...);
 			TracyMessage(msg.c_str(), msg.size()); // Send to profiler
 			SDL_LogError(SDL_LOG_CATEGORY_ERROR, msg.c_str()); // Send to console
+
+			#if WITH_EDITOR
+			if (LogWindow::globalLogWindow.IsValid())
+				LogWindow::globalLogWindow->Log(msg);
+			#endif
 		}
 		else
 		{
@@ -48,6 +70,11 @@ namespace Log {
 			msg.append(format);
 			TracyMessage(msg.c_str(), msg.size()); // Send to profiler
 			SDL_LogError(SDL_LOG_CATEGORY_ERROR, msg.c_str()); // Send to console
+
+			#if WITH_EDITOR
+			if (LogWindow::globalLogWindow.IsValid())
+				LogWindow::globalLogWindow->Log(msg);
+			#endif
 		}
 	}
 
@@ -63,6 +90,11 @@ namespace Log {
 			msg.append_sprintf(format, eastl::forward<Args>(args)...);
 			TracyMessage(msg.c_str(), msg.size()); // Send to profiler
 			SDL_LogError(SDL_LOG_CATEGORY_ERROR, msg.c_str()); // Send to console
+
+			#if WITH_EDITOR
+			if (LogWindow::globalLogWindow.IsValid())
+				LogWindow::globalLogWindow->Log(msg);
+			#endif
 		}
 		else
 		{
@@ -70,6 +102,11 @@ namespace Log {
 			msg.append(format);
 			TracyMessage(msg.c_str(), msg.size()); // Send to profiler
 			SDL_LogError(SDL_LOG_CATEGORY_ERROR, msg.c_str()); // Send to console
+
+			#if WITH_EDITOR
+			if (LogWindow::globalLogWindow.IsValid())
+				LogWindow::globalLogWindow->Log(msg);
+			#endif
 		}
 	}
 

@@ -5,13 +5,9 @@
 #include "CoreObject.h"
 
 #include <imgui/imgui.h>
-#include <SDL_events.h>
-
-#include "Core/Files/FileSystem.h"
 
 #include "Core/Object/ObjectPtr.h"
 #include "Editor/EditorManager.h"
-#include "Core/Containers/Map.h"
 
 
 class UIManager : public Object {
@@ -21,26 +17,14 @@ class UIManager : public Object {
 	GlobalPtr<EditorManager> editor;
 #endif
 
-	static TMap<Name, ImFont*> fonts;
-
 
 public:
 
-	UIManager() : Super() {
-		fonts.SetEmptyKey("");
-	}
+	UIManager() : Super() {}
 
 	void Prepare();
 
-	void OnSDLEvent(SDL_Event* ev);
+	void OnSDLEvent(union SDL_Event* ev);
 
 	void Tick(float deltaTime);
-
-	static void AddFont(Name name, Path path, u8 size = 14u);
-	static void PushFont(Name name);
-	static void PopFont();
-
-private:
-
-	void ApplyStyle();
 };

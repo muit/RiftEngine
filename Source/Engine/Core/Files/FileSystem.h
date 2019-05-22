@@ -36,6 +36,7 @@ public:
 	}
 
 	static FORCEINLINE String GetAssetsPathStr() { return ToString(GetAssetsPath()); }
+	static FORCEINLINE String GetConfigPathStr() { return ToString(GetConfigPath()); }
 
 	static FORCEINLINE bool IsAssetPath(const String& path) { return IsAssetPath(FromString(path)); }
 
@@ -54,6 +55,7 @@ public:
 
 	static Path GetAssetsPath();
 	static void RelativeToAssetsPath(Path& path);
+	static Path GetConfigPath();
 
 	static Path FindMetaFile(Path in);
 

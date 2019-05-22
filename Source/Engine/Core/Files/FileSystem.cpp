@@ -96,6 +96,14 @@ void FileSystem::RelativeToAssetsPath(Path& path)
 	}
 }
 
+Path FileSystem::GetConfigPath()
+{
+	// Take two folders up. May change for distributed versions / other platforms
+	Path path = fs::current_path().parent_path().parent_path();
+	path /= "Config";
+	return eastl::move(path);
+}
+
 Path FileSystem::FindMetaFile(Path in)
 {
 	if (!SanitizeAssetPath(in))
