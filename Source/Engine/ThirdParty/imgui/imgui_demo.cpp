@@ -604,9 +604,9 @@ static void ShowDemoWindowWidgets()
             static int listbox_item_current = 1;
             ImGui::ListBox("listbox\n(single select)", &listbox_item_current, listbox_items, IM_ARRAYSIZE(listbox_items), 4);
 
-            //static int listbox_item_current2 = 2;
-            //ImGui::SetNextItemWidth(-1);
-            //ImGui::ListBox("##listbox2", &listbox_item_current2, listbox_items, IM_ARRAYSIZE(listbox_items), 4);
+            static int listbox_item_current2 = 2;
+            ImGui::SetNextItemWidth(-1);
+            ImGui::ListBox("##listbox2", &listbox_item_current2, listbox_items, IM_ARRAYSIZE(listbox_items), 4);
         }
 
         ImGui::TreePop();

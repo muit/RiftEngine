@@ -53,28 +53,28 @@ public:
 	TMap& operator=(const TMap& other) = default;
 
 
-	ValueType& Add(KeyType&& key, ValueType&& value) {
-		return *map.insert(MoveTemp(key), MoveTemp(value));
+	void Add(KeyType&& key, ValueType&& value) {
+		map[MoveTemp(key)] = MoveTemp(value);
 	}
 
-	ValueType& Add(const KeyType& key, ValueType&& value) {
-		return *map.insert(key, MoveTemp(value));
+	void Add(const KeyType& key, ValueType&& value) {
+		map[key] = MoveTemp(value);
 	}
 
-	ValueType& Add(KeyType&& key, const ValueType& value) {
-		return *map.insert(MoveTemp(key), value);
+	void Add(KeyType&& key, const ValueType& value) {
+		map[MoveTemp(key)] = value;
 	}
 
-	ValueType& Add(const KeyType& key, const ValueType& value) {
-		return *map.insert(key, value);
+	void Add(const KeyType& key, const ValueType& value) {
+		map[key] = value;
 	}
 
-	ValueType& Add(const TPair<KeyType, ValueType>& pair) {
-		return *map.insert(pair.first, pair.second);
+	void Add(const TPair<KeyType, ValueType>& pair) {
+		map[pair.first] = pair.second;
 	}
 
-	ValueType& Add(TPair<KeyType, ValueType>&& pair) {
-		return *map.insert(MoveTemp(pair.first), MoveTemp(pair.second));
+	void Add(TPair<KeyType, ValueType>&& pair) {
+		map[MoveTemp(pair.first)] = MoveTemp(pair.second);
 	}
 
 	template<EMapOptimization otherOpt>
@@ -119,25 +119,25 @@ public:
 	}
 
 	FORCEINLINE ValueType* Find(const KeyType& key) {
-		Type* const it = FindIt(key);
-		return it != end() ? it : nullptr;
+		Iterator it = FindIt(key);
+		return it != end() ? &it->second : nullptr;
 	}
 
 	FORCEINLINE const ValueType* Find(const KeyType& key) const {
-		const Type* const it = FindIt(key);
-		return it != end() ? it : nullptr;
+		ConstIterator it = FindIt(key);
+		return it != end() ? &it->second : nullptr;
 	}
 
-	FORCEINLINE ValueType& FindRef(const KeyType& key) const {
-		ValueType* const val = Find(key);
-		assert(val && "Key not found, can't dereference its value");
-		return *val;
+	FORCEINLINE ValueType& FindRef(const KeyType& key) {
+		ConstIterator it = FindIt(key);
+		assert(it != end() && "Key not found, can't dereference its value");
+		return it->second;
 	}
 
-	FORCEINLINE ValueType& FindRef(KeyType&& key) const {
-		ValueType* const val = Find(MoveTemp(key));
-		assert(val && "Key not found, can't dereference its value");
-		return *val;
+	FORCEINLINE const ValueType& FindRef(const KeyType& key) const {
+		ConstIterator it = FindIt(key);
+		assert(it != end() && "Key not found, can't dereference its value");
+		return it->second;
 	}
 
 	bool Contains(const KeyType& key) const {
@@ -218,6 +218,10 @@ public:
 	{
 		assert(IsValidIndex(index));
 		return map.at(index);
+	}
+
+	void SetEmptyKey(const KeyType& key) {
+		map.set_empty_key(key);
 	}
 
 	// Iterator functions

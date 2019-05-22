@@ -135,6 +135,7 @@ public:
 class BaseWeakPtr {
 	friend BaseGlobalPtr;
 
+	// #TODO: Optimize storing pointer to value
 	const BaseGlobalPtr* globalPtr;
 	u32 id;
 
