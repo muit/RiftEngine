@@ -29,8 +29,8 @@ class Engine : public Object
 	GlobalPtr<UIManager> ui;
 	GlobalPtr<Renderer> renderer;
 
-	TArray<Frame> frameBuffers{ 2 };
-	u32 gameFrameId = 0;
+	Frame frameBuffers[2];
+	u32 gameFrameId = 1;
 
 	TaskSystem taskSystem;
 

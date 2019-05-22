@@ -28,7 +28,7 @@ public:
 	TArray<eastl::shared_ptr<RenderCommand>> commands;
 
 
-	Frame() : id(idCounter++), time(DateTime::UtcNow()) {}
+	Frame() { Reset(); }
 	Frame(Frame&& other) = default;
 	Frame& operator=(Frame&& other) = default;
 
@@ -38,6 +38,12 @@ public:
 	}
 
 	void ExecuteCommands(struct FrameRender& render);
+
+	void Reset() {
+		id = idCounter++;
+		time = DateTime::UtcNow();
+		commands.Empty(false);
+	}
 
 	u16 Id() const { return id; }
 };
