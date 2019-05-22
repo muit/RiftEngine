@@ -17,7 +17,7 @@ void EditorManager::Tick(float deltaTime)
 {
 	ZoneScopedNC("Editor", 0x459bd1);
 	TickMainNavBar();
-	//TickDocking();
+	TickDocking();
 
 	// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
 	if (showDemoWindow)
@@ -36,7 +36,7 @@ void EditorManager::Tick(float deltaTime)
 void EditorManager::TickDocking()
 {
 	static bool opt_fullscreen_persistant = true;
-	static ImGuiDockNodeFlags opt_flags = ImGuiDockNodeFlags_None;
+	static ImGuiDockNodeFlags opt_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 	bool opt_fullscreen = opt_fullscreen_persistant;
 
 	// We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
@@ -48,15 +48,14 @@ void EditorManager::TickDocking()
 		ImGui::SetNextWindowPos(viewport->Pos);
 		ImGui::SetNextWindowSize(viewport->Size);
 		ImGui::SetNextWindowViewport(viewport->ID);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
 		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 	}
 
 	// When using ImGuiDockNodeFlags_PassthruDockspace, DockSpace() will render our background and handle the pass-thru hole, so we ask Begin() to not render a background.
-	/*if (opt_flags & ImGuiDockNodeFlags_PassthruCentralNode)
-		window_flags |= ImGuiWindowFlags_NoBackground;*/
+	if (opt_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+		window_flags |= ImGuiWindowFlags_NoBackground;
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
@@ -65,7 +64,7 @@ void EditorManager::TickDocking()
 	ImGui::PopStyleVar();
 
 	if (opt_fullscreen)
-		ImGui::PopStyleVar(2);
+		ImGui::PopStyleVar(1);
 
 	// Dock space
 	ImGuiIO& io = ImGui::GetIO();
