@@ -29,7 +29,7 @@ void SRenderMeshes::Tick(float deltaTime)
 
 	view.each([&meshInstances](const EntityId e, CTransform& t, CMesh& c)
 	{
-		if (c.model.IsValid())
+		if (!c.model.IsNull())
 		{
 			meshInstances.Add({
 				c.model.GetInfo(),
