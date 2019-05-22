@@ -89,7 +89,7 @@ public:
 		static_assert(eastl::is_base_of<RenderCommand, Command>::value, "Command type must inherit RenderCommand");
 
 		GetGameFrame().ScheduleCommand(
-			eastl::make_shared<Command>(eastl::forward<Args>(args)...)
+			eastl::make_unique<Command>(eastl::forward<Args>(args)...)
 		);
 	}
 

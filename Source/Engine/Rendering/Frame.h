@@ -25,7 +25,7 @@ public:
 
 	DateTime time;
 
-	TArray<eastl::shared_ptr<RenderCommand>> commands;
+	TArray<eastl::unique_ptr<RenderCommand>> commands;
 
 
 	Frame() { Reset(); }
@@ -33,8 +33,8 @@ public:
 	Frame& operator=(Frame&& other) = default;
 
 
-	void ScheduleCommand(eastl::shared_ptr<RenderCommand>&& command) {
-		commands.Add(command);
+	void ScheduleCommand(eastl::unique_ptr<RenderCommand>&& command) {
+		commands.Add(MoveTemp(command));
 	}
 
 	void ExecuteCommands(struct FrameRender& render);
