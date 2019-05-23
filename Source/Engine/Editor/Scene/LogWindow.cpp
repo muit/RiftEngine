@@ -14,6 +14,8 @@ void LogWindow::Log(const String& str)
 	textBuffer.append(str.c_str(), str.end());
 	textBuffer.append("\n");
 
+	lineOffsets.Add(lineOffsets.Last() + i32(str.size()) + 1);
+
 	if (bAutoScroll)
 	{
 		bScrollToBottom = true;
