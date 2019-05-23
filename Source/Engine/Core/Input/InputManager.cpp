@@ -45,7 +45,10 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, u32 windowId)
 		}
 
 		// Mouse events
+
+#if WITH_EDITOR
 		if (!bUICapturedMouse)
+#endif
 		{
 			switch (event.type)
 			{
@@ -59,9 +62,6 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, u32 windowId)
 				break;
 			}
 			case SDL_MOUSEWHEEL:
-				if (bUICapturedMouse)
-					break;
-
 				if (Math::Abs(event.wheel.x) > 0)
 					UpdateAxis(EAxis::MouseWheelX, (float)event.wheel.x);
 				if (Math::Abs(event.wheel.y) > 0)
@@ -69,9 +69,6 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, u32 windowId)
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
-				if (bUICapturedMouse)
-					break;
-
 				if (event.button.button == SDL_BUTTON_LEFT)
 					UpdateKey(EKey::MouseLeft, EKeyPressState::Press);
 				if (event.button.button == SDL_BUTTON_RIGHT)
@@ -81,9 +78,6 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, u32 windowId)
 				break;
 
 			case SDL_MOUSEBUTTONUP:
-				if (bUICapturedMouse)
-					break;
-
 				if (event.button.button == SDL_BUTTON_LEFT)
 					UpdateKey(EKey::MouseLeft, EKeyPressState::Release);
 				if (event.button.button == SDL_BUTTON_RIGHT)
@@ -95,7 +89,9 @@ bool InputManager::Tick(float deltaTime, Ptr<UIManager> ui, u32 windowId)
 		}
 
 		// Keyboard events
+#if WITH_EDITOR
 		if (!bUICapturedKeyboard)
+#endif
 		{
 			switch(event.type)
 			{
