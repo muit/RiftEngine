@@ -5,7 +5,6 @@
 #if WITH_EDITOR
 
 #include "Editor/EditorWindow.h"
-#include "Editor/Widgets/PropertyWidget.h"
 #include "ECS/EntityId.h"
 #include "Core/Events/Broadcast.h"
 

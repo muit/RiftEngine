@@ -85,6 +85,48 @@ void SPhysics::BeforeDestroy()
 	Super::BeforeDestroy();
 }
 
+void SPhysics::UploadBodies()
+{
+	ScopedGameZone("Upload Bodies");
+
+	auto view = ECS()->View<CTransform, CBody>();
+
+	// Upload valid bodies to physics (Splitted between all threads)
+	physicsMTFlow.parallel_for(view.begin(), view.end(), [&view](EntityId entity)
+	{
+		ScopedGameZone("Upload Body");
+
+		const CBody& body = view.get<CBody>(entity);
+		if (body.IsInitialized() && !body.IsStatic())
+		{
+			const CTransform& transform = view.get<CTransform>(entity);
+
+			const v3& location = transform.GetWLocation();
+			const Quat& rotation = transform.GetWRotation();
+			const auto currTransform = body.rigidBody->getGlobalPose();
+
+			// If position or rotation changed, upload it
+			if (location.DistanceSqrt(FromPx(currTransform.p)) > Math::SMALL_NUMBER ||
+				!rotation.Equals(FromPx(currTransform.q)))
+			{
+				const physx::PxTransform newTransform{ ToPx(location), ToPx(rotation) };
+				body.rigidBody->setGlobalPose(newTransform);
+			}
+		}
+	});
+	physicsMTFlow.wait_for_all();
+
+	// Initialize invalid bodies
+	for (EntityId entity : view)
+	{
+		CBody& body = view.get<CBody>(entity);
+		if (!body.IsInitialized())
+		{
+			CreateBody(view.get<CTransform>(entity), body);
+		}
+	}
+}
+
 void SPhysics::Step(float deltaTime)
 {
 	ScopedGameZone("Step");
@@ -92,6 +134,29 @@ void SPhysics::Step(float deltaTime)
 	scene->simulate(deltaTime);
 	// #TODO: Support multi-threading while doing Render tick
 	scene->fetchResults(true);
+}
+
+void SPhysics::DownloadBodies()
+{
+	ScopedGameZone("Download Bodies");
+
+	auto view = ECS()->View<CTransform, CBody>();
+
+	// Download valid bodies from physics (Splitted between all threads)
+	physicsMTFlow.parallel_for(view.begin(), view.end(), [&view](EntityId entity)
+	{
+		ScopedGameZone("Download Body");
+
+		const CBody& body = view.get<CBody>(entity);
+		if (body.IsInitialized() && !body.IsStatic())
+		{
+			CTransform& transform = view.get<CTransform>(entity);
+
+			transform.SetWLocation(FromPx(body.rigidBody->getGlobalPose().p));
+			transform.SetWRotation(FromPx(body.rigidBody->getGlobalPose().q));
+		}
+	});
+	physicsMTFlow.wait_for_all();
 }
 
 void SPhysics::CreateScene()
@@ -177,65 +242,4 @@ void SPhysics::SetupBodyShapes(CBody& body)
 	{
 		physx::PxRigidActorExt::createExclusiveShape(*body.rigidBody, physx::PxSphereGeometry(body.radius), *material);
 	}
-}
-
-void SPhysics::UploadBodies()
-{
-	ScopedGameZone("Upload Bodies");
-
-	auto view = ECS()->View<CTransform, CBody>();
-
-	// Upload valid bodies to physics (Splitted between all threads)
-	physicsMTFlow.parallel_for(view.begin(), view.end(), [&view](EntityId entity)
-	{
-		const CBody& body = view.get<CBody>(entity);
-		if (body.IsInitialized() && !body.IsStatic())
-		{
-			const CTransform& transform = view.get<CTransform>(entity);
-
-			const v3& location = transform.GetWLocation();
-			const Quat& rotation = transform.GetWRotation();
-			const auto currTransform = body.rigidBody->getGlobalPose();
-
-			// If position or rotation changed, upload it
-			if (location.DistanceSqrt(FromPx(currTransform.p)) > Math::SMALL_NUMBER ||
-				!rotation.Equals(FromPx(currTransform.q)))
-			{
-				const physx::PxTransform newTransform{ ToPx(location), ToPx(rotation) };
-				body.rigidBody->setGlobalPose(newTransform);
-			}
-		}
-	});
-	physicsMTFlow.wait_for_all();
-
-	// Initialize invalid bodies
-	for (EntityId entity : view)
-	{
-		CBody& body = view.get<CBody>(entity);
-		if (!body.IsInitialized())
-		{
-			CreateBody(view.get<CTransform>(entity), body);
-		}
-	}
-}
-
-void SPhysics::DownloadBodies()
-{
-	ScopedGameZone("Download Bodies");
-
-	auto view = ECS()->View<CTransform, CBody>();
-
-	// Download valid bodies from physics (Splitted between all threads)
-	physicsMTFlow.parallel_for(view.begin(), view.end(), [&view](EntityId entity)
-	{
-		const CBody& body = view.get<CBody>(entity);
-		if (body.IsInitialized() && !body.IsStatic())
-		{
-			CTransform& transform = view.get<CTransform>(entity);
-
-			transform.SetWLocation(FromPx(body.rigidBody->getGlobalPose().p));
-			transform.SetWRotation(FromPx(body.rigidBody->getGlobalPose().q));
-		}
-	});
-	physicsMTFlow.wait_for_all();
 }

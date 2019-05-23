@@ -192,7 +192,7 @@ public:
 	void RegistrySingletons();
 
 	template <typename C>
-	void RegistrySingleton() {
+	void AssignSingleton() {
 		singletonComponents.Add(eastl::make_unique<C>());
 	}
 
@@ -212,6 +212,15 @@ public:
 		static_assert(eastl::is_convertible<C, Component>::value, "Type is not a Component!");
 
 		return singletonComponents.Contains([](const auto& comp) {
+			return comp->GetStruct() == C::StaticStruct();
+		});
+	}
+
+	template<typename C>
+	bool RemoveSingleton() {
+		static_assert(eastl::is_convertible<C, Component>::value, "Type is not a Component!");
+
+		return singletonComponents.RemoveIf([](const auto & comp) {
 			return comp->GetStruct() == C::StaticStruct();
 		});
 	}

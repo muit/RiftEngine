@@ -17,6 +17,8 @@ void SceneEditor::Construct()
 	// Select scene
 	details->SetObject(GetWorld()->GetActiveScene().Get());
 
+	singletonDetails = Widget::CreateStandalone<SingletonsDetails>(Self());
+
 	guizmo = Widget::CreateStandalone<Guizmo>(Self());
 }
 
@@ -28,12 +30,14 @@ void SceneEditor::Tick(float deltaTime)
 
 	sceneEntities->OnTick(deltaTime);
 	details->OnTick(deltaTime);
+	singletonDetails->OnTick(deltaTime);
 }
 
 void SceneEditor::ExpandViewsMenu()
 {
 	if (ImGui::MenuItem("Entities", (const char*)0, sceneEntities->IsOpenedPtr())) {}
-	if (ImGui::MenuItem("Details", (const char*)0,  details->IsOpenedPtr())) {}
+	if (ImGui::MenuItem("Details", (const char*)0, details->IsOpenedPtr())) {}
+	if (ImGui::MenuItem("Singletons", (const char*)0, singletonDetails->IsOpenedPtr())) {}
 }
 
 void SceneEditor::OnSelectionChanged(const TArray<EntityId>& entities)

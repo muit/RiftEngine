@@ -218,7 +218,7 @@ void ECSManager::RegistrySystems()
 
 void ECSManager::RegistrySingletons()
 {
-	RegistrySingleton<CActiveCamera>();
-	RegistrySingleton<CPhysicsWorld>();
-	RegistrySingleton<CVisualDebugger>();
+	AssignSingleton<CActiveCamera>();
+	AssignSingleton<CPhysicsWorld>();
+	AssignSingleton<CVisualDebugger>();
 }

@@ -2,12 +2,15 @@
 
 #include "SceneDetails.h"
 
+#if WITH_EDITOR
+
 #include "World.h"
 #include "Core/Reflection/Runtime/HandleHelper.h"
 #include "Core/Reflection/ReflectionTags.h"
 #include "Core/Object/Object.h"
 #include "ECS/Component.h"
 #include "ECS/ECSManager.h"
+#include "Editor/Widgets/PropertyWidget.h"
 
 #include "Widgets/ComponentDetails.h"
 
@@ -26,7 +29,6 @@
 #include "Physics/3D/Components/CBody.h"
 
 
-#if WITH_EDITOR
 void SceneDetails::Build()
 {
 	Super::Build();
@@ -53,6 +55,8 @@ void SceneDetails::Build()
 	else if (entity != NoEntity)
 	{
 		auto ecs = GetWorld()->GetECS();
+
+		displayName = String("Details: ").append(ecs->Get<CEntity>(entity).name.ToString());
 
 		AddNew<ComponentDetails<CEntity>>(entity);
 		AddNew<ComponentDetails<CTransform>>(entity);

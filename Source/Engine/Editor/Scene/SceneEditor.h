@@ -6,6 +6,7 @@
 
 #include "SceneEntities.h"
 #include "SceneDetails.h"
+#include "SingletonsDetails.h"
 #include "Guizmo.h"
 #include "Editor/Editor.h"
 
@@ -17,6 +18,7 @@ class SceneEditor : public Editor {
 
 	GlobalPtr<SceneEntities> sceneEntities;
 	GlobalPtr<SceneDetails> details;
+	GlobalPtr<SingletonsDetails> singletonDetails;
 
 	GlobalPtr<Guizmo> guizmo;
 
