@@ -4,15 +4,15 @@
 #include "SDL_surface.h"
 
 
-void TextureData::FromSurface(SDL_Surface* surface)
+bool TextureData::FromSurface(SDL_Surface* surface)
 {
 	if (surface)
 	{
-		bool reformated = false;
+		bool bReformated = false;
 		if (surface->format->format != SDL_PIXELFORMAT_RGBA32)
 		{
 			surface = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGBA32, 0);
-			reformated = true;
+			bReformated = true;
 		}
 
 		size = { surface->w, surface->h };
@@ -27,8 +27,11 @@ void TextureData::FromSurface(SDL_Surface* surface)
 			buffer.Add(Color{ pixels[i] });
 		}
 
-		if (reformated) {
+		if (bReformated)
+		{
 			SDL_FreeSurface(surface);
 		}
+		return true;
 	}
+	return false;
 }

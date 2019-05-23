@@ -12,24 +12,15 @@
 #include "Tuples.h"
 
 
-enum EMapOptimization {
-	Smaller,
-	Faster
-};
-
-template<typename Key, typename Value, EMapOptimization optimization = Faster>
+template<typename Key, typename Value>
 class TMap {
 public:
-	template <typename OtherKey, typename OtherValue, EMapOptimization optimization>
+	template <typename OtherKey, typename OtherValue>
 	friend class TMap;
 
 	using KeyType = Key;
 	using ValueType = Value;
-	using HashMapType = google::dense_hash_map<KeyType, ValueType, eastl::hash<KeyType>, eastl::equal_to<KeyType>>;/*eastl::conditional_t<
-		type == Faster,
-		google::dense_hash_map <KeyType, ValueType, eastl::hash<KeyType>, eastl::equal_to<KeyType>>, // Faster hash map
-		google::sparse_hash_map<KeyType, ValueType, eastl::hash<KeyType>, eastl::equal_to<KeyType>>  // Smaller hash map
-	>;*/
+	using HashMapType = google::dense_hash_map <KeyType, ValueType, eastl::hash<KeyType>, eastl::equal_to<KeyType>>;
 
 	using Iterator           = typename HashMapType::iterator;
 	using ConstIterator      = typename HashMapType::const_iterator;
@@ -52,33 +43,31 @@ public:
 	TMap& operator=(TMap&& other) = default;
 	TMap& operator=(const TMap& other) = default;
 
-
-	void Add(KeyType&& key, ValueType&& value) {
-		map[MoveTemp(key)] = MoveTemp(value);
+	void Insert(KeyType&& key, ValueType&& value) {
+		map.insert({ MoveTemp(key), MoveTemp(value) });
 	}
 
-	void Add(const KeyType& key, ValueType&& value) {
-		map[key] = MoveTemp(value);
+	void Insert(const KeyType& key, ValueType&& value) {
+		map.insert({ key, MoveTemp(value) });
 	}
 
-	void Add(KeyType&& key, const ValueType& value) {
-		map[MoveTemp(key)] = value;
+	void Insert(KeyType&& key, const ValueType& value) {
+		map.insert({ MoveTemp(key), value });
 	}
 
-	void Add(const KeyType& key, const ValueType& value) {
-		map[key] = value;
+	void Insert(const KeyType& key, const ValueType& value) {
+		map.insert({ key, value });
 	}
 
-	void Add(const TPair<KeyType, ValueType>& pair) {
-		map[pair.first] = pair.second;
+	void Insert(const TPair<KeyType, ValueType>& pair) {
+		map.insert({ pair.first, pair.second });
 	}
 
-	void Add(TPair<KeyType, ValueType>&& pair) {
-		map[MoveTemp(pair.first)] = MoveTemp(pair.second);
+	void Insert(TPair<KeyType, ValueType>&& pair) {
+		map.insert({ MoveTemp(pair.first), MoveTemp(pair.second) });
 	}
 
-	template<EMapOptimization otherOpt>
-	void Append(const TMap<KeyType, ValueType, otherOpt>& other) {
+	void Append(const TMap<KeyType, ValueType>& other) {
 		if (other.Size() > 0)
 		{
 			if (Size() <= 0)
@@ -92,8 +81,7 @@ public:
 		}
 	}
 
-	template<EMapOptimization otherOpt>
-	void Append(TMap<KeyType, ValueType, otherOpt>&& other) {
+	void Append(TMap<KeyType, ValueType>&& other) {
 		if (other.Size() > 0)
 		{
 			if (Size() <= 0)
@@ -148,18 +136,13 @@ public:
 	 * Delete all items that match another provided item
 	 * @return number of deleted items
 	 */
-	i32 Remove(const KeyType& key, const bool shouldShrink = true)
+	i32 Remove(const KeyType& key)
 	{
 		ConstIterator it = FindIt(key);
 		if (it != end())
 		{
 			const i32 lastSize = Size();
 			map.erase(it);
-
-			if (shouldShrink)
-			{
-				Shrink();
-			}
 			return lastSize - Size();
 		}
 		return 0;
@@ -184,8 +167,6 @@ public:
 		}
 	}
 
-	void Shrink() { map.shrink_to_fit(); }
-
 	FORCEINLINE i32 Size() const { return (i32)map.size(); }
 
 	FORCEINLINE bool IsValidIndex(i32 index) const
@@ -202,22 +183,13 @@ public:
 	 *
 	 * @returns Reference to indexed element.
 	 */
-	FORCEINLINE ValueType& operator[](const KeyType& key) { return FindRef(key); }
+	FORCEINLINE ValueType& operator[](const KeyType& key) { return map[key]; }
 	FORCEINLINE const ValueType& operator[](const KeyType& key) const {
-		return FindRef(key);
+		return map[key];
 	}
-
-	/**
-	 * Array bracket operator. Returns reference to value at given key.
-	 *
-	 * Const version of the above.
-	 *
-	 * @returns Reference to indexed element.
-	 */
-	FORCEINLINE const ValueType& operator[](i32 index) const
-	{
-		assert(IsValidIndex(index));
-		return map.at(index);
+	FORCEINLINE ValueType& operator[](KeyType&& key) { return map[MoveTemp(key)]; }
+	FORCEINLINE const ValueType& operator[](KeyType&& key) const {
+		return map[MoveTemp(key)];
 	}
 
 	void SetEmptyKey(const KeyType& key) {
@@ -237,13 +209,11 @@ public:
 	/** INTERNAl */
 private:
 
-	template<EMapOptimization otherOpt>
-	FORCEINLINE void CopyFrom(const TMap<KeyType, ValueType, otherOpt>& other) {
+	FORCEINLINE void CopyFrom(const TMap<KeyType, ValueType>& other) {
 		map = other.map;
 	}
 
-	template<EMapOptimization otherOpt>
-	FORCEINLINE void MoveFrom(TMap<KeyType, ValueType, otherOpt>&& other) {
+	FORCEINLINE void MoveFrom(TMap<KeyType, ValueType>&& other) {
 		map = eastl::move(other.map);
 	}
 };

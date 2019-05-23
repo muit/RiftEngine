@@ -35,6 +35,7 @@
 #include "Gameplay/Singletons/CActiveCamera.h"
 #include "Gameplay/Singletons/CPhysicsWorld.h"
 #include "Gameplay/Singletons/CVisualDebugger.h"
+#include "Gameplay/Singletons/CGraphics.h"
 
 
 void ECSManager::BeginPlay()
@@ -221,4 +222,5 @@ void ECSManager::RegistrySingletons()
 	AssignSingleton<CActiveCamera>();
 	AssignSingleton<CPhysicsWorld>();
 	AssignSingleton<CVisualDebugger>();
+	AssignSingleton<CGraphics>();
 }

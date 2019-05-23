@@ -10,6 +10,7 @@
 #include "Gameplay/Singletons/CPhysicsWorld.h"
 #include "Gameplay/Singletons/CSceneTree.h"
 #include "Gameplay/Singletons/CVisualDebugger.h"
+#include "Gameplay/Singletons/CGraphics.h"
 
 
 #if WITH_EDITOR
@@ -23,6 +24,7 @@ void SingletonsDetails::Build()
 	auto ecs = GetWorld()->GetECS();
 
 	AddNew<SingletonDetails<CPhysicsWorld>>();
+	AddNew<SingletonDetails<CGraphics>>();
 	AddNew<SingletonDetails<CSceneTree>>();
 	AddNew<SingletonDetails<CVisualDebugger>>();
 }

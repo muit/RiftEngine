@@ -11,6 +11,7 @@ struct RenderTexture
 	u32 glId = GL_INVALID_INDEX;
 
 
+	RenderTexture() = default;
 	RenderTexture(const TextureData& texture) { Load(texture); }
 	~RenderTexture() { Free(); }
 

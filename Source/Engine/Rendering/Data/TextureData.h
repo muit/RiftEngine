@@ -36,7 +36,7 @@ public:
 		buffer.Assign(size.x * size.y, color);
 	}
 
-	void FromSurface(struct SDL_Surface* surface);
+	bool FromSurface(struct SDL_Surface* surface);
 
 	FORCEINLINE Color& operator[](const v2_u32& position) {
 		// X + Y * Width

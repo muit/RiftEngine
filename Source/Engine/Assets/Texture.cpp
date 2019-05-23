@@ -35,3 +35,13 @@ void Texture::OnUnload()
 {
 	QueueRenderCommand<FreeTextureCommand>(GetInfo());
 }
+
+const v2_u32& Texture::GetSize() const
+{
+	return data.Size();
+}
+
+const TextureData& Texture::GetTextureData() const
+{
+	return data;
+}

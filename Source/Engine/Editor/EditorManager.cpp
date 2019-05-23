@@ -237,7 +237,7 @@ void EditorManager::AddFont(Name name, Path path, u8 size)
 
 	if (loadedFont)
 	{
-		fonts.Add(name, loadedFont);
+		fonts.Insert(name, loadedFont);
 	}
 	else
 	{

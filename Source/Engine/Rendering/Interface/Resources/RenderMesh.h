@@ -18,10 +18,11 @@ struct RenderMesh
 	u32 verticesCount = 0;
 
 
+	RenderMesh() = default;
 	RenderMesh(Name id, const MeshData& mesh) { Load(id, mesh); }
-	~RenderMesh() { Free(); }
 	RenderMesh(RenderMesh&& other)            { MoveFrom(MoveTemp(other)); }
 	RenderMesh& operator=(RenderMesh&& other) { MoveFrom(MoveTemp(other)); return *this; }
+	~RenderMesh() { Free(); }
 
 	void Bind() const
 	{
