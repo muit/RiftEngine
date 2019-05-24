@@ -40,9 +40,11 @@ void SceneDetails::Build()
 	{
 		displayName = String("Details: ").append(object->GetName().ToString());
 
-		if (Class * objectClass = object->GetClass())
+		if (Class* objClass = object->GetClass())
 		{
-			for (const auto& property : objectClass->GetAllProperties())
+			PropertyMap properties{ Name::None() };
+			objClass->GetAllProperties(properties);
+			for (const auto& property : properties)
 			{
 				if (property.second->HasTag(DetailsEdit) || property.second->HasTag(DetailsView))
 				{

@@ -49,7 +49,7 @@ public:
 	bool HasAllTags(ReflectionTags inTags) const { return (tags & inTags) == inTags; }
 	bool HasAnyTags(ReflectionTags inTags) const { return (tags & inTags) > 0; }
 
-	BaseType* GetType() const { return typePtr; }
+	BaseType* GetContainerType() const { return typePtr; }
 	Name GetTypeName() const { return typeName; }
 
 	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(const Ptr<BaseObject>& instance) const = 0;

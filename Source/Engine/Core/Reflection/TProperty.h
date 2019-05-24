@@ -31,16 +31,20 @@ public:
 		: Property(typePtr, typeName, name, tags), access(access)
 	{}
 
-	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(const Ptr<BaseObject>& instance) const override {
-		if (instance->GetClass() == GetType())
+	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(const Ptr<BaseObject>& instance) const override
+	{
+		const BaseType* const type = instance->GetClass();
+		if (type == GetContainerType() || type->IsChildOf(GetContainerType()))
 		{
 			return eastl::shared_ptr<PropertyHandle>(new TPropertyHandle<VarType>(instance, this, access));
 		}
 		return {};
 	}
 
-	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(BaseStruct* instance) const override {
-		if (instance->GetStruct() == GetType())
+	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(BaseStruct* instance) const override
+	{
+		const BaseType* const type = instance->GetStruct();
+		if (type == GetContainerType() || type->IsChildOf(GetContainerType()))
 		{
 			return eastl::shared_ptr<PropertyHandle>(new TPropertyHandle<VarType>(instance, this, access));
 		}

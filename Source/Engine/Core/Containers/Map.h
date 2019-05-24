@@ -77,11 +77,11 @@ public:
 		{
 			if (Size() <= 0)
 			{
-				CopyFrom(other)
+				CopyFrom(other);
 			}
 			else
 			{
-				map.insert(map.end(), other.begin(), other.end());
+				map.insert(other.begin(), other.end());
 			}
 		}
 	}
@@ -210,7 +210,7 @@ public:
 	FORCEINLINE ConstIterator cend() const { return map.cend(); };
 
 
-	/** INTERNAl */
+	/** INTERNAL */
 private:
 
 	FORCEINLINE void CopyFrom(const TMap<KeyType, ValueType>& other) {
@@ -218,6 +218,6 @@ private:
 	}
 
 	FORCEINLINE void MoveFrom(TMap<KeyType, ValueType>&& other) {
-		map = eastl::move(other.map);
+		map = MoveTemp(other.map);
 	}
 };

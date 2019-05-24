@@ -61,8 +61,11 @@ void ComponentDetails<Type>::Build()
 		Type& comp = ecs->Get<Type>(entity);
 
 		// Display each component property
-		for (const auto& property : Type::StaticStruct()->GetAllProperties())
+		PropertyMap properties{ Name::None() };
+		Type::StaticStruct()->GetAllProperties(properties);
+		for (const auto& property : properties)
 		{
+			String str = property.first.ToString();
 			if (property.second->HasTag(DetailsEdit) || property.second->HasTag(DetailsView))
 			{
 				auto handle = property.second->CreateHandle(&comp);

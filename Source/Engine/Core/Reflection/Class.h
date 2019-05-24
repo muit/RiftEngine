@@ -10,52 +10,30 @@
 #include "Core/Object/ObjectPtr.h"
 
 
-class Class : public BaseType {
-protected:
-
-	Class* parent;
-	eastl::vector<Class*> children;
-
+class Class : public BaseType
+{
 public:
 
 	virtual GlobalPtr<BaseObject> CreateInstance(const Ptr<BaseObject>& owner) = 0;
 
-	Class* GetParentClass() const { return parent; }
 
-	template<bool bIncludeSelf = false, bool bIsFirstCall = true>
-	void GetAllChildClasses(eastl::vector<Class*>& outChildren) {
-		if(bIsFirstCall)
-			outChildren.clear();
+	// NOTE: Most of the class comparison functions do actually
+	// call BaseType to reduce complexity and code duplication.
+	//
+	// We can cast safely to BaseType since Classes only inherit Classes
 
-		if (bIncludeSelf)
-			outChildren.push_back(this);
+	Class* GetParent() const { return static_cast<Class*>(parent); }
 
-		for (auto* child : children)
-		{
-			outChildren.push_back(child);
-			child->GetAllChildClasses<false, false>(outChildren);
-		}
+	void GetAllChildren(TArray<Class*>& outChildren) {
+		__GetAllChildren(reinterpret_cast<TArray<BaseType*>&>(outChildren));
 	}
 
-	Class* FindChildClass(const Name& className) const;
-
-
-	bool IsChildOf(Class* other) const;
-
-	template<typename T>
-	bool IsChildOf() const {
-		return IsChildOf(T::StaticClass());
+	Class* FindChild(Name className) const {
+		return static_cast<Class*>(__FindChild(className));
 	}
 
-	bool IsA(Class* other) const {
-		return this == other;
-	}
+	template<typename Type>
+	bool IsChildOf() const { return BaseType::IsChildOf(Type::StaticClass()); }
 
-public:
-
-	/** GENERATION */
-	void RegistryChildren(Class* child)
-	{
-		children.push_back(child);
-	}
+	bool IsA(Class* other) const { return this == other; }
 };

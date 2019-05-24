@@ -5,51 +5,27 @@
 #include "BaseType.h"
 
 
-class StructType : public BaseType {
-protected:
-
-	StructType* parent;
-	TArray<StructType*> children;
-
+class StructType : public BaseType
+{
 public:
 
-	StructType* GetParent() const { return parent; }
+	// NOTE: Most of the class comparison functions do actually
+	// call BaseType to reduce complexity and code duplication.
+	//
+	// We can cast safely to BaseType since Structs only inherit Structs
 
-	template<bool bIncludeSelf = false, bool bIsFirstCall = true>
+	StructType* GetParent() const { return static_cast<StructType*>(parent); }
+
 	void GetAllChildren(TArray<StructType*>& outChildren) {
-		if (bIsFirstCall)
-			outChildren.Empty();
-
-		if (bIncludeSelf)
-			outChildren.Add(this);
-
-		outChildren.Reserve(outChildren.Size() + children.Size());
-		for (auto* const child : children)
-		{
-			outChildren.Add(child);
-			child->GetAllChildren<false, false>(outChildren);
-		}
+		__GetAllChildren(reinterpret_cast<TArray<BaseType*>&>(outChildren));
 	}
 
-	StructType* FindChild(const Name& className) const {
-		if (className.IsNone())
-			return nullptr;
-
-		for (auto* const child : children)
-		{
-			if (child->GetName() == className)
-				return child;
-			else if (StructType* found = child->FindChild(className))
-				return found;
-		}
-		return nullptr;
+	StructType* FindChild(Name StructTypeName) const {
+		return static_cast<StructType*>(__FindChild(StructTypeName));
 	}
 
-public:
+	template<typename Type>
+	bool IsChildOf() const { return BaseType::IsChildOf(Type::StaticStruct()); }
 
-	/** GENERATION */
-	void RegistryChild(StructType* child)
-	{
-		children.Add(child);
-	}
+	bool IsA(StructType* other) const { return this == other; }
 };

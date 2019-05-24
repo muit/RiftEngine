@@ -12,8 +12,9 @@
  * the metadata for that type
  */
 template <typename Type>
-class TStruct : public StructType {
-	static_assert(eastl::is_convertible< Type, Struct >::value, "Type does not inherit Pod!");
+class TStruct : public StructType
+{
+	static_assert(eastl::is_convertible< Type, Struct >::value, "Type does not inherit Struct!");
 private:
 
 	static TStruct _struct;
@@ -22,47 +23,8 @@ private:
 public:
 
 	TStruct() : StructType() {
-		Type::__meta_RegistryStruct();
+		Type::__meta_Registry();
 		Type::__meta_RegistryProperties();
-	}
-
-public:
-
-	/** GENERATION */
-
-	/** Registry an struct */
-	void Registry(const Name& inName)
-	{
-		name = inName;
-	}
-
-	/** Registry an struct with a parent */
-	template<typename Super>
-	void Registry(Name&& inName)
-	{
-		parent = Super::StaticStruct();
-		parent->RegistryChild(this);
-		Registry(eastl::move(inName));
-	}
-
-	/** Registry struct tags */
-	void RegistryTags(ReflectionTags inTags)
-	{
-		tags = inTags;
-	}
-
-	template<typename VarType>
-	void RegistryProperty(Name&& name, eastl::function<VarType*(BaseStruct*)>&& access, ReflectionTags tags)
-	{
-		properties.Insert(name, eastl::unique_ptr<Property>(
-			new TProperty<VarType>(
-				this,
-				GetReflectableName<VarType>(),
-				eastl::move(name),
-				eastl::move(access),
-				tags
-			)
-		));
 	}
 
 	static TStruct* GetStatic() { return &_struct; }

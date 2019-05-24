@@ -77,7 +77,7 @@ public:
 		if (other.Size() > 0)
 		{
 			if (Size() <= 0)
-				CopyFrom(other)
+				CopyFrom(other);
 			else
 				vector.insert(vector.end(), other.begin(), other.end());
 		}

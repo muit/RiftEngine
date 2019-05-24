@@ -22,6 +22,7 @@ template<u32 N> struct MetaCounter : MetaCounter<N - 1> { static constexpr u32 v
 template<> struct MetaCounter<0> { static constexpr u32 value = 0; };
 
 
+/** Defines a Class */
 #define CLASS(type, parent, tags) \
 public:\
 using Super = parent;\
@@ -30,34 +31,32 @@ virtual inline void SerializeReflection(Archive& ar) override {\
 	Super::SerializeReflection(ar);\
 	__meta_SerializeProperty(ar, MetaCounter<0>{});\
 }\
-static void __meta_RegistryClass() {\
-	StaticClass()->Registry<Super>(Name{ TX(#type) });\
+static void __meta_Registry() {\
+	StaticClass()->__Registry<Super>(Name{ TX(#type) });\
 BASECLASS(type, tags)
 
+
+/** Defines a class with no parent */
 #define ORPHAN_CLASS(type, tags) \
 public:\
 virtual inline void SerializeReflection(Archive& ar) {\
 	__meta_SerializeProperty(ar, MetaCounter<0>{});\
 }\
-static void __meta_RegistryClass() {\
+static void __meta_Registry() {\
 	static_assert(eastl::is_convertible<__meta_type, BaseObject >::value, "Type does not inherit Object!");\
-	StaticClass()->Registry(Name{ TX(#type) });\
+	StaticClass()->__Registry(Name{ TX(#type) });\
 BASECLASS(type, tags)
 
 #define BASECLASS(type, inTags)\
-	constexpr ReflectionTags tags = ReflectionTagsInitializer<inTags>::value;\
-	static_assert(!(tags & DetailsEdit), "Classes can't use DetailsEdit"); \
-	static_assert(!(tags & DetailsView), "Classes can't use DetailsView"); \
-	StaticClass()->RegistryTags(tags);\
+	TYPETAGS(type, inTags)\
 }\
 private:\
 using __meta_type = type;\
+friend BaseType;\
 friend TClass<__meta_type>;\
 \
 private:\
-static inline TClass<__meta_type>* StaticType() {\
-	return StaticClass();\
-}\
+static inline BaseType* StaticType() { return StaticClass(); }\
 public:\
 static TClass<__meta_type>* StaticClass() {\
 	return TClass<__meta_type>::GetStatic();\
@@ -74,6 +73,7 @@ template<u32 N> FORCEINLINE void __meta_SerializeProperty(Archive&, MetaCounter<
 
 
 
+/** Defines an struct */
 #define STRUCT(type, parent, tags) \
 public:\
 using Super = parent;\
@@ -83,37 +83,36 @@ virtual inline void SerializeReflection(Archive& ar) override {\
 	Super::SerializeReflection(ar);\
 	__meta_SerializeProperty(ar, MetaCounter<0>{});\
 }\
-static void __meta_RegistryStruct() {\
+static void __meta_Registry() {\
 	static_assert(eastl::is_convertible<__meta_type, Struct >::value, "Type does not inherit Struct!");\
-	StaticStruct()->Registry<Super>(Name{ TX(#type) });\
+	StaticStruct()->__Registry<Super>(Name{ TX(#type) });\
 BASESTRUCT(type, tags)
 
+
+/** Defines an struct with no parent */
 #define ORPHAN_STRUCT(type, tags) \
 public:\
 virtual inline void SerializeReflection(Archive& ar) {\
 	__meta_SerializeProperty(ar, MetaCounter<0>{});\
 }\
-static void __meta_RegistryStruct() {\
-	StaticStruct()->Registry(Name{ TX(#type) });\
+static void __meta_Registry() {\
+	StaticStruct()->__Registry(Name{ TX(#type) });\
 BASESTRUCT(type, tags)
 
+
 #define BASESTRUCT(type, inTags)\
-	constexpr ReflectionTags tags = ReflectionTagsInitializer<inTags>::value;\
-	static_assert(!(tags & DetailsEdit), "Structs can't use DetailsEdit"); \
-	static_assert(!(tags & DetailsView), "Structs can't use DetailsView"); \
-	StaticStruct()->RegistryTags(tags);\
+	TYPETAGS(type, inTags)\
 }\
 private:\
 using __meta_type = type;\
+friend BaseType;\
 friend TStruct<__meta_type>;\
 \
 static constexpr MetaCounter<0> __meta_Counter(MetaCounter<0>);\
 template<u32 N> static void __meta_RegistryProperty(MetaCounter<N>) {}\
 template<u32 N> FORCEINLINE void __meta_SerializeProperty(Archive&, MetaCounter<N>) {}\
 \
-static inline TStruct<__meta_type>* StaticType() {\
-	return StaticStruct();\
-}\
+static inline BaseType* StaticType() { return StaticStruct(); }\
 public:\
 static TStruct<__meta_type>* StaticStruct() {\
 	return TStruct<__meta_type>::GetStatic();\
@@ -123,6 +122,12 @@ static inline void __meta_RegistryProperties() {\
 	__meta_RegistryProperty(MetaCounter<0>{});\
 }
 
+
+#define TYPETAGS(type, inTags)\
+	constexpr ReflectionTags tags = ReflectionTagsInitializer<inTags>::value;\
+	static_assert(!(tags & DetailsEdit), "Only properties can use DetailsEdit"); \
+	static_assert(!(tags & DetailsView), "Only properties can use DetailsView"); \
+	StaticType()->__RegistryTags(tags);\
 
 
 #define PROP(type, name, tags) __PROPERTY_IMPL(type, name, CAT(__meta_id_, name), tags)
@@ -137,7 +142,7 @@ static void __meta_RegistryProperty(MetaCounter<id_name>) {\
 	constexpr ReflectionTags tags = ReflectionTagsInitializer<inTags>::value;\
 	static_assert(!(tags & Abstract), "Properties can't be Abstract");\
 \
-	StaticType()->RegistryProperty<type>(TX(#name), [](BaseStruct* baseInstance)\
+	StaticType()->__RegistryProperty<type>(TX(#name), [](BaseStruct* baseInstance)\
 	{\
 		if(__meta_type* instance = dynamic_cast<__meta_type*>(baseInstance))\
 			return &instance->name;\

@@ -32,7 +32,7 @@ Ptr<AssetData> AssetManager::Load(const AssetInfo& info)
 		}
 
 		// Get asset type from json
-		Class* assetClass = AssetData::StaticClass()->FindChildClass(Name{ type });
+		Class* assetClass = AssetData::StaticClass()->FindChild(Name{ type });
 		if (!assetClass)
 		{
 			Log::Error("Asset class('%s') not found.", type.get<String>().c_str());

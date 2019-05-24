@@ -53,7 +53,9 @@ void SingletonDetails<Type>::Build()
 	if (comp)
 	{
 		// Display each component property
-		for (const auto& property : Type::StaticStruct()->GetAllProperties())
+		PropertyMap properties{ Name::None() };
+		Type::StaticStruct()->GetAllProperties(properties);
+		for (const auto& property : properties)
 		{
 			if (property.second->HasTag(DetailsEdit) || property.second->HasTag(DetailsView))
 			{
