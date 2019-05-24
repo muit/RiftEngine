@@ -8,8 +8,8 @@
 #include "tracy/TracyOpenGL.hpp"
 
 
-using MeshTransformMap = eastl::unordered_map<Name, TArray<Transform>>;
-using MaterialBatchMap = eastl::unordered_map<Name, MeshTransformMap>;
+using MeshTransformMap = TMap<Name, TArray<Transform>>;
+using MaterialBatchMap = TMap<Name, MeshTransformMap>;
 
 
 void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
@@ -32,31 +32,27 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 		for (const auto& meshInstance : meshes)
 		{
 			// Find or add a Material Batch
-			auto it = batches.find(meshInstance.material.GetPath());
-			if (it != batches.end())
+			if (auto* meshBatches = batches.Find(meshInstance.material.GetPath()))
 			{
-				auto& meshBatches = it->second;
-
 				// Find or add a Mesh Batch
-				auto meshIt = meshBatches.find(meshInstance.mesh.GetPath());
-				if (meshIt != meshBatches.end())
+				if (auto* mesh = meshBatches->Find(meshInstance.mesh.GetPath()))
 				{
 					// Found batch, add an instance
-					meshIt->second.Add(meshInstance.transform);
+					mesh->Add(meshInstance.transform);
 				}
 				else
 				{
 					// New Mesh batch with this meshInstance
-					meshBatches.insert({
+					meshBatches->Insert(
 						meshInstance.mesh.GetPath(),
 						TArray<Transform>{ meshInstance.transform }
-					});
+					);
 				}
 			}
 			else
 			{
 				// New Material batch with this meshInstance
-				batches.insert({
+				batches.Insert(
 					meshInstance.material.GetPath(),
 					MeshTransformMap {
 						{
@@ -64,7 +60,7 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 							TArray<Transform>{ meshInstance.transform }
 						}
 					}
-				});
+				);
 			}
 		}
 	}

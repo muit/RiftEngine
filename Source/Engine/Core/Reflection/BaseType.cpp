@@ -6,11 +6,8 @@
 
 const Property* BaseType::FindProperty(const Name& propertyName) const
 {
-	const auto propIt = properties.find(propertyName);
-	if (propIt == properties.end())
-		return nullptr;
-	else
-		return dynamic_cast<const Property*>((*propIt).second.get());
+	const auto* prop = properties.Find(propertyName);
+	return prop? prop->get() : nullptr;
 }
 
 const BaseType::PropertyMap& BaseType::GetAllProperties() const

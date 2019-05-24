@@ -64,7 +64,7 @@ EntityId ECSManager::CreateEntity(Name entityName, bool bTransient /*= false*/)
 
 	// Cache the created Guid
 	const Guid guid = Get<CEntity>(id).id;
-	guidEntityCache.insert_or_assign(guid, id);
+	guidEntityCache.Insert(guid, id);
 
 	return id;
 }
@@ -77,7 +77,7 @@ void ECSManager::DestroyEntity(EntityId entity)
 		__DestroyEntity(entity);
 
 		// Remove the associated Guid
-		guidEntityCache.erase(guid);
+		guidEntityCache.Remove(guid);
 	}
 }
 
@@ -121,8 +121,8 @@ bool ECSManager::Serialize(Archive& ar)
 		createdEntities.Reserve(size);
 
 		// Reset Guid cache
-		guidEntityCache.clear();
-		guidEntityCache.reserve(size);
+		guidEntityCache.Empty(true);
+		guidEntityCache.Resize(size);
 
 		// Create all entities
 		for (u32 i = 0; i < size; ++i)
@@ -135,7 +135,7 @@ bool ECSManager::Serialize(Archive& ar)
 				// Serialize Id and cache it
 				auto& entityComp = Assign<CEntity>(id);
 				ar("id", entityComp.id);
-				guidEntityCache.insert_or_assign(entityComp.id, id);
+				guidEntityCache.Insert(entityComp.id, id);
 
 				createdEntities.Add(id);
 			}

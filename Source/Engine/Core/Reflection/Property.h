@@ -32,7 +32,7 @@ private:
 
 protected:
 
-	Property(BaseType* typePtr, const Name& typeName, Name&& name, ReflectionTags tags)
+	Property(BaseType* typePtr, Name typeName, Name name, ReflectionTags tags)
 		: typeName(typeName), typePtr(typePtr), name(name), tags(tags)
 	{
 		SetDisplayName(name.ToString());

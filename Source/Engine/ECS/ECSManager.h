@@ -25,7 +25,7 @@ class ECSManager : public Object {
 	Registry registry;
 
 	/** List of Guids pointing to entity Ids */
-	eastl::unordered_map<Guid, EntityId> guidEntityCache;
+	TMap<Guid, EntityId> guidEntityCache;
 
 	TArray<GlobalPtr<System>> systems;
 
@@ -119,7 +119,7 @@ private:
 
 public:
 
-	const eastl::unordered_map<Guid, EntityId>& GetGuidCache() const { return guidEntityCache; }
+	const TMap<Guid, EntityId>& GetGuidCache() const { return guidEntityCache; }
 
 	/**************************************************************
 	 * Begin SYSTEMS

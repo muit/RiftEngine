@@ -24,9 +24,8 @@ bool EntityId::Serialize(class Archive& ar, const char* name)
 			auto ecs = ar.context->GetECS();
 
 			const auto& cache = ecs->GetGuidCache();
-			const auto it = cache.find(guid);
-
-			id = (it != cache.end()) ? it->second : NoEntity;
+			const auto* idPtr = cache.Find(guid);
+			id = idPtr? *idPtr : NoEntity;
 		}
 		else
 		{

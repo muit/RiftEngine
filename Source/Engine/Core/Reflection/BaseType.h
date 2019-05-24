@@ -3,10 +3,10 @@
 
 #include "CoreEngine.h"
 
-#include <EASTL/unordered_map.h>
 #include <EASTL/unique_ptr.h>
 
 #include "EngineTypes.h"
+#include "Core/Containers/Map.h"
 #include "ReflectionTags.h"
 #include "Property.h"
 
@@ -17,13 +17,15 @@ protected:
 	Name name;
 	ReflectionTags tags;
 
-	using PropertyMap = eastl::unordered_map<Name, eastl::unique_ptr<Property>>;
+	using PropertyMap = TMap<Name, eastl::unique_ptr<Property>>;
 
 	PropertyMap properties;
 
 public:
 
-	BaseType() : tags{} {}
+	BaseType() : tags{} {
+		properties.SetEmptyKey(Name::None());
+	}
 	BaseType(const BaseType&) = delete;
 	BaseType& operator=(const BaseType&) = delete;
 	virtual ~BaseType() {}

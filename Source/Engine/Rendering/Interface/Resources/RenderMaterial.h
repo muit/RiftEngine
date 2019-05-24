@@ -17,7 +17,7 @@ struct RenderMaterial
 	static const Name notAResourceId;
 
 	GLuint programId = GL_INVALID_INDEX;
-	mutable eastl::unordered_map<Name, GLint> parameterIds;
+	mutable TMap<Name, GLint> parameterIds;
 
 
 	RenderMaterial() = default;
@@ -60,11 +60,11 @@ private:
 
 	FORCEINLINE GLint FindParameterIndex(const Name& name) const
 	{
-		const auto it = parameterIds.find(name);
-		if (it != parameterIds.end())
+
+		if (const auto* param = parameterIds.Find(name))
 		{
 			// Found cached id
-			return it->second;
+			return *param;
 		}
 		else
 		{
@@ -72,7 +72,7 @@ private:
 			const GLint id = glGetUniformLocation(programId, name.ToString().c_str());
 			if (id != GL_INVALID_INDEX)
 			{
-				parameterIds.insert_or_assign(name, id);
+				parameterIds.Insert(name, id);
 				return id;
 			}
 		}

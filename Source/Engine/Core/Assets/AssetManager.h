@@ -3,6 +3,7 @@
 
 #include "CoreObject.h"
 #include "Core/Object/ObjectPtr.h"
+#include "Core/Containers/Map.h"
 
 #include "AssetData.h"
 
@@ -14,7 +15,7 @@ private:
 
 	TArray<AssetInfo> assetInfos;
 
-	eastl::unordered_map<Name, GlobalPtr<AssetData>> loadedAssets;
+	TMap<Name, GlobalPtr<AssetData>> loadedAssets;
 
 
 public:

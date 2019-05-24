@@ -27,8 +27,8 @@ private:
 
 public:
 
-	TProperty(BaseType* typePtr, const Name& typeName, Name&& name, Access&& access, ReflectionTags tags)
-		: Property(typePtr, typeName, eastl::move(name), tags), access(access)
+	TProperty(BaseType* typePtr, Name typeName, Name name, Access&& access, ReflectionTags tags)
+		: Property(typePtr, typeName, name, tags), access(access)
 	{}
 
 	virtual eastl::shared_ptr<PropertyHandle> CreateHandle(const Ptr<BaseObject>& instance) const override {

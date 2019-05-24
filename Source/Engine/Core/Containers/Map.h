@@ -20,7 +20,13 @@ public:
 
 	using KeyType = Key;
 	using ValueType = Value;
-	using HashMapType = google::dense_hash_map <KeyType, ValueType, eastl::hash<KeyType>, eastl::equal_to<KeyType>>;
+	using HashMapType = google::dense_hash_map<
+		KeyType,
+		ValueType,
+		eastl::hash<KeyType>,
+		eastl::equal_to<KeyType>,
+		google::libc_allocator_with_realloc<TPair<const KeyType, ValueType>>
+	>;
 
 	using Iterator           = typename HashMapType::iterator;
 	using ConstIterator      = typename HashMapType::const_iterator;
@@ -35,8 +41,11 @@ public:
 
 	TMap() = default;
 
-	TMap(u32 defaultSize) : map{defaultSize} {}
-	TMap(std::initializer_list<TPair<KeyType, ValueType>> initList) : map{initList} {}
+	TMap(const KeyType& empty) : map{} { SetEmptyKey(empty); }
+	TMap(u32 defaultSize) : map{ defaultSize } {}
+	TMap(u32 defaultSize, const KeyType& empty) : map{ defaultSize } { SetEmptyKey(empty); }
+	TMap(std::initializer_list<TPair<const KeyType, ValueType>> initList) : map{ initList.begin(), initList.end() } {}
+	TMap(std::initializer_list<TPair<const KeyType, ValueType>> initList, const KeyType& empty) : map{ initList.begin(), initList.end(), empty } {}
 
 	TMap(TMap&& other) = default;
 	TMap(const TMap& other) = default;
@@ -60,11 +69,11 @@ public:
 	}
 
 	void Insert(const TPair<KeyType, ValueType>& pair) {
-		map.insert({ pair.first, pair.second });
+		map.insert(pair);
 	}
 
 	void Insert(TPair<KeyType, ValueType>&& pair) {
-		map.insert({ MoveTemp(pair.first), MoveTemp(pair.second) });
+		map.insert(MoveTemp(pair));
 	}
 
 	void Append(const TMap<KeyType, ValueType>& other) {
@@ -95,7 +104,6 @@ public:
 		}
 	}
 
-	void Reserve(i32 sizeNum) { map.reserve(sizeNum); }
 	void Resize (i32 sizeNum) { map.resize(sizeNum); }
 
 	FORCEINLINE Iterator FindIt(const KeyType& item) {

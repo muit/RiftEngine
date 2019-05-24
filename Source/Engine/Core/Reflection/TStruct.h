@@ -45,7 +45,7 @@ public:
 		Registry(eastl::move(inName));
 	}
 
-	/** Registry an struct's tags */
+	/** Registry struct tags */
 	void RegistryTags(ReflectionTags inTags)
 	{
 		tags = inTags;
@@ -54,7 +54,7 @@ public:
 	template<typename VarType>
 	void RegistryProperty(Name&& name, eastl::function<VarType*(BaseStruct*)>&& access, ReflectionTags tags)
 	{
-		properties.emplace(name, eastl::unique_ptr<Property>(
+		properties.Insert(name, eastl::unique_ptr<Property>(
 			new TProperty<VarType>(
 				this,
 				GetReflectableName<VarType>(),
