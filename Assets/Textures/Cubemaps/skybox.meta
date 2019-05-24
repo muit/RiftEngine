@@ -1,3 +1,10 @@
 {
-  "asset_type": "CubeTexture"
+  "asset_type": "CubeTexture",
+  "positiveX": "Assets/Textures/Cubemaps/skybox_rt.tga",
+  "negativeX": "Assets/Textures/Cubemaps/skybox_lf.tga",
+  "positiveY": "Assets/Textures/Cubemaps/skybox_ft.tga",
+  "negativeY": "Assets/Textures/Cubemaps/skybox_bk.tga",
+  "positiveZ": "Assets/Textures/Cubemaps/skybox_up.tga",
+  "negativeZ": "Assets/Textures/Cubemaps/skybox_dn.tga"
+
 }

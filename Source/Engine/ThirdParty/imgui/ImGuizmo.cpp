@@ -737,8 +737,6 @@ namespace ImGuizmo
 
    void BeginFrame()
    {
-	  ImGuiIO& io = ImGui::GetIO();
-
 	  ImGuiViewport* vp = ImGui::GetMainViewport();
 
 	  const ImU32 flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoBringToFrontOnFocus;

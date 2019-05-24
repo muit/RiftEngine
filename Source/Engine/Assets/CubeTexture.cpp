@@ -7,6 +7,7 @@
 #include "Core/Engine.h"
 #include "Core/Assets/AssetPtr.h"
 #include "Core/Files/FileSystem.h"
+#include "Rendering/Commands/TextureCommands.h"
 
 
 bool CubeTexture::PostLoad()
@@ -42,7 +43,7 @@ bool CubeTexture::PostLoad()
 
 	if (bSuccess)
 	{
-		//QueueRenderCommand<LoadCubeTextureCommand>(TAssetPtr<Texture>{ Self<Texture>() });
+		QueueRenderCommand<LoadCubeTextureCommand>(TAssetPtr<CubeTexture>{ Self<CubeTexture>() });
 	}
 
 	return bSuccess;
@@ -50,7 +51,7 @@ bool CubeTexture::PostLoad()
 
 void CubeTexture::OnUnload()
 {
-	//QueueRenderCommand<FreeCubeTextureCommand>(GetInfo());
+	QueueRenderCommand<FreeCubeTextureCommand>(GetInfo());
 }
 
 const CubeTextureData& CubeTexture::GetTextureData() const

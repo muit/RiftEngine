@@ -100,8 +100,11 @@ void Renderer::PreTick()
 	ScopedGraphicsZone("Prepare Frame");
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
+
+#if WITH_EDITOR
 	ImGui::NewFrame();
 	ImGuizmo::BeginFrame();
+#endif //WITH_EDITOR
 }
 
 void Renderer::Render()
@@ -110,8 +113,15 @@ void Renderer::Render()
 
 	SDL_GL_MakeCurrent(window, gl_context);
 
+#if WITH_EDITOR
+	// Use ImGui viewport size
 	ImGuiViewport* vp = ImGui::GetMainViewport();
 	v2_u32 viewportSize{ (u32)vp->Size.x, (u32)vp->Size.y };
+#else
+	SDL_DisplayMode displayMode;
+	SDL_GetCurrentDisplayMode(0, &displayMode);
+	v2_u32 viewportSize{ (u32)displayMode.w, (u32)displayMode.h };
+#endif
 
 	glViewport(0, 0, viewportSize.x, viewportSize.y);
 	glClearColor(0.7f, 0.4f, 0.4f, 1);
@@ -132,17 +142,25 @@ void Renderer::Render()
 
 void Renderer::RenderUI()
 {
-	{ // UI Render
-		ScopedGraphicsZone("Render UI");
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		// Update and Render additional Platform Windows
-		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		{
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-		}
+#if WITH_EDITOR
+	// UI Render
+	ScopedGraphicsZone("Render UI");
+	ImDrawData* drawData = ImGui::GetDrawData();
+	if (!drawData)
+	{
+		Log::Error("UI Draw Data should never be invalid");
+		return;
 	}
+
+	ImGui_ImplOpenGL3_RenderDrawData(drawData);
+
+	// Update and Render additional Platform Windows
+	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+	}
+#endif
 }
 
 void Renderer::SwapWindow()

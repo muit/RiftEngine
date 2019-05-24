@@ -8,6 +8,7 @@
 
 #include "EntityId.h"
 #include "Component.h"
+#include "CSingleton.h"
 #include "System.h"
 
 #include "Gameplay/Components/CEntity.h"
@@ -29,7 +30,7 @@ class ECSManager : public Object {
 
 	TArray<GlobalPtr<System>> systems;
 
-	TArray<eastl::unique_ptr<Component>> singletonComponents;
+	TArray<eastl::unique_ptr<CSingleton>> singletonComponents;
 
 public:
 
@@ -84,6 +85,9 @@ public:
 	void SerializeEntity(Archive& ar, EntityId entity);
 
 private:
+
+	void SerializeEntities(Archive& ar);
+	void SerializeSingletons(Archive& ar);
 
 	template<typename CompType>
 	void SerializeComponent(Archive& ar, const EntityId& entity) {
@@ -192,40 +196,39 @@ public:
 	void RegistrySingletons();
 
 	template <typename C>
-	void AssignSingleton() {
+	void AssignSingleton()
+	{
 		singletonComponents.Add(eastl::make_unique<C>());
 	}
 
+	Component* FindSingleton(StructType* type) const;
+
 	template<typename C>
-	C* FindSingleton() {
-		static_assert(eastl::is_convertible<C, Component>::value, "Type is not a Component!");
+	C* FindSingleton() const
+	{
+		static_assert(eastl::is_convertible<C, CSingleton>::value, "Type is not a Component!");
+		auto* const foundPtr = FindSingleton(C::StaticStruct());
+		return foundPtr ? static_cast<C*>(foundPtr) : nullptr;
+	}
 
-		const auto* foundPtr = singletonComponents.Find([](const auto& comp) {
-			return comp->GetStruct() == C::StaticStruct();
-		});
-
-		return foundPtr ? static_cast<C*>(foundPtr->get()) : nullptr;
+	bool HasSingleton(StructType* type) const {
+		return FindSingleton(type) != nullptr;
 	}
 
 	template<typename C>
 	bool HasSingleton() {
-		static_assert(eastl::is_convertible<C, Component>::value, "Type is not a Component!");
-
-		return singletonComponents.Contains([](const auto& comp) {
-			return comp->GetStruct() == C::StaticStruct();
-		});
+		static_assert(eastl::is_convertible<C, CSingleton>::value, "Type is not a Component!");
+		return HasSingleton(C::StaticStruct());
 	}
+
+	bool RemoveSingleton(StructType* type);
 
 	template<typename C>
-	bool RemoveSingleton() {
-		static_assert(eastl::is_convertible<C, Component>::value, "Type is not a Component!");
-
-		return singletonComponents.RemoveIf([](const auto & comp) {
-			return comp->GetStruct() == C::StaticStruct();
-		});
+	bool RemoveSingleton()
+	{
+		static_assert(eastl::is_convertible<C, CSingleton>::value, "Type is not a Component!");
+		return RemoveSingleton(C::StaticStruct());
 	}
-
-
 private:
 
 	Broadcast<EntityId> onEntityCreated;
