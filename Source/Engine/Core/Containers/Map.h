@@ -44,7 +44,7 @@ public:
 	TMap(const KeyType& empty) : map{} { SetEmptyKey(empty); }
 	TMap(u32 defaultSize) : map{ defaultSize } {}
 	TMap(u32 defaultSize, const KeyType& empty) : map{ defaultSize } { SetEmptyKey(empty); }
-	TMap(std::initializer_list<TPair<const KeyType, ValueType>> initList) : map{ initList.begin(), initList.end() } {}
+	TMap(const TPair<const KeyType, ValueType>& item, const KeyType& empty) : map{} { SetEmptyKey(empty); Insert(item); }
 	TMap(std::initializer_list<TPair<const KeyType, ValueType>> initList, const KeyType& empty) : map{ initList.begin(), initList.end(), empty } {}
 
 	TMap(TMap&& other) = default;
@@ -70,10 +70,6 @@ public:
 
 	void Insert(const TPair<KeyType, ValueType>& pair) {
 		map.insert(pair);
-	}
-
-	void Insert(TPair<KeyType, ValueType>&& pair) {
-		map.insert(MoveTemp(pair));
 	}
 
 	void Append(const TMap<KeyType, ValueType>& other) {

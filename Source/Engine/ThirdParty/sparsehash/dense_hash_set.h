@@ -245,28 +245,28 @@ class dense_hash_set {
 
   size_type count(const key_type& key) const { return rep.count(key); }
 
-  std::pair<iterator, iterator> equal_range(const key_type& key) const {
+  eastl::pair<iterator, iterator> equal_range(const key_type& key) const {
     return rep.equal_range(key);
   }
 
   // Insertion routines
-  std::pair<iterator, bool> insert(const value_type& obj) {
-    std::pair<typename ht::iterator, bool> p = rep.insert(obj);
-    return std::pair<iterator, bool>(p.first, p.second);  // const to non-const
+  eastl::pair<iterator, bool> insert(const value_type& obj) {
+    eastl::pair<typename ht::iterator, bool> p = rep.insert(obj);
+    return eastl::pair<iterator, bool>(p.first, p.second);  // const to non-const
   }
 
-  std::pair<iterator, bool> insert(value_type&& obj) {
-    std::pair<typename ht::iterator, bool> p = rep.insert(std::move(obj));
-    return std::pair<iterator, bool>(p.first, p.second);  // const to non-const
+  eastl::pair<iterator, bool> insert(value_type&& obj) {
+    eastl::pair<typename ht::iterator, bool> p = rep.insert(std::move(obj));
+    return eastl::pair<iterator, bool>(p.first, p.second);  // const to non-const
   }
 
   template <typename... Args>
-  std::pair<iterator, bool> emplace(Args&&... args) {
+  eastl::pair<iterator, bool> emplace(Args&&... args) {
     return rep.emplace(std::forward<Args>(args)...);
   }
 
   template <typename... Args>
-  std::pair<iterator, bool> emplace_hint(const_iterator hint, Args&&... args) {
+  eastl::pair<iterator, bool> emplace_hint(const_iterator hint, Args&&... args) {
     return rep.emplace_hint(hint, std::forward<Args>(args)...);
   }
 

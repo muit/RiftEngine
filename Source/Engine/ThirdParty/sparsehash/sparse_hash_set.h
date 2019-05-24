@@ -218,14 +218,14 @@ class sparse_hash_set {
 
   size_type count(const key_type& key) const { return rep.count(key); }
 
-  std::pair<iterator, iterator> equal_range(const key_type& key) const {
+  eastl::pair<iterator, iterator> equal_range(const key_type& key) const {
     return rep.equal_range(key);
   }
 
   // Insertion routines
-  std::pair<iterator, bool> insert(const value_type& obj) {
-    std::pair<typename ht::iterator, bool> p = rep.insert(obj);
-    return std::pair<iterator, bool>(p.first, p.second);  // const to non-const
+  eastl::pair<iterator, bool> insert(const value_type& obj) {
+    eastl::pair<typename ht::iterator, bool> p = rep.insert(obj);
+    return eastl::pair<iterator, bool>(p.first, p.second);  // const to non-const
   }
   template <class InputIterator>
   void insert(InputIterator f, InputIterator l) {

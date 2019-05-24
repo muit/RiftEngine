@@ -26,7 +26,7 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 	/** Prepare batches
 	 * Group them by Material -> Mesh -> Transform
 	 */
-	MaterialBatchMap batches{};
+	MaterialBatchMap batches{ Name::None() };
 	{
 		ScopedGraphicsZone("Build Batches");
 		for (const auto& meshInstance : meshes)
@@ -51,15 +51,18 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 			}
 			else
 			{
+				MeshTransformMap newMeshBatches {
+					{
+						meshInstance.mesh.GetPath(),
+						TArray<Transform>{ meshInstance.transform }
+					},
+					Name::None()
+				};
+
 				// New Material batch with this meshInstance
 				batches.Insert(
 					meshInstance.material.GetPath(),
-					MeshTransformMap {
-						{
-							meshInstance.mesh.GetPath(),
-							TArray<Transform>{ meshInstance.transform }
-						}
-					}
+					MoveTemp(newMeshBatches)
 				);
 			}
 		}

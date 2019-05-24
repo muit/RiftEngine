@@ -863,7 +863,7 @@ class dense_hashtable {
   // if object is not found; 2nd is ILLEGAL_BUCKET if it is.
   // Note: because of deletions where-to-insert is not trivial: it's the
   // first deleted bucket we see, as long as we don't find the key later
-  std::pair<size_type, size_type> find_position(const key_type& key) const {
+  eastl::pair<size_type, size_type> find_position(const key_type& key) const {
     size_type num_probes = 0;  // how many times we've probed
     const size_type bucket_count_minus_one = bucket_count() - 1;
     size_type bucknum = hash(key) & bucket_count_minus_one;
@@ -871,15 +871,15 @@ class dense_hashtable {
     while (1) {                             // probe until something happens
       if (test_empty(bucknum)) {            // bucket is empty
         if (insert_pos == ILLEGAL_BUCKET)   // found no prior place to insert
-          return std::pair<size_type, size_type>(ILLEGAL_BUCKET, bucknum);
+          return eastl::pair<size_type, size_type>(ILLEGAL_BUCKET, bucknum);
         else
-          return std::pair<size_type, size_type>(ILLEGAL_BUCKET, insert_pos);
+          return eastl::pair<size_type, size_type>(ILLEGAL_BUCKET, insert_pos);
 
       } else if (test_deleted(bucknum)) {  // keep searching, but mark to insert
         if (insert_pos == ILLEGAL_BUCKET) insert_pos = bucknum;
 
       } else if (equals(key, get_key(table[bucknum]))) {
-        return std::pair<size_type, size_type>(bucknum, ILLEGAL_BUCKET);
+        return eastl::pair<size_type, size_type>(bucknum, ILLEGAL_BUCKET);
       }
       ++num_probes;  // we're doing another probe
       bucknum = (bucknum + JUMP_(key, num_probes)) & bucket_count_minus_one;
@@ -891,7 +891,7 @@ class dense_hashtable {
  public:
   iterator find(const key_type& key) {
     if (size() == 0) return end();
-    std::pair<size_type, size_type> pos = find_position(key);
+    eastl::pair<size_type, size_type> pos = find_position(key);
     if (pos.first == ILLEGAL_BUCKET)  // alas, not there
       return end();
     else
@@ -900,7 +900,7 @@ class dense_hashtable {
 
   const_iterator find(const key_type& key) const {
     if (size() == 0) return end();
-    std::pair<size_type, size_type> pos = find_position(key);
+    eastl::pair<size_type, size_type> pos = find_position(key);
     if (pos.first == ILLEGAL_BUCKET)  // alas, not there
       return end();
     else
@@ -911,34 +911,34 @@ class dense_hashtable {
   // This is a tr1 method: the bucket a given key is in, or what bucket
   // it would be put in, if it were to be inserted.  Shrug.
   size_type bucket(const key_type& key) const {
-    std::pair<size_type, size_type> pos = find_position(key);
+    eastl::pair<size_type, size_type> pos = find_position(key);
     return pos.first == ILLEGAL_BUCKET ? pos.second : pos.first;
   }
 
   // Counts how many elements have key key.  For maps, it's either 0 or 1.
   size_type count(const key_type& key) const {
-    std::pair<size_type, size_type> pos = find_position(key);
+    eastl::pair<size_type, size_type> pos = find_position(key);
     return pos.first == ILLEGAL_BUCKET ? 0 : 1;
   }
 
   // Likewise, equal_range doesn't really make sense for us.  Oh well.
-  std::pair<iterator, iterator> equal_range(const key_type& key) {
+  eastl::pair<iterator, iterator> equal_range(const key_type& key) {
     iterator pos = find(key);  // either an iterator or end
     if (pos == end()) {
-      return std::pair<iterator, iterator>(pos, pos);
+      return eastl::pair<iterator, iterator>(pos, pos);
     } else {
       const iterator startpos = pos++;
-      return std::pair<iterator, iterator>(startpos, pos);
+      return eastl::pair<iterator, iterator>(startpos, pos);
     }
   }
-  std::pair<const_iterator, const_iterator> equal_range(
+  eastl::pair<const_iterator, const_iterator> equal_range(
       const key_type& key) const {
     const_iterator pos = find(key);  // either an iterator or end
     if (pos == end()) {
-      return std::pair<const_iterator, const_iterator>(pos, pos);
+      return eastl::pair<const_iterator, const_iterator>(pos, pos);
     } else {
       const const_iterator startpos = pos++;
-      return std::pair<const_iterator, const_iterator>(startpos, pos);
+      return eastl::pair<const_iterator, const_iterator>(startpos, pos);
     }
   }
 
@@ -965,19 +965,19 @@ class dense_hashtable {
 
   // If you know *this is big enough to hold obj, use this routine
   template <typename K, typename... Args>
-  std::pair<iterator, bool> insert_noresize(K&& key, Args&&... args) {
+  eastl::pair<iterator, bool> insert_noresize(K&& key, Args&&... args) {
     // First, double-check we're not inserting delkey or emptyval
     assert(settings.use_empty() && "Inserting without empty key");
     assert(!equals(std::forward<K>(key), key_info.empty_key) && "Inserting the empty key");
     assert((!settings.use_deleted() || !equals(key, key_info.delkey)) && "Inserting the deleted key");
 
-    const std::pair<size_type, size_type> pos = find_position(key);
+    const eastl::pair<size_type, size_type> pos = find_position(key);
     if (pos.first != ILLEGAL_BUCKET) {  // object was already there
-      return std::pair<iterator, bool>(
+      return eastl::pair<iterator, bool>(
           iterator(this, table + pos.first, table + num_buckets, false),
           false);  // false: we didn't insert
     } else {       // pos.second says where to put it
-      return std::pair<iterator, bool>(insert_at(pos.second, std::forward<Args>(args)...), true);
+      return eastl::pair<iterator, bool>(insert_at(pos.second, std::forward<Args>(args)...), true);
     }
   }
 
@@ -1004,20 +1004,20 @@ class dense_hashtable {
  public:
   // This is the normal insert routine, used by the outside world
   template <typename Arg>
-  std::pair<iterator, bool> insert(Arg&& obj) {
+  eastl::pair<iterator, bool> insert(Arg&& obj) {
     resize_delta(1);  // adding an object, grow if need be
     return insert_noresize(get_key(std::forward<Arg>(obj)), std::forward<Arg>(obj));
   }
 
   template <typename K, typename... Args>
-  std::pair<iterator, bool> emplace(K&& key, Args&&... args) {
+  eastl::pair<iterator, bool> emplace(K&& key, Args&&... args) {
     resize_delta(1);
     // here we push key twice as we need it once for the indexing, and the rest of the params are for the emplace itself
     return insert_noresize(std::forward<K>(key), std::forward<K>(key), std::forward<Args>(args)...);
   }
 
   template <typename K, typename... Args>
-  std::pair<iterator, bool> emplace_hint(const_iterator hint, K&& key, Args&&... args) {
+  eastl::pair<iterator, bool> emplace_hint(const_iterator hint, K&& key, Args&&... args) {
     resize_delta(1);
 
     if (equals(key, hint->first)) {
@@ -1046,7 +1046,7 @@ class dense_hashtable {
         "Inserting the empty key");
     assert((!settings.use_deleted() || !equals(key, key_info.delkey)) &&
            "Inserting the deleted key");
-    const std::pair<size_type, size_type> pos = find_position(key);
+    const eastl::pair<size_type, size_type> pos = find_position(key);
     if (pos.first != ILLEGAL_BUCKET) {  // object was already there
       return table[pos.first];
     } else if (resize_delta(1)) {  // needed to rehash to make room

@@ -17,7 +17,7 @@ struct RenderMaterial
 	static const Name notAResourceId;
 
 	GLuint programId = GL_INVALID_INDEX;
-	mutable TMap<Name, GLint> parameterIds;
+	mutable TMap<Name, GLint> parameterIds{ Name::None() };
 
 
 	RenderMaterial() = default;

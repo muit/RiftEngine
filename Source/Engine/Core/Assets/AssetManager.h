@@ -15,7 +15,7 @@ private:
 
 	TArray<AssetInfo> assetInfos;
 
-	TMap<Name, GlobalPtr<AssetData>> loadedAssets;
+	TMap<Name, GlobalPtr<AssetData>> loadedAssets { Name::None() };
 
 
 public:

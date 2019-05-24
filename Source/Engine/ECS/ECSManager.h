@@ -25,7 +25,7 @@ class ECSManager : public Object {
 	Registry registry;
 
 	/** List of Guids pointing to entity Ids */
-	TMap<Guid, EntityId> guidEntityCache;
+	TMap<Guid, EntityId> guidEntityCache{ Guid{} };
 
 	TArray<GlobalPtr<System>> systems;
 

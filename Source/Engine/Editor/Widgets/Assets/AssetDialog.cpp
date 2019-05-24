@@ -25,7 +25,8 @@ EDialogResult AssetDialog::Draw()
 		bPendingOpen = false;
 	}
 
-	if (ImGui::BeginPopupModal(title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+	bool bClose; // Adds a close button
+	if (ImGui::BeginPopupModal(title.c_str(), &bClose, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		if (bDirty)
 		{

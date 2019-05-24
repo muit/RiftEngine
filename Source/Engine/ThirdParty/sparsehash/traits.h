@@ -46,7 +46,7 @@ struct is_relocatable
                              (std::is_trivially_copy_constructible<T>::value &&
                               std::is_trivially_destructible<T>::value)> {};
 template <class T, class U>
-struct is_relocatable<std::pair<T, U>>
+struct is_relocatable<eastl::pair<T, U>>
     : std::integral_constant<bool, (is_relocatable<T>::value &&
                                     is_relocatable<U>::value)> {};
 

@@ -94,18 +94,18 @@ namespace google {
 
 template <class Key, class T, class HashFcn = std::hash<Key>,
           class EqualKey = std::equal_to<Key>,
-          class Alloc = libc_allocator_with_realloc<std::pair<const Key, T>>>
+          class Alloc = libc_allocator_with_realloc<eastl::pair<const Key, T>>>
 class sparse_hash_map {
  private:
   // Apparently select1st is not stl-standard, so we define our own
   struct SelectKey {
     typedef const Key& result_type;
-    const Key& operator()(const std::pair<const Key, T>& p) const {
+    const Key& operator()(const eastl::pair<const Key, T>& p) const {
       return p.first;
     }
   };
   struct SetKey {
-    void operator()(std::pair<const Key, T>* value, const Key& new_key) const {
+    void operator()(eastl::pair<const Key, T>* value, const Key& new_key) const {
       *const_cast<Key*>(&value->first) = new_key;
       // It would be nice to clear the rest of value here as well, in
       // case it's taking up a lot of memory.  We do this by clearing
@@ -115,13 +115,13 @@ class sparse_hash_map {
   };
   // For operator[].
   struct DefaultValue {
-    std::pair<const Key, T> operator()(const Key& key) {
+    eastl::pair<const Key, T> operator()(const Key& key) {
       return std::make_pair(key, T());
     }
   };
 
   // The actual data
-  typedef sparse_hashtable<std::pair<const Key, T>, Key, HashFcn, SelectKey,
+  typedef sparse_hashtable<eastl::pair<const Key, T>, Key, HashFcn, SelectKey,
                            SetKey, EqualKey, Alloc> ht;
   ht rep;
 
@@ -242,16 +242,16 @@ class sparse_hash_map {
 
   size_type count(const key_type& key) const { return rep.count(key); }
 
-  std::pair<iterator, iterator> equal_range(const key_type& key) {
+  eastl::pair<iterator, iterator> equal_range(const key_type& key) {
     return rep.equal_range(key);
   }
-  std::pair<const_iterator, const_iterator> equal_range(
+  eastl::pair<const_iterator, const_iterator> equal_range(
       const key_type& key) const {
     return rep.equal_range(key);
   }
 
   // Insertion routines
-  std::pair<iterator, bool> insert(const value_type& obj) {
+  eastl::pair<iterator, bool> insert(const value_type& obj) {
     return rep.insert(obj);
   }
   template <class InputIterator>
@@ -312,7 +312,7 @@ class sparse_hash_map {
   //    which reads into a buffer from a stream (which fp presumably
   //    owns) and returns the number of bytes successfully read.
   //    Note basic_istream<not_char> is not currently supported.
-  // NOTE: Since value_type is std::pair<const Key, T>, ValueSerializer
+  // NOTE: Since value_type is eastl::pair<const Key, T>, ValueSerializer
   // may need to do a const cast in order to fill in the key.
   // NOTE: if Key or T are not POD types, the serializer MUST use
   // placement-new to initialize their values, rather than a normal

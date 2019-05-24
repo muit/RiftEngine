@@ -99,8 +99,8 @@
 #include <functional>  // for equal_to<>, select1st<>, etc
 #include <initializer_list> // for initializer_list
 #include <memory>      // for alloc
-#include <utility>     // for pair<>
-#include <tuple>       // forward_as_tuple
+#include <eastl/utility.h>     // for pair<>
+#include <eastl/tuple.h>       // forward_as_tuple
 #include <type_traits> // for enable_if, is_constructible, etc
 #include <sparsehash/internal/densehashtable.h>  // IWYU pragma: export
 #include <sparsehash/internal/libc_allocator_with_realloc.h>
@@ -109,7 +109,7 @@ namespace google {
 
 template <class Key, class T, class HashFcn = std::hash<Key>,
           class EqualKey = std::equal_to<Key>,
-          class Alloc = libc_allocator_with_realloc<std::pair<const Key, T>>>
+          class Alloc = libc_allocator_with_realloc<eastl::pair<const Key, T>>>
 class dense_hash_map {
  private:
   // Apparently select1st is not stl-standard, so we define our own
@@ -121,7 +121,7 @@ class dense_hash_map {
     }
   };
   struct SetKey {
-    void operator()(std::pair<const Key, T>* value, const Key& new_key) const {
+    void operator()(eastl::pair<const Key, T>* value, const Key& new_key) const {
       using NCKey = typename std::remove_cv<Key>::type;
       *const_cast<NCKey*>(&value->first) = new_key;
 
@@ -130,12 +130,12 @@ class dense_hash_map {
       // the value.  This assumes T has a zero-arg constructor!
       value->second = T();
     }
-    void operator()(std::pair<const Key, T>* value, const Key& new_key, bool) const {
-      new(value) std::pair<const Key, T>(std::piecewise_construct, std::forward_as_tuple(new_key), std::forward_as_tuple());
+    void operator()(eastl::pair<const Key, T>* value, const Key& new_key, bool) const {
+      new(value) eastl::pair<const Key, T>(eastl::piecewise_construct, eastl::forward_as_tuple(new_key), eastl::forward_as_tuple());
     }
   };
   // The actual data
-  typedef dense_hashtable<std::pair<const Key, T>, Key, HashFcn, SelectKey,
+  typedef dense_hashtable<eastl::pair<const Key, T>, Key, HashFcn, SelectKey,
                           SetKey, EqualKey, Alloc> ht;
   ht rep;
 
@@ -269,36 +269,36 @@ class dense_hash_map {
 
   size_type count(const key_type& key) const { return rep.count(key); }
 
-  std::pair<iterator, iterator> equal_range(const key_type& key) {
+  eastl::pair<iterator, iterator> equal_range(const key_type& key) {
     return rep.equal_range(key);
   }
-  std::pair<const_iterator, const_iterator> equal_range(
+  eastl::pair<const_iterator, const_iterator> equal_range(
       const key_type& key) const {
     return rep.equal_range(key);
   }
 
   // Insertion routines
-  std::pair<iterator, bool> insert(const value_type& obj) {
+  eastl::pair<iterator, bool> insert(const value_type& obj) {
     return rep.insert(obj);
   }
 
   template <typename Pair, typename = typename std::enable_if<std::is_constructible<value_type, Pair&&>::value>::type>
-  std::pair<iterator, bool> insert(Pair&& obj) {
+  eastl::pair<iterator, bool> insert(Pair&& obj) {
     return rep.insert(std::forward<Pair>(obj));
   }
 
   // overload to allow {} syntax: .insert( { {key}, {args} } )
-  std::pair<iterator, bool> insert(value_type&& obj) {
+  eastl::pair<iterator, bool> insert(value_type&& obj) {
     return rep.insert(std::move(obj));
   }
 
   template <typename... Args>
-  std::pair<iterator, bool> emplace(Args&&... args) {
+  eastl::pair<iterator, bool> emplace(Args&&... args) {
     return rep.emplace(std::forward<Args>(args)...);
   }
 
   template <typename... Args>
-  std::pair<iterator, bool> emplace_hint(const_iterator hint, Args&&... args) {
+  eastl::pair<iterator, bool> emplace_hint(const_iterator hint, Args&&... args) {
     return rep.emplace_hint(hint, std::forward<Args>(args)...);
   }
 
@@ -372,7 +372,7 @@ class dense_hash_map {
   //    which reads into a buffer from a stream (which fp presumably
   //    owns) and returns the number of bytes successfully read.
   //    Note basic_istream<not_char> is not currently supported.
-  // NOTE: Since value_type is std::pair<const Key, T>, ValueSerializer
+  // NOTE: Since value_type is eastl::pair<const Key, T>, ValueSerializer
   // may need to do a const cast in order to fill in the key.
   template <typename ValueSerializer, typename INPUT>
   bool unserialize(ValueSerializer serializer, INPUT* fp) {
