@@ -217,7 +217,6 @@ void ECSManager::SerializeSingletons(Archive& ar)
 		// Deserialize all singletons
 		TArray<StructType*> singletonTypes;
 		CSingleton::StaticStruct()->GetAllChildren(singletonTypes);
-
 		for (const auto* type : singletonTypes)
 		{
 			ar.BeginObject(type->GetSName());
@@ -225,17 +224,23 @@ void ECSManager::SerializeSingletons(Archive& ar)
 			{
 				CSingleton* comp = AssignSingleton(type);
 				comp->SerializeReflection(ar);
-
-				/*if constexpr (ClassTraits<CompType>::HasPostSerialize)
-				{
-					comp->PostSerialize(true);
-				}*/
 			}
 			ar.EndObject();
 		}
 	}
 	else
 	{
+		TArray<StructType*> singletonTypes;
+		CSingleton::StaticStruct()->GetAllChildren(singletonTypes);
+		for (const auto* type : singletonTypes)
+		{
+			if (auto* component = FindSingleton(type))
+			{
+				ar.BeginObject(type->GetSName());
+				component->SerializeReflection(ar);
+				ar.EndObject();
+			}
+		}
 	}
 	ar.EndObject();
 }
@@ -265,7 +270,24 @@ void ECSManager::RegistrySingletons()
 	AssignSingleton<CGraphics>();
 }
 
-Component* ECSManager::FindSingleton(StructType* type) const
+CSingleton* ECSManager::AssignSingleton(const StructType* type)
+{
+	if (!type)
+	{
+		return nullptr;
+	}
+	else if (auto* component = FindSingleton(type))
+	{
+		return component;
+	}
+
+	// Instantiate and store component
+	auto* const ptr = static_cast<CSingleton*>(type->New());
+	singletonComponents.Add(eastl::unique_ptr<CSingleton>{ ptr });
+	return ptr;
+}
+
+CSingleton* ECSManager::FindSingleton(const StructType* type) const
 {
 	const auto* ptr = singletonComponents.Find([type](const auto & comp) {
 		return comp->GetStruct() == type;

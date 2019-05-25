@@ -2,12 +2,12 @@
 #pragma once
 
 #include "CoreStruct.h"
-#include "ECS/Component.h"
+#include "ECS/CSingleton.h"
 #include "Assets/CubeTexture.h"
 
 
-class CGraphics : public Component {
-	STRUCT(CGraphics, Component)
+class CGraphics : public CSingleton {
+	STRUCT(CGraphics, CSingleton)
 
 public:
 

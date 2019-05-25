@@ -195,13 +195,12 @@ public:
 
 	void RegistrySingletons();
 
-	template <typename C>
-	void AssignSingleton()
-	{
-		singletonComponents.Add(eastl::make_unique<C>());
-	}
+	CSingleton* AssignSingleton(const StructType* type);
 
-	Component* FindSingleton(StructType* type) const;
+	template <typename C>
+	CSingleton* AssignSingleton() { return AssignSingleton(C::StaticStruct()); }
+
+	CSingleton* FindSingleton(const StructType* type) const;
 
 	template<typename C>
 	C* FindSingleton() const

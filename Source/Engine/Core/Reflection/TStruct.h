@@ -27,6 +27,9 @@ public:
 		Type::__meta_RegistryProperties();
 	}
 
+	virtual BaseStruct* New() const override { return new Type(); }
+
+
 	static TStruct* GetStatic() { return &_struct; }
 };
 

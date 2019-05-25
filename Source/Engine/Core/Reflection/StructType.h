@@ -9,6 +9,10 @@ class StructType : public BaseType
 {
 public:
 
+	/** Equivalent to "new Type()" */
+	virtual BaseStruct* New() const = 0;
+
+
 	// NOTE: Most of the class comparison functions do actually
 	// call BaseType to reduce complexity and code duplication.
 	//

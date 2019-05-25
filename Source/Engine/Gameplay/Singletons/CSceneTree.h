@@ -3,7 +3,8 @@
 
 #include "CoreStruct.h"
 #include "ECS/EntityId.h"
-#include "ECS/Component.h"
+#include "ECS/CSingleton.h"
+
 
 struct SceneTreeNode {
 	EntityId entity;
@@ -24,8 +25,8 @@ namespace eastl {
 };
 
 
-class CSceneTree : public Component {
-	STRUCT(CSceneTree, Component)
+class CSceneTree : public CSingleton {
+	STRUCT(CSceneTree, CSingleton)
 
 	TArray<SceneTreeNode> rootEntities;
 

@@ -2,11 +2,11 @@
 #pragma once
 
 #include "CoreStruct.h"
-#include "ECS/Component.h"
+#include "ECS/CSingleton.h"
 
 
-class CPhysicsWorld : public Component {
-	STRUCT(CPhysicsWorld, Component)
+class CPhysicsWorld : public CSingleton {
+	STRUCT(CPhysicsWorld, CSingleton)
 public:
 
 	PROP(v3, gravity, DetailsEdit)

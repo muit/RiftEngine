@@ -2,12 +2,12 @@
 #pragma once
 
 #include "CoreStruct.h"
-#include "ECS/Component.h"
+#include "ECS/CSingleton.h"
 #include "Rendering/Data/CameraData.h"
 
 
-class CActiveCamera : public Component {
-	STRUCT(CActiveCamera, Component)
+class CActiveCamera : public CSingleton {
+	STRUCT(CActiveCamera, CSingleton)
 
 	CameraData activeData;
 };

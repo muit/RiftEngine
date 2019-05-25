@@ -5,25 +5,18 @@
   "scene": {
     "entities": [
       {
-        "CEntity": {
-          "name": "PointLight"
+        "CCamera": {
+          "fov": 45.0
         },
-        "CPointLight": {
-          "color": {
-            "a": 255,
-            "b": 255,
-            "g": 255,
-            "r": 255
-          },
-          "intensity": 30.0,
-          "radius": 2.0
+        "CEntity": {
+          "name": "GameCamera"
         },
         "CTransform": {
           "transform": {
             "location": {
-              "x": 0.539871,
-              "y": -1.4920573,
-              "z": 2.6377552
+              "x": 0.0,
+              "y": -7.869607,
+              "z": 4.2393565
             },
             "rotation": {
               "w": 1.0,
@@ -39,87 +32,62 @@
           }
         },
         "id": {
-          "a": 3506165,
-          "b": 3628527,
-          "c": 3455542503,
-          "d": 3352031358
+          "a": 1126054,
+          "b": 3629357,
+          "c": 4205947483,
+          "d": 3427071857
         }
       },
       {
-        "CEditorCamera": {
-          "forwardSpeed": 10.0,
-          "fov": 60.0,
-          "rotateSpeed": 20.0,
-          "sideSpeed": 10.0
-        },
-        "CEntity": {
-          "name": "EditorCamera"
-        },
-        "CTransform": {
-          "transform": {
-            "location": {
-              "x": 13.483817,
-              "y": -7.474521,
-              "z": 11.941145
-            },
-            "rotation": {
-              "w": 0.8235711,
-              "x": -0.2232901,
-              "y": -0.13644156,
-              "z": 0.50324523
-            },
-            "scale": {
-              "x": 1.0,
-              "y": 1.0,
-              "z": 1.0
-            }
-          }
-        },
-        "id": {
-          "a": 3440534,
-          "b": 3628527,
-          "c": 3455541286,
-          "d": 3352031236
-        }
-      },
-      {
-        "CDirectionalLight": {
-          "color": {
-            "a": 255,
-            "b": 255,
-            "g": 255,
-            "r": 255
+        "CBody": {
+          "bAffectedByGravity": true,
+          "bHasBoxShape": true,
+          "bHasSphereShape": false,
+          "boxExtent": {
+            "x": 0.5,
+            "y": 0.5,
+            "z": 0.5
           },
-          "intensity": 2.0
+          "mobility": 0,
+          "radius": 0.5
         },
         "CEntity": {
-          "name": "DirLight"
+          "name": "Floor02"
+        },
+        "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "model": "Meshes/box.fbx.meta"
         },
         "CTransform": {
           "transform": {
             "location": {
               "x": 0.0,
-              "y": -3.12272,
-              "z": 0.0
+              "y": 0.0,
+              "z": -1.2316061
             },
             "rotation": {
-              "w": 0.41720998,
-              "x": 0.8455756,
-              "y": -0.29869333,
-              "z": 0.14737736
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
             },
             "scale": {
-              "x": 1.0000001,
-              "y": 1.0000012,
-              "z": 1.0000012
+              "x": 10.0,
+              "y": 10.0,
+              "z": 1.0
             }
           }
         },
         "id": {
-          "a": 3369980,
-          "b": 3628527,
-          "c": 3455540644,
-          "d": 3352031172
+          "a": 1051571,
+          "b": 3629357,
+          "c": 4205931938,
+          "d": 3427070305
         }
       },
       {
@@ -174,77 +142,106 @@
           }
         },
         "id": {
-          "a": 3302347,
-          "b": 3628527,
-          "c": 3455539614,
-          "d": 3352031069
+          "a": 983531,
+          "b": 3629357,
+          "c": 4205888136,
+          "d": 3427065921
         }
       },
       {
-        "CBody": {
-          "bAffectedByGravity": true,
-          "bHasBoxShape": true,
-          "bHasSphereShape": false,
-          "boxExtent": {
-            "x": 0.5,
-            "y": 0.5,
-            "z": 0.5
+        "CDirectionalLight": {
+          "color": {
+            "a": 255,
+            "b": 255,
+            "g": 255,
+            "r": 255
           },
-          "mobility": 0,
-          "radius": 0.5
+          "intensity": 2.0
         },
         "CEntity": {
-          "name": "Floor02"
-        },
-        "CMesh": {
-          "color": {
-            "a": 0,
-            "b": 0,
-            "g": 0,
-            "r": 0
-          },
-          "model": "Meshes/box.fbx.meta"
+          "name": "DirLight"
         },
         "CTransform": {
           "transform": {
             "location": {
               "x": 0.0,
-              "y": 0.0,
-              "z": -1.2316061
-            },
-            "rotation": {
-              "w": 1.0,
-              "x": 0.0,
-              "y": 0.0,
+              "y": -3.12272,
               "z": 0.0
             },
+            "rotation": {
+              "w": 0.41720998,
+              "x": 0.8455756,
+              "y": -0.29869333,
+              "z": 0.14737736
+            },
             "scale": {
-              "x": 10.0,
-              "y": 10.0,
+              "x": 1.0000001,
+              "y": 1.0000012,
+              "z": 1.0000012
+            }
+          }
+        },
+        "id": {
+          "a": 927465,
+          "b": 3629357,
+          "c": 4205886444,
+          "d": 3427065752
+        }
+      },
+      {
+        "CEditorCamera": {
+          "fov": 60.0
+        },
+        "CEntity": {
+          "name": "EditorCamera"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 13.483817,
+              "y": -7.474521,
+              "z": 11.941145
+            },
+            "rotation": {
+              "w": 0.8235711,
+              "x": -0.2232901,
+              "y": -0.13644156,
+              "z": 0.50324523
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
               "z": 1.0
             }
           }
         },
         "id": {
-          "a": 3218132,
-          "b": 3628527,
-          "c": 3455538546,
-          "d": 3352030962
+          "a": 868795,
+          "b": 3629357,
+          "c": 4205884768,
+          "d": 3427065584
         }
       },
       {
-        "CCamera": {
-          "fov": 45.0
-        },
         "CEntity": {
-          "name": "GameCamera"
+          "name": "PointLight"
+        },
+        "CPointLight": {
+          "color": {
+            "a": 255,
+            "b": 255,
+            "g": 255,
+            "r": 255
+          },
+          "intensity": 30.0,
+          "radius": 2.0
         },
         "CTransform": {
           "transform": {
             "location": {
-              "x": 0.0,
-              "y": -7.869607,
-              "z": 4.2393565
+              "x": 0.539871,
+              "y": -1.4920573,
+              "z": 2.6377552
             },
             "rotation": {
               "w": 1.0,
@@ -260,13 +257,27 @@
           }
         },
         "id": {
-          "a": 3173981,
-          "b": 3628527,
-          "c": 3455537806,
-          "d": 3352030888
+          "a": 809713,
+          "b": 3629357,
+          "c": 4205881881,
+          "d": 3427065295
         }
       }
     ],
-    "name": "none"
+    "name": "none",
+    "singletons": {
+      "CActiveCamera": null,
+      "CGraphics": {
+        "cubeMap": "Textures/Cubemaps/skybox.meta"
+      },
+      "CPhysicsWorld": {
+        "gravity": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": -9.81
+        }
+      },
+      "CVisualDebugger": null
+    }
   }
 }

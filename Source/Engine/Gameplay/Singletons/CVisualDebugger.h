@@ -2,7 +2,7 @@
 #pragma once
 
 #include "CoreStruct.h"
-#include "ECS/Component.h"
+#include "ECS/CSingleton.h"
 #include "Core/Math/Color.h"
 
 
@@ -29,8 +29,8 @@ struct VisualDebuggerFrame {
 };
 
 
-class CVisualDebugger : public Component {
-	STRUCT(CVisualDebugger, Component)
+class CVisualDebugger : public CSingleton {
+	STRUCT(CVisualDebugger, CSingleton)
 
 	using VDFramePtr = eastl::unique_ptr<VisualDebuggerFrame>;
 
