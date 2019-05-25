@@ -40,6 +40,9 @@ public:
 	PROP(float, radius, DetailsEdit);
 	float radius{ 0.5f };
 
+	PROP(bool, bIsTrigger, DetailsEdit);
+	bool bIsTrigger = false;
+
 
 	CBody() = default;
 

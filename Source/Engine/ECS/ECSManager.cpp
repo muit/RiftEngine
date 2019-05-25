@@ -22,6 +22,8 @@
 
 #include "Gameplay/Game/Components/CPlayer.h"
 #include "Gameplay/Game/Components/CPlatform.h"
+#include "Gameplay/Game/Components/CKey.h"
+#include "Gameplay/Game/Components/CDoor.h"
 #include "Gameplay/Game/Systems/SPlayer.h"
 #include "Gameplay/Game/Systems/SPlatforms.h"
 
@@ -109,6 +111,8 @@ bool ECSManager::Serialize(Archive& ar)
 
 void ECSManager::SerializeEntity(Archive& ar, EntityId entity)
 {
+	// #TODO: Make this registry reflection based
+
 	SerializeComponent<CEntity>(ar, entity);
 	SerializeComponent<CTransform>(ar, entity);
 	SerializeComponent<CMesh>(ar, entity);
@@ -127,6 +131,8 @@ void ECSManager::SerializeEntity(Archive& ar, EntityId entity)
 	// Game
 	SerializeComponent<CPlayer>(ar, entity);
 	SerializeComponent<CPlatform>(ar, entity);
+	SerializeComponent<CKey>(ar, entity);
+	SerializeComponent<CDoor>(ar, entity);
 }
 
 void ECSManager::SerializeEntities(Archive& ar)

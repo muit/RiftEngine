@@ -21,6 +21,10 @@ protected:
 
 	eastl::shared_ptr<PropertyHandle> prop;
 
+	virtual void Build() override {
+		Super::Build();
+		bDisabled = prop->HasTag(DetailsView) && !prop->HasTag(DetailsEdit);
+	}
 
 	virtual void Tick(float) override {}
 

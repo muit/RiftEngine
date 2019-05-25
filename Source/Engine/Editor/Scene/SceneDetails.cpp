@@ -19,14 +19,16 @@
 #include "Gameplay/Components/CMesh.h"
 #include "Gameplay/Components/CCamera.h"
 #include "Gameplay/Components/CEditorCamera.h"
-#include "Gameplay/Game/Components/CPlayer.h"
-#include "Gameplay/Game/Components/CPlatform.h"
 #include "Gameplay/Components/CDirectionalLight.h"
 #include "Gameplay/Components/CPointLight.h"
 #include "Physics/2D/Components/CBody2D.h"
 #include "Physics/2D/Components/CBoxCollider2D.h"
 #include "Physics/2D/Components/CCircleCollider2D.h"
 #include "Physics/3D/Components/CBody.h"
+#include "Gameplay/Game/Components/CPlayer.h"
+#include "Gameplay/Game/Components/CPlatform.h"
+#include "Gameplay/Game/Components/CKey.h"
+#include "Gameplay/Game/Components/CDoor.h"
 
 
 void SceneDetails::Build()
@@ -65,14 +67,18 @@ void SceneDetails::Build()
 		AddNew<ComponentDetails<CMesh>>(entity);
 		AddNew<ComponentDetails<CCamera>>(entity);
 		AddNew<ComponentDetails<CEditorCamera>>(entity);
-		AddNew<ComponentDetails<CPlayer>>(entity);
-		AddNew<ComponentDetails<CPlatform>>(entity);
 		AddNew<ComponentDetails<CDirectionalLight>>(entity);
 		AddNew<ComponentDetails<CPointLight>>(entity);
 		AddNew<ComponentDetails<CBody2D>>(entity);
 		AddNew<ComponentDetails<CBoxCollider2D>>(entity);
 		AddNew<ComponentDetails<CCircleCollider2D>>(entity);
 		AddNew<ComponentDetails<CBody>>(entity);
+
+		// Game
+		AddNew<ComponentDetails<CPlayer>>(entity);
+		AddNew<ComponentDetails<CPlatform>>(entity);
+		AddNew<ComponentDetails<CKey>>(entity);
+		AddNew<ComponentDetails<CDoor>>(entity);
 
 		TArray<StructType*> componentTypes;
 		Component::StaticStruct()->GetAllChildren(componentTypes);

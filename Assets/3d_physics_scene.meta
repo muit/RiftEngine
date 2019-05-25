@@ -5,6 +5,63 @@
   "scene": {
     "entities": [
       {
+        "CBody": {
+          "bAffectedByGravity": true,
+          "bHasBoxShape": true,
+          "bHasSphereShape": false,
+          "bIsTrigger": false,
+          "boxExtent": {
+            "x": 1.5,
+            "y": 0.2,
+            "z": 1.5
+          },
+          "mobility": 1,
+          "radius": 0.5
+        },
+        "CDoor": {
+          "bOpened": false,
+          "keyId": "Door01"
+        },
+        "CEntity": {
+          "name": "Door"
+        },
+        "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "model": "Meshes/box.fbx.meta"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 0.0,
+              "y": 0.29028994,
+              "z": 0.8471135
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 3.0,
+              "y": 0.2,
+              "z": 3.0
+            }
+          }
+        },
+        "id": {
+          "a": 4676861,
+          "b": 3629402,
+          "c": 1078060835,
+          "d": 966799543
+        }
+      },
+      {
         "CCamera": {
           "fov": 45.0
         },
@@ -32,10 +89,10 @@
           }
         },
         "id": {
-          "a": 1126054,
-          "b": 3629357,
-          "c": 4205947483,
-          "d": 3427071857
+          "a": 4614966,
+          "b": 3629402,
+          "c": 1078060093,
+          "d": 966799469
         }
       },
       {
@@ -43,9 +100,10 @@
           "bAffectedByGravity": true,
           "bHasBoxShape": true,
           "bHasSphereShape": false,
+          "bIsTrigger": false,
           "boxExtent": {
-            "x": 0.5,
-            "y": 0.5,
+            "x": 10.0,
+            "y": 10.0,
             "z": 0.5
           },
           "mobility": 0,
@@ -77,17 +135,17 @@
               "z": 0.0
             },
             "scale": {
-              "x": 10.0,
-              "y": 10.0,
+              "x": 20.0,
+              "y": 20.0,
               "z": 1.0
             }
           }
         },
         "id": {
-          "a": 1051571,
-          "b": 3629357,
-          "c": 4205931938,
-          "d": 3427070305
+          "a": 4544632,
+          "b": 3629402,
+          "c": 1078058895,
+          "d": 966799349
         }
       },
       {
@@ -95,6 +153,7 @@
           "bAffectedByGravity": true,
           "bHasBoxShape": true,
           "bHasSphereShape": false,
+          "bIsTrigger": false,
           "boxExtent": {
             "x": 0.5,
             "y": 0.5,
@@ -142,10 +201,10 @@
           }
         },
         "id": {
-          "a": 983531,
-          "b": 3629357,
-          "c": 4205888136,
-          "d": 3427065921
+          "a": 4475712,
+          "b": 3629402,
+          "c": 1078057564,
+          "d": 966799216
         }
       },
       {
@@ -182,10 +241,10 @@
           }
         },
         "id": {
-          "a": 927465,
-          "b": 3629357,
-          "c": 4205886444,
-          "d": 3427065752
+          "a": 4399854,
+          "b": 3629402,
+          "c": 1078056781,
+          "d": 966799137
         }
       },
       {
@@ -198,15 +257,15 @@
         "CTransform": {
           "transform": {
             "location": {
-              "x": 13.483817,
-              "y": -7.474521,
-              "z": 11.941145
+              "x": 9.671097,
+              "y": 0.59974146,
+              "z": 7.7614436
             },
             "rotation": {
-              "w": 0.8235711,
-              "x": -0.2232901,
-              "y": -0.13644156,
-              "z": 0.50324523
+              "w": 0.67950445,
+              "x": -0.22791193,
+              "y": -0.22176322,
+              "z": 0.661174
             },
             "scale": {
               "x": 1.0,
@@ -216,10 +275,10 @@
           }
         },
         "id": {
-          "a": 868795,
-          "b": 3629357,
-          "c": 4205884768,
-          "d": 3427065584
+          "a": 4334416,
+          "b": 3629402,
+          "c": 1078056015,
+          "d": 966799061
         }
       },
       {
@@ -257,16 +316,72 @@
           }
         },
         "id": {
-          "a": 809713,
-          "b": 3629357,
-          "c": 4205881881,
-          "d": 3427065295
+          "a": 4289946,
+          "b": 3629402,
+          "c": 1078055205,
+          "d": 966798980
+        }
+      },
+      {
+        "CBody": {
+          "bAffectedByGravity": true,
+          "bHasBoxShape": true,
+          "bHasSphereShape": false,
+          "bIsTrigger": false,
+          "boxExtent": {
+            "x": 0.5,
+            "y": 0.5,
+            "z": 0.5
+          },
+          "mobility": 2,
+          "radius": 0.5
+        },
+        "CEntity": {
+          "name": "Key"
+        },
+        "CKey": {
+          "bPickedUp": false,
+          "keyId": "Door01"
+        },
+        "CMesh": {
+          "color": {
+            "a": 0,
+            "b": 0,
+            "g": 0,
+            "r": 0
+          },
+          "model": "Meshes/ball.fbx.meta"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 0.0,
+              "y": 4.613837,
+              "z": 0.0
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 0.5,
+              "y": 0.5,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 4194592,
+          "b": 3629402,
+          "c": 1078053755,
+          "d": 966798835
         }
       }
     ],
     "name": "none",
     "singletons": {
-      "CActiveCamera": null,
       "CGraphics": {
         "cubeMap": "Textures/Cubemaps/skybox.meta"
       },
@@ -276,8 +391,7 @@
           "y": 0.0,
           "z": -9.81
         }
-      },
-      "CVisualDebugger": null
+      }
     }
   }
 }

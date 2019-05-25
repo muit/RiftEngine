@@ -35,7 +35,6 @@ public:
 class SPhysics : public System {
 	CLASS(SPhysics, System)
 
-
 	float stepSize = 1.f / 60.f;
 
 	physx::PxFoundation* foundation = nullptr;

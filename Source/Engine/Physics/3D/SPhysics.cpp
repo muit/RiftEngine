@@ -22,6 +22,9 @@
 #include "Gameplay/Singletons/CPhysicsWorld.h"
 
 
+using namespace physx;
+
+
 SPhysics::SPhysics()
 	: Super()
 	, physicsMTFlow{ GEngine->Tasks().CreateFlow() }
@@ -235,11 +238,27 @@ void SPhysics::SetupBodyShapes(CBody& body)
 
 	if (body.bHasBoxShape)
 	{
-		physx::PxRigidActorExt::createExclusiveShape(*body.rigidBody, physx::PxBoxGeometry(ToPx(body.boxExtent)), *material);
+		physx::PxShape* shape = physx::PxRigidActorExt::createExclusiveShape(
+			*body.rigidBody,
+			physx::PxBoxGeometry(ToPx(body.boxExtent)),
+			*material
+		);
+
+		if (body.bIsTrigger)
+		{
+			shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+			shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+		}
 	}
 
 	if (body.bHasSphereShape)
 	{
-		physx::PxRigidActorExt::createExclusiveShape(*body.rigidBody, physx::PxSphereGeometry(body.radius), *material);
+		physx::PxShape* shape = physx::PxRigidActorExt::createExclusiveShape(*body.rigidBody, physx::PxSphereGeometry(body.radius), *material);
+
+		if (body.bIsTrigger)
+		{
+			shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+			shape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+		}
 	}
 }

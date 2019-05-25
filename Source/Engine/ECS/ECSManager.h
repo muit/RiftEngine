@@ -34,6 +34,11 @@ class ECSManager : public Object {
 
 public:
 
+	Broadcast<> onSingletonAdded;
+	Broadcast<> onSingletonRemoved;
+
+
+
 	ECSManager() : Super(), registry{} {}
 
 	void Initialize()

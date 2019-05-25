@@ -49,8 +49,7 @@ void SingletonDetails<Type>::Build()
 	CString::RemoveFromStart(displayName, 1); // Remove C prefix
 	CString::ToSentenceCase(displayName, displayName);
 
-	Type* comp = ecs->FindSingleton<Type>();
-	if (comp)
+	if (Type* comp = ecs->FindSingleton<Type>())
 	{
 		// Display each component property
 		PropertyMap properties{ Name::None() };

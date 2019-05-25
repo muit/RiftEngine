@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreObject.h"
-
-#include <vector>
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 
 
 #define W(Widget, ...) AddNew<Widget>(__VA_ARGS__)
@@ -12,14 +12,19 @@
 class Widget : public Object {
 	CLASS(Widget, Object)
 
-	std::vector<GlobalPtr<Widget>> childs;
+	TArray<GlobalPtr<Widget>> children;
 
-	bool bBuilding = true;
-	bool bBuilt = true;
+	bool bBuilding = false;
+	bool bBuilt = false;
+
+protected:
+
+	bool bDisabled = false;
+
 
 public:
 
-	Widget() : Super(), bBuilding(false), bBuilt(false) {}
+	Widget() : Super() {}
 
 	/** Called after widget creation with parameters.
 	 * For custom parameters create your own
@@ -36,7 +41,7 @@ public:
 			bBuilding = false;
 			bBuilt = true;
 
-			for (auto& child : childs)
+			for (auto& child : children)
 			{
 				child->OnBuild();
 			}
@@ -48,7 +53,7 @@ public:
 		{
 			bBuilt = false;
 			UndoBuild();
-			childs.clear();
+			children.Empty(false);
 			OnBuild();
 		}
 	}
@@ -56,12 +61,23 @@ public:
 	void OnTick(float deltaTime) {
 		if (bBuilt)
 		{
+			const bool bDisabledNow = bDisabled;
+			if (bDisabledNow)
+			{
+				ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+			}
 			Tick(deltaTime);
+			if (bDisabledNow)
+			{
+				ImGui::PopItemFlag();
+				ImGui::PopStyleVar();
+			}
 		}
 	}
 
 	void TickChilds(float deltaTime) {
-		for (auto& child : childs)
+		for (auto& child : children)
 		{
 			child->OnTick(deltaTime);
 		}
@@ -111,7 +127,7 @@ public:
 		{
 			// Registry the widget
 			Ptr<Widget> ptr = widget;
-			childs.push_back(std::move(widget));
+			children.Add(std::move(widget));
 
 			return ptr;
 		}
