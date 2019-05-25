@@ -13,6 +13,8 @@
 #include "Gameplay/Components/CEntity.h"
 #include "Core/Events/Broadcast.h"
 #include "Core/Misc/Guid.h"
+#include "Internal/ComponentRegistry.h"
+#include "Internal/View.h"
 
 
 class Archive;
@@ -22,6 +24,7 @@ class ECSManager : public Object {
 
 	using Registry = entt::basic_registry<EntityId>;
 
+	ComponentRegistry _registry;
 	Registry registry;
 
 	/** List of Guids pointing to entity Ids */
@@ -137,6 +140,8 @@ public:
 
 	template<typename... Components>
 	auto View() {
+		ComponentView<Components...> v{ _registry };
+		v.Each([](EntityId e, Components&... c) {});
 		return registry.view<Components...>();
 	};
 
