@@ -8,6 +8,7 @@
 #include "Core/MultiThreading.h"
 #include "Core/Assets/AssetPtr.h"
 #include "Assets/Texture.h"
+#include "Assets/CubeTexture.h"
 #include "RenderCommand.h"
 #include "../Renderer.h"
 #include "../Frame.h"
@@ -21,8 +22,19 @@ public:
 	LoadTextureCommand(TAssetPtr<Texture> asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
-		ScopedGraphicsZone("Load Texture Command");
 		// #TODO: Ensure assets stay loaded during this frame
+		render.resources.Load(asset.GetPath(), asset->GetTextureData());
+	}
+};
+
+class LoadCubeTextureCommand : public RenderCommand {
+public:
+	TAssetPtr<CubeTexture> asset;
+
+
+	LoadCubeTextureCommand(TAssetPtr<CubeTexture> asset) : asset{ asset } {}
+
+	virtual void Execute(FrameRender& render, Frame& frame) override {
 		render.resources.Load(asset.GetPath(), asset->GetTextureData());
 	}
 };
@@ -35,7 +47,18 @@ public:
 	FreeTextureCommand(AssetInfo asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
-		ScopedGraphicsZone("Free Texture Command");
 		render.resources.Free<ResourceType::Texture>(asset.GetPath());
+	}
+};
+
+class FreeCubeTextureCommand : public RenderCommand {
+public:
+	AssetInfo asset;
+
+
+	FreeCubeTextureCommand(AssetInfo asset) : asset{ asset } {}
+
+	virtual void Execute(FrameRender& render, Frame& frame) override {
+		render.resources.Free<ResourceType::CubeTexture>(asset.GetPath());
 	}
 };

@@ -98,19 +98,49 @@ void ECSManager::__DestroyEntity(EntityId entity)
 
 bool ECSManager::Serialize(Archive& ar)
 {
-	bool bResult = Super::Serialize(ar);
+	const bool bResult = Super::Serialize(ar);
+	if (bResult)
+	{
+		SerializeEntities(ar);
+		SerializeSingletons(ar);
+	}
+	return bResult;
+}
 
+void ECSManager::SerializeEntity(Archive& ar, EntityId entity)
+{
+	SerializeComponent<CEntity>(ar, entity);
+	SerializeComponent<CTransform>(ar, entity);
+	SerializeComponent<CMesh>(ar, entity);
+	SerializeComponent<CCamera>(ar, entity);
+	SerializeComponent<CEditorCamera>(ar, entity);
+	SerializeComponent<CPointLight>(ar, entity);
+	SerializeComponent<CDirectionalLight>(ar, entity);
+
+	// Physics Components
+	SerializeComponent<CBody2D>(ar, entity);
+	SerializeComponent<CCollider2D>(ar, entity);
+	SerializeComponent<CBoxCollider2D>(ar, entity);
+	SerializeComponent<CCircleCollider2D>(ar, entity);
+	SerializeComponent<CBody>(ar, entity);
+
+	// Game
+	SerializeComponent<CPlayer>(ar, entity);
+	SerializeComponent<CPlatform>(ar, entity);
+}
+
+void ECSManager::SerializeEntities(Archive& ar)
+{
 	ar.BeginObject("entities");
 	if (ar.IsLoading())
 	{
 		// Destroy all entities
+		View<CEntity>().each([this](EntityId id, CEntity entity)
 		{
-			View<CEntity>().each([this](EntityId id, CEntity entity)
-			{
-				onEntityDestroyed.DoBroadcast(id);
-			});
-			registry.reset();
-		}
+			onEntityDestroyed.DoBroadcast(id);
+		});
+		registry.reset();
+
 
 		u32 size;
 		ar.SerializeArraySize(size);
@@ -174,30 +204,40 @@ bool ECSManager::Serialize(Archive& ar)
 		});
 	}
 	ar.EndObject();
-
-	return bResult;
 }
 
-void ECSManager::SerializeEntity(Archive& ar, EntityId entity)
+void ECSManager::SerializeSingletons(Archive& ar)
 {
-	SerializeComponent<CEntity>(ar, entity);
-	SerializeComponent<CTransform>(ar, entity);
-	SerializeComponent<CMesh>(ar, entity);
-	SerializeComponent<CCamera>(ar, entity);
-	SerializeComponent<CEditorCamera>(ar, entity);
-	SerializeComponent<CPointLight>(ar, entity);
-	SerializeComponent<CDirectionalLight>(ar, entity);
+	ar.BeginObject("singletons");
+	if (ar.IsLoading())
+	{
+		// #TODO: Reserve by data object size
+		singletonComponents.Empty(true);
 
-	// Physics Components
-	SerializeComponent<CBody2D>(ar, entity);
-	SerializeComponent<CCollider2D>(ar, entity);
-	SerializeComponent<CBoxCollider2D>(ar, entity);
-	SerializeComponent<CCircleCollider2D>(ar, entity);
-	SerializeComponent<CBody>(ar, entity);
+		// Deserialize all singletons
+		TArray<StructType*> singletonTypes;
+		CSingleton::StaticStruct()->GetAllChildren(singletonTypes);
 
-	// Game
-	SerializeComponent<CPlayer>(ar, entity);
-	SerializeComponent<CPlatform>(ar, entity);
+		for (const auto* type : singletonTypes)
+		{
+			ar.BeginObject(type->GetSName());
+			if (ar.IsObjectValid())
+			{
+				CSingleton* comp = AssignSingleton(type);
+				comp->SerializeReflection(ar);
+
+				/*if constexpr (ClassTraits<CompType>::HasPostSerialize)
+				{
+					comp->PostSerialize(true);
+				}*/
+			}
+			ar.EndObject();
+		}
+	}
+	else
+	{
+	}
+	ar.EndObject();
 }
 
 void ECSManager::RegistrySystems()
@@ -223,4 +263,19 @@ void ECSManager::RegistrySingletons()
 	AssignSingleton<CPhysicsWorld>();
 	AssignSingleton<CVisualDebugger>();
 	AssignSingleton<CGraphics>();
+}
+
+Component* ECSManager::FindSingleton(StructType* type) const
+{
+	const auto* ptr = singletonComponents.Find([type](const auto & comp) {
+		return comp->GetStruct() == type;
+	});
+	return ptr ? ptr->get() : nullptr;
+}
+
+bool ECSManager::RemoveSingleton(StructType* type)
+{
+	return singletonComponents.RemoveIf([type](const auto & comp) {
+		return comp->GetStruct() == type;
+	});
 }
