@@ -10,6 +10,17 @@
 
 #include "RenderCommand.h"
 
+class DrawAmbientLightCommand : public RenderCommand {
+public:
+	LinearColor color;
+
+	DrawAmbientLightCommand(LinearColor color) : color(color) {}
+	virtual void Execute(FrameRender& render, Frame& frame) override
+	{
+		ScopedGraphicsZone("Ambient Light Command");
+		render.lighting.ambient = color;
+	}
+};
 
 class DrawDirectionalLightCommand : public RenderCommand {
 public:

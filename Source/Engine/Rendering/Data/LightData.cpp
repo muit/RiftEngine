@@ -9,6 +9,10 @@ void LightingRender::Bind(const RenderMaterial& material)
 	const i32 maxDirs = Math::Min(directionals.Size(), DirectionalLightData::maxLights);
 	const i32 maxPoints = Math::Min(points.Size(), PointLightData::maxLights);
 
+	// Ambient
+	static const Name ambientName{ "ambientColor" };
+	material.SetV3(ambientName, ambient.ToV3());
+
 	// Directionals
 	for (i32 i = 0; i < maxDirs; ++i)
 	{

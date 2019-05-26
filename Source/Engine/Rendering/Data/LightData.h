@@ -37,6 +37,7 @@ struct PointLightData : public BaseLightData {
 
 
 struct LightingRender {
+	LinearColor ambient{ 0.3f, 0.3f, 0.3f };
 	TArray<DirectionalLightData> directionals;
 	TArray<PointLightData> points;
 

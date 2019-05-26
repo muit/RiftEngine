@@ -11,6 +11,12 @@ class CGraphics : public CSingleton {
 
 public:
 
+	PROP(Color, ambientColor, DetailsEdit)
+	Color ambientColor = Color::White;
+
+	PROP(float, ambientIntensity, DetailsEdit)
+	float ambientIntensity = 0.3f;
+
 	PROP(TAssetPtr<CubeTexture>, cubeMap, DetailsEdit)
 	TAssetPtr<CubeTexture> cubeMap;
 };

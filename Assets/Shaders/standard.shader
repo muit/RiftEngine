@@ -30,6 +30,7 @@ void main()
 #version 330 core
 
 // Lighting Data
+
 #define MAX_DIRLIGHTS 10
 uniform int num_dir_lights;
 struct DirectionalLight {
@@ -56,6 +57,7 @@ uniform float roughness = 0.85;
 uniform float ao = 1.0;
 
 uniform vec3 camera_position;
+uniform vec3 ambientColor;
 uniform DirectionalLight dir_lights[MAX_DIRLIGHTS];
 uniform PointLight point_lights[MAX_POINTLIGHTS];
 
@@ -204,7 +206,7 @@ void main()
 
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.3) * baseColor * ao;
+    vec3 ambient = ambientColor * baseColor * ao;
 
 
     vec3 color = ambient + Lo;

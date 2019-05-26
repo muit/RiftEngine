@@ -4,8 +4,9 @@
 #include "Core/Engine.h"
 #include "Tools/Profiler.h"
 
-#include "../Components/CDirectionalLight.h"
-#include "../Components/CPointLight.h"
+#include "Gameplay/Components/CDirectionalLight.h"
+#include "Gameplay/Components/CPointLight.h"
+#include "Gameplay/Singletons/CGraphics.h"
 #include "Rendering/Commands/LightingCommands.h"
 
 
@@ -41,7 +42,12 @@ void SRenderLighting::Tick(float deltaTime)
 		});
 	});
 
-	// Render camera
+	// Render lights
+	if (CGraphics* graphics = ECS()->FindSingleton<CGraphics>())
+	{
+		LinearColor ambient = LinearColor{ graphics->ambientColor } * graphics->ambientIntensity;
+		QueueRenderCommand<DrawAmbientLightCommand>(ambient);
+	}
 	QueueRenderCommand<DrawDirectionalLightCommand>(MoveTemp(directionals));
 	QueueRenderCommand<DrawPointLightCommand>(MoveTemp(points));
 }
