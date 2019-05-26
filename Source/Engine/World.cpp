@@ -5,6 +5,10 @@
 #include "Core/Engine.h"
 
 
+Broadcast<Ptr<World>> World::Delegates::onBeginPlay{};
+Broadcast<Ptr<World>> World::Delegates::onEndPlay{};
+
+
 void World::Initialize()
 {
 	Log::Message("World Start-Up");
@@ -44,6 +48,8 @@ void World::BeginPlay()
 	Log::Message("Begin Play");
 
 	ecs->BeginPlay();
+
+	Delegates::onBeginPlay.DoBroadcast(Self<World>());
 }
 
 void World::Tick(float deltaTime)
@@ -65,10 +71,14 @@ void World::EndPlay()
 		worldType = EWorldType::Editor;
 		// Restore scene like it was before
 		scene->ApplyScene(Self<World>());
+
+		Delegates::onEndPlay.DoBroadcast(Self<World>());
 	}
 	else
 	{
 		worldType = EWorldType::EndingPlay;
+
+		Delegates::onEndPlay.DoBroadcast(Self<World>());
 		GEngine->Shutdown();
 	}
 }

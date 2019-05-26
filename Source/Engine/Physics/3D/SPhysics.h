@@ -4,24 +4,44 @@
 #include "CoreObject.h"
 #include <PxPhysicsAPI.h>
 #include <PxFoundation.h>
+#include <PxRigidBody.h>
 #include <foundation/PxErrorCallback.h>
 #include <extensions/PxDefaultCpuDispatcher.h>
+#include <foundation/PxTransform.h>
+#include <PxSimulationEventCallback.h>
 
 #include "ECS/System.h"
+#include "ECS/EntityId.h"
 #include "Core/MultiThreading.h"
 #include "Core/Log.h"
 
 class CTransform;
 class CBody;
-
+class SPhysics;
 
 class UserErrorCallback : public physx::PxErrorCallback
 {
 public:
-	virtual void reportError(physx::PxErrorCode::Enum code, const char* message, const char* file, int line) override
-	{
-		Log::Error(TX("PhysX error(%i): %s at %s:%i"), (i32)code, message, file, line);
-	}
+	virtual void reportError(physx::PxErrorCode::Enum code, const char* message, const char* file, int line) override;
+};
+
+
+class SimulationCallback : public physx::PxSimulationEventCallback
+{
+	SPhysics* physics;
+
+public:
+
+	SimulationCallback(SPhysics* physics) : physics{ physics } {}
+
+	// Implements PxSimulationEventCallback
+	virtual void onConstraintBreak(physx::PxConstraintInfo*, physx::PxU32) override {}
+	virtual void onWake(physx::PxActor** actors, physx::PxU32 count) override {}
+	virtual void onSleep(physx::PxActor**, physx::PxU32) override {}
+	virtual void onAdvance(const physx::PxRigidBody* const*, const physx::PxTransform*, const physx::PxU32) override {}
+	virtual void onContact(const physx::PxContactPairHeader& pairHeader, const physx::PxContactPair* pairs, physx::PxU32 nbPairs) override {}
+
+	virtual void onTrigger(physx::PxTriggerPair* pairs, physx::PxU32 count) override;
 };
 
 
@@ -42,15 +62,16 @@ class SPhysics : public System {
 	physx::PxScene* scene = nullptr;
 	//physx::PxDefaultCpuDispatcher* cpuDispatcher = nullptr;
 
-	UserErrorCallback pxErrorCallback {};
+	UserErrorCallback pxErrorCallback{};
+	SimulationCallback simulationCallback;
 
-	// Cached
-	class CPhysicsWorld* physicsWorld = nullptr;
 	float deltaTimeIncrement = 0.0f;
-
 	TaskFlow physicsMTFlow;
 
 public:
+
+	class CPhysicsWorld* physicsWorld = nullptr;
+
 
 	SPhysics();
 
@@ -69,11 +90,25 @@ private:
 	void DownloadBodies();
 
 	void CreateScene();
-	void CreateBody(const CTransform& transform, CBody& body);
+	void CreateBody(EntityId entity, const CTransform& transform, CBody& body);
 	void SetupBodyShapes(CBody& body);
+
+public:
 
 	static FORCEINLINE physx::PxVec3 ToPx(const v3& v) { return { v.x, v.y, v.z }; }
 	static FORCEINLINE physx::PxQuat ToPx(const Quat& q) { return { q.x, q.y, q.z, q.w }; }
 	static FORCEINLINE v3 FromPx(const physx::PxVec3& v) { return { v.x, v.y, v.z }; }
 	static FORCEINLINE Quat FromPx(const physx::PxQuat& q) { return { q.x, q.y, q.z, q.w }; }
+
+	static FORCEINLINE EntityId GetActorEntity(const physx::PxActor* actor) {
+		// Threat void* as EntityId (only first 32 bits are used)
+		const auto value = reinterpret_cast<size_t>(actor->userData);
+		return static_cast<EntityId>(value);
+	}
+
+	static FORCEINLINE void SetActorEntity(physx::PxActor* actor, EntityId entity) {
+		// Threat EntityId as void*
+		const size_t value = entity;
+		actor->userData = reinterpret_cast<void*>(value);
+	}
 };

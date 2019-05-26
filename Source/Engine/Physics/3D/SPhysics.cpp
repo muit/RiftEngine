@@ -2,7 +2,6 @@
 
 #include "SPhysics.h"
 #include <common/PxTolerancesScale.h>
-#include <extensions/PxDefaultSimulationFilterShader.h>
 #include <extensions/PxRigidActorExt.h>
 #include <foundation/PxFlags.h>
 #include <geometry/PxBoxGeometry.h>
@@ -25,8 +24,57 @@
 using namespace physx;
 
 
+void UserErrorCallback::reportError(physx::PxErrorCode::Enum code, const char* message, const char* file, int line)
+{
+	Log::Error(TX("PhysX error(%i): %s at %s:%i"), (i32)code, message, file, line);
+}
+
+void SimulationCallback::onTrigger(PxTriggerPair* pairs, PxU32 count)
+{
+	if (!physics->physicsWorld)
+		return;
+
+	for (PxU32 i = 0; i < count; i++)
+	{
+		PxTriggerPair& pair = pairs[i];
+		// Ignore pairs when shapes have been deleted
+		if (pair.flags & (PxTriggerPairFlag::eREMOVED_SHAPE_TRIGGER | PxTriggerPairFlag::eREMOVED_SHAPE_OTHER))
+			continue;
+
+		physics->physicsWorld->triggerEvents.Add(TriggerEvent{
+			SPhysics::GetActorEntity(pair.triggerActor),
+			SPhysics::GetActorEntity(pair.otherActor)
+		});
+	}
+}
+
+
+PxFilterFlags CollisionFilterShader(
+	PxFilterObjectAttributes attributes0, PxFilterData filterData0,
+	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
+{
+	// let triggers through
+	if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
+	{
+		pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+		return PxFilterFlag::eDEFAULT;
+	}
+	// generate contacts for all that were not filtered above
+	pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+
+	// trigger the contact callback for pairs (A,B) where
+	// the filtermask of A contains the ID of B and vice versa.
+	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+		pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
+
+	return PxFilterFlag::eDEFAULT;
+}
+
+
 SPhysics::SPhysics()
 	: Super()
+	, simulationCallback{this}
 	, physicsMTFlow{ GEngine->Tasks().CreateFlow() }
 {
 	foundation = PxCreateFoundation(PX_PHYSICS_VERSION, *Memory::GetPhysicsAllocator(), pxErrorCallback);
@@ -57,6 +105,11 @@ void SPhysics::Tick(float deltaTime)
 {
 	ScopedStackGameZone();
 	Super::Tick(deltaTime);
+
+	if (physicsWorld)
+	{
+		physicsWorld->ResetEvents();
+	}
 
 	// Simulate at a fixed rate
 	deltaTimeIncrement += deltaTime;
@@ -125,7 +178,7 @@ void SPhysics::UploadBodies()
 		CBody& body = view.get<CBody>(entity);
 		if (!body.IsInitialized())
 		{
-			CreateBody(view.get<CTransform>(entity), body);
+			CreateBody(entity, view.get<CTransform>(entity), body);
 		}
 	}
 }
@@ -195,12 +248,14 @@ void SPhysics::CreateScene()
 	//sceneDesc.broadPhaseType = PxBroadPhaseType::eSAP;
 	sceneDesc.gpuMaxNumPartitions = 8;
 
-
 	//sceneDesc.solverType = PxSolverType::eTGS;
 
 #ifdef USE_MBP
 	sceneDesc.broadPhaseType = PxBroadPhaseType::eMBP;
 #endif
+
+	sceneDesc.simulationEventCallback = &simulationCallback;
+	sceneDesc.filterShader = CollisionFilterShader;
 
 	scene = world->createScene(sceneDesc);
 	if (!scene)
@@ -209,7 +264,7 @@ void SPhysics::CreateScene()
 	}
 }
 
-void SPhysics::CreateBody(const CTransform& transform, CBody& body)
+void SPhysics::CreateBody(EntityId entity, const CTransform& transform, CBody& body)
 {
 	physx::PxTransform t{ ToPx(transform.GetWLocation()), ToPx(transform.GetWRotation()) };
 
@@ -228,7 +283,9 @@ void SPhysics::CreateBody(const CTransform& transform, CBody& body)
 		body.rigidBody = world->createRigidStatic(t);
 		break;
 	}
+
 	SetupBodyShapes(body);
+	SetActorEntity(body.rigidBody, entity);
 	scene->addActor(*body.rigidBody);
 }
 

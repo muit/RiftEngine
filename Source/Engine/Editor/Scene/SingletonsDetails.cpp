@@ -14,6 +14,13 @@
 
 
 #if WITH_EDITOR
+
+void SingletonsDetails::Construct()
+{
+	World::Delegates::onBeginPlay.Bind(this, &SingletonsDetails::OnChangePlay);
+	World::Delegates::onEndPlay.Bind(this, &SingletonsDetails::OnChangePlay);
+}
+
 void SingletonsDetails::Build()
 {
 	Super::Build();
@@ -78,6 +85,14 @@ void SingletonsDetails::Tick(float deltaTime)
 void SingletonsDetails::AddComponentEntry(ComponentCreationEntry&& entry)
 {
 	entries.Add(MoveTemp(entry));
+}
+
+void SingletonsDetails::OnChangePlay(Ptr<World> world)
+{
+	if (world == GetWorld())
+	{
+		ForceRebuild();
+	}
 }
 
 #endif

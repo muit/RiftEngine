@@ -31,8 +31,12 @@ class World : public Object {
 
 	EWorldType worldType = EWorldType::Standalone;
 
-
 public:
+
+	struct Delegates {
+		static Broadcast<Ptr<World>> onBeginPlay;
+		static Broadcast<Ptr<World>> onEndPlay;
+	};
 
 	void Initialize();
 

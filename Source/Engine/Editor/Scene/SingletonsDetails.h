@@ -16,6 +16,10 @@ class SingletonsDetails : public EditorWindow {
 	Broadcast<const ComponentCreationEntry&> onSingletonAdded;
 
 
+public:
+
+	virtual void Construct() override;
+
 protected:
 
 	virtual void Build() override;
@@ -29,6 +33,10 @@ public:
 	Broadcast<const ComponentCreationEntry&>& OnSingletonAdded() {
 		return onSingletonAdded;
 	}
+
+private:
+
+	void OnChangePlay(class Ptr<World> world);
 };
 
 #endif

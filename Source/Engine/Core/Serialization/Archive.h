@@ -136,7 +136,7 @@ private:
 	 * Selection of Serialize call.
 	 */
 	template<class T>
-	FORCEINLINE bool CustomSerializeOrNot(Archive& ar, const char* name, T& val)
+	NOINLINE bool CustomSerializeOrNot(Archive& ar, const char* name, T& val)
 	{
 		if constexpr(ClassTraits<T>::HasCustomSerialize)
 		{
