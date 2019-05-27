@@ -9,11 +9,20 @@
 #include "Core/Containers/Array.h"
 
 
+enum class ETextureFiltering : u8 {
+	Nearest,
+	Linear
+};
+
 using ColorBuffer = TArray<Color>;
 using LColorBuffer = TArray<LinearColor>;
 
-struct TextureData {
+struct TextureData
+{
+	ETextureFiltering filtering{ ETextureFiltering::Nearest };
+
 private:
+
 	v2_u32 size;
 	ColorBuffer buffer;
 

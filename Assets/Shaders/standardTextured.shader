@@ -9,7 +9,7 @@ layout (location = 2) in vec2 v_uv;
 uniform mat4 mvp;
 uniform mat4 model;
 
-out vec3 normal;
+out vec3 world_normal;
 out vec3 world_position;
 out vec2 uv;
 
@@ -20,7 +20,7 @@ void main()
 	world_position =  vec3(model * v_position4);
 	gl_Position = mvp * v_position4;
 
-    normal = mat3(model) * v_normal;
+    world_normal = mat3(model) * v_normal;
 	uv = v_uv;
 }
 
@@ -45,16 +45,14 @@ struct PointLight {
 };
 
 
-in vec3 normal;
+in vec3 world_normal;
 in vec3 world_position;
 in vec2 uv;
 
 // Material Parameters
-//uniform sample2D baseColor;
-//uniform sample2D rmao;
-uniform float metallic = 0.04;
-uniform float roughness = 0.85;
-uniform float ao = 1.0;
+uniform sample2D base_color;
+uniform sample2D rmao;
+uniform sample2D normal;
 
 uniform vec3 camera_position;
 uniform vec3 ambient_color;
@@ -68,7 +66,7 @@ const float PI = 3.14159265359;
 // ----------------------------------------------------------------------------
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
-    float a = roughness*roughness;
+    float a = roughness * roughness;
     float a2 = a*a;
     float NdotH = max(dot(N, H), 0.0);
     float NdotH2 = NdotH*NdotH;
@@ -109,7 +107,7 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0)
 
 
 // ----------------------------------------------------------------------------
-vec3 ApplyDirectionalLight(DirectionalLight light, vec3 baseColor, vec3 normal, float metallic, vec3 F0, vec3 N, vec3 V)
+vec3 ApplyDirectionalLight(DirectionalLight light, vec3 baseColor, float metallic, float roughness, vec3 F0, vec3 N, vec3 V)
 {    
     // Calculate per-light radiance
     vec3 L = normalize(light.direction);
@@ -143,7 +141,7 @@ vec3 ApplyDirectionalLight(DirectionalLight light, vec3 baseColor, vec3 normal, 
     return (kD * baseColor / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
 }
 
-vec3 ApplyPointLight(PointLight light, vec3 baseColor, vec3 normal, float metallic, vec3 F0, vec3 N, vec3 V)
+vec3 ApplyPointLight(PointLight light, vec3 baseColor, float metallic, float roughness, vec3 F0, vec3 N, vec3 V)
 {    
     // Calculate per-light radiance
     vec3 L = normalize(light.position - world_position);
@@ -183,9 +181,12 @@ vec3 ApplyPointLight(PointLight light, vec3 baseColor, vec3 normal, float metall
 
 void main()
 {
-    // #TODO: Replace with textures
-    vec3 baseColor = vec3(0.9, 0.1, 0.1);
-
+    vec3 baseColor = texture(base_color, uv).xyz;
+    vec3 normalColor = normalize(2.0 * texture(normal, uv).rgb - 1.0);
+    vec4 rmaoColor = texture(rmao, uv);
+    float roughness = rmaoColor.x;
+    float metallic = rmaoColor.y;
+    float ao = rmaoColor.z;
 
     vec3 N = normalize(normal);
     vec3 V = normalize(camera_position - world_position);
@@ -197,11 +198,11 @@ void main()
     vec3 Lo = vec3(0.0);
     for(int i = 0; i < num_dir_lights; ++i) 
     {
-        Lo += ApplyDirectionalLight(dir_lights[i], baseColor, normal, metallic, F0, N, V);
+        Lo += ApplyDirectionalLight(dir_lights[i], baseColor, metallic, roughness, F0, N, V);
     }
     for(int i = 0; i < num_point_lights; ++i) 
     {
-        Lo += ApplyPointLight(point_lights[i], baseColor, normal, metallic, F0, N, V);
+        Lo += ApplyPointLight(point_lights[i], baseColor, metallic, roughness, F0, N, V);
     }
 
     // ambient lighting (note that the next IBL tutorial will replace 

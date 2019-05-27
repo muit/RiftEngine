@@ -160,9 +160,6 @@ public:
 	bool IsValid() const {
 		return globalPtr != nullptr && globalPtr->IsValid();
 	}
-	operator bool() const {
-		return IsValid();
-	};
 
 	void Reset() {
 		UnBind();
@@ -211,18 +208,18 @@ public:
 	Ptr() : BaseWeakPtr() {}
 	Ptr(TYPE_OF_NULLPTR) : BaseWeakPtr() {}
 
-	Ptr(const Ptr<Type>& other) : BaseWeakPtr() {
+	Ptr(const Ptr& other) : BaseWeakPtr() {
 		Set(other.GetGlobal());
 	}
-	Ptr& operator=(const Ptr<Type>& other) {
+	Ptr& operator=(const Ptr& other) {
 		Set(other.GetGlobal());
 		return *this;
 	}
 
-	Ptr(Ptr<Type>&& other) : BaseWeakPtr() {
+	Ptr(Ptr&& other) : BaseWeakPtr() {
 		MoveFrom(eastl::move(other));
 	}
-	Ptr& operator=(Ptr<Type>&& other) {
+	Ptr& operator=(Ptr&& other) {
 		MoveFrom(eastl::move(other));
 		return *this;
 	}
@@ -306,6 +303,8 @@ public:
 		// Static cast since types are always cast-able or invalid
 		return IsValid() ? static_cast<Type*>(GetGlobal()->operator->()) : nullptr;
 	}
+
+	operator bool() const { return IsValid(); };
 
 	template<typename T>
 	Ptr<T> Cast() const {

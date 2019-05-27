@@ -27,7 +27,7 @@ public:
 	BaseAssetPtr() = default;
 	BaseAssetPtr(AssetInfo info) : info{ info } {}
 
-	AssetInfo GetInfo() { return info; }
+	AssetInfo GetInfo() const { return info; }
 	void SetInfo(AssetInfo newInfo)
 	{
 		info = newInfo;
@@ -76,12 +76,14 @@ public:
 	 */
 	Ptr<T> Load() const
 	{
-		if (IsNull() || IsValid())
-			return cachedAsset.Cast<T>();
+		if (IsNull()) { return {}; }
 
-		if (auto manager = AssetManager::Get())
+		if (!IsValid())
 		{
-			cachedAsset = manager->Load(info).Cast<T>();
+			if (auto manager = AssetManager::Get())
+			{
+				cachedAsset = manager->Load(info);
+			}
 		}
 		return cachedAsset.Cast<T>();
 	}
@@ -92,12 +94,14 @@ public:
 	 */
 	Ptr<T> LoadOrCreate() const
 	{
-		if (IsNull() || IsValid())
-			return cachedAsset.Cast<T>();
+		if (IsNull()) { return {}; }
 
-		if (auto manager = AssetManager::Get())
+		if (!IsValid())
 		{
-			cachedAsset = manager->LoadOrCreate(info, T::StaticClass()).Cast<T>();
+			if (auto manager = AssetManager::Get())
+			{
+				cachedAsset = manager->LoadOrCreate(info, T::StaticClass());
+			}
 		}
 		return cachedAsset.Cast<T>();
 	}
@@ -107,18 +111,11 @@ public:
 	 */
 	Ptr<T> Get() const
 	{
-		if(IsNull())
+		if (!IsNull() && TryCacheAsset())
 		{
-			return cachedAsset.Cast<T>(); // Cached asset should always be invalid here
+			return cachedAsset.Cast<T>();
 		}
-
-		Ptr<AssetManager> manager = AssetManager::Get();
-		if (manager && !cachedAsset)
-		{
-			cachedAsset = manager->GetLoadedAsset(info);
-		}
-
-		return cachedAsset.Cast<T>();
+		return {};
 	}
 
 	void Reset()
@@ -131,7 +128,9 @@ public:
 	const bool IsNull() const { return info.IsNull(); }
 
 	/** @returns true if this asset is loaded */
-	const bool IsValid() const { return Get().IsValid(); }
+	const bool IsValid() const {
+		return !IsNull() && TryCacheAsset();
+	}
 
 	inline const Name& GetPath()    const { return info.GetPath(); }
 	inline const String& GetSPath() const { return info.GetSPath(); }
@@ -146,6 +145,20 @@ public:
 	}
 
 private:
+
+	bool TryCacheAsset() const
+	{
+		if (cachedAsset)
+		{
+			return true;
+		}
+
+		if (Ptr<AssetManager> manager = AssetManager::Get())
+		{
+			cachedAsset = manager->GetLoadedAsset(info);
+		}
+		return cachedAsset.IsValid();
+	}
 
 	void MoveFrom(TAssetPtr&& other)
 	{

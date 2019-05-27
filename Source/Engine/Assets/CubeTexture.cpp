@@ -35,9 +35,10 @@ bool CubeTexture::PostLoad()
 			continue;
 		}
 
-		SDL_Surface* rawImg = IMG_Load(FileSystem::ToString(rawTexturePath).c_str());
+		// Load texture from absolute path
+		SDL_Surface* rawImg = IMG_Load(FileSystem::ToString(FileSystem::GetAssetsPath() / rawTexturePath).c_str());
 		// Copy texture data
-		bSuccess &= data.textures[i].FromSurface(rawImg);
+		bSuccess &= rawImg && data.textures[i].FromSurface(rawImg);
 		SDL_FreeSurface(rawImg);
 	}
 

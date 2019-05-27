@@ -22,19 +22,7 @@ struct RenderTexture
 
 private:
 
-	void Load(const TextureData& texture)
-	{
-		glEnable(GL_TEXTURE_2D);
-
-		const v2_u32 textureSize = texture.Size();
-
-		glGenBuffers(1, &glId);
-		glBindTexture(GL_TEXTURE_2D, glId);
-
-		// Copy data to GPU
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureSize.x, textureSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)texture.Buffer().Data());
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
+	void Load(const TextureData& texture);
 
 	void Free()
 	{

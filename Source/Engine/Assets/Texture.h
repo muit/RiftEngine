@@ -14,6 +14,9 @@ class Texture : public AssetData
 	CLASS(Texture, AssetData)
 
 private:
+	// #TODO: Support reflected enums
+	PROP(u8, filtering, DetailsEdit)
+	u8 filtering = u8(ETextureFiltering::Nearest);
 
 	TextureData data;
 

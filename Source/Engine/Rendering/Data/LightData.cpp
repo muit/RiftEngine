@@ -10,7 +10,7 @@ void LightingRender::Bind(const RenderMaterial& material)
 	const i32 maxPoints = Math::Min(points.Size(), PointLightData::maxLights);
 
 	// Ambient
-	static const Name ambientName{ "ambientColor" };
+	static const Name ambientName{ "ambient_color" };
 	material.SetV3(ambientName, ambient.ToV3());
 
 	// Directionals

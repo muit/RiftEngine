@@ -24,6 +24,8 @@ bool Texture::PostLoad()
 		data.FromSurface(rawImg);
 		SDL_FreeSurface(rawImg);
 
+		data.filtering = ETextureFiltering(filtering);
+
 		QueueRenderCommand<LoadTextureCommand>(TAssetPtr<Texture>{ Self<Texture>() });
 
 		return Super::PostLoad();;

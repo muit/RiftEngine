@@ -4,17 +4,22 @@
 #include "CoreObject.h"
 #include "ECS/System.h"
 #include "Core/Assets/AssetPtr.h"
+#include "Assets/Material.h"
 
 
 class SRenderMeshes : public System {
 	CLASS(SRenderMeshes, System)
 
+	static const TAssetPtr<Material> skyboxMaterial;
 
 public:
 
-	SRenderMeshes() : Super() { bTickOnEditor = true; }
+	SRenderMeshes();
 
-	virtual void BeginPlay() override;
 	virtual void Tick(float /*deltaTime*/) override;
 	virtual void BeforeDestroy() override;
+
+private:
+
+	void DrawSkybox();
 };
