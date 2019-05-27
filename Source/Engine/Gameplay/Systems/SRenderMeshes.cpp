@@ -14,7 +14,7 @@
 
 
 const TAssetPtr<Material> SRenderMeshes::skyboxMaterial{ "Shaders/skybox.shader.meta" };
-
+const TAssetPtr<Mesh> SRenderMeshes::skyboxCube{ "Meshes/cube.obj.meta" };
 
 SRenderMeshes::SRenderMeshes()
 	: Super()
@@ -23,6 +23,7 @@ SRenderMeshes::SRenderMeshes()
 
 	Texture::default.Load();
 	skyboxMaterial.Load();
+	skyboxCube.Load();
 }
 
 void SRenderMeshes::Tick(float deltaTime)
@@ -47,9 +48,11 @@ void SRenderMeshes::Tick(float deltaTime)
 		}
 	});
 
-	QueueRenderCommand<DrawMeshesCommand>(MoveTemp(meshInstances));
 
 	DrawSkybox();
+
+	QueueRenderCommand<DrawMeshesCommand>(MoveTemp(meshInstances));
+
 }
 
 void SRenderMeshes::BeforeDestroy()
@@ -67,6 +70,7 @@ void SRenderMeshes::DrawSkybox()
 		if (graphics->cubeMap.Load())
 		{
 			QueueRenderCommand<DrawSkyboxCommand>(
+				skyboxCube.GetInfo(),
 				skyboxMaterial.GetInfo(),
 				graphics->cubeMap.GetInfo()
 			);

@@ -25,5 +25,7 @@ public:
 
 	Matrix4f GetViewMatrix();
 
+	Matrix4f GetViewMatrixNoLocation();
+
 	Matrix4f GetProjectionMatrix(const v2_u32& screenSize);
 };

@@ -9,6 +9,12 @@ Matrix4f CameraData::GetViewMatrix()
 	return glm::lookAt(transform.location, transform.location + transform.GetForward(), v3::Up);
 }
 
+Matrix4f CameraData::GetViewMatrixNoLocation()
+{
+	// Translate -> Rotate
+	return glm::lookAt(v3::Zero(), transform.location + transform.GetForward(), v3::Up);
+}
+
 Matrix4f CameraData::GetProjectionMatrix(const v2_u32& screenSize)
 {
 	return glm::perspective(fov * Math::DEGTORAD, float(screenSize.x) / float(screenSize.y), nearZ, farZ);

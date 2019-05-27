@@ -16,13 +16,16 @@
 
 class DrawSkyboxCommand : public RenderCommand {
 
+	AssetInfo cube;
 	AssetInfo material;
 	AssetInfo texture;
 
 public:
 
-	DrawSkyboxCommand(AssetInfo material, AssetInfo texture)
-		: material{material}, texture { texture }
+	DrawSkyboxCommand(AssetInfo cube, AssetInfo material, AssetInfo texture)
+		: cube{ cube }
+		, material{ material }
+		, texture{ texture }
 	{}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override;
