@@ -85,7 +85,7 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 			// Bind mesh once
 			meshResource.Bind();
 
-			material.BindTextures();
+			material.BindStaticParameters(render.resources);
 			material.SetV3("camera_position", render.camera.transform.location);
 			render.lighting.Bind(material);
 

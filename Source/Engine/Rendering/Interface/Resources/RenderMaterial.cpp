@@ -1,6 +1,7 @@
 // © 2019 Miguel Fernández Arce - All rights reserved
 
 #include "RenderMaterial.h"
+#include "../../Resources.h"
 
 const Name RenderMaterial::notAResourceId { "Not a Resource" };
 
@@ -63,6 +64,19 @@ void RenderMaterial::CompileProgram(Name id, const String& vertexCode, const Str
 	// Free compiled shaders
 	glDeleteShader(vertexId);
 	glDeleteShader(fragmentId);
+}
+
+void RenderMaterial::BindStaticParameters(const Resources& resources) const
+{
+	for (const auto& texture : textures)
+	{
+		const GLint id = FindParameterIndex(texture.name);
+		if (id != GL_INVALID_INDEX)
+		{
+			const RenderTexture& textureRes = resources.Get<ResourceType::Texture>(texture.asset.GetPath());
+			glUniform1i(id, textureRes.glId);
+		}
+	}
 }
 
 void RenderMaterial::LogShaderError(GLint shaderId)
@@ -131,4 +145,24 @@ bool RenderMaterial::SetMatrix4f(Name name, const Matrix4f& value) const
 		return true;
 	}
 	return false;
+}
+
+GLint RenderMaterial::FindParameterIndex(const Name& name) const
+{
+	if (const auto * param = parameterIds.Find(name))
+	{
+		// Found cached id
+		return *param;
+	}
+	else
+	{
+		// Try to find parameter on the program
+		const GLint id = glGetUniformLocation(programId, name.ToString().c_str());
+		if (id != GL_INVALID_INDEX)
+		{
+			parameterIds.Insert(name, id);
+			return id;
+		}
+	}
+	return GL_INVALID_INDEX;
 }

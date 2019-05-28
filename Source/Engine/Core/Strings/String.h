@@ -11,6 +11,7 @@
 #include "Core/Platform/Platform.h"
 #include "Core/Memory/Allocator.h"
 #include "Core/Containers/Array.h"
+#include "../Math/Math.h"
 
 
 using String = eastl::basic_string<TCHAR, StringAllocator>;
@@ -44,6 +45,10 @@ struct CString {
 
 	static bool Contains(const String& str, const TCHAR* c) {
 		return str.find(c) != String::npos;
+	}
+
+	static bool Equals(const String& str, const TCHAR* c, size_t size) {
+		return eastl::Compare(str.c_str(), c, Math::Min(size, str.length())) == 0;
 	}
 
 	/**

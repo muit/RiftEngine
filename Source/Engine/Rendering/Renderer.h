@@ -10,7 +10,6 @@
 #include "Frame.h"
 #include "Resources.h"
 #include "Commands/RenderCommand.h"
-#include "Interface/ScreenTexture.h"
 
 
 #define SCREEN_WIDTH 1280

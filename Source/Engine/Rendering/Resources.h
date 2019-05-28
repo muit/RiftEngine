@@ -87,7 +87,7 @@ public:
 	}
 
 	template<ResourceType type>
-	auto Get(Name id) -> eastl::enable_if_t<type == ResourceType::Texture, const RenderTexture&>
+	auto Get(Name id) const -> eastl::enable_if_t<type == ResourceType::Texture, const RenderTexture&>
 	{
 		auto* resource = textures.Find(id);
 		assert(resource && "Tried to access an unloaded resource.");
@@ -95,7 +95,7 @@ public:
 	}
 
 	template<ResourceType type>
-	auto Get(Name id) -> eastl::enable_if_t<type == ResourceType::Mesh, const RenderMesh&>
+	auto Get(Name id) const -> eastl::enable_if_t<type == ResourceType::Mesh, const RenderMesh&>
 	{
 		auto* resource = meshes.Find(id);
 		assert(resource && "Tried to access an unloaded resource.");
@@ -103,7 +103,7 @@ public:
 	}
 
 	template<ResourceType type>
-	auto Get(Name id) -> eastl::enable_if_t<type == ResourceType::Material, const RenderMaterial&>
+	auto Get(Name id) const -> eastl::enable_if_t<type == ResourceType::Material, const RenderMaterial&>
 	{
 		auto* resource = materials.Find(id);
 		assert(resource && "Tried to access an unloaded resource.");
@@ -111,7 +111,7 @@ public:
 	}
 
 	template<ResourceType type>
-	auto Get(Name id) -> eastl::enable_if_t<type == ResourceType::CubeTexture, const RenderCubeTexture&>
+	auto Get(Name id) const -> eastl::enable_if_t<type == ResourceType::CubeTexture, const RenderCubeTexture&>
 	{
 		auto* resource = cubeTextures.Find(id);
 		assert(resource && "Tried to access an unloaded resource.");

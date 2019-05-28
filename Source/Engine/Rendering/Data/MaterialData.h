@@ -4,6 +4,16 @@
 
 #include "CoreEngine.h"
 #include "Core/Strings/String.h"
+#include "Core/Assets/AssetInfo.h"
+
+
+struct MaterialParam {
+	Name name;
+};
+
+struct MaterialTextureParam : public MaterialParam {
+	AssetInfo asset;
+};
 
 
 struct MaterialData
@@ -12,6 +22,10 @@ public:
 
 	String vertexCode;
 	String fragmentCode;
+
+	// Static Parameters
+	TArray<MaterialTextureParam> textureParams;
+
 
 	MaterialData() = default;
 	MaterialData(String vertexCode, String fragmentCode)

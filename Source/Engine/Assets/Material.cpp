@@ -30,9 +30,10 @@ bool Material::PostLoad()
 			return false;
 		}
 
+		LoadTextures();
+
 		QueueRenderCommand<LoadMaterialCommand>(GetInfo(), GetData());
 
-		LoadTextures();
 		return Super::PostLoad();
 	}
 	return false;
@@ -45,8 +46,12 @@ void Material::OnUnload()
 
 void Material::LoadTextures()
 {
-	/*baseColor.Load();
+	baseColor.Load();
 	normal.Load();
-	roughness.Load();
-	metallic.Load();*/
+	rmao.Load();
+
+	data.textureParams.Reserve(3);
+	data.textureParams.Add({ TX("base_color"), baseColor.GetInfo() });
+	data.textureParams.Add({ TX("normal"),    normal.GetInfo()    });
+	data.textureParams.Add({ TX("rmao"),      rmao.GetInfo()      });
 }

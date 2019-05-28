@@ -17,23 +17,25 @@ struct RenderMaterial
 	static const Name notAResourceId;
 
 	GLuint programId = GL_INVALID_INDEX;
+
+	TArray<MaterialTextureParam> textures;
 	mutable TMap<Name, GLint> parameterIds{ Name::None() };
 
 
 	RenderMaterial() = default;
-	RenderMaterial(const String& vertexCode, const String& fragmentCode, Name id = notAResourceId)
-	{
-		CompileProgram(id, vertexCode, fragmentCode);
-	}
-	RenderMaterial(Name id, const MaterialData& materialData)
-		: RenderMaterial{ materialData.vertexCode, materialData.fragmentCode, id }
-	{}
 
-	RenderMaterial(RenderMaterial&& other) : programId{other.programId} {
+	RenderMaterial(Name id, const MaterialData& data)
+	{
+		CompileProgram(id, data.vertexCode, data.fragmentCode);
+		textures = data.textureParams;
+	}
+
+	RenderMaterial(RenderMaterial&& other) : programId{ other.programId }, textures{ other.textures } {
 		other.programId = GL_INVALID_INDEX;
 	}
 	RenderMaterial& operator=(RenderMaterial&& other) {
 		programId = other.programId;
+		textures = other.textures;
 		other.programId = GL_INVALID_INDEX;
 		return *this;
 	}
@@ -43,7 +45,7 @@ struct RenderMaterial
 	}
 
 	void Use() const { glUseProgram(programId); }
-	void BindTextures() const {}
+	void BindStaticParameters(const struct Resources& resources) const;
 
 
 	bool SetFloat(Name name, float value) const;
@@ -58,24 +60,5 @@ private:
 	void LogShaderError(GLint shaderId);
 	void LogProgramError();
 
-	FORCEINLINE GLint FindParameterIndex(const Name& name) const
-	{
-
-		if (const auto* param = parameterIds.Find(name))
-		{
-			// Found cached id
-			return *param;
-		}
-		else
-		{
-			// Try to find parameter on the program
-			const GLint id = glGetUniformLocation(programId, name.ToString().c_str());
-			if (id != GL_INVALID_INDEX)
-			{
-				parameterIds.Insert(name, id);
-				return id;
-			}
-		}
-		return GL_INVALID_INDEX;
-	}
+	GLint FindParameterIndex(const Name& name) const;
 };

@@ -50,9 +50,9 @@ in vec3 world_position;
 in vec2 uv;
 
 // Material Parameters
-uniform sample2D base_color;
-uniform sample2D rmao;
-uniform sample2D normal;
+uniform sampler2D base_color;
+uniform sampler2D rmao;
+uniform sampler2D normal;
 
 uniform vec3 camera_position;
 uniform vec3 ambient_color;
@@ -181,14 +181,14 @@ vec3 ApplyPointLight(PointLight light, vec3 baseColor, float metallic, float rou
 
 void main()
 {
-    vec3 baseColor = texture(base_color, uv).xyz;
-    vec3 normalColor = normalize(2.0 * texture(normal, uv).rgb - 1.0);
+    vec3 baseColor = texture(base_color, uv).rgb;
+    vec3 normalColor = normalize(texture(normal, uv).rgb * 2.0 - 1.0);
     vec4 rmaoColor = texture(rmao, uv);
-    float roughness = rmaoColor.x;
-    float metallic = rmaoColor.y;
-    float ao = rmaoColor.z;
+    float roughness = rmaoColor.r;
+    float metallic = rmaoColor.g;
+    float ao = rmaoColor.b;
 
-    vec3 N = normalize(normal);
+    vec3 N = normalize(world_normal);
     vec3 V = normalize(camera_position - world_position);
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 

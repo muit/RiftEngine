@@ -7,6 +7,7 @@
 #include "Core/Assets/AssetPtr.h"
 
 #include "Assets/Mesh.h"
+#include "Assets/Material.h"
 
 
 class CMesh : public Component {
@@ -15,8 +16,8 @@ class CMesh : public Component {
 	PROP(TAssetPtr<Mesh>, model, DetailsEdit)
 	TAssetPtr<Mesh> model;
 
-	PROP(Color, color)
-	Color color;
+	PROP(TAssetPtr<Material>, overrideMaterial, DetailsEdit)
+	TAssetPtr<Material> overrideMaterial;
 
 
 	CMesh() : Super(), model{} {}

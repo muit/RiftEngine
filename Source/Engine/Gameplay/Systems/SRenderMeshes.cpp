@@ -31,6 +31,9 @@ void SRenderMeshes::Tick(float deltaTime)
 	ScopedStackGameZone();
 	Super::Tick(deltaTime);
 
+	DrawSkybox();
+
+
 	auto view = ECS()->View<CTransform, CMesh>();
 
 	TArray<MeshDrawInstance> meshInstances;
@@ -40,16 +43,24 @@ void SRenderMeshes::Tick(float deltaTime)
 	{
 		if (!c.model.IsNull())
 		{
+			TAssetPtr<Material> material;
+			if (c.overrideMaterial.IsNull())
+			{
+				material = c.model->material;
+			}
+			else
+			{
+				c.overrideMaterial.Load();
+				material = c.overrideMaterial;
+			}
+
 			meshInstances.Add({
 				c.model.GetInfo(),
-				c.model->material.GetInfo(),
+				material.GetInfo(),
 				t.transform
 			});
 		}
 	});
-
-
-	DrawSkybox();
 
 	QueueRenderCommand<DrawMeshesCommand>(MoveTemp(meshInstances));
 

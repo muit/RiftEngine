@@ -1,3 +1,6 @@
 {
-  "asset_type": "Material"
+  "asset_type": "Material",
+  "baseColor": "Textures/T_Box_BC.png.meta",
+  "normal": "Textures/T_Box_N.png.meta",
+  "rmao": "Textures/T_Box_RMAO.png.meta"
 }
