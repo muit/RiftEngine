@@ -23,6 +23,7 @@ public:
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
 		// #TODO: Ensure assets stay loaded during this frame
+		ScopedGraphicsZone("Load Texture");
 		render.resources.Load(asset.GetPath(), asset->GetTextureData());
 	}
 };
@@ -35,6 +36,7 @@ public:
 	LoadCubeTextureCommand(TAssetPtr<CubeTexture> asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
+		ScopedGraphicsZone("Load CubeTexture");
 		render.resources.Load(asset.GetPath(), asset->GetTextureData());
 	}
 };
@@ -47,6 +49,7 @@ public:
 	FreeTextureCommand(AssetInfo asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
+		ScopedGraphicsZone("Free Texture");
 		render.resources.Free<ResourceType::Texture>(asset.GetPath());
 	}
 };
@@ -59,6 +62,7 @@ public:
 	FreeCubeTextureCommand(AssetInfo asset) : asset{ asset } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
+		ScopedGraphicsZone("Free CubeTexture");
 		render.resources.Free<ResourceType::CubeTexture>(asset.GetPath());
 	}
 };

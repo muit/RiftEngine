@@ -59,14 +59,15 @@ EDialogResult AssetDialog::Draw()
 
 void AssetDialog::DrawHeader()
 {
-	if (ImGui::Button("Assets/"))
+	if (ImGui::Button("Assets"))
 	{
 		navigatePath = "/";
 	}
 
 	ImGui::SameLine();
 
-	ImGui::Text(currentPath.string().c_str());
+	String path = FileSystem::ToString(currentPath);
+	ImGui::Text(path.c_str());
 }
 
 void AssetDialog::DrawContent()
@@ -92,7 +93,8 @@ void AssetDialog::DrawContent()
 			if (FileSystem::IsAssetPath(absCurrentPath.parent_path()) &&
 				ImGui::Selectable("..", false, 0, ImVec2(ImGui::GetWindowContentRegionWidth(), 0)))
 			{
-				navigatePath = currentPath.parent_path();
+				const Path parentPath = currentPath.parent_path();
+				navigatePath = parentPath.empty()? "/" : parentPath;
 			}
 			for (auto& p : directories)
 			{
@@ -199,7 +201,19 @@ void AssetDialog::CacheCurrentDirectory()
 {
 	CacheRoots();
 
-	const Path absCurrentPath = FileSystem::GetAssetsPath() / currentPath;
+	if (currentPath.empty())
+		return;
+
+	Path absCurrentPath;
+	if (CString::Equals(FileSystem::ToString(currentPath), '/'))
+	{
+		absCurrentPath = FileSystem::GetAssetsPath();
+	}
+	else
+	{
+		absCurrentPath = FileSystem::GetAssetsPath() / currentPath;
+	}
+
 	for (auto& p : FileSystem::DirectoryIterator(absCurrentPath))
 	{
 		Path path = p.path();

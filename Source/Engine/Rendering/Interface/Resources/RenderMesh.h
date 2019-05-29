@@ -5,6 +5,7 @@
 #include "CoreEngine.h"
 #include "../../Data/MeshData.h"
 #include "Core/Assets/AssetInfo.h"
+#include "../OpenGL.h"
 
 
 struct RenderMesh
@@ -27,11 +28,14 @@ struct RenderMesh
 	void Bind() const
 	{
 		glBindVertexArray(glVertexArrayId);
+		glCheckError();
 	}
 
 	void Draw() const
 	{
+		glBindVertexArray(glVertexArrayId);
 		glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
+		glCheckError();
 	}
 
 	static void Unbind() { glBindVertexArray(0); }

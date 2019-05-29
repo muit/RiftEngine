@@ -6,6 +6,7 @@
 #include "Core/Math/Vector.h"
 #include "Tools/Profiler.h"
 #include "tracy/TracyOpenGL.hpp"
+#include "../Interface/OpenGL.h"
 
 
 using MeshTransformMap = TMap<Name, TArray<Transform>>;
@@ -85,9 +86,9 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 			// Bind mesh once
 			meshResource.Bind();
 
-			material.BindStaticParameters(render.resources);
 			material.SetV3("camera_position", render.camera.transform.location);
 			render.lighting.Bind(material);
+			material.BindStaticParameters(render.resources);
 
 			for (const auto& transform : meshBatch.second)
 			{
@@ -103,5 +104,7 @@ void DrawMeshesCommand::Execute(FrameRender& render, Frame& frame)
 			}
 		}
 	}
+
+	glCheckError();
 	RenderMesh::Unbind();
 }

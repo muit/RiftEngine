@@ -2,6 +2,8 @@
 
 #include "RenderMaterial.h"
 #include "../../Resources.h"
+#include "../OpenGL.h"
+
 
 const Name RenderMaterial::notAResourceId { "Not a Resource" };
 
@@ -64,17 +66,25 @@ void RenderMaterial::CompileProgram(Name id, const String& vertexCode, const Str
 	// Free compiled shaders
 	glDeleteShader(vertexId);
 	glDeleteShader(fragmentId);
+
+	glCheckError();
 }
 
 void RenderMaterial::BindStaticParameters(const Resources& resources) const
 {
-	for (const auto& texture : textures)
+	for (i32 i = 0; i < textures.Size(); ++i)
 	{
+		const auto& texture = textures[i];
+
 		const GLint id = FindParameterIndex(texture.name);
 		if (id != GL_INVALID_INDEX)
 		{
+			//https://community.khronos.org/t/passing-multiple-textures-from-opengl-to-glsl-shader/53096
 			const RenderTexture& textureRes = resources.Get<ResourceType::Texture>(texture.asset.GetPath());
-			glUniform1i(id, textureRes.glId);
+			glActiveTexture(GL_TEXTURE0 + i);
+			textureRes.Bind();
+
+			glUniform1i(id, i);
 		}
 	}
 }

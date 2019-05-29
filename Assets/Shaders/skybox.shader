@@ -9,7 +9,7 @@ out vec3 uv;
 
 void main()
 {
-    uv = v_position;
+    uv = vec3(v_position.x, -v_position.y, v_position.z);
     gl_Position = vp * vec4(v_position, 1.0);
 } 
 
@@ -19,10 +19,11 @@ void main()
 #version 330 core
 
 in vec3 uv;
+out vec4 fragment_color;
 
 uniform samplerCube skybox;
 
 void main()
 {    
-    gl_FragColor = texture(skybox, uv);
+    fragment_color = texture(skybox, uv);
 }

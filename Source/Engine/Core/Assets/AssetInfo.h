@@ -26,7 +26,7 @@ public:
 	 * @returns true if this can never be pointed towards an asset
 	 */
 	const bool IsNull() const {
-		return GetPath().IsNone() || !FileSystem::IsAssetPath(GetSPath());
+		return id.IsNone() || !FileSystem::IsAssetPath(GetSPath());
 	}
 
 	inline const Name& GetPath()    const { return id; }

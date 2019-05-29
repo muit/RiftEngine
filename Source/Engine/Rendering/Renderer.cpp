@@ -12,6 +12,7 @@
 #include "Core/Log.h"
 #include "Tools/Profiler.h"
 #include "Core/Engine.h"
+#include "Interface/OpenGL.h"
 
 
 #if PLATFORM_APPLE
@@ -141,6 +142,8 @@ void Renderer::Render()
 
 		engine->GetRenderFrame().ExecuteCommands(render);
 	}
+
+	glCheckError();
 }
 
 void Renderer::RenderUI()

@@ -4,6 +4,7 @@
 
 #include "CoreEngine.h"
 #include "Rendering/Data/CubeTextureData.h"
+#include "../OpenGL.h"
 
 
 struct RenderCubeTexture
@@ -17,7 +18,10 @@ struct RenderCubeTexture
 
 	void Bind() const {
 		glActiveTexture(GL_TEXTURE0);
+		glCheckError();
 		glBindTexture(GL_TEXTURE_CUBE_MAP, glId);
+
+		glCheckError();
 	}
 
 private:

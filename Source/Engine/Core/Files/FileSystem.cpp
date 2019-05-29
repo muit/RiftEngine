@@ -19,7 +19,7 @@ bool FileSystem::LoadJsonFile(Path path, Json& result)
 {
 	ScopedZone("LoadJsonFile", BB45D1);
 
-	if (!SanitizeAssetPath(path) || !fs::exists(path))
+	if (!SanitizeAssetPath(path) || !FileExists(path))
 		return false;
 
 	std::ifstream file(path);
@@ -50,7 +50,7 @@ bool FileSystem::LoadStringFile(Path path, String& result)
 {
 	ScopedZone("LoadStringFile", BB45D1);
 
-	if (!SanitizeAssetPath(path) || !fs::exists(path))
+	if (!SanitizeAssetPath(path) || !FileExists(path))
 		return false;
 
 	std::ifstream file(path);

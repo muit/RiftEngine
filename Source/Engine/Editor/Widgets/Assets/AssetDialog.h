@@ -108,7 +108,7 @@ public:
 
 	AssetDialog(String title)
 		: title{title}
-		, currentPath{ FileSystem::GetAssetsPath() }
+		, currentPath{ "/" }
 	{}
 	virtual ~AssetDialog() {}
 

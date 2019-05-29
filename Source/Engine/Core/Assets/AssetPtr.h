@@ -74,36 +74,40 @@ public:
 	 * Tries to load this asset if it's not already
 	 * @returns the loaded asset
 	 */
-	Ptr<T> Load() const
+	bool Load() const
 	{
-		if (IsNull()) { return {}; }
-
-		if (!IsValid())
+		if (IsNull())
+		{
+			return false;
+		}
+		else if (!IsValid())
 		{
 			if (auto manager = AssetManager::Get())
 			{
 				cachedAsset = manager->Load(info);
 			}
 		}
-		return cachedAsset.Cast<T>();
+		return cachedAsset.IsValid();
 	}
 
 	/**
 	 * Tries to load this asset and returns a new one if not found
 	 * @returns the loaded asset
 	 */
-	Ptr<T> LoadOrCreate() const
+	bool LoadOrCreate() const
 	{
-		if (IsNull()) { return {}; }
-
-		if (!IsValid())
+		if (IsNull())
+		{
+			return false;
+		}
+		else if (!IsValid())
 		{
 			if (auto manager = AssetManager::Get())
 			{
 				cachedAsset = manager->LoadOrCreate(info, T::StaticClass());
 			}
 		}
-		return cachedAsset.Cast<T>();
+		return cachedAsset.IsValid();
 	}
 
 	/**

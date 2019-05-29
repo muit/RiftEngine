@@ -1,6 +1,7 @@
 // © 2019 Miguel Fernández Arce - All rights reserved
 
 #include "RenderMesh.h"
+#include "../OpenGL.h"
 #include "Core/Log.h"
 
 
@@ -11,6 +12,7 @@ void RenderMesh::Load(Name id, const MeshData& mesh)
 
 	glGenBuffers(1, &glVerticesId);         // VBO
 	glGenBuffers(1, &glTrianglesId);        // EBO
+	glCheckError();
 
 	// Bind vertices (VBO)
 	{
@@ -33,6 +35,8 @@ void RenderMesh::Load(Name id, const MeshData& mesh)
 
 		// Stats
 		verticesCount = vertices.Size();
+
+		glCheckError();
 	}
 
 	// Bind triangles (EBO)
@@ -44,9 +48,13 @@ void RenderMesh::Load(Name id, const MeshData& mesh)
 
 		// Stats
 		indicesCount = triangles.Size() * 3;
+
+		glCheckError();
 	}
 
 	glBindVertexArray(0);
+
+	glCheckError();
 
 	Log::Message("Loaded mesh into GPU '%s' Id:%i", id.ToString().c_str(), glVertexArrayId);
 }

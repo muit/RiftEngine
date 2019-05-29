@@ -6,6 +6,7 @@
 #include "Core/Math/Vector.h"
 #include "Tools/Profiler.h"
 #include "tracy/TracyOpenGL.hpp"
+#include "../Interface/OpenGL.h"
 
 
 using MeshTransformMap = TMap<Name, TArray<Transform>>;
@@ -27,19 +28,20 @@ void DrawSkyboxCommand::Execute(FrameRender& render, Frame& frame)
 	const RenderMaterial& materialRes = render.resources.Get<ResourceType::Material>(material.GetPath());
 	const RenderCubeTexture& textureRes = render.resources.Get<ResourceType::CubeTexture>(texture.GetPath());
 
-	glCullFace(GL_FRONT);
-	glDepthMask(GL_FALSE);
 
 	materialRes.Use();
 	materialRes.SetMatrix4f(vpParameter, vpMatrix);
-
-	cubeRes.Bind();
 	textureRes.Bind();
 
-	cubeRes.Draw();
+	glCullFace(GL_FRONT);
+	glDepthMask(GL_FALSE);
 
+	cubeRes.Bind();
+	cubeRes.Draw();
 	RenderMesh::Unbind();
 
 	glDepthMask(GL_TRUE);
 	glCullFace(GL_BACK);
+
+	glCheckError();
 }

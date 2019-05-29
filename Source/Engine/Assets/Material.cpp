@@ -51,7 +51,16 @@ void Material::LoadTextures()
 	rmao.Load();
 
 	data.textureParams.Reserve(3);
-	data.textureParams.Add({ TX("base_color"), baseColor.GetInfo() });
-	data.textureParams.Add({ TX("normal"),    normal.GetInfo()    });
-	data.textureParams.Add({ TX("rmao"),      rmao.GetInfo()      });
+	if (baseColor.IsValid())
+	{
+		data.textureParams.Add({ TX("base_color"), baseColor.GetInfo() });
+	}
+	if (normal.IsValid())
+	{
+		data.textureParams.Add({ TX("normal"), normal.GetInfo() });
+	}
+	if (rmao.IsValid())
+	{
+		data.textureParams.Add({ TX("rmao"), rmao.GetInfo() });
+	}
 }

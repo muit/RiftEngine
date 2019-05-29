@@ -120,15 +120,13 @@ public:
 		return id == other.id;
 	}
 
-	bool IsNone() const {
-		return id == noneId;
-	}
+	bool IsNone() const { return id == noneId; }
 
 	const Id& GetId() const { return id; }
 
 
 	static const Name None() {
-		static Name none{ "" };
+		static Name none{ noneId };
 		return none;
 	};
 	static const Id noneId;

@@ -4,20 +4,24 @@
 
 #include "CoreEngine.h"
 #include "../../Data/TextureData.h"
+#include "../OpenGL.h"
 
 
 struct RenderTexture
 {
+private:
 	u32 glId = GL_INVALID_INDEX;
 
+public:
 
 	RenderTexture() = default;
 	RenderTexture(const TextureData& texture) { Load(texture); }
 	~RenderTexture() { Free(); }
 
-	void Bind()
+	NOINLINE void Bind() const
 	{
 		glBindTexture(GL_TEXTURE_2D, glId);
+		glCheckError();
 	}
 
 private:

@@ -51,6 +51,10 @@ struct CString {
 		return eastl::Compare(str.c_str(), c, Math::Min(size, str.length())) == 0;
 	}
 
+	static bool Equals(const String& str, const TCHAR c) {
+		return str.size() == 1 && str[0] == c;
+	}
+
 	/**
 	 * Breaks up a delimited string into elements of a string array.
 	 *
