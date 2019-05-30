@@ -71,7 +71,7 @@ void SRenderMeshes::DrawSkybox()
 {
 	CGraphics* graphics = ECS()->FindSingleton<CGraphics>();
 
-	if(!graphics->cubeMap.IsNull())
+	if(graphics && !graphics->cubeMap.IsNull())
 	{
 		// Ensure it's loaded
 		if (graphics->cubeMap.Load())
