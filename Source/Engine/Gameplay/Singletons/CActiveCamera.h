@@ -7,7 +7,7 @@
 
 
 class CActiveCamera : public CSingleton {
-	STRUCT(CActiveCamera, CSingleton)
+	STRUCT(CActiveCamera, CSingleton, Transient)
 
 	CameraData activeData;
 };

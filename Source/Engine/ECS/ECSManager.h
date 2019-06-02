@@ -225,7 +225,7 @@ public:
 		return HasSingleton(C::StaticStruct());
 	}
 
-	bool RemoveSingleton(StructType* type);
+	bool RemoveSingleton(const StructType* type);
 
 	template<typename C>
 	bool RemoveSingleton()

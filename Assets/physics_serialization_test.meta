@@ -5,6 +5,40 @@
   "scene": {
     "entities": [
       {
+        "CEditorCamera": {
+          "fov": 60.0
+        },
+        "CEntity": {
+          "name": "EditorCamera"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 9.671097,
+              "y": 0.59974146,
+              "z": 7.7614436
+            },
+            "rotation": {
+              "w": 0.6795049,
+              "x": -0.22630908,
+              "y": -0.22052445,
+              "z": 0.66213775
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 3867402,
+          "b": 3630947,
+          "c": 421055366,
+          "d": 3048582644
+        }
+      },
+      {
         "CBody": {
           "bAffectedByGravity": true,
           "bHasBoxShape": false,
@@ -22,13 +56,8 @@
           "name": "PlayerBall"
         },
         "CMesh": {
-          "color": {
-            "a": 0,
-            "b": 0,
-            "g": 0,
-            "r": 0
-          },
-          "model": "Meshes/ball.fbx.meta"
+          "model": "Meshes/ball.fbx.meta",
+          "overrideMaterial": "none"
         },
         "CPlayer": {
           "cameraDistance": 10.0,
@@ -57,50 +86,23 @@
           }
         },
         "id": {
-          "a": 2313672,
-          "b": 3629536,
-          "c": 946618139,
-          "d": 2671642192
-        }
-      },
-      {
-        "CEditorCamera": {
-          "fov": 60.0
-        },
-        "CEntity": {
-          "name": "EditorCamera"
-        },
-        "CTransform": {
-          "transform": {
-            "location": {
-              "x": 9.671097,
-              "y": 0.59974146,
-              "z": 7.7614436
-            },
-            "rotation": {
-              "w": 0.6795049,
-              "x": -0.22630908,
-              "y": -0.22052445,
-              "z": 0.66213775
-            },
-            "scale": {
-              "x": 1.0,
-              "y": 1.0,
-              "z": 1.0
-            }
-          }
-        },
-        "id": {
-          "a": 2230093,
-          "b": 3629536,
-          "c": 946617269,
-          "d": 2671642104
+          "a": 3828617,
+          "b": 3630947,
+          "c": 421053142,
+          "d": 3048582421
         }
       }
     ],
     "name": "none",
     "singletons": {
       "CGraphics": {
+        "ambientColor": {
+          "a": 255,
+          "b": 255,
+          "g": 255,
+          "r": 255
+        },
+        "ambientIntensity": 0.3,
         "cubeMap": "Textures/Cubemaps/skybox.meta"
       },
       "CPhysicsWorld": {

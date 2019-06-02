@@ -218,21 +218,27 @@ void ECSManager::SerializeSingletons(Archive& ar)
 	ar.BeginObject("singletons");
 	if (ar.IsLoading())
 	{
-		// #TODO: Reserve by data object size
-		singletonComponents.Empty(true);
-
-		// Deserialize all singletons
+		// Deserialize all singletons.
+		// Transients are ignored
+		// Invalids are destroyed
 		TArray<StructType*> singletonTypes;
 		CSingleton::StaticStruct()->GetAllChildren(singletonTypes);
 		for (const auto* type : singletonTypes)
 		{
-			ar.BeginObject(type->GetSName());
-			if (ar.IsObjectValid())
+			if (!type->HasTag(Transient))
 			{
-				CSingleton* comp = AssignSingleton(type);
-				comp->SerializeReflection(ar);
+				ar.BeginObject(type->GetSName());
+				if (ar.IsObjectValid())
+				{
+					CSingleton* comp = AssignSingleton(type);
+					comp->SerializeReflection(ar);
+				}
+				else
+				{
+					RemoveSingleton(type);
+				}
+				ar.EndObject();
 			}
-			ar.EndObject();
 		}
 	}
 	else
@@ -241,11 +247,14 @@ void ECSManager::SerializeSingletons(Archive& ar)
 		CSingleton::StaticStruct()->GetAllChildren(singletonTypes);
 		for (const auto* type : singletonTypes)
 		{
-			if (auto* component = FindSingleton(type))
+			if (!type->HasTag(Transient))
 			{
-				ar.BeginObject(type->GetSName());
-				component->SerializeReflection(ar);
-				ar.EndObject();
+				if (auto* component = FindSingleton(type))
+				{
+					ar.BeginObject(type->GetSName());
+					component->SerializeReflection(ar);
+					ar.EndObject();
+				}
 			}
 		}
 	}
@@ -303,7 +312,7 @@ CSingleton* ECSManager::FindSingleton(const StructType* type) const
 	return ptr ? ptr->get() : nullptr;
 }
 
-bool ECSManager::RemoveSingleton(StructType* type)
+bool ECSManager::RemoveSingleton(const StructType* type)
 {
 	return singletonComponents.RemoveIf([type](const auto & comp) {
 		return comp->GetStruct() == type;
