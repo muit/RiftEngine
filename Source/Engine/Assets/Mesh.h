@@ -13,7 +13,7 @@ class Mesh : public AssetData
 {
 	CLASS(Mesh, AssetData)
 
-private:
+protected:
 
 	MeshData data;
 
@@ -22,13 +22,26 @@ public:
 	PROP(TAssetPtr<Material>, material)
 	TAssetPtr<Material> material;
 
-	PROP(float, importScale)
-	float importScale { 1.f };
 
 	Mesh() : Super() {}
 
 	virtual bool PostLoad() override;
-	virtual void OnUnload() override;
 
 	FORCEINLINE const MeshData& GetMeshData() const { return data; }
+};
+
+class StaticMesh : public Mesh
+{
+	CLASS(StaticMesh, Mesh)
+
+public:
+
+	PROP(float, importScale)
+	float importScale{ 1.f };
+
+
+	StaticMesh() : Super() {}
+
+	virtual bool PostLoad() override;
+	virtual void OnUnload() override;
 };

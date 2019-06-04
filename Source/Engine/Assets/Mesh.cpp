@@ -15,6 +15,15 @@
 bool Mesh::PostLoad()
 {
 	data = {};
+	return Super::PostLoad();
+}
+
+bool StaticMesh::PostLoad()
+{
+	const bool bSuccess = Super::PostLoad();
+
+	if (!bSuccess)
+		return false;
 
 	Path rawModelPath = FileSystem::FindRawFile(FileSystem::FromString(GetInfo().GetSPath()));
 	if (!rawModelPath.empty())
@@ -47,13 +56,13 @@ bool Mesh::PostLoad()
 			material.Load();
 		}
 
-		return Super::PostLoad();
+		return true;
 	}
 
 	return false;
 }
 
-void Mesh::OnUnload()
+void StaticMesh::OnUnload()
 {
 	QueueRenderCommand<FreeMeshCommand>(GetInfo());
 }

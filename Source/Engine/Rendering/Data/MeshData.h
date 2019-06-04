@@ -9,7 +9,7 @@
 #include "Core/Containers/Array.h"
 
 
-class Mesh;
+class StaticMesh;
 
 struct Vertex
 {
@@ -31,13 +31,13 @@ public:
 
 	MeshData() = default;
 
-	void FromAssimpScene(const struct aiScene* scene, Mesh& asset);
+	void FromAssimpScene(const struct aiScene* scene, StaticMesh& asset);
 
 	FORCEINLINE const VertexBuffer& GetVertices() const { return vertices; }
 	FORCEINLINE const TriangleBuffer& GetTriangles() const { return triangles; }
 
 private:
 
-	void ProcessNode(struct aiNode *node, const struct aiScene* scene, Mesh& asset);
-	void ProcessMesh(struct aiMesh *mesh, const struct aiScene* scene, Mesh& asset);
+	void ProcessNode(struct aiNode *node, const struct aiScene* scene, StaticMesh& asset);
+	void ProcessMesh(struct aiMesh *mesh, const struct aiScene* scene, StaticMesh& asset);
 };

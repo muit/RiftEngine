@@ -9,7 +9,7 @@
 #include "Assets/Mesh.h"
 
 
-void MeshData::FromAssimpScene(const aiScene* scene, Mesh& asset)
+void MeshData::FromAssimpScene(const aiScene* scene, StaticMesh& asset)
 {
 	if (scene)
 	{
@@ -22,7 +22,7 @@ void MeshData::FromAssimpScene(const aiScene* scene, Mesh& asset)
 	}
 }
 
-void MeshData::ProcessNode(aiNode *node, const aiScene *scene, Mesh& asset)
+void MeshData::ProcessNode(aiNode *node, const aiScene *scene, StaticMesh& asset)
 {
 	// Process all the node's meshes (if any)
 	for (u32 i = 0; i < node->mNumMeshes; ++i)
@@ -38,7 +38,7 @@ void MeshData::ProcessNode(aiNode *node, const aiScene *scene, Mesh& asset)
 	}
 }
 
-void MeshData::ProcessMesh(aiMesh *mesh, const aiScene* scene, Mesh& asset)
+void MeshData::ProcessMesh(aiMesh *mesh, const aiScene* scene, StaticMesh& asset)
 {
 	const float importScale = asset.importScale;
 

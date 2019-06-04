@@ -16,14 +16,14 @@
 
 class LoadMeshCommand : public RenderCommand {
 public:
-	TAssetPtr<Mesh> asset;
+	AssetInfo asset;
+	const MeshData* dataPtr;
 
-
-	LoadMeshCommand(TAssetPtr<Mesh> asset) : asset{ asset } {}
+	LoadMeshCommand(TAssetPtr<Mesh> asset) : asset{ asset.GetInfo() }, dataPtr{ &asset->GetMeshData() } {}
 
 	virtual void Execute(FrameRender& render, Frame& frame) override {
 		ScopedGraphicsZone("Load Mesh Command");
-		render.resources.Load(asset.GetPath(), asset->GetMeshData());
+		render.resources.Load(asset.GetPath(), *dataPtr);
 	}
 };
 
