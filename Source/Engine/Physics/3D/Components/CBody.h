@@ -3,8 +3,11 @@
 
 #include "CoreStruct.h"
 #include "ECS/Component.h"
-#include "../../PhysicsTypes.h"
 #include "PxRigidActor.h"
+#include "PxRigidDynamic.h"
+
+#include "../../PhysicsTypes.h"
+#include "../SPhysics.h"
 
 
 /** An entity will obtain physics when having a body.
@@ -54,7 +57,24 @@ public:
 		return *this;
 	}
 
+	bool IsInitialized() const { return rigidBody != nullptr; }
+
+	void SetLinearVelocity(const v3& velocity)
+	{
+		if (!IsStatic())
+		{
+			AsDynamic()->setLinearVelocity(SPhysics::ToPx(velocity));
+		}
+	}
+
+
 	FORCEINLINE bool IsStatic() const { return mobility == u8(EMobilityType::Static); }
 
-	bool IsInitialized() const { return rigidBody != nullptr; }
+private:
+
+	/** This assumes the body is dynamic. Otherwise its dangerous to call */
+	FORCEINLINE physx::PxRigidDynamic* AsDynamic() const
+	{
+		return static_cast<physx::PxRigidDynamic*>(rigidBody);
+	}
 };

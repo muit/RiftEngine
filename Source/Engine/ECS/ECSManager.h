@@ -43,6 +43,8 @@ public:
 
 	void Initialize()
 	{
+		guidEntityCache.SetDeletedKey(Guid::New());
+
 		RegistrySingletons();
 		RegistrySystems();
 	}

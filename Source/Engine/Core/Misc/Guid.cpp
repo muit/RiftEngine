@@ -58,7 +58,6 @@ Guid Guid::New()
 {
 	Guid result(0, 0, 0, 0);
 	PlatformMisc::CreateGuid(result);
-
 	return result;
 }
 

@@ -8,10 +8,16 @@
 #include "Core/Input/InputManager.h"
 
 
-class SDoors : public System {
-	CLASS(SDoors, System)
+class SInteraction : public System {
+	CLASS(SInteraction, System)
+
+
+	TArray<Name> pickedKeys;
 
 public:
 
 	virtual void Tick(float deltaTime) override;
+
+	void UpdateDoors();
+	void UpdateElevators();
 };

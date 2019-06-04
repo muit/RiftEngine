@@ -142,7 +142,7 @@ public:
 	 */
 	i32 Remove(const KeyType& key)
 	{
-		ConstIterator it = FindIt(key);
+		Iterator it = FindIt(key);
 		if (it != end())
 		{
 			const i32 lastSize = Size();
@@ -198,6 +198,10 @@ public:
 
 	void SetEmptyKey(const KeyType& key) {
 		map.set_empty_key(key);
+	}
+
+	void SetDeletedKey(const KeyType& key) {
+		map.set_deleted_key(key);
 	}
 
 	// Iterator functions

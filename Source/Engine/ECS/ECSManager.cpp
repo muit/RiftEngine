@@ -26,7 +26,7 @@
 #include "Gameplay/Game/Components/CDoor.h"
 #include "Gameplay/Game/Systems/SPlayer.h"
 #include "Gameplay/Game/Systems/SPlatforms.h"
-#include "Gameplay/Game/Systems/SDoors.h"
+#include "Gameplay/Game/Systems/SInteraction.h"
 
 #include "Gameplay/Systems/SEditorCamera.h"
 #include "Gameplay/Systems/SRenderMeshes.h"
@@ -269,7 +269,7 @@ void ECSManager::RegistrySystems()
 
 	RegistrySystem<SEditorCamera>();
 	RegistrySystem<SLighting>();
-	RegistrySystem<SDoors>();
+	RegistrySystem<SInteraction>();
 	RegistrySystem<SPlayer>();
 	RegistrySystem<SPlatforms>();
 
