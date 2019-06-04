@@ -11,6 +11,7 @@
 #include "Interface/Resources/RenderMesh.h"
 #include "Interface/Resources/RenderMaterial.h"
 #include "Interface/Resources/RenderCubeTexture.h"
+#include "Interface/Resources/RenderSpiral.h"
 
 
 enum class ResourceType : u8 {
@@ -35,8 +36,10 @@ private:
 	MaterialMap materials;
 	CubeTextureMap cubeTextures;
 
-
 public:
+
+	RenderSpiral spiral;
+
 
 	Resources() {
 		textures.SetEmptyKey(Name::None());

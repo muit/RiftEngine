@@ -29,6 +29,7 @@
 #include "Gameplay/Game/Components/CPlatform.h"
 #include "Gameplay/Game/Components/CKey.h"
 #include "Gameplay/Game/Components/CDoor.h"
+#include "Test/Components/CRotatingCube.h"
 
 
 void SceneDetails::Build()
@@ -79,6 +80,10 @@ void SceneDetails::Build()
 		AddNew<ComponentDetails<CPlatform>>(entity);
 		AddNew<ComponentDetails<CKey>>(entity);
 		AddNew<ComponentDetails<CDoor>>(entity);
+
+		// Test
+		AddNew<ComponentDetails<CRotatingCube>>(entity);
+		AddNew<ComponentDetails<CEj3Cube>>(entity);
 
 		TArray<StructType*> componentTypes;
 		Component::StaticStruct()->GetAllChildren(componentTypes);

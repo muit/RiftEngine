@@ -69,6 +69,17 @@ public:
 		x -= other.x; y -= other.y; z -= other.z;
 	}
 
+
+	constexpr v3 operator*(float other)
+	{
+		return { x * other, y * other, z * other };
+	}
+
+	constexpr v3 operator/(float other)
+	{
+		return { x / other, y / other, z / other };
+	}
+
 	FORCEINLINE v2 xz() const { return v2{x, z}; }
 
 	static const v3 Forward;

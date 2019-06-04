@@ -11,6 +11,7 @@
 #include "Gameplay/Singletons/CSceneTree.h"
 #include "Gameplay/Singletons/CVisualDebugger.h"
 #include "Gameplay/Singletons/CGraphics.h"
+#include "Test/Singletons/CSquare.h"
 
 
 #if WITH_EDITOR
@@ -34,6 +35,8 @@ void SingletonsDetails::Build()
 	AddNew<SingletonDetails<CGraphics>>();
 	AddNew<SingletonDetails<CSceneTree>>();
 	AddNew<SingletonDetails<CVisualDebugger>>();
+
+	AddNew<SingletonDetails<CSquare>>();
 }
 
 void SingletonsDetails::Tick(float deltaTime)

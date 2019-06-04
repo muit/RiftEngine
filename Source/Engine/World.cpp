@@ -15,7 +15,7 @@ void World::Initialize()
 
 	ecs = Create<ECSManager>(Self());
 
-	LoadScene({ "3d_physics.meta" });
+	LoadScene({ "Test/test.meta" });
 
 #if WITH_EDITOR
 	worldType = EWorldType::Editor;

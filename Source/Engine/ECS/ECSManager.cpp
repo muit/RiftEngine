@@ -40,6 +40,10 @@
 #include "Gameplay/Singletons/CVisualDebugger.h"
 #include "Gameplay/Singletons/CGraphics.h"
 
+#include "Test/Systems/SRotatingCubes.h"
+#include "Test/Components/CRotatingCube.h"
+#include "Test/Systems/SRenderSpiral.h"
+
 
 void ECSManager::BeginPlay()
 {
@@ -134,6 +138,10 @@ void ECSManager::SerializeEntity(Archive& ar, EntityId entity)
 	SerializeComponent<CPlatform>(ar, entity);
 	SerializeComponent<CKey>(ar, entity);
 	SerializeComponent<CDoor>(ar, entity);
+
+	// Test
+	SerializeComponent<CRotatingCube>(ar, entity);
+	SerializeComponent<CEj3Cube>(ar, entity);
 }
 
 void ECSManager::SerializeEntities(Archive& ar)
@@ -273,10 +281,13 @@ void ECSManager::RegistrySystems()
 	RegistrySystem<SPlayer>();
 	RegistrySystem<SPlatforms>();
 
+	RegistrySystem<SRotatingCubes>();
+
 	// Rendering
 	RegistrySystem<SRenderCamera>();
 	RegistrySystem<SRenderLighting>();
 	RegistrySystem<SRenderMeshes>();
+	RegistrySystem<SRenderSpiral>();
 }
 
 void ECSManager::RegistrySingletons()
