@@ -45,6 +45,18 @@ public:
 };
 
 
+struct VehicleChassisSettings {
+	float mass;
+	v3 size;
+};
+
+struct VehicleWheelSettings {
+	float mass;
+	float radius;
+	float width;
+};
+
+
 /**
  * System that runs on game to upload, step and apply physics simulation.
  * Upload: Creates bodies and fixtures or updates them if already existing
@@ -85,6 +97,7 @@ protected:
 
 private:
 
+	void CreateBodies();
 	void UploadBodies();
 	void Step(float deltaTime);
 	void DownloadBodies();
@@ -92,6 +105,13 @@ private:
 	void CreateScene();
 	void CreateBody(EntityId entity, const CTransform& transform, CBody& body);
 	void SetupBodyShapes(CBody& body);
+
+	/** Begin Vehicles */
+	void InitVehicles();
+	void UpdateVehicles();
+	void CreateVehicle(class CVehicle& vehicle);
+	void ShutdownVehicles();
+	/** End Vehicles */
 
 public:
 

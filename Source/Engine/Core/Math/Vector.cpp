@@ -96,7 +96,7 @@ Quat Quat::FromRotator(Rotator rotator)
 
 Quat Quat::LookAt(const v3& origin, const v3& dest)
 {
-	return glm::lookAt(origin, dest, v3::Up);
+	return glm::lookAt(origin, dest, v3::Forward);
 }
 
 float Rotator::ClampAxis(float Angle)
@@ -130,4 +130,9 @@ FORCEINLINE float Rotator::NormalizeAxis(float Angle)
 v3 v2::xz() const
 {
 	return v3{ x, 0.f, y };
+}
+
+v3 v2::xy() const
+{
+	return v3{ x, y, 0.f };
 }

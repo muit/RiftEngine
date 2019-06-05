@@ -18,7 +18,7 @@ class CBody : public Component {
 	STRUCT(CBody, Component)
 
 
-	physx::PxRigidActor* rigidBody;
+	physx::PxRigidActor* rigidBody = nullptr;
 
 public:
 
@@ -47,16 +47,6 @@ public:
 	bool bIsTrigger = false;
 
 
-	CBody() = default;
-
-	CBody(CBody&& other) : Super(other) {
-		eastl::swap(rigidBody, other.rigidBody);
-	}
-	CBody& operator=(CBody&& other) {
-		eastl::swap(rigidBody, other.rigidBody);
-		return *this;
-	}
-
 	bool IsInitialized() const { return rigidBody != nullptr; }
 
 	void SetLinearVelocity(const v3& velocity)
@@ -67,6 +57,30 @@ public:
 		}
 	}
 
+	void AddAcceleration(const v3& accel)
+	{
+		if (!IsStatic())
+		{
+			AsDynamic()->addForce(SPhysics::ToPx(accel), physx::PxForceMode::eACCELERATION);
+		}
+	}
+
+	void AddForce(const v3& force, bool bAsImpulse = false)
+	{
+		if (!IsStatic())
+		{
+			AsDynamic()->addForce(SPhysics::ToPx(force), bAsImpulse? physx::PxForceMode::eIMPULSE : physx::PxForceMode::eFORCE);
+		}
+	}
+
+	void ClearForces()
+	{
+		if (!IsStatic())
+		{
+			AsDynamic()->clearForce(physx::PxForceMode::eFORCE);
+			AsDynamic()->clearForce(physx::PxForceMode::eIMPULSE);
+		}
+	}
 
 	FORCEINLINE bool IsStatic() const { return mobility == u8(EMobilityType::Static); }
 

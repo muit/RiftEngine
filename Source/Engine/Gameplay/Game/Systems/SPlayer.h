@@ -23,6 +23,7 @@ public:
 
 private:
 
+	void MoveForward(float delta);
 	void MoveRight(float delta);
 
 	void Movement2D();

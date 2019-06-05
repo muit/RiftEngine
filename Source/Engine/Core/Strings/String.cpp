@@ -67,7 +67,7 @@ String CString::ParseMemorySize(size_t size)
 	static const char* sizes[] { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 
 	const double scaleD = Math::Log(double(size), 1024.l);
-	const auto scale = Math::FloorToI64(scaleD);
+	const size_t scale = Math::FloorToI64(scaleD);
 	const size_t finalSize = size / Math::Pow<size_t>(1024, scale);
 
 	return CString::Printf("%i %s", finalSize, sizes[scale]);

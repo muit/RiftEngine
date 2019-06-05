@@ -25,6 +25,13 @@ void SPlayer::BeginPlay()
 	}, {})
 	.Bind(this, &SPlayer::MoveRight);
 
+	input->CreateAxisAction({ "MoveForward" }, {
+		{ EKey::W, EKeyModifier::None,  1.f },
+		{ EKey::S, EKeyModifier::None, -1.f }
+		}, {})
+	.Bind(this, &SPlayer::MoveForward);
+
+
 	// Store home locations
 	auto view = ECS()->View<CPlayer, CTransform>();
 	for (EntityId entity : view)
@@ -61,6 +68,11 @@ void SPlayer::Tick(float deltaTime)
 	MoveCameras(deltaTime);
 }
 
+void SPlayer::MoveForward(float delta)
+{
+	movementDelta.y += delta;
+}
+
 void SPlayer::MoveRight(float delta)
 {
 	movementDelta.x += delta;
@@ -68,11 +80,11 @@ void SPlayer::MoveRight(float delta)
 
 void SPlayer::Movement2D()
 {
-	auto movement2DView = ECS()->View<CPlayer, CBody2D>();
-	for (EntityId entity : movement2DView)
+	auto view = ECS()->View<CPlayer, CBody2D>();
+	for (EntityId entity : view)
 	{
-		CPlayer& player = movement2DView.get<CPlayer>(entity);
-		CBody2D& body   = movement2DView.get<CBody2D>(entity);
+		CPlayer& player = view.get<CPlayer>(entity);
+		CBody2D& body   = view.get<CBody2D>(entity);
 		body.body.ApplyLinearImpulse({ movementDelta * player.impulse });
 		body.body.ApplyTorque(movementDelta.x * player.impulse);
 	}
@@ -80,12 +92,14 @@ void SPlayer::Movement2D()
 
 void SPlayer::Movement3D()
 {
-	/*auto movement3DView = ECS()->View<CPlayer, CBody>();
-	for (EntityId entity : movement3DView)
+	auto view = ECS()->View<CPlayer, CBody>();
+	for (EntityId entity : view)
 	{
-		CPlayer& player = movement3DView.get<CPlayer>(entity);
-		CBody&   body   = movement3DView.get<CBody>(entity);
-	}*/
+		CPlayer& player = view.get<CPlayer>(entity);
+		CBody&   body   = view.get<CBody>(entity);
+
+		body.AddAcceleration(movementDelta.xy() * player.impulse);
+	}
 }
 
 void SPlayer::MoveCameras(float deltaTime)
@@ -114,10 +128,13 @@ void SPlayer::MoveCameras(float deltaTime)
 			CTransform& targetTransform = ecs->Get<CTransform>(cameraTarget);
 			CTransform& transform = cameraView.get<CTransform>(entity);
 
-			const v3 targetLocation = targetTransform.GetWLocation() + v3{ 0.f, -playerPtr->cameraDistance, 0.f };
+			const v3 targetLocation = targetTransform.GetWLocation() + v3{ 0.f, -playerPtr->cameraDistance, 1.f };
 			transform.SetWLocation(
 				Math::Lerp(transform.GetWLocation(), targetLocation, deltaTime * playerPtr->cameraSpeed)
 			);
+
+			// Look at player
+			//transform.SetWRotation(Quat::LookAt(transform.GetWLocation(), targetTransform.GetWLocation()));
 		}
 	}
 }

@@ -41,6 +41,7 @@ class v2 : public vec<2, float> {
 	using vec<2, float>::vec;
 public:
 	class v3 xz() const;
+	class v3 xy() const;
 };
 DECLARE_REFLECTION_TYPE(v2);
 
@@ -80,7 +81,8 @@ public:
 		return { x / other, y / other, z / other };
 	}
 
-	FORCEINLINE v2 xz() const { return v2{x, z}; }
+	FORCEINLINE v2 xy() const { return v2{ x, y }; }
+	FORCEINLINE v2 xz() const { return v2{ x, z }; }
 
 	static const v3 Forward;
 	static const v3 Right;
