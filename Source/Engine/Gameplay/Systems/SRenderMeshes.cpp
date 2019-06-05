@@ -43,18 +43,25 @@ void SRenderMeshes::Tick(float deltaTime)
 	{
 		if (!c.model.IsNull())
 		{
-			TAssetPtr<Material> material = c.model->material;
-			if (c.overrideMaterial.Load())
+			if (!c.model.IsValid())
 			{
-				// Override material is or was loaded and its valid, use it
-				material = c.overrideMaterial;
+				c.model.Load();
 			}
+			else
+			{
+				TAssetPtr<Material> material = c.model->material;
+				if (c.overrideMaterial.Load())
+				{
+					// Override material is or was loaded and its valid, use it
+					material = c.overrideMaterial;
+				}
 
-			meshInstances.Add({
-				c.model.GetInfo(),
-				material.GetInfo(),
-				t.transform
-			});
+				meshInstances.Add({
+					c.model.GetInfo(),
+					material.GetInfo(),
+					t.transform
+				});
+			}
 		}
 	});
 
