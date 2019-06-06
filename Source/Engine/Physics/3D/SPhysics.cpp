@@ -166,7 +166,8 @@ void SPhysics::UploadBodies()
 	auto view = ECS()->View<CTransform, CBody>();
 
 	// Upload valid bodies to physics (Splitted between all threads)
-	physicsMTFlow.parallel_for(view.begin(), view.end(), [&view](EntityId entity)
+	//physicsMTFlow.parallel_for(view.begin(), view.end(), [&view](EntityId entity)
+	for (EntityId entity : view)
 	{
 		ScopedGameZone("Upload Body");
 
@@ -183,11 +184,10 @@ void SPhysics::UploadBodies()
 			if (location.DistanceSqrt(FromPx(currTransform.p)) > Math::SMALL_NUMBER ||
 				!rotation.Equals(FromPx(currTransform.q)))
 			{
-				const physx::PxTransform newTransform{ ToPx(location), ToPx(rotation) };
-				body.rigidBody->setGlobalPose(newTransform);
+				body.SetTransform(location, rotation);
 			}
 		}
-	});
+	}
 	physicsMTFlow.wait_for_all();
 }
 

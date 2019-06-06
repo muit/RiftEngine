@@ -16,8 +16,9 @@ class SInteraction : public System {
 
 public:
 
+	virtual void BeginPlay() override;
 	virtual void Tick(float deltaTime) override;
 
-	void UpdateDoors();
-	void UpdateElevators();
+	void UpdateDoors(float deltaTime);
+	void UpdateElevators(float deltaTime);
 };

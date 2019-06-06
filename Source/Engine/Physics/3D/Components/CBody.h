@@ -8,6 +8,7 @@
 
 #include "../../PhysicsTypes.h"
 #include "../SPhysics.h"
+#include "Tools/Profiler.h"
 
 
 /** An entity will obtain physics when having a body.
@@ -82,7 +83,23 @@ public:
 		}
 	}
 
+	void SetTransform(const v3& location, const Quat& rotation) const
+	{
+		switch (EMobilityType(mobility))
+		{
+		case EMobilityType::Movable:
+			AsDynamic()->setGlobalPose({ SPhysics::ToPx(location), SPhysics::ToPx(rotation) });
+			break;
+		case EMobilityType::Kinematic:
+			AsDynamic()->setKinematicTarget({ SPhysics::ToPx(location), SPhysics::ToPx(rotation) });
+			break;
+		default:
+			Ensure(false, "Only Movable or Kinematic bodies can SetTransform");
+		}
+	}
+
 	FORCEINLINE bool IsStatic() const { return mobility == u8(EMobilityType::Static); }
+	FORCEINLINE bool IsKinematic() const { return mobility == u8(EMobilityType::Kinematic); }
 
 private:
 

@@ -11,9 +11,25 @@
 #include "Gameplay/Singletons/CPhysicsWorld.h"
 
 
+void SInteraction::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Assign closed locations
+	auto view = ECS()->View<CDoor, CTransform>();
+	for (EntityId entity : view)
+	{
+		CDoor& door = view.get<CDoor>(entity);
+		CTransform& transform = view.get<CTransform>(entity);
+
+		door.closedLocation = transform.GetWLocation();
+	}
+}
+
 void SInteraction::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
+
 	auto ecs = ECS();
 	CPhysicsWorld* physics = ecs->FindSingleton<CPhysicsWorld>();
 
@@ -36,11 +52,11 @@ void SInteraction::Tick(float deltaTime)
 		}
 	}
 
-	UpdateDoors();
-	UpdateElevators();
+	UpdateDoors(deltaTime);
+	UpdateElevators(deltaTime);
 }
 
-void SInteraction::UpdateDoors()
+void SInteraction::UpdateDoors(float deltaTime)
 {
 	auto view = ECS()->View<CDoor, CTransform>();
 
@@ -50,26 +66,49 @@ void SInteraction::UpdateDoors()
 		for (EntityId entity : view)
 		{
 			CDoor& door = view.get<CDoor>(entity);
-			if (!door.bOpened && pickedKeys.Contains(door.keyId))
+			if (door.GetState() == EDoorState::Closed &&
+				pickedKeys.Contains(door.keyId))
 			{
-				door.bOpened = true;
+				door.state = u8(EDoorState::Opening);
 			}
 		}
 	}
 
-	// Update Doors
+	// Update Doors position
 	for (EntityId entity : view)
 	{
 		CDoor& door = view.get<CDoor>(entity);
-		if (door.bOpened)
+
+		const EDoorState state = door.GetState();
+		if (state == EDoorState::Opening || state == EDoorState::Closing)
 		{
-			CTransform& transform = view.get<CTransform>(entity);
-			// Move tick
+			CTransform& trans = view.get<CTransform>(entity);
+
+			v3 target = door.closedLocation;
+			if (state == EDoorState::Opening)
+			{
+				target += door.openedOffset;
+			}
+
+			const v3 ab = target - trans.GetWLocation();
+			if (ab.LengthSqrt() < 0.1f * 0.1f)
+			{
+				// Finish opening or closing
+				door.state = u8((state == EDoorState::Opening)? EDoorState::Opened : EDoorState::Closed);
+			}
+			else
+			{
+				// Velocity = Norm(B-A) * Speed
+				const v3 speed = ab.Normalize() * door.speed * deltaTime;
+
+				// Kinematic bodies cant use velocity directly
+				trans.SetWLocation(trans.GetWLocation() + speed);
+			}
 		}
 	}
 }
 
-void SInteraction::UpdateElevators()
+void SInteraction::UpdateElevators(float deltaTime)
 {
 	// If any key was picked
 	if (pickedKeys.Size() > 0)
@@ -93,8 +132,7 @@ void SInteraction::UpdateElevators()
 		CElevator& elev = view.get<CElevator>(entity);
 		if (elev.bEnabled)
 		{
-			CBody& body = view.get<CBody>(entity);
-			const CTransform& trans = view.get<CTransform>(entity);
+			CTransform& trans = view.get<CTransform>(entity);
 
 			const v3 target = elev.bReturning ? elev.firstPosition : elev.secondPosition;
 
@@ -106,7 +144,11 @@ void SInteraction::UpdateElevators()
 			}
 
 			// Velocity = Norm(B-A) * Speed
-			body.SetLinearVelocity(ab.Normalize() * elev.speed);
+			const v3 speed = ab.Normalize() * elev.speed * deltaTime;
+
+			// Kinematic bodies cant use velocity directly
+			trans.SetWLocation(trans.GetWLocation() + speed);
+			//body.SetLinearVelocity(ab.Normalize() * elev.speed);
 		}
 	}
 }
