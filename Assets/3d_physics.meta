@@ -9,6 +9,174 @@
           "bAffectedByGravity": true,
           "bHasBoxShape": true,
           "bHasSphereShape": false,
+          "bIsTrigger": true,
+          "boxExtent": {
+            "x": 0.5,
+            "y": 0.5,
+            "z": 0.5
+          },
+          "mobility": 0,
+          "radius": 0.5
+        },
+        "CEntity": {
+          "name": "DoorKey"
+        },
+        "CKey": {
+          "bPickedUp": false,
+          "keyId": "DoorId"
+        },
+        "CMesh": {
+          "model": "Meshes/box.fbx.meta",
+          "overrideMaterial": "none"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": -4.006963,
+              "y": 0.24099517,
+              "z": 1.272862
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 0.4,
+              "y": 0.15,
+              "z": 0.2
+            }
+          }
+        },
+        "id": {
+          "a": 2111923,
+          "b": 3631778,
+          "c": 2569787334,
+          "d": 3692952571
+        }
+      },
+      {
+        "CBody": {
+          "bAffectedByGravity": false,
+          "bHasBoxShape": true,
+          "bHasSphereShape": false,
+          "bIsTrigger": true,
+          "boxExtent": {
+            "x": 0.5,
+            "y": 0.5,
+            "z": 0.5
+          },
+          "mobility": 0,
+          "radius": 0.5
+        },
+        "CEntity": {
+          "name": "ElevatorKey"
+        },
+        "CKey": {
+          "bPickedUp": false,
+          "keyId": "ElevatorId"
+        },
+        "CMesh": {
+          "model": "Meshes/box.fbx.meta",
+          "overrideMaterial": "none"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 0.3280964,
+              "y": 3.3075974,
+              "z": 1.4085157
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 0.4,
+              "y": 0.15,
+              "z": 0.2
+            }
+          }
+        },
+        "id": {
+          "a": 2053342,
+          "b": 3631778,
+          "c": 2569784164,
+          "d": 3692952254
+        }
+      },
+      {
+        "CBody": {
+          "bAffectedByGravity": true,
+          "bHasBoxShape": true,
+          "bHasSphereShape": false,
+          "bIsTrigger": false,
+          "boxExtent": {
+            "x": 3.0,
+            "y": 3.0,
+            "z": 0.5
+          },
+          "mobility": 1,
+          "radius": 0.5
+        },
+        "CElevator": {
+          "bEnabled": false,
+          "bReturning": false,
+          "firstPosition": {
+            "x": 0.0,
+            "y": 10.0,
+            "z": 0.0
+          },
+          "keyId": "ElevatorId",
+          "secondPosition": {
+            "x": 0.0,
+            "y": 10.0,
+            "z": 3.0
+          },
+          "speed": 1.0
+        },
+        "CEntity": {
+          "name": "Elevator"
+        },
+        "CMesh": {
+          "model": "Meshes/box.fbx.meta",
+          "overrideMaterial": "none"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 0.0,
+              "y": 10.0,
+              "z": 0.0
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 6.0,
+              "y": 6.0,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 1971527,
+          "b": 3631778,
+          "c": 2569781776,
+          "d": 3692952014
+        }
+      },
+      {
+        "CBody": {
+          "bAffectedByGravity": true,
+          "bHasBoxShape": true,
+          "bHasSphereShape": false,
           "bIsTrigger": false,
           "boxExtent": {
             "x": 0.5,
@@ -19,111 +187,77 @@
           "radius": 0.5
         },
         "CEntity": {
-          "name": "PlayerBall"
+          "name": "Cube"
         },
         "CMesh": {
-          "model": "Meshes/ball.fbx.meta",
+          "model": "Meshes/box.fbx.meta",
           "overrideMaterial": "none"
         },
-        "CPlayer": {
-          "cameraDistance": 10.0,
-          "cameraSpeed": 4.0,
-          "dieHeight": -10.0,
-          "impulse": 0.05
-        },
         "CTransform": {
           "transform": {
             "location": {
-              "x": 0.0,
+              "x": -2.1438763,
               "y": 0.0,
-              "z": 3.174117
+              "z": 3.1545835
             },
             "rotation": {
-              "w": 1.0,
+              "w": 0.8953834,
               "x": 0.0,
-              "y": 0.0,
+              "y": -0.445296,
               "z": 0.0
             },
             "scale": {
-              "x": 1.0,
+              "x": 0.9999998,
               "y": 1.0,
-              "z": 1.0
+              "z": 0.9999998
             }
           }
         },
         "id": {
-          "a": 13727327,
-          "b": 3631337,
-          "c": 1295739007,
-          "d": 3136051008
+          "a": 1920439,
+          "b": 3631778,
+          "c": 2569780448,
+          "d": 3692951882
         }
       },
       {
-        "CEditorCamera": {
-          "fov": 60.0
+        "CDirectionalLight": {
+          "color": {
+            "a": 255,
+            "b": 255,
+            "g": 255,
+            "r": 255
+          },
+          "intensity": 2.0
         },
         "CEntity": {
-          "name": "EditorCamera"
+          "name": "DirLight"
         },
         "CTransform": {
           "transform": {
             "location": {
-              "x": -0.940532,
-              "y": -10.258014,
-              "z": 9.992025
-            },
-            "rotation": {
-              "w": 0.9143678,
-              "x": -0.4046086,
-              "y": -0.00604807,
-              "z": 0.013668808
-            },
-            "scale": {
-              "x": 1.0,
-              "y": 1.0,
-              "z": 1.0
-            }
-          }
-        },
-        "id": {
-          "a": 13654286,
-          "b": 3631337,
-          "c": 1295738294,
-          "d": 3136050937
-        }
-      },
-      {
-        "CCamera": {
-          "fov": 60.0
-        },
-        "CEntity": {
-          "name": "Camera"
-        },
-        "CTransform": {
-          "transform": {
-            "location": {
-              "x": 0.0,
-              "y": -3.3877983,
-              "z": 3.4928472
-            },
-            "rotation": {
-              "w": 1.0,
-              "x": 0.0,
+              "x": 1.5708202,
               "y": 0.0,
-              "z": 0.0
+              "z": 4.064992
+            },
+            "rotation": {
+              "w": 0.41296336,
+              "x": 0.8611566,
+              "y": -0.27889174,
+              "z": 0.10044962
             },
             "scale": {
               "x": 1.0,
-              "y": 1.0,
-              "z": 1.0
+              "y": 1.0000154,
+              "z": 1.0000216
             }
           }
         },
         "id": {
-          "a": 13597508,
-          "b": 3631337,
-          "c": 1295737593,
-          "d": 3136050867
+          "a": 1854726,
+          "b": 3631778,
+          "c": 2569778712,
+          "d": 3692951708
         }
       },
       {
@@ -168,50 +302,243 @@
           }
         },
         "id": {
-          "a": 13516935,
-          "b": 3631337,
-          "c": 1295736439,
-          "d": 3136050751
+          "a": 1788188,
+          "b": 3631778,
+          "c": 2569777359,
+          "d": 3692951573
         }
       },
       {
-        "CDirectionalLight": {
-          "color": {
-            "a": 255,
-            "b": 255,
-            "g": 255,
-            "r": 255
-          },
-          "intensity": 1.0
+        "CCamera": {
+          "fov": 60.0
         },
         "CEntity": {
-          "name": "DirLight"
+          "name": "Camera"
         },
         "CTransform": {
           "transform": {
             "location": {
-              "x": 1.5708202,
-              "y": 0.0,
-              "z": 4.064992
+              "x": 0.0,
+              "y": -3.3877983,
+              "z": 3.4928472
             },
             "rotation": {
-              "w": 0.0043413835,
-              "x": 0.47729185,
-              "y": 0.12641501,
-              "z": 0.8695935
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
             },
             "scale": {
-              "x": 1.0000134,
-              "y": 1.0000085,
-              "z": 1.0000001
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
             }
           }
         },
         "id": {
-          "a": 13440129,
-          "b": 3631337,
-          "c": 1295735552,
-          "d": 3136050662
+          "a": 1721357,
+          "b": 3631778,
+          "c": 2569775705,
+          "d": 3692951407
+        }
+      },
+      {
+        "CEditorCamera": {
+          "fov": 60.0
+        },
+        "CEntity": {
+          "name": "EditorCamera"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": -1.5215403,
+              "y": -11.199562,
+              "z": 6.039745
+            },
+            "rotation": {
+              "w": 0.9729489,
+              "x": -0.22796504,
+              "y": 0.0085431505,
+              "z": -0.036460374
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 1650782,
+          "b": 3631778,
+          "c": 2569773940,
+          "d": 3692951233
+        }
+      },
+      {
+        "CBody": {
+          "bAffectedByGravity": true,
+          "bHasBoxShape": false,
+          "bHasSphereShape": true,
+          "bIsTrigger": false,
+          "boxExtent": {
+            "x": 0.5,
+            "y": 0.5,
+            "z": 0.5
+          },
+          "mobility": 2,
+          "radius": 0.5
+        },
+        "CEntity": {
+          "name": "PlayerBall"
+        },
+        "CMesh": {
+          "model": "Meshes/ball.fbx.meta",
+          "overrideMaterial": "none"
+        },
+        "CPlayer": {
+          "cameraDistance": 10.0,
+          "cameraSpeed": 4.0,
+          "dieHeight": -10.0,
+          "impulse": 0.5
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 3.174117
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 1573156,
+          "b": 3631778,
+          "c": 2569755995,
+          "d": 3692949437
+        }
+      },
+      {
+        "CBody": {
+          "bAffectedByGravity": true,
+          "bHasBoxShape": true,
+          "bHasSphereShape": false,
+          "bIsTrigger": false,
+          "boxExtent": {
+            "x": 0.1,
+            "y": 5.0,
+            "z": 1.5
+          },
+          "mobility": 1,
+          "radius": 0.5
+        },
+        "CDoor": {
+          "closedLocation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "keyId": "DoorId",
+          "openedOffset": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 1.5
+          },
+          "speed": 1.0,
+          "state": 2
+        },
+        "CEntity": {
+          "name": "Door"
+        },
+        "CMesh": {
+          "model": "Meshes/box.fbx.meta",
+          "overrideMaterial": "none"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": -5.0405,
+              "y": 0.0,
+              "z": 2.0
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 0.2,
+              "y": 10.0,
+              "z": 3.0
+            }
+          }
+        },
+        "id": {
+          "a": 1507481,
+          "b": 3631778,
+          "c": 2569753313,
+          "d": 3692949171
+        }
+      },
+      {
+        "CBody": {
+          "bAffectedByGravity": true,
+          "bHasBoxShape": true,
+          "bHasSphereShape": false,
+          "bIsTrigger": false,
+          "boxExtent": {
+            "x": 5.0,
+            "y": 5.0,
+            "z": 0.5
+          },
+          "mobility": 0,
+          "radius": 0.5
+        },
+        "CEntity": {
+          "name": "Floor02"
+        },
+        "CMesh": {
+          "model": "Meshes/box.fbx.meta",
+          "overrideMaterial": "none"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": -10.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 10.0,
+              "y": 10.0,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 1445694,
+          "b": 3631778,
+          "c": 2569709598,
+          "d": 3692944796
         }
       }
     ],
@@ -224,8 +551,8 @@
           "g": 255,
           "r": 255
         },
-        "ambientIntensity": 0.3,
-        "cubeMap": "Textures/Cubemaps/skybox.meta"
+        "ambientIntensity": 0.15,
+        "cubeMap": "none"
       },
       "CPhysicsWorld": {
         "gravity": {
@@ -233,7 +560,8 @@
           "y": 0.0,
           "z": -9.81
         }
-      }
+      },
+      "CVisualDebugger": null
     }
   }
 }

@@ -15,7 +15,7 @@ void World::Initialize()
 
 	ecs = Create<ECSManager>(Self());
 
-	LoadScene({ "Test/test.meta" });
+	LoadScene({ "bezier_scene.meta" });
 
 #if WITH_EDITOR
 	worldType = EWorldType::Editor;

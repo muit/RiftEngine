@@ -24,6 +24,7 @@
 #include "Gameplay/Game/Components/CPlatform.h"
 #include "Gameplay/Game/Components/CKey.h"
 #include "Gameplay/Game/Components/CDoor.h"
+#include "Gameplay/Game/Components/CElevator.h"
 #include "Gameplay/Game/Systems/SPlayer.h"
 #include "Gameplay/Game/Systems/SPlatforms.h"
 #include "Gameplay/Game/Systems/SInteraction.h"
@@ -138,6 +139,7 @@ void ECSManager::SerializeEntity(Archive& ar, EntityId entity)
 	SerializeComponent<CPlatform>(ar, entity);
 	SerializeComponent<CKey>(ar, entity);
 	SerializeComponent<CDoor>(ar, entity);
+	SerializeComponent<CElevator>(ar, entity);
 
 	// Test
 	SerializeComponent<CRotatingCube>(ar, entity);
@@ -287,7 +289,7 @@ void ECSManager::RegistrySystems()
 	RegistrySystem<SRenderCamera>();
 	RegistrySystem<SRenderLighting>();
 	RegistrySystem<SRenderMeshes>();
-	RegistrySystem<SRenderSpiral>();
+	//RegistrySystem<SRenderSpiral>();
 }
 
 void ECSManager::RegistrySingletons()

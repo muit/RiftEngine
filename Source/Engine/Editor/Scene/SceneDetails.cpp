@@ -29,6 +29,8 @@
 #include "Gameplay/Game/Components/CPlatform.h"
 #include "Gameplay/Game/Components/CKey.h"
 #include "Gameplay/Game/Components/CDoor.h"
+#include "Gameplay/Game/Components/CElevator.h"
+
 #include "Test/Components/CRotatingCube.h"
 
 
@@ -78,6 +80,7 @@ void SceneDetails::Build()
 		// Game
 		AddNew<ComponentDetails<CPlayer>>(entity);
 		AddNew<ComponentDetails<CPlatform>>(entity);
+		AddNew<ComponentDetails<CElevator>>(entity);
 		AddNew<ComponentDetails<CKey>>(entity);
 		AddNew<ComponentDetails<CDoor>>(entity);
 

@@ -1,0 +1,196 @@
+{
+  "asset_type": "Scene",
+  "displayName": "Physics Scene",
+  "name": "none",
+  "scene": {
+    "entities": [
+      {
+        "CDirectionalLight": {
+          "color": {
+            "a": 255,
+            "b": 255,
+            "g": 255,
+            "r": 255
+          },
+          "intensity": 1.5
+        },
+        "CEntity": {
+          "name": "DirLight"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": -2.8452435,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotation": {
+              "w": 0.3965586,
+              "x": 0.3975331,
+              "y": 0.8274593,
+              "z": -0.0044675074
+            },
+            "scale": {
+              "x": 1.0000015,
+              "y": 0.9999999,
+              "z": 1.000019
+            }
+          }
+        },
+        "id": {
+          "a": 749041,
+          "b": 3631407,
+          "c": 236529066,
+          "d": 3030130013
+        }
+      },
+      {
+        "CCamera": {
+          "fov": 60.0
+        },
+        "CEntity": {
+          "name": "Camera"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 0.0,
+              "y": -1.0,
+              "z": 15.0
+            },
+            "rotation": {
+              "w": 0.7071067,
+              "x": -0.70710677,
+              "y": -0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 661065,
+          "b": 3631407,
+          "c": 236527823,
+          "d": 3030129890
+        }
+      },
+      {
+        "CEditorCamera": {
+          "fov": 60.0
+        },
+        "CEntity": {
+          "name": "EditorCamera"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 4.9565687,
+              "y": 3.3101165,
+              "z": 3.8039808
+            },
+            "rotation": {
+              "w": 0.45396644,
+              "x": -0.1531313,
+              "y": -0.28055456,
+              "z": 0.8317177
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 614288,
+          "b": 3631407,
+          "c": 236526372,
+          "d": 3030129746
+        }
+      },
+      {
+        "CEntity": {
+          "name": "CubeEj3"
+        },
+        "CMesh": {
+          "model": "Test/nouv_box.fbx.meta",
+          "overrideMaterial": "Test/cube.shader.meta"
+        },
+        "CTransform": {
+          "transform": {
+            "location": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        },
+        "id": {
+          "a": 551250,
+          "b": 3631407,
+          "c": 236495174,
+          "d": 3030126624
+        }
+      }
+    ],
+    "name": "none",
+    "singletons": {
+      "CGraphics": {
+        "ambientColor": {
+          "a": 255,
+          "b": 255,
+          "g": 255,
+          "r": 255
+        },
+        "ambientIntensity": 0.15,
+        "cubeMap": "none"
+      },
+      "CPhysicsWorld": {
+        "gravity": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": -9.81
+        }
+      },
+      "CSquare": {
+        "cornerA": {
+          "x": 4.0,
+          "y": 4.0,
+          "z": 0.0
+        },
+        "cornerB": {
+          "x": 4.0,
+          "y": -4.0,
+          "z": 0.0
+        },
+        "cornerC": {
+          "x": -4.0,
+          "y": -4.0,
+          "z": 0.0
+        },
+        "cornerD": {
+          "x": -4.0,
+          "y": 4.0,
+          "z": 0.0
+        },
+        "cubeCount": 16
+      },
+      "CVisualDebugger": null
+    }
+  }
+}
